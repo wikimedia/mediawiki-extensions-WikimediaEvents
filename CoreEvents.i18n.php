@@ -22,6 +22,13 @@ $messages['qqq'] = array(
 	'coreevents-desc' => '{{desc|name=CoreEvents|url=https://www.mediawiki.org/wiki/Extension:CoreEvents}}',
 );
 
+/** Asturian (asturianu)
+ * @author Xuacu
+ */
+$messages['ast'] = array(
+	'coreevents-desc' => "Use la estensión EventLogging pa rexistrar los socesos qu'ocurren nel nucleu de MediaWiki",
+);
+
 /** German (Deutsch)
  * @author Metalhead64
  */
@@ -29,11 +36,39 @@ $messages['de'] = array(
 	'coreevents-desc' => 'Ermöglicht die Verwendung der Erweiterung EventLogging, um auftretende Ereignisse im MediaWiki-Kern zu protokollieren',
 );
 
+/** French (français)
+ * @author Gomoko
+ */
+$messages['fr'] = array(
+	'coreevents-desc' => 'Utiliser l’extension EventLogging pour tracer les événements qui ont lieu dans le cœur de MédiaWiki',
+);
+
 /** Galician (galego)
  * @author Toliño
  */
 $messages['gl'] = array(
 	'coreevents-desc' => 'Use a extensión EventLogging para rexistrar os eventos que acontecen no núcleo de MediaWiki',
+);
+
+/** Italian (italiano)
+ * @author Beta16
+ */
+$messages['it'] = array(
+	'coreevents-desc' => "Utilizza l'estensione EventLogging per registrare gli eventi che si verificano nel core di MediaWiki",
+);
+
+/** Japanese (日本語)
+ * @author Shirayuki
+ */
+$messages['ja'] = array(
+	'coreevents-desc' => 'MediaWiki コアで発生したイベントを記録するために EventLogging 拡張機能を使用する',
+);
+
+/** Macedonian (македонски)
+ * @author Bjankuloski06
+ */
+$messages['mk'] = array(
+	'coreevents-desc' => 'Овозможува употреба на додатокот EventLogging за заведување на настани што се случуваат во јадрениот дел на МедијаВики',
 );
 
 /** tarandíne (tarandíne)
