@@ -77,3 +77,10 @@ $messages['mk'] = array(
 $messages['roa-tara'] = array(
 	'coreevents-desc' => "Ause l'estenzione EventLogging pe traccià le avveneminde ca succedene jndr'à 'u core de MediaUicchi",
 );
+
+/** Traditional Chinese (中文（繁體）‎)
+ * @author Justincheng12345
+ */
+$messages['zh-hant'] = array(
+	'coreevents-desc' => '使用事件日誌擴展記錄MediaWiki核心發生的事件',
+);
