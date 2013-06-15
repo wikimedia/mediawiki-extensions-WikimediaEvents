@@ -64,6 +64,13 @@ $messages['ja'] = array(
 	'coreevents-desc' => 'MediaWiki コアで発生したイベントを記録するために EventLogging 拡張機能を使用する',
 );
 
+/** Luxembourgish (Lëtzebuergesch)
+ * @author Robby
+ */
+$messages['lb'] = array(
+	'coreevents-desc' => "D'EventLogging Erweiderung benotze fir Evenementer déi am Kär vu MediaWiki passéieren ze loggen",
+);
+
 /** Macedonian (македонски)
  * @author Bjankuloski06
  */
