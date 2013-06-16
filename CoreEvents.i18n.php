@@ -85,6 +85,13 @@ $messages['roa-tara'] = array(
 	'coreevents-desc' => "Ause l'estenzione EventLogging pe traccià le avveneminde ca succedene jndr'à 'u core de MediaUicchi",
 );
 
+/** Vietnamese (Tiếng Việt)
+ * @author Minh Nguyen
+ */
+$messages['vi'] = array(
+	'coreevents-desc' => 'Sử dụng phần mở rộng EventLogging để ghi các sự kiện xảy ra trong lõi của MediaWiki vào nhật trình',
+);
+
 /** Traditional Chinese (中文（繁體）‎)
  * @author Justincheng12345
  */
