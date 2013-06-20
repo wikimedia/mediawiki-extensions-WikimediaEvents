@@ -41,11 +41,16 @@ $wgHooks['PageContentSaveComplete'][] = function ( $article, $user, $content, $s
 	$isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId ) {
 
 	if ( $revision ) {
-		$event = array( 'revisionId' => $revision->getId() );
+		$event = array(
+			'revisionId' => $revision->getId(),
+			'isAPI' => defined( 'MW_API' ),
+			'isMobile' => ( class_exists( 'MobileContext' )
+				&& MobileContext::singleton()->shouldDisplayMobileView() ),
+		);
 		if ( isset( $_SERVER[ 'HTTP_USER_AGENT' ] ) ) {
 			$event[ 'userAgent' ] = $_SERVER[ 'HTTP_USER_AGENT' ];
 		}
-		efLogServerSideEvent( 'PageContentSaveComplete', 5303086, $event );
+		efLogServerSideEvent( 'PageContentSaveComplete', 5588433, $event );
 	}
 	return true;
 };
