@@ -29,6 +29,13 @@ $messages['ast'] = array(
 	'coreevents-desc' => "Use la estensión EventLogging pa rexistrar los socesos qu'ocurren nel nucleu de MediaWiki",
 );
 
+/** Belarusian (Taraškievica orthography) (беларуская (тарашкевіца)‎)
+ * @author Wizardist
+ */
+$messages['be-tarask'] = array(
+	'coreevents-desc' => 'Выкарыстаньне пашырэньня EventLogging для запісу падзеяў унутры ядра MediaWiki',
+);
+
 /** German (Deutsch)
  * @author Metalhead64
  */
@@ -76,6 +83,13 @@ $messages['lb'] = array(
  */
 $messages['mk'] = array(
 	'coreevents-desc' => 'Овозможува употреба на додатокот EventLogging за заведување на настани што се случуваат во јадрениот дел на МедијаВики',
+);
+
+/** Malay (Bahasa Melayu)
+ * @author Anakmalaysia
+ */
+$messages['ms'] = array(
+	'coreevents-desc' => 'Gunakan ekstensi EventLogging untuk mencatatkan peristiwa yang berlaku di MediaWiki teras',
 );
 
 /** tarandíne (tarandíne)
