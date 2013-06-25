@@ -29,6 +29,13 @@ $messages['ast'] = array(
 	'coreevents-desc' => "Use la estensión EventLogging pa rexistrar los socesos qu'ocurren nel nucleu de MediaWiki",
 );
 
+/** Bikol Central (Bikol Central)
+ * @author Geopoet
+ */
+$messages['bcl'] = array(
+	'coreevents-desc' => 'Gamiton an ekstensyon kan EventLogging tanganing itala an mga pangyayari na nangyari sa katahawan kan MediaWiki',
+);
+
 /** Belarusian (Taraškievica orthography) (беларуская (тарашкевіца)‎)
  * @author Wizardist
  */
