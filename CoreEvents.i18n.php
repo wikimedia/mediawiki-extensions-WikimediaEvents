@@ -50,6 +50,13 @@ $messages['de'] = array(
 	'coreevents-desc' => 'Ermöglicht die Verwendung der Erweiterung EventLogging, um auftretende Ereignisse im MediaWiki-Kern zu protokollieren',
 );
 
+/** Persian (فارسی)
+ * @author Reza1615
+ */
+$messages['fa'] = array(
+	'coreevents-desc' => 'از افزونهٔ سیاههٔ رویدادها استفاده کنید تا سیاههٔ رویدادهای اتفاق افتاده در هستهٔ مدیاویکی تهیه شود',
+);
+
 /** French (français)
  * @author Gomoko
  */
