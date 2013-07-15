@@ -106,6 +106,13 @@ $messages['ms'] = array(
 	'coreevents-desc' => 'Gunakan ekstensi EventLogging untuk mencatatkan peristiwa yang berlaku di MediaWiki teras',
 );
 
+/** Dutch (Nederlands)
+ * @author Siebrand
+ */
+$messages['nl'] = array(
+	'coreevents-desc' => 'De uitbreiding EventLogging wordt gebruikt om gebeurtenissen in de kern van MediaWiki op te slaan in logboeken',
+);
+
 /** tarandíne (tarandíne)
  * @author Joetaras
  */
