@@ -92,6 +92,13 @@ $messages['ja'] = array(
 	'coreevents-desc' => 'MediaWiki コアで発生したイベントを記録するために EventLogging 拡張機能を使用する',
 );
 
+/** Korean (한국어)
+ * @author 아라
+ */
+$messages['ko'] = array(
+	'coreevents-desc' => '미디어위키 코어에서 발생하는 이벤트를 기록하기 위해 EventLogging 확장 기능을 사용합니다',
+);
+
 /** Luxembourgish (Lëtzebuergesch)
  * @author Robby
  */
@@ -132,6 +139,13 @@ $messages['roa-tara'] = array(
  */
 $messages['sv'] = array(
 	'coreevents-desc' => 'Använd tillägget EventLogging för att logga händelser som sker i MediaWikis kärna.',
+);
+
+/** Ukrainian (українська)
+ * @author Ата
+ */
+$messages['uk'] = array(
+	'coreevents-desc' => 'Використання розширення EventLogging для ведення журналу подій, що відбуваються в ядрі MediaWiki',
 );
 
 /** Vietnamese (Tiếng Việt)
