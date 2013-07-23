@@ -162,6 +162,13 @@ $messages['vi'] = array(
 	'coreevents-desc' => 'Sử dụng phần mở rộng EventLogging để ghi các sự kiện xảy ra trong lõi của MediaWiki vào nhật trình',
 );
 
+/** Simplified Chinese (中文（简体）‎)
+ * @author Qiyue2001
+ */
+$messages['zh-hans'] = array(
+	'coreevents-desc' => '使用事件日志扩展记录MediaWiki核心发生的事件',
+);
+
 /** Traditional Chinese (中文（繁體）‎)
  * @author Justincheng12345
  */
