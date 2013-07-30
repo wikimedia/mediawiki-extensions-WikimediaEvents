@@ -85,6 +85,13 @@ $messages['he'] = array(
 	'coreevents-desc' => 'להשתמש בהרחבה EventLogging לרישום אירועים שמתרחשים בגרעין של תכנת MediaWiki',
 );
 
+/** Interlingua (interlingua)
+ * @author McDutchie
+ */
+$messages['ia'] = array(
+	'coreevents-desc' => 'Usar le extension EventLogging pro registrar eventos que occurre in le nucleo de MediaWiki',
+);
+
 /** Italian (italiano)
  * @author Beta16
  */
