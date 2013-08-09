@@ -29,7 +29,38 @@ $wgExtensionCredits['other'][] = array(
 
 $wgExtensionMessagesFiles['CoreEvents'] = __DIR__ . '/CoreEvents.i18n.php';
 
+// Configs
+
+/**
+ * @var int|bool: Conduct & log test for HTTPS support once per this
+ *                many (non-HTTPS) requests.
+ */
+$wgHttpsFeatureDetectionSamplingFactor = 5000;
+
+$wgResourceModules += array(
+	'schema.HttpsSupport' => array(
+		'class'  => 'ResourceLoaderSchemaModule',
+		'schema' => 'HttpsSupport',
+		'revision' => 5712722,
+	),
+	'ext.coreEvents.httpsSupport' => array(
+		'scripts'       => 'ext.coreEvents.httpsSupport.js',
+		'localBasePath' => __DIR__ . '/modules',
+		'remoteExtPath' => 'CoreEvents/modules',
+	),
+);
+
 // Hooks
+
+$wgHooks[ 'BeforePageDisplay' ][] = function ( &$out, &$skin ) {
+	$out->addModules( 'ext.coreEvents.httpsSupport' );
+	return true;
+};
+
+$wgHooks[ 'ResourceLoaderGetConfigVars' ][] = function ( &$vars ) {
+	global $wgHttpsFeatureDetectionSamplingFactor;
+	$vars[ 'wgHttpsFeatureDetectionSamplingFactor' ] = $wgHttpsFeatureDetectionSamplingFactor;
+};
 
 /**
  * Log server-side event on successful page edit.
