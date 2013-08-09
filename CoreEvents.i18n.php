@@ -127,6 +127,13 @@ $messages['mk'] = array(
 	'coreevents-desc' => 'Овозможува употреба на додатокот EventLogging за заведување на настани што се случуваат во јадрениот дел на МедијаВики',
 );
 
+/** Malayalam (മലയാളം)
+ * @author Praveenp
+ */
+$messages['ml'] = array(
+	'coreevents-desc' => 'മീഡിയവിക്കി കാമ്പിൽ നടക്കുന്ന സംഭവങ്ങൾ എവന്റ്‌ലോഗിങ് അനുബന്ധം ഉപയോഗിച്ച് ശേഖരിക്കാൻ ഉപയോഗിക്കുന്നു',
+);
+
 /** Malay (Bahasa Melayu)
  * @author Anakmalaysia
  */
