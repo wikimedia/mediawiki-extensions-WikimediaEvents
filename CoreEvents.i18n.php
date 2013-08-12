@@ -17,9 +17,10 @@ $messages['en'] = array(
 
 /** Message documentation (Message documentation)
  * @author Matthew Flaschen
+ * @author Shirayuki
  */
 $messages['qqq'] = array(
-	'coreevents-desc' => '{{desc|name=CoreEvents|url=https://www.mediawiki.org/wiki/Extension:CoreEvents}}',
+	'coreevents-desc' => '{{desc|name=Core Events|url=http://www.mediawiki.org/wiki/Extension:CoreEvents}}',
 );
 
 /** Asturian (asturianu)
