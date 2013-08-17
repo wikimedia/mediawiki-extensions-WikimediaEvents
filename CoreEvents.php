@@ -1,6 +1,6 @@
 <?php
 /**
- * Campaigns extension
+ * CoreEvents extension
  *
  * @ingroup Extensions
  *

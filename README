@@ -1,0 +1,6 @@
+CoreEvents is intended for logging EventLogging events that are not specific to a
+particular MW extension.  Generally, this means measuring an event that occurs in
+core.
+
+This allows EventLogging to implement logging infrastructure, while the logging
+calls and associated logic are kept separate.
