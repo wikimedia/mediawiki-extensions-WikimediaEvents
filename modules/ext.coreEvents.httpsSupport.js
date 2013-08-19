@@ -17,6 +17,9 @@
 		if ( !$.isNumeric( factor ) || factor < 1 ) {
 			return false;
 		}
+		if ( mw.config.get( 'wgUserId' ) !== null ) {
+			factor /= 10;
+		}
 		return Math.floor( Math.random() * factor ) === 0;
 	}
 
@@ -46,10 +49,15 @@
 				var event = {
 					httpStatus  : httpStatus,
 					httpsStatus : httpsStatus,
+					isAnon      : mw.config.get( 'wgUserId' ) === null,
 					userAgent   : navigator.userAgent,
 				};
-				if ( $.isPlainObject( window.Geo ) && typeof Geo.country === 'string' ) {
+				if ( mw.mobileFrontend && mw.config.exists( 'wgMFMode' ) ) {
+					event.mobileMode = mw.config.get( 'wgMFMode' );
+				}
+				if ( $.isPlainObject( window.Geo ) ) {
 					event.originCountry = Geo.country;
+					event.originCity = Geo.city;
 				}
 				mw.eventLog.logEvent( 'HttpsSupport', event );
 			} );

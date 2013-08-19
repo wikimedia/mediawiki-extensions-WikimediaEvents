@@ -35,18 +35,22 @@ $wgExtensionMessagesFiles['CoreEvents'] = __DIR__ . '/CoreEvents.i18n.php';
  * @var int|bool: Conduct & log test for HTTPS support once per this
  *                many (non-HTTPS) requests.
  */
-$wgHttpsFeatureDetectionSamplingFactor = 5000;
+$wgHttpsFeatureDetectionSamplingFactor = 2500;
 
 $wgResourceModules += array(
 	'schema.HttpsSupport' => array(
-		'class'  => 'ResourceLoaderSchemaModule',
-		'schema' => 'HttpsSupport',
-		'revision' => 5712722,
+		'class'         => 'ResourceLoaderSchemaModule',
+		'schema'        => 'HttpsSupport',
+		'revision'      => 5731023,
+		'targets'       => array( 'desktop', 'mobile' ),
+		'mobileTargets' => array( 'stable', 'beta', 'alpha' ),
 	),
 	'ext.coreEvents.httpsSupport' => array(
 		'scripts'       => 'ext.coreEvents.httpsSupport.js',
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'CoreEvents/modules',
+		'targets'       => array( 'desktop', 'mobile' ),
+		'mobileTargets' => array( 'stable', 'beta', 'alpha' ),
 	),
 );
 
