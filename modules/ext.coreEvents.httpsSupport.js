@@ -56,8 +56,12 @@
 					event.mobileMode = mw.config.get( 'wgMFMode' );
 				}
 				if ( $.isPlainObject( window.Geo ) ) {
-					event.originCountry = Geo.country;
-					event.originCity = Geo.city;
+					if ( typeof Geo.country === 'string' && Geo.country.length ) {
+						event.originCountry = Geo.country;
+					}
+					if ( typeof Geo.city === 'string' && Geo.city.length ) {
+						event.originCity = Geo.city;
+					}
 				}
 				mw.eventLog.logEvent( 'HttpsSupport', event );
 			} );

@@ -41,7 +41,7 @@ $wgResourceModules += array(
 	'schema.HttpsSupport' => array(
 		'class'         => 'ResourceLoaderSchemaModule',
 		'schema'        => 'HttpsSupport',
-		'revision'      => 5731023,
+		'revision'      => 5733378,
 		'targets'       => array( 'desktop', 'mobile' ),
 		'mobileTargets' => array( 'stable', 'beta', 'alpha' ),
 	),
@@ -49,6 +49,7 @@ $wgResourceModules += array(
 		'scripts'       => 'ext.coreEvents.httpsSupport.js',
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'CoreEvents/modules',
+		'dependencies'  => 'schema.HttpsSupport',
 		'targets'       => array( 'desktop', 'mobile' ),
 		'mobileTargets' => array( 'stable', 'beta', 'alpha' ),
 	),
@@ -57,7 +58,7 @@ $wgResourceModules += array(
 // Hooks
 
 $wgHooks[ 'BeforePageDisplay' ][] = function ( &$out, &$skin ) {
-	$out->addModules( 'ext.coreEvents.httpsSupport' );
+	$out->addModules( array( 'schema.HttpsSupport', 'ext.coreEvents.httpsSupport' ) );
 	return true;
 };
 
