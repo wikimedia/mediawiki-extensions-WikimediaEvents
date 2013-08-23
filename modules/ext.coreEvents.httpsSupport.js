@@ -50,7 +50,7 @@
 					httpStatus  : httpStatus,
 					httpsStatus : httpsStatus,
 					isAnon      : mw.config.get( 'wgUserId' ) === null,
-					userAgent   : navigator.userAgent,
+					userAgent   : navigator.userAgent
 				};
 				if ( mw.mobileFrontend && mw.config.exists( 'wgMFMode' ) ) {
 					event.mobileMode = mw.config.get( 'wgMFMode' );
