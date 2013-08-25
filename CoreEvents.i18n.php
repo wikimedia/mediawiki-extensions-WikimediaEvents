@@ -93,6 +93,13 @@ $messages['ia'] = array(
 	'coreevents-desc' => 'Usar le extension EventLogging pro registrar eventos que occurre in le nucleo de MediaWiki',
 );
 
+/** Iloko (Ilokano)
+ * @author Lam-ang
+ */
+$messages['ilo'] = array(
+	'coreevents-desc' => 'Usaren ti pagpaatiddog nga  EventLogging tapno ilista ti paspasamak a rumsua iti bugas a MediaWiki',
+);
+
 /** Italian (italiano)
  * @author Beta16
  */
