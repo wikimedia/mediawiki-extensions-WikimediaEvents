@@ -156,6 +156,13 @@ $messages['nl'] = array(
 	'coreevents-desc' => 'De uitbreiding EventLogging wordt gebruikt om gebeurtenissen in de kern van MediaWiki op te slaan in logboeken',
 );
 
+/** Occitan (occitan)
+ * @author Cedric31
+ */
+$messages['oc'] = array(
+	'coreevents-desc' => 'Utilizar l’extension EventLogging per traçar los eveniments que se debanan dins lo còr de MediaWiki',
+);
+
 /** tarandíne (tarandíne)
  * @author Joetaras
  */
