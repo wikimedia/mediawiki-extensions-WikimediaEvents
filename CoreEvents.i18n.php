@@ -121,6 +121,13 @@ $messages['ko'] = array(
 	'coreevents-desc' => '미디어위키 코어에서 발생하는 이벤트를 기록하기 위해 EventLogging 확장 기능을 사용합니다',
 );
 
+/** Colognian (Ripoarisch)
+ * @author Purodha
+ */
+$messages['ksh'] = array(
+	'coreevents-desc' => 'Määd et müjjelesch, et Zohsazprojramm <code lang="en" xml:lang="en">EventLogging </code> ze bruche, öm en et Logbooch ze krijje, wad sejj em Ennere vum Meedijawikki afschpellt.',
+);
+
 /** Luxembourgish (Lëtzebuergesch)
  * @author Robby
  */
