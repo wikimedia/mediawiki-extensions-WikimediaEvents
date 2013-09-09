@@ -44,6 +44,13 @@ $messages['be-tarask'] = array(
 	'coreevents-desc' => 'Выкарыстаньне пашырэньня EventLogging для запісу падзеяў унутры ядра MediaWiki',
 );
 
+/** Welsh (Cymraeg)
+ * @author Lloffiwr
+ */
+$messages['cy'] = array(
+	'coreevents-desc' => "Defnyddio'r estyniad EventLogging i gofnodi digwyddiadau yng nghrombil MediaWiki ar lòg",
+);
+
 /** German (Deutsch)
  * @author Metalhead64
  */
@@ -168,6 +175,20 @@ $messages['nl'] = array(
  */
 $messages['oc'] = array(
 	'coreevents-desc' => 'Utilizar l’extension EventLogging per traçar los eveniments que se debanan dins lo còr de MediaWiki',
+);
+
+/** Portuguese (português)
+ * @author Cainamarques
+ */
+$messages['pt'] = array(
+	'coreevents-desc' => 'Utiliza a extensão EventLogging para registrar eventos que ocorrem no núcleo do MediaWiki',
+);
+
+/** Brazilian Portuguese (português do Brasil)
+ * @author Cainamarques
+ */
+$messages['pt-br'] = array(
+	'coreevents-desc' => 'Utiliza a extensão EventLogging para registrar eventos que ocorrem no núcleo do MediaWiki',
 );
 
 /** tarandíne (tarandíne)
