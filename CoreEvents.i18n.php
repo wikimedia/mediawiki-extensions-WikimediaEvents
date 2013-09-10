@@ -44,6 +44,13 @@ $messages['be-tarask'] = array(
 	'coreevents-desc' => 'Выкарыстаньне пашырэньня EventLogging для запісу падзеяў унутры ядра MediaWiki',
 );
 
+/** Czech (česky)
+ * @author Mormegil
+ */
+$messages['cs'] = array(
+	'coreevents-desc' => 'Používá rozšíření EventLogging k zaznamenávání událostí, které se staly v jádře MediaWiki',
+);
+
 /** Welsh (Cymraeg)
  * @author Lloffiwr
  */
