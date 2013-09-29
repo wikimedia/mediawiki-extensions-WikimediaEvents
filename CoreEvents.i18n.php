@@ -205,6 +205,13 @@ $messages['roa-tara'] = array(
 	'coreevents-desc' => "Ause l'estenzione EventLogging pe traccià le avveneminde ca succedene jndr'à 'u core de MediaUicchi",
 );
 
+/** Russian (русский)
+ * @author Okras
+ */
+$messages['ru'] = array(
+	'coreevents-desc' => 'Используйте расширение EventLogging для записи событий, которые происходят в ядре MediaWiki',
+);
+
 /** Swedish (svenska)
  * @author Jopparn
  */
