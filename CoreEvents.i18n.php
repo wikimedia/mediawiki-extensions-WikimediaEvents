@@ -58,6 +58,13 @@ $messages['cy'] = array(
 	'coreevents-desc' => "Defnyddio'r estyniad EventLogging i gofnodi digwyddiadau yng nghrombil MediaWiki ar lòg",
 );
 
+/** Danish (dansk)
+ * @author Christian List
+ */
+$messages['da'] = array(
+	'coreevents-desc' => 'Brug EventLogging udvidelsen til at logge hændelser, der sker i MediaWikis kerne',
+);
+
 /** German (Deutsch)
  * @author Metalhead64
  */
