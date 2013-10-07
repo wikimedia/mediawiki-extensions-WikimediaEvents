@@ -29,44 +29,6 @@ $wgExtensionCredits['other'][] = array(
 
 $wgExtensionMessagesFiles['WikimediaEvents'] = __DIR__ . '/WikimediaEvents.i18n.php';
 
-// Configs
-
-/**
- * @var int|bool: Conduct & log test for HTTPS support once per this
- *                many (non-HTTPS) requests.
- */
-$wgHttpsFeatureDetectionSamplingFactor = 2500;
-
-$wgResourceModules += array(
-	'schema.HttpsSupport' => array(
-		'class'         => 'ResourceLoaderSchemaModule',
-		'schema'        => 'HttpsSupport',
-		'revision'      => 5733378,
-		'targets'       => array( 'desktop', 'mobile' ),
-		'mobileTargets' => array( 'stable', 'beta', 'alpha' ),
-	),
-	'ext.wikimediaEvents.httpsSupport' => array(
-		'scripts'       => 'ext.wikimediaEvents.httpsSupport.js',
-		'localBasePath' => __DIR__ . '/modules',
-		'remoteExtPath' => 'WikimediaEvents/modules',
-		'dependencies'  => 'schema.HttpsSupport',
-		'targets'       => array( 'desktop', 'mobile' ),
-		'mobileTargets' => array( 'stable', 'beta', 'alpha' ),
-	),
-);
-
-// Hooks
-
-$wgHooks[ 'BeforePageDisplay' ][] = function ( &$out, &$skin ) {
-	$out->addModules( array( 'schema.HttpsSupport', 'ext.wikimediaEvents.httpsSupport' ) );
-	return true;
-};
-
-$wgHooks[ 'ResourceLoaderGetConfigVars' ][] = function ( &$vars ) {
-	global $wgHttpsFeatureDetectionSamplingFactor;
-	$vars[ 'wgHttpsFeatureDetectionSamplingFactor' ] = $wgHttpsFeatureDetectionSamplingFactor;
-};
-
 /**
  * Log server-side event on successful page edit.
  * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
