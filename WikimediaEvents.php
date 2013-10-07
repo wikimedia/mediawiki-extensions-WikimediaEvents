@@ -1,6 +1,6 @@
 <?php
 /**
- * CoreEvents extension
+ * WikimediaEvents extension
  *
  * @ingroup Extensions
  *
@@ -14,20 +14,20 @@
 
 $wgExtensionCredits['other'][] = array(
 	'path' => __FILE__,
-	'name' => 'CoreEvents',
+	'name' => 'WikimediaEvents',
 	'version' => '1.0',
-	'url' => 'https://www.mediawiki.org/wiki/Extension:CoreEvents',
+	'url' => 'https://www.mediawiki.org/wiki/Extension:WikimediaEvents',
 	'author' => array(
 		'Matthew Flaschen',
 		'Ori Livneh',
 		'Benny Situ',
 	),
-	'descriptionmsg' => 'coreevents-desc',
+	'descriptionmsg' => 'wikimediaevents-desc',
 );
 
 // Messages
 
-$wgExtensionMessagesFiles['CoreEvents'] = __DIR__ . '/CoreEvents.i18n.php';
+$wgExtensionMessagesFiles['WikimediaEvents'] = __DIR__ . '/WikimediaEvents.i18n.php';
 
 // Configs
 
@@ -45,10 +45,10 @@ $wgResourceModules += array(
 		'targets'       => array( 'desktop', 'mobile' ),
 		'mobileTargets' => array( 'stable', 'beta', 'alpha' ),
 	),
-	'ext.coreEvents.httpsSupport' => array(
-		'scripts'       => 'ext.coreEvents.httpsSupport.js',
+	'ext.wikimediaEvents.httpsSupport' => array(
+		'scripts'       => 'ext.wikimediaEvents.httpsSupport.js',
 		'localBasePath' => __DIR__ . '/modules',
-		'remoteExtPath' => 'CoreEvents/modules',
+		'remoteExtPath' => 'WikimediaEvents/modules',
 		'dependencies'  => 'schema.HttpsSupport',
 		'targets'       => array( 'desktop', 'mobile' ),
 		'mobileTargets' => array( 'stable', 'beta', 'alpha' ),
@@ -58,7 +58,7 @@ $wgResourceModules += array(
 // Hooks
 
 $wgHooks[ 'BeforePageDisplay' ][] = function ( &$out, &$skin ) {
-	$out->addModules( array( 'schema.HttpsSupport', 'ext.coreEvents.httpsSupport' ) );
+	$out->addModules( array( 'schema.HttpsSupport', 'ext.wikimediaEvents.httpsSupport' ) );
 	return true;
 };
 
