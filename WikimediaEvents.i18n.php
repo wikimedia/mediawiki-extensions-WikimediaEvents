@@ -12,5 +12,12 @@ $messages = array();
  * @author Ori Livneh
  */
 $messages['en'] = array(
-	'wikimediaevents-desc' => 'Logs Wikimedia-specific events using EventLogging.',
+	'wikimediaevents-desc' => 'Logs Wikimedia-specific events using EventLogging',
+);
+
+/** Message documentation (Message documentation)
+ * @author Raimond Spekking
+ */
+$messages['qqq'] = array(
+	'wikimediaevents-desc' => '{{desc|name=Wikimedia Events|url=https://www.mediawiki.org/wiki/Extension:WikimediaEvents}}',
 );
