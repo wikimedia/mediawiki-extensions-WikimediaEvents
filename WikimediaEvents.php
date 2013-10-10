@@ -29,6 +29,29 @@ $wgExtensionCredits['other'][] = array(
 
 $wgExtensionMessagesFiles['WikimediaEvents'] = __DIR__ . '/WikimediaEvents.i18n.php';
 
+// Configs
+
+$wgResourceModules += array(
+	'schema.VisualEditorDOMRetrieved' => array(
+		'class'    => 'ResourceLoaderSchemaModule',
+		'schema'   => 'VisualEditorDOMRetrieved',
+		'revision' => 5961496,
+	),
+	'ext.wikimediaEvents.ve' => array(
+		'scripts'       => 'ext.wikimediaEvents.ve.js',
+		'localBasePath' => __DIR__ . '/modules',
+		'remoteExtPath' => 'WikimediaEvents/modules',
+		'dependencies'  => 'schema.VisualEditorDOMRetrieved',
+	),
+);
+
+// Hooks
+
+$wgHooks[ 'BeforePageDisplay' ][] = function ( &$out, &$skin ) {
+	$out->addModules( array( 'schema.VisualEditorDOMRetrieved', 'ext.wikimediaEvents.ve' ) );
+	return true;
+};
+
 /**
  * Log server-side event on successful page edit.
  * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
