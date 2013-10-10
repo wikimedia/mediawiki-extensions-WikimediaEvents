@@ -57,6 +57,13 @@ $messages['ja'] = array(
 	'wikimediaevents-desc' => 'ウィキメディア特有のイベントを、EventLogging を使用して記録する',
 );
 
+/** Korean (한국어)
+ * @author Hym411
+ */
+$messages['ko'] = array(
+	'wikimediaevents-desc' => '이벤트로깅을 사용하여 위키미디어 관련 이벤트를 기록',
+);
+
 /** Macedonian (македонски)
  * @author Bjankuloski06
  */
