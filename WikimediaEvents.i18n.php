@@ -71,6 +71,13 @@ $messages['mk'] = array(
 	'wikimediaevents-desc' => 'Заведува викимедиски настани со EventLogging',
 );
 
+/** Russian (русский)
+ * @author Okras
+ */
+$messages['ru'] = array(
+	'wikimediaevents-desc' => 'Ведёт журнал определённых Викимедиа событий с использованием EventLogging',
+);
+
 /** Ukrainian (українська)
  * @author Andriykopanytsia
  */
