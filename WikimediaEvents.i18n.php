@@ -22,6 +22,13 @@ $messages['qqq'] = array(
 	'wikimediaevents-desc' => '{{desc|name=Wikimedia Events|url=https://www.mediawiki.org/wiki/Extension:WikimediaEvents}}',
 );
 
+/** Danish (dansk)
+ * @author Christian List
+ */
+$messages['da'] = array(
+	'wikimediaevents-desc' => 'Logger Wikimedia-specifikke begivenheder ved hjælp af EventLogging',
+);
+
 /** German (Deutsch)
  * @author Metalhead64
  */
