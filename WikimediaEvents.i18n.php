@@ -91,3 +91,10 @@ $messages['ru'] = array(
 $messages['uk'] = array(
 	'wikimediaevents-desc' => "Записує у журнал події пов'язані з Вікімедіа, використовуючи EventLogging",
 );
+
+/** Simplified Chinese (中文（简体）‎)
+ * @author Liuxinyu970226
+ */
+$messages['zh-hans'] = array(
+	'wikimediaevents-desc' => '使用EventLogging的维基媒体特定事件日志',
+);
