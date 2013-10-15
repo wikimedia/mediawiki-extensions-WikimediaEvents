@@ -92,6 +92,13 @@ $messages['uk'] = array(
 	'wikimediaevents-desc' => "Записує у журнал події пов'язані з Вікімедіа, використовуючи EventLogging",
 );
 
+/** Vietnamese (Tiếng Việt)
+ * @author Minh Nguyen
+ */
+$messages['vi'] = array(
+	'wikimediaevents-desc' => 'Ghi các sự kiện đặc biệt của Wikimedia vào nhật trình dùng EventLogging',
+);
+
 /** Simplified Chinese (中文（简体）‎)
  * @author Liuxinyu970226
  */
