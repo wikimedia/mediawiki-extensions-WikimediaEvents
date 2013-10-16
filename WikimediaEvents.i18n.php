@@ -22,6 +22,13 @@ $messages['qqq'] = array(
 	'wikimediaevents-desc' => '{{desc|name=Wikimedia Events|url=https://www.mediawiki.org/wiki/Extension:WikimediaEvents}}',
 );
 
+/** Asturian (asturianu)
+ * @author Xuacu
+ */
+$messages['ast'] = array(
+	'wikimediaevents-desc' => 'Rexistra socesos específicos de Wikimedia usando EventLogging',
+);
+
 /** Danish (dansk)
  * @author Christian List
  */
