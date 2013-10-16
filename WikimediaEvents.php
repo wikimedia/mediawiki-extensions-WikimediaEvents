@@ -37,18 +37,22 @@ $wgResourceModules += array(
 		'schema'   => 'VisualEditorDOMRetrieved',
 		'revision' => 5961496,
 	),
+	'schema.VisualEditorDOMSaved' => array(
+		'class'    => 'ResourceLoaderSchemaModule',
+		'schema'   => 'VisualEditorDOMSaved',
+		'revision' => 6063754,
+	),
 	'ext.wikimediaEvents.ve' => array(
 		'scripts'       => 'ext.wikimediaEvents.ve.js',
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
-		'dependencies'  => 'schema.VisualEditorDOMRetrieved',
 	),
 );
 
 // Hooks
 
 $wgHooks[ 'BeforePageDisplay' ][] = function ( &$out, &$skin ) {
-	$out->addModules( array( 'schema.VisualEditorDOMRetrieved', 'ext.wikimediaEvents.ve' ) );
+	$out->addModules( 'ext.wikimediaEvents.ve' );
 	return true;
 };
 

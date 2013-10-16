@@ -2,7 +2,15 @@
  * Track VisualEditor events.
  * @see https://meta.wikimedia.org/wiki/Schema:VisualEditorDOMRetrieved
  */
+/*global ve*/
+
 ( function ( mw, $ ) {
+
+	/** @var {Object} schemas Map of ve.track topics to EventLogging schemas. **/
+	var schemas = {
+		'performance.parsoid.domLoad': 'VisualEditorDOMRetrieved',
+		'performance.parsoid.domSave': 'VisualEditorDOMSaved'
+	};
 
 	function titleCase( s ) {
 		return s.charAt(0).toUpperCase() + s.slice(1);
@@ -24,28 +32,37 @@
 		return parsed;
 	}
 
-	mw.hook( 've.activationComplete' ).add( function () {
-		ve.trackRegisterHandler( function ( topic, data ) {
-			var event;
 
-			// TODO: Replace this with a nicer pub/sub wrapper.
-			if ( topic !== 'DOM retrieved' ) {
+	mw.hook( 've.activationComplete' ).add( function () {
+		if ( !ve.trackSubscribe ) {
+			return;
+		}
+
+		ve.trackSubscribe( 'performance.parsoid', function ( topic, data ) {
+			var event, schema = schemas[topic];
+
+			if ( !schema ) {
 				return;
 			}
 
 			event = {
 				bytes: data.bytes,
-				cacheHit: data.cacheHit,
 				duration: data.duration,
 				pageId: mw.config.get( 'wgArticleId' ),
 				revId: mw.config.get( 'wgCurRevisionId' )
 			};
 
+			if ( data.hasOwnProperty( 'cacheHit' ) ) {
+				event.cacheHit = data.cacheHit;
+			}
+
 			if ( data.parsoid ) {
 				$.extend( event, parseXpp( data.parsoid ) );
 			}
 
-			mw.eventLog.logEvent( 'VisualEditorDOMRetrieved', event );
+			mw.loader.using( 'schema.' + schema, function () {
+				mw.eventLog.logEvent( schema, event );
+			} );
 		} );
 	} );
 
