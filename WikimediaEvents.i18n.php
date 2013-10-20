@@ -57,6 +57,13 @@ $messages['gl'] = array(
 	'wikimediaevents-desc' => 'Rexistra os eventos específicos da Wikimedia mediante EventLogging',
 );
 
+/** Hebrew (עברית)
+ * @author Amire80
+ */
+$messages['he'] = array(
+	'wikimediaevents-desc' => 'רישום ביומן של אירועים ייחודיים לוויקימדיה באמצעות EventLogging',
+);
+
 /** Italian (italiano)
  * @author Beta16
  */
