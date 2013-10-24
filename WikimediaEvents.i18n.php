@@ -64,6 +64,13 @@ $messages['he'] = array(
 	'wikimediaevents-desc' => 'רישום ביומן של אירועים ייחודיים לוויקימדיה באמצעות EventLogging',
 );
 
+/** Iloko (Ilokano)
+ * @author Lam-ang
+ */
+$messages['ilo'] = array(
+	'wikimediaevents-desc' => 'Agilista kadagiti naisangayan a pasamak ti Wikimedia nga agusar ti EventLogging',
+);
+
 /** Italian (italiano)
  * @author Beta16
  */
@@ -97,6 +104,13 @@ $messages['mk'] = array(
  */
 $messages['ru'] = array(
 	'wikimediaevents-desc' => 'Ведёт журнал определённых Викимедиа событий с использованием EventLogging',
+);
+
+/** Swedish (svenska)
+ * @author Ainali
+ */
+$messages['sv'] = array(
+	'wikimediaevents-desc' => 'Loggar Wikimedia-specifika händelser med hjälp av EventLogging',
 );
 
 /** Ukrainian (українська)
