@@ -50,6 +50,13 @@ $messages['de'] = array(
 	'wikimediaevents-desc' => 'Protokolliert wikimediaspezifische Ereignisse mit EventLogging',
 );
 
+/** Spanish (español)
+ * @author Fitoschido
+ */
+$messages['es'] = array(
+	'wikimediaevents-desc' => 'Registra eventos específicos de Wikimedia mediante EventLogging',
+);
+
 /** French (français)
  * @author Gomoko
  */
@@ -104,6 +111,13 @@ $messages['ko'] = array(
  */
 $messages['mk'] = array(
 	'wikimediaevents-desc' => 'Заведува викимедиски настани со EventLogging',
+);
+
+/** Occitan (occitan)
+ * @author Cedric31
+ */
+$messages['oc'] = array(
+	'wikimediaevents-desc' => 'Traça los eveniments especifics a Wikimèdia en utilizant EventLogging',
 );
 
 /** Russian (русский)
