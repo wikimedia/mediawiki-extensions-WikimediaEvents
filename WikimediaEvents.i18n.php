@@ -29,7 +29,7 @@ $messages['ast'] = array(
 	'wikimediaevents-desc' => 'Rexistra socesos específicos de Wikimedia usando EventLogging',
 );
 
-/** Czech (česky)
+/** Czech (čeština)
  * @author Mormegil
  */
 $messages['cs'] = array(
@@ -55,6 +55,13 @@ $messages['de'] = array(
  */
 $messages['es'] = array(
 	'wikimediaevents-desc' => 'Registra eventos específicos de Wikimedia mediante EventLogging',
+);
+
+/** Persian (فارسی)
+ * @author Ebraminio
+ */
+$messages['fa'] = array(
+	'wikimediaevents-desc' => 'واردکردن رویدادهای به‌خصوص ویکی‌مدیا با استفاده از EventLogging',
 );
 
 /** French (français)
