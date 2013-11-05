@@ -8,8 +8,8 @@
 
 	/** @var {Object} schemas Map of ve.track topics to EventLogging schemas. **/
 	var schemas = {
-		'performance.parsoid.domLoad': 'VisualEditorDOMRetrieved',
-		'performance.parsoid.domSave': 'VisualEditorDOMSaved'
+		'performance.domLoad': 'VisualEditorDOMRetrieved',
+		'performance.domSave': 'VisualEditorDOMSaved'
 	};
 
 	function titleCase( s ) {
@@ -38,7 +38,7 @@
 			return;
 		}
 
-		ve.trackSubscribe( 'performance.parsoid', function ( topic, data ) {
+		ve.trackSubscribe( 'performance', function ( topic, data ) {
 			var event, schema = schemas[topic];
 
 			if ( !schema ) {
