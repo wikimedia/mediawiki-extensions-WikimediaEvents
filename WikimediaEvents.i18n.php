@@ -161,3 +161,10 @@ $messages['vi'] = array(
 $messages['zh-hans'] = array(
 	'wikimediaevents-desc' => '使用EventLogging的维基媒体特定事件日志',
 );
+
+/** Traditional Chinese (中文（繁體）‎)
+ * @author Liuxinyu970226
+ */
+$messages['zh-hant'] = array(
+	'wikimediaevents-desc' => '使用EventLogging的維基媒體特定事件日誌',
+);
