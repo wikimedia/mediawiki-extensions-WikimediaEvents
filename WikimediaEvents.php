@@ -42,8 +42,19 @@ $wgResourceModules += array(
 		'schema'   => 'VisualEditorDOMSaved',
 		'revision' => 6063754,
 	),
+	'schema.ModuleStorage' => array(
+		'class'  => 'ResourceLoaderSchemaModule',
+		'schema' => 'ModuleStorage',
+		'revision' => 6356853,
+	),
 	'ext.wikimediaEvents.ve' => array(
 		'scripts'       => 'ext.wikimediaEvents.ve.js',
+		'localBasePath' => __DIR__ . '/modules',
+		'remoteExtPath' => 'WikimediaEvents/modules',
+	),
+	'ext.wikimediaEvents.moduleStorage' => array(
+		'scripts'       => 'ext.wikimediaEvents.moduleStorage.js',
+		'dependencies'  => array( 'mediawiki.inspect', 'schema.ModuleStorage' ),
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
 	),
@@ -52,7 +63,14 @@ $wgResourceModules += array(
 // Hooks
 
 $wgHooks[ 'BeforePageDisplay' ][] = function ( &$out, &$skin ) {
+	global $wgResourceLoaderStorageEnabled;
+
 	$out->addModules( 'ext.wikimediaEvents.ve' );
+
+	if ( !$wgResourceLoaderStorageEnabled ) {
+		$out->addModules( 'ext.wikimediaEvents.moduleStorage' );
+	}
+
 	return true;
 };
 
