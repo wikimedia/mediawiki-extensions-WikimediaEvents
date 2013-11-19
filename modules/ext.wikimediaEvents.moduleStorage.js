@@ -28,7 +28,7 @@
 			experimentGroup: store.experiment.group,
 			experimentId: store.experiment.id.toString( 16 ),
 			moduleLoadingTime: moduleLoadingTime,
-			moduleStoreEnabled: store.enabled,
+			moduleStoreEnabled: !!store.enabled,
 			userAgent: navigator.userAgent,
 			loadedModulesCount: 0,
 			loadedModulesSize: 0
