@@ -33,36 +33,34 @@
 	}
 
 
-	mw.hook( 've.activationComplete' ).add( function () {
-		if ( !ve.trackSubscribe ) {
+	if ( !ve.trackSubscribe ) {
+		return;
+	}
+
+	ve.trackSubscribe( 'performance', function ( topic, data ) {
+		var event, schema = schemas[topic];
+
+		if ( !schema ) {
 			return;
 		}
 
-		ve.trackSubscribe( 'performance', function ( topic, data ) {
-			var event, schema = schemas[topic];
+		event = {
+			bytes: data.bytes,
+			duration: data.duration,
+			pageId: mw.config.get( 'wgArticleId' ),
+			revId: mw.config.get( 'wgCurRevisionId' )
+		};
 
-			if ( !schema ) {
-				return;
-			}
+		if ( data.hasOwnProperty( 'cacheHit' ) ) {
+			event.cacheHit = data.cacheHit;
+		}
 
-			event = {
-				bytes: data.bytes,
-				duration: data.duration,
-				pageId: mw.config.get( 'wgArticleId' ),
-				revId: mw.config.get( 'wgCurRevisionId' )
-			};
+		if ( data.parsoid ) {
+			$.extend( event, parseXpp( data.parsoid ) );
+		}
 
-			if ( data.hasOwnProperty( 'cacheHit' ) ) {
-				event.cacheHit = data.cacheHit;
-			}
-
-			if ( data.parsoid ) {
-				$.extend( event, parseXpp( data.parsoid ) );
-			}
-
-			mw.loader.using( 'schema.' + schema, function () {
-				mw.eventLog.logEvent( schema, event );
-			} );
+		mw.loader.using( 'schema.' + schema, function () {
+			mw.eventLog.logEvent( schema, event );
 		} );
 	} );
 

@@ -49,6 +49,7 @@ $wgResourceModules += array(
 	),
 	'ext.wikimediaEvents.ve' => array(
 		'scripts'       => 'ext.wikimediaEvents.ve.js',
+		'dependencies'  => 'ext.visualEditor.viewPageTarget.init',
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
 	),
@@ -60,12 +61,12 @@ $wgResourceModules += array(
 	),
 );
 
+$wgVisualEditorPluginModules[] = 'ext.wikimediaEvents.ve';
+
 // Hooks
 
 $wgHooks[ 'BeforePageDisplay' ][] = function ( &$out, &$skin ) {
 	global $wgResourceLoaderStorageEnabled;
-
-	$out->addModules( 'ext.wikimediaEvents.ve' );
 
 	if ( !$wgResourceLoaderStorageEnabled ) {
 		$out->addModules( 'ext.wikimediaEvents.moduleStorage' );
