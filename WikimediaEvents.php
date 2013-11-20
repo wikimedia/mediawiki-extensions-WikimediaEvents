@@ -43,9 +43,10 @@ $wgResourceModules += array(
 		'revision' => 6063754,
 	),
 	'schema.ModuleStorage' => array(
-		'class'  => 'ResourceLoaderSchemaModule',
-		'schema' => 'ModuleStorage',
+		'class'    => 'ResourceLoaderSchemaModule',
+		'schema'   => 'ModuleStorage',
 		'revision' => 6356853,
+		'targets'  => array( 'desktop', 'mobile' ),
 	),
 	'ext.wikimediaEvents.ve' => array(
 		'scripts'       => 'ext.wikimediaEvents.ve.js',
@@ -58,6 +59,7 @@ $wgResourceModules += array(
 		'dependencies'  => array( 'mediawiki.inspect', 'schema.ModuleStorage' ),
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
+		'targets'       => array( 'desktop', 'mobile' ),
 	),
 );
 
