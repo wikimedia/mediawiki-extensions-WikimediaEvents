@@ -120,6 +120,13 @@ $messages['mk'] = array(
 	'wikimediaevents-desc' => 'Заведува викимедиски настани со EventLogging',
 );
 
+/** Dutch (Nederlands)
+ * @author Siebrand
+ */
+$messages['nl'] = array(
+	'wikimediaevents-desc' => 'Logboeken voor Wikimediaspecifieke gebeurtenissen die EventLogging gebruiken',
+);
+
 /** Occitan (occitan)
  * @author Cedric31
  */
