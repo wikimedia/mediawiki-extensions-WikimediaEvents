@@ -86,18 +86,45 @@ $wgHooks[ 'BeforePageDisplay' ][] = function ( &$out, &$skin ) {
 $wgHooks['PageContentSaveComplete'][] = function ( $article, $user, $content, $summary,
 	$isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId ) {
 
-	if ( $revision ) {
-		$event = array(
-			'revisionId' => $revision->getId(),
-			'isAPI' => defined( 'MW_API' ),
-			'isMobile' => ( class_exists( 'MobileContext' )
-				&& MobileContext::singleton()->shouldDisplayMobileView() ),
-		);
-		if ( isset( $_SERVER[ 'HTTP_USER_AGENT' ] ) ) {
-			$event[ 'userAgent' ] = $_SERVER[ 'HTTP_USER_AGENT' ];
-		}
-		efLogServerSideEvent( 'PageContentSaveComplete', 5588433, $event );
+	if ( !$revision ) {
+		return;
 	}
+
+	$isAPI = defined( 'MW_API' );
+	$isMobile = class_exists( 'MobileContext' ) && MobileContext::singleton()->shouldDisplayMobileView();
+	$revId = $revision->getId();
+
+	$event = array(
+		'revisionId' => $revId,
+		'isAPI'      => $isAPI,
+		'isMobile'   => $isMobile,
+	);
+
+	if ( isset( $_SERVER[ 'HTTP_USER_AGENT' ] ) ) {
+		$event[ 'userAgent' ] = $_SERVER[ 'HTTP_USER_AGENT' ];
+	}
+	efLogServerSideEvent( 'PageContentSaveComplete', 5588433, $event );
+
+	// Get the user's age, measured in seconds since registration.
+	$age = time() - wfTimestampOrNull( TS_UNIX, $user->getRegistration() );
+
+	// Get the user's edit count.
+	$editCount = $user->getEditCount();
+
+	// If the editor signed up in the last thirty days, and if this is a
+	// milestone edit, log a NewEditorMilestone event.
+	if ( $age <= 2592000 && in_array( $editCount, array( 1, 5, 10, 25, 50, 100 ) ) ) {
+		efLogServerSideEvent( 'NewEditorMilestone', 6538838, array(
+			'userId'    => $user->getId(),
+			'userAge'   => $age,
+			'milestone' => $editCount,
+			'pageId'    => $article->getId(),
+			'revId'     => $revId,
+			'isAPI'     => $isAPI,
+			'isMobile'  => $isMobile,
+		) );
+	}
+
 	return true;
 };
 
