@@ -120,6 +120,13 @@ $messages['mk'] = array(
 	'wikimediaevents-desc' => 'Заведува викимедиски настани со EventLogging',
 );
 
+/** Malayalam (മലയാളം)
+ * @author Praveenp
+ */
+$messages['ml'] = array(
+	'wikimediaevents-desc' => 'വിക്കിമീഡിയ സംബന്ധമായ സംഭവങ്ങൾ ഇവന്റ്‌ലോഗിങ് സൗകര്യമുപയോഗിച്ച് രേഖപ്പെടുത്തുന്നു',
+);
+
 /** Dutch (Nederlands)
  * @author Siebrand
  */
