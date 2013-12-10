@@ -141,6 +141,13 @@ $messages['oc'] = array(
 	'wikimediaevents-desc' => 'Traça los eveniments especifics a Wikimèdia en utilizant EventLogging',
 );
 
+/** Piedmontese (Piemontèis)
+ * @author Borichèt
+ */
+$messages['pms'] = array(
+	'wikimediaevents-desc' => "A ten da ment j'eveniment ëspessìfich ëd Wikimedia an dovrand EventLogging",
+);
+
 /** Russian (русский)
  * @author Okras
  */
