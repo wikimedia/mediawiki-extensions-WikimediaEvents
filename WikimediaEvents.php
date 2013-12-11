@@ -50,9 +50,10 @@ $wgResourceModules += array(
 	),
 	'ext.wikimediaEvents.ve' => array(
 		'scripts'       => 'ext.wikimediaEvents.ve.js',
-		'dependencies'  => 'ext.visualEditor.viewPageTarget.init',
+		'dependencies'  => 'ext.visualEditor.base',
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
+		'targets' => array( 'desktop', 'mobile' ),
 	),
 	'ext.wikimediaEvents.moduleStorage' => array(
 		'scripts'       => 'ext.wikimediaEvents.moduleStorage.js',
