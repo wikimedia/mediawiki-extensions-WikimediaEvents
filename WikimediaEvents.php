@@ -94,6 +94,7 @@ $wgHooks['PageContentSaveComplete'][] = function ( $article, $user, $content, $s
 	$isAPI = defined( 'MW_API' );
 	$isMobile = class_exists( 'MobileContext' ) && MobileContext::singleton()->shouldDisplayMobileView();
 	$revId = $revision->getId();
+	$title = $article->getTitle();
 
 	$event = array(
 		'revisionId' => $revId,
@@ -112,13 +113,13 @@ $wgHooks['PageContentSaveComplete'][] = function ( $article, $user, $content, $s
 	// Get the user's edit count.
 	$editCount = $user->getEditCount();
 
-	// If the editor signed up in the last thirty days, and if this is a
-	// milestone edit, log a NewEditorMilestone event.
-	if ( $age <= 2592000 && in_array( $editCount, array( 1, 5, 10, 25, 50, 100 ) ) ) {
-		efLogServerSideEvent( 'NewEditorMilestone', 6538838, array(
+	// If the editor signed up in the last thirty days, and if this is an
+	// NS_MAIN edit, log a NewEditorEdit event.
+	if ( $age <= 2592000 && $title->inNamespace( NS_MAIN ) ) {
+		efLogServerSideEvent( 'NewEditorEdit', 6792669, array(
 			'userId'    => $user->getId(),
 			'userAge'   => $age,
-			'milestone' => $editCount,
+			'editCount' => $editCount,
 			'pageId'    => $article->getId(),
 			'revId'     => $revId,
 			'isAPI'     => $isAPI,
