@@ -29,6 +29,13 @@ $messages['ast'] = array(
 	'wikimediaevents-desc' => 'Rexistra socesos específicos de Wikimedia usando EventLogging',
 );
 
+/** Chechen (нохчийн)
+ * @author Умар
+ */
+$messages['ce'] = array(
+	'wikimediaevents-desc' => 'EventLogging лелаеш билгалйина Викимедиашкахь хилларг гойту',
+);
+
 /** Czech (čeština)
  * @author Mormegil
  */
