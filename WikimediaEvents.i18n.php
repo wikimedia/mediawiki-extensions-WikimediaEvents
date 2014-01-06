@@ -120,6 +120,13 @@ $messages['ko'] = array(
 	'wikimediaevents-desc' => '이벤트로깅을 사용하여 위키미디어 관련 이벤트를 기록',
 );
 
+/** Colognian (Ripoarisch)
+ * @author Purodha
+ */
+$messages['ksh'] = array(
+	'wikimediaevents-desc' => 'Häld Saache em Logbooch faß, med EventLogging, di met Wikkimeedija ze donn han.',
+);
+
 /** Macedonian (македонски)
  * @author Bjankuloski06
  */
