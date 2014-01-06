@@ -45,7 +45,7 @@ $wgResourceModules += array(
 	'schema.ModuleStorage' => array(
 		'class'    => 'ResourceLoaderSchemaModule',
 		'schema'   => 'ModuleStorage',
-		'revision' => 6356853,
+		'revision' => 6978194,
 		'targets'  => array( 'desktop', 'mobile' ),
 	),
 	'ext.wikimediaEvents.ve' => array(

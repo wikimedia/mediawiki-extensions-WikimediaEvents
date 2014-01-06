@@ -1,8 +1,68 @@
 /**
- * Module storage experiment clean-up: purge 'moduleStorageExperiment' key from
- * localStorage, set by MediaWiki in Id2835eca4. This module should be deleted
- * after spending a couple of weeks in production.
+ * Log timing data for the ResourceLoader module storage performance evaluation.
+ * @see https://meta.wikimedia.org/wiki/Schema:ModuleStorage
  */
-try {
-	localStorage.removeItem( 'moduleStorageExperiment' );
-} catch ( e ) {}
+( function ( mw, $ ) {
+
+	if (
+		// Return early
+		// ..if we're in debug mode.
+		mw.config.get( 'debug' ) ||
+		// ..if module storage is enabled by default.
+		mw.config.get( 'wgResourceLoaderStorageEnabled' ) ||
+		// ..if the experiment is not defined
+		mw.loader.store.experiment === undefined ||
+		// ..if the user is not included in the experiment.
+		( mw.loader.store.experiment.group !== 1 && mw.loader.store.experiment.group !== 2 )
+	) {
+		return;
+	}
+
+	$( window ).load( function () {
+		var event, store, now, moduleLoadingTime, totalLoadingTime, loadIndex;
+
+		store = mw.loader.store;
+		now = ( new Date() ).getTime();
+		moduleLoadingTime = now - store.experiment.start;
+		totalLoadingTime = now - mediaWikiLoadStart;
+
+		try {
+			loadIndex = JSON.parse( localStorage.getItem( 'moduleStorageExperimentLoadIdx' ) );
+			if ( typeof loadIndex !== 'number' ) {
+				loadIndex = 0;
+			}
+			loadIndex++;
+			localStorage.setItem( 'moduleStorageExperimentLoadIdx', loadIndex );
+		} catch ( e ) {}
+
+		event = {
+			experimentGroup: store.experiment.group,
+			experimentId: store.experiment.id.toString( 16 ),
+			loadIndex: loadIndex,
+			moduleLoadingTime: moduleLoadingTime,
+			totalLoadingTime: totalLoadingTime,
+			moduleStoreEnabled: !!store.enabled,
+			userAgent: navigator.userAgent,
+			loadedModulesCount: 0,
+			loadedModulesSize: 0
+		};
+
+		if ( mw.mobileFrontend && mw.config.exists( 'wgMFMode' ) ) {
+			event.mobileMode = mw.config.get( 'wgMFMode' );
+		}
+
+		$.each( mw.inspect.getLoadedModules(), function ( i, module ) {
+			event.loadedModulesCount++;
+			event.loadedModulesSize += mw.inspect.getModuleSize( module );
+		} );
+
+		if ( store.enabled ) {
+			event.moduleStoreExpired = store.stats.expired;
+			event.moduleStoreHits = store.stats.hits;
+			event.moduleStoreMisses = store.stats.misses;
+		}
+
+		mw.eventLog.logEvent( 'ModuleStorage', event );
+	} );
+
+}( mediaWiki, jQuery ) );

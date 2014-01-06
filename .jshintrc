@@ -2,7 +2,8 @@
 	"predef": [
 		"mediaWiki",
 		"jQuery",
-		"QUnit"
+		"QUnit",
+		"mediaWikiLoadStart"
 	],
 
 	"bitwise": true,
