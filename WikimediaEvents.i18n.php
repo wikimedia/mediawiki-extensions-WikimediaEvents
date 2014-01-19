@@ -127,6 +127,13 @@ $messages['ksh'] = array(
 	'wikimediaevents-desc' => 'Häld Saache em Logbooch faß, med EventLogging, di met Wikkimeedija ze donn han.',
 );
 
+/** لوری (لوری)
+ * @author Bonevarluri
+ */
+$messages['lrc'] = array(
+	'wikimediaevents-desc' => 'پهرستنومه یا ویکی مدیا- پیشومدیا ویجه که سی ثوت بیئن یه پیشومد استفاده بوئه',
+);
+
 /** Macedonian (македонски)
  * @author Bjankuloski06
  */
