@@ -57,6 +57,13 @@ $messages['de'] = array(
 	'wikimediaevents-desc' => 'Protokolliert wikimediaspezifische Ereignisse mit EventLogging',
 );
 
+/** Lower Sorbian (dolnoserbski)
+ * @author Michawiki
+ */
+$messages['dsb'] = array(
+	'wikimediaevents-desc' => 'Protokolěrujo tšojenja, kótarež su specifiske za Wikimediju, z pomocu EventLogging',
+);
+
 /** Spanish (español)
  * @author Fitoschido
  */
@@ -90,6 +97,13 @@ $messages['gl'] = array(
  */
 $messages['he'] = array(
 	'wikimediaevents-desc' => 'רישום ביומן של אירועים ייחודיים לוויקימדיה באמצעות EventLogging',
+);
+
+/** Upper Sorbian (hornjoserbsce)
+ * @author Michawiki
+ */
+$messages['hsb'] = array(
+	'wikimediaevents-desc' => 'Protokoluje podawki, kotrež su specifiske za Wikimediju, z pomocu EventLogging',
 );
 
 /** Iloko (Ilokano)
