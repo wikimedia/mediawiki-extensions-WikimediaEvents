@@ -183,6 +183,13 @@ $messages['pms'] = array(
 	'wikimediaevents-desc' => "A ten da ment j'eveniment ëspessìfich ëd Wikimedia an dovrand EventLogging",
 );
 
+/** tarandíne (tarandíne)
+ * @author Joetaras
+ */
+$messages['roa-tara'] = array(
+	'wikimediaevents-desc' => "Archivije avveneminde specifice de Uicchimedie ausanne 'u EventLogging",
+);
+
 /** Russian (русский)
  * @author Okras
  */
@@ -195,6 +202,13 @@ $messages['ru'] = array(
  */
 $messages['sv'] = array(
 	'wikimediaevents-desc' => 'Loggar Wikimedia-specifika händelser med hjälp av EventLogging',
+);
+
+/** Turkish (Türkçe)
+ * @author Joseph
+ */
+$messages['tr'] = array(
+	'wikimediaevents-desc' => "EventLogging kullanarak Wikimedia'ya özel olayları günlüğe kaydeder",
 );
 
 /** Ukrainian (українська)
