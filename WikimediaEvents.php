@@ -32,21 +32,10 @@ $wgExtensionMessagesFiles['WikimediaEvents'] = __DIR__ . '/WikimediaEvents.i18n.
 // Configs
 
 $wgResourceModules += array(
-	'schema.VisualEditorDOMRetrieved' => array(
-		'class'    => 'ResourceLoaderSchemaModule',
-		'schema'   => 'VisualEditorDOMRetrieved',
-		'revision' => 5961496,
-	),
-	'schema.VisualEditorDOMSaved' => array(
-		'class'    => 'ResourceLoaderSchemaModule',
-		'schema'   => 'VisualEditorDOMSaved',
-		'revision' => 6063754,
-	),
-	'schema.ModuleStorage' => array(
-		'class'    => 'ResourceLoaderSchemaModule',
-		'schema'   => 'ModuleStorage',
-		'revision' => 6978194,
-		'targets'  => array( 'desktop', 'mobile' ),
+	'schema.TimingData' => array(
+		'class'  => 'ResourceLoaderSchemaModule',
+		'schema' => 'TimingData',
+		'revision' => 7254808,
 	),
 	'ext.wikimediaEvents.ve' => array(
 		'scripts'       => 'ext.wikimediaEvents.ve.js',
@@ -55,28 +44,9 @@ $wgResourceModules += array(
 		'remoteExtPath' => 'WikimediaEvents/modules',
 		'targets' => array( 'desktop', 'mobile' ),
 	),
-	'ext.wikimediaEvents.moduleStorage' => array(
-		'scripts'       => 'ext.wikimediaEvents.moduleStorage.js',
-		'dependencies'  => array( 'mediawiki.inspect', 'schema.ModuleStorage' ),
-		'localBasePath' => __DIR__ . '/modules',
-		'remoteExtPath' => 'WikimediaEvents/modules',
-		'targets'       => array( 'desktop', 'mobile' ),
-	),
 );
 
 $wgVisualEditorPluginModules[] = 'ext.wikimediaEvents.ve';
-
-// Hooks
-
-$wgHooks[ 'BeforePageDisplay' ][] = function ( &$out, &$skin ) {
-	global $wgResourceLoaderStorageEnabled;
-
-	if ( !$wgResourceLoaderStorageEnabled ) {
-		$out->addModules( 'ext.wikimediaEvents.moduleStorage' );
-	}
-
-	return true;
-};
 
 /**
  * Log server-side event on successful page edit.
