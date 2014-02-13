@@ -77,6 +77,10 @@ $wgHooks['PageContentSaveComplete'][] = function ( $article, $user, $content, $s
 	}
 	efLogServerSideEvent( 'PageContentSaveComplete', 5588433, $event );
 
+	if ( $user->isAnon() ) {
+		return;
+	}
+
 	// Get the user's age, measured in seconds since registration.
 	$age = time() - wfTimestampOrNull( TS_UNIX, $user->getRegistration() );
 
