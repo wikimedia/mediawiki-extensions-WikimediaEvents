@@ -173,3 +173,32 @@ $wgHooks['ArticleDeleteComplete'][] = function ( WikiPage $article, User $user, 
 	) );
 	return true;
 };
+
+/**
+ * Logs title moves with the PageMove schema.
+ *
+ * @see https://www.mediawiki.org/wiki/Manual:Hooks/TitleMoveComplete
+ * @see https://meta.wikimedia.org/wiki/Schema:PageMove
+ * @param Title $oldTitle The title of the old article (moved from)
+ * @param Title $newTitle The title of the new article (moved to)
+ * @param User $user The user who moved the article
+ * @param integer $pageId The page ID of the old article
+ * @param integer $redirectId The page ID of the redirect, 0 if a redirect wasn't
+ *   created
+ * @param string $reason The reason that the title was moved
+ * @return bool true in all cases
+ */
+$wgHooks[ 'TitleMoveComplete' ][] = function ( Title &$oldTitle, Title &$newTitle, User &$user, $pageId, $redirectId, $reason ) {
+	efLogServerSideEvent( 'PageMove', 7495717, array(
+		'userId' => $user->getId(),
+		'userText' => $user->getName(),
+		'pageId' => $pageId,
+		'oldNamespace' => $oldTitle->getNamespace(),
+		'oldTitle' => $oldTitle->getDBkey(),
+		'newNamespace' => $newTitle->getNamespace(),
+		'newTitle' => $newTitle->getDBkey(),
+		'redirectId' => $redirectId,
+		'comment' => $reason,
+	) );
+	return true;
+};
