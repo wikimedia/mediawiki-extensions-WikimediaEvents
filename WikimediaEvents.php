@@ -150,3 +150,26 @@ $wgHooks['UserSaveOptions'][] = function ( $user, &$options ) {
 
 	return true;
 };
+
+/**
+ * Logs article deletions using the PageDeletion schema.
+ *
+ * @see https://www.mediawiki.org/wiki/Manual:Hooks/ArticleDeleteComplete
+ * @see https://meta.wikimedia.org/wiki/Schema:PageDeletion
+ * @param WikiPage $article The article that was deleted
+ * @param User $user The user that deleted the article
+ * @param string $reason The reason that the article was deleted
+ * @param integer $id The ID of the article that was deleted
+ */
+$wgHooks['ArticleDeleteComplete'][] = function ( WikiPage $article, User $user, $reason, $id ) {
+	$title = $article->getTitle();
+	efLogServerSideEvent( 'PageDeletion', 7481655, array(
+		'userId' => $user->getId(),
+		'userText' => $user->getName(),
+		'pageId' => $id,
+		'namespace' => $title->getNamespace(),
+		'title' => $title->getDBkey(),
+		'comment' => $reason,
+	) );
+	return true;
+};
