@@ -1,3 +1,5 @@
+/*global ve*/
+
 /**
  * Track VisualEditor timing data.
  * @see https://meta.wikimedia.org/wiki/Schema:TimingData
