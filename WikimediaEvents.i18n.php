@@ -197,6 +197,13 @@ $messages['ru'] = array(
 	'wikimediaevents-desc' => 'Ведёт журнал определённых Викимедиа событий с использованием EventLogging',
 );
 
+/** Scots (Scots)
+ * @author John Reid
+ */
+$messages['sco'] = array(
+	'wikimediaevents-desc' => 'Logs Wikimedia-speceefic events uising EventLoggin',
+);
+
 /** Swedish (svenska)
  * @author Ainali
  */
