@@ -202,3 +202,34 @@ $wgHooks[ 'TitleMoveComplete' ][] = function ( Title &$oldTitle, Title &$newTitl
 	) );
 	return true;
 };
+
+/**
+ * Logs page creations with the PageCreation schema.
+ *
+ * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentInsertComplete
+ * @see https://meta.wikimedia.org/wiki/Schema:PageCreation
+ * @param WikiPage $wikipage page just created
+ * @param User $user user who created the page
+ * @param Content $content content of new page
+ * @param string $summary summary given by creating user
+ * @param bool $isMinor whether the edit is marked as minor (not actually possible for new
+ *   pages)
+ * @param $isWatch not used
+ * @param $section not used
+ * @param int $flags bit flags about page creation
+ * @param Revision $revision first revision of new page
+ */
+$wgHooks['PageContentInsertComplete'][] = function ( WikiPage $wikiPage, User $user,
+	Content $content, $summary, $isMinor, $isWatch, $section, $flags, Revision $revision ) {
+
+	$title = $wikiPage->getTitle();
+	efLogServerSideEvent( 'PageCreation', 7481635, array(
+		'userId' => $user->getId(),
+		'userText' => $user->getName(),
+		'pageId' => $wikiPage->getId(),
+		'namespace' => $title->getNamespace(),
+		'title' => $title->getDBkey(),
+		'revId' => $revision->getId(),
+	) );
+	return true;
+};
