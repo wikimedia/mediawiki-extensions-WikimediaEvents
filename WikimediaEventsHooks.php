@@ -135,6 +135,32 @@ class WikimediaEventsHooks {
 	}
 
 	/**
+	 * Logs a page creation event, based on the given parameters.
+	 *
+	 * Currently, this is either a normal page creation, or an automatic creation
+	 * of a redirect when a page is moved.
+	 *
+	 * @see https://meta.wikimedia.org/wiki/Schema:PageCreation
+	 *
+	 * @param User $user user creating the page
+	 * @param int $pageId page ID of new page
+	 * @param Title $title title of created page
+	 * @param int $revId revision ID of first revision of created page
+	 */
+	protected static function logPageCreation( User $user, $pageId, Title $title,
+		$revId ) {
+
+		efLogServerSideEvent( 'PageCreation', 7481635, array(
+				'userId' => $user->getId(),
+				'userText' => $user->getName(),
+				'pageId' => $pageId,
+				'namespace' => $title->getNamespace(),
+				'title' => $title->getDBkey(),
+				'revId' => $revId,
+		) );
+	}
+
+	/**
 	 * Logs title moves with the PageMove schema.
 	 *
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/TitleMoveComplete
@@ -160,6 +186,12 @@ class WikimediaEventsHooks {
 				'redirectId' => $redirectId,
 				'comment' => $reason,
 			) );
+
+		if ( $redirectId !== 0 ) {
+			// The redirect was not suppressed, so log its creation.
+			self::logPageCreation( $user, $redirectId, $oldTitle, $oldTitle->getLatestRevID() );
+		}
+
 		return true;
 	}
 
@@ -183,14 +215,8 @@ class WikimediaEventsHooks {
 		Content $content, $summary, $isMinor, $isWatch, $section, $flags, Revision $revision ) {
 
 		$title = $wikiPage->getTitle();
-		efLogServerSideEvent( 'PageCreation', 7481635, array(
-				'userId' => $user->getId(),
-				'userText' => $user->getName(),
-				'pageId' => $wikiPage->getId(),
-				'namespace' => $title->getNamespace(),
-				'title' => $title->getDBkey(),
-				'revId' => $revision->getId(),
-			) );
+		self::logPageCreation( $user, $wikiPage->getId(), $title, $revision->getId() );
+
 		return true;
 	}
 }
