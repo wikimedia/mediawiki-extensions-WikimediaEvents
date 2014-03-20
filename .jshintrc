@@ -6,7 +6,6 @@
 		"mediaWikiLoadStart"
 	],
 
-	"bitwise": true,
 	"camelcase": true,
 	"curly": true,
 	"eqeqeq": true,

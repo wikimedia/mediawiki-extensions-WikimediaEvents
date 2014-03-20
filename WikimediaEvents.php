@@ -37,9 +37,20 @@ $wgResourceModules += array(
 		'schema' => 'TimingData',
 		'revision' => 7254808,
 	),
+	'schema.DeprecatedUsage' => array(
+		'class'  => 'ResourceLoaderSchemaModule',
+		'schema' => 'DeprecatedUsage',
+		'revision' => 7906187,
+	),
 	'ext.wikimediaEvents.ve' => array(
 		'scripts'       => 'ext.wikimediaEvents.ve.js',
 		'dependencies'  => 'ext.visualEditor.base',
+		'localBasePath' => __DIR__ . '/modules',
+		'remoteExtPath' => 'WikimediaEvents/modules',
+		'targets' => array( 'desktop', 'mobile' ),
+	),
+	'ext.wikimediaEvents.deprecate' => array(
+		'scripts'       => 'ext.wikimediaEvents.deprecate.js',
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
 		'targets' => array( 'desktop', 'mobile' ),
@@ -56,6 +67,7 @@ $wgAutoloadClasses += array(
 
 // Hooks
 
+$wgHooks['BeforePageDisplay'][] = 'WikimediaEventsHooks::onBeforePageDisplay';
 $wgHooks['PageContentSaveComplete'][] = 'WikimediaEventsHooks::onPageContentSaveComplete';
 $wgHooks['UserSaveOptions'][] = 'WikimediaEventsHooks::onUserSaveOptions';
 $wgHooks['ArticleDeleteComplete'][] = 'WikimediaEventsHooks::onArticleDeleteComplete';

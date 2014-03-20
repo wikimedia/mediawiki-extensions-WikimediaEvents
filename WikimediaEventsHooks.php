@@ -8,6 +8,19 @@
  * @author Benny Situ <bsitu@wikimedia.org>
  */
 class WikimediaEventsHooks {
+
+	/**
+	 * Adds 'ext.wikimediaEvents.deprecate' logging module for logged-in users.
+	 * @see https://meta.wikimedia.org/wiki/Schema:DeprecatedUsage
+	 * @param OutputPage &$out
+	 * @param Skin &$skin
+	 */
+	public static function onBeforePageDisplay( &$out, &$skin ) {
+		if ( !$out->getUser()->isAnon() ) {
+			$out->addModules( 'ext.wikimediaEvents.deprecate' );
+		}
+	}
+
 	/**
 	 * Log server-side event on successful page edit.
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
