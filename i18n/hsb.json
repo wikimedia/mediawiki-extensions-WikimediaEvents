@@ -1,0 +1,8 @@
+{
+    "@metadata": {
+        "authors": [
+            "Michawiki"
+        ]
+    },
+    "wikimediaevents-desc": "Protokoluje podawki, kotrež su specifiske za Wikimediju, z pomocu EventLogging"
+}

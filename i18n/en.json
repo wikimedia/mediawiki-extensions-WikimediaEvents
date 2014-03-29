@@ -1,0 +1,8 @@
+{
+    "@metadata": {
+        "authors": [
+            "Ori Livneh"
+        ]
+    },
+    "wikimediaevents-desc": "Logs Wikimedia-specific events using EventLogging"
+}

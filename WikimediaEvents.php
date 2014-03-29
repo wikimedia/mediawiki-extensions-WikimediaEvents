@@ -15,7 +15,7 @@
 $wgExtensionCredits['other'][] = array(
 	'path' => __FILE__,
 	'name' => 'WikimediaEvents',
-	'version' => '1.0',
+	'version' => '1.1.0',
 	'url' => 'https://www.mediawiki.org/wiki/Extension:WikimediaEvents',
 	'author' => array(
 		'Matthew Flaschen',
@@ -27,6 +27,7 @@ $wgExtensionCredits['other'][] = array(
 
 // Messages
 
+$wgMessagesDirs['WikimediaEvents'] = __DIR__ . '/i18n';
 $wgExtensionMessagesFiles['WikimediaEvents'] = __DIR__ . '/WikimediaEvents.i18n.php';
 
 // Configs

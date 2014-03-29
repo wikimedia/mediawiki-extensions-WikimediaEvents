@@ -1,0 +1,8 @@
+{
+    "@metadata": {
+        "authors": [
+            "Shirayuki"
+        ]
+    },
+    "wikimediaevents-desc": "ウィキメディア特有のイベントを、EventLogging を使用して記録する"
+}
