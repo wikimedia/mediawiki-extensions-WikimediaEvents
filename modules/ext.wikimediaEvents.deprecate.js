@@ -3,6 +3,14 @@
  * @see https://meta.wikimedia.org/wiki/Schema:DeprecatedUsage
  */
 ( function ( mw ) {
+	function oneIn( populationSize ) {
+		return Math.floor( Math.random() * populationSize ) === 0;
+	}
+
+	if ( !oneIn( 100 ) ) {
+		return;
+	}
+
 	mw.trackSubscribe( 'mw.deprecate', function ( topic, deprecated ) {
 		mw.loader.using( [ 'mediawiki.inspect', 'schema.DeprecatedUsage' ], function () {
 			mw.eventLog.logEvent( 'DeprecatedUsage', {
