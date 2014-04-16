@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Mormegil"
-        ]
-    },
-    "wikimediaevents-desc": "Pomocí EventLogging zaznamenává události specifické pro Wikimedia"
+	"@metadata": {
+		"authors": [
+			"Mormegil"
+		]
+	},
+	"wikimediaevents-desc": "Pomocí EventLogging zaznamenává události specifické pro Wikimedia"
 }

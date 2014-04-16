@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Cedric31"
-        ]
-    },
-    "wikimediaevents-desc": "Traça los eveniments especifics a Wikimèdia en utilizant EventLogging"
+	"@metadata": {
+		"authors": [
+			"Cedric31"
+		]
+	},
+	"wikimediaevents-desc": "Traça los eveniments especifics a Wikimèdia en utilizant EventLogging"
 }

@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Okras"
-        ]
-    },
-    "wikimediaevents-desc": "Ведёт журнал определённых Викимедиа событий с использованием EventLogging"
+	"@metadata": {
+		"authors": [
+			"Okras"
+		]
+	},
+	"wikimediaevents-desc": "Ведёт журнал определённых Викимедиа событий с использованием EventLogging"
 }

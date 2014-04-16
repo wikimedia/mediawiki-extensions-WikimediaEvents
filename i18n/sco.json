@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "John Reid"
-        ]
-    },
-    "wikimediaevents-desc": "Logs Wikimedia-speceefic events uising EventLoggin"
+	"@metadata": {
+		"authors": [
+			"John Reid"
+		]
+	},
+	"wikimediaevents-desc": "Logs Wikimedia-speceefic events uising EventLoggin"
 }

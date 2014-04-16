@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Ebraminio"
-        ]
-    },
-    "wikimediaevents-desc": "واردکردن رویدادهای به‌خصوص ویکی‌مدیا با استفاده از EventLogging"
+	"@metadata": {
+		"authors": [
+			"Ebraminio"
+		]
+	},
+	"wikimediaevents-desc": "واردکردن رویدادهای به‌خصوص ویکی‌مدیا با استفاده از EventLogging"
 }

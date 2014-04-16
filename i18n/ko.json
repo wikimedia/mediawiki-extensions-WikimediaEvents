@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Hym411"
-        ]
-    },
-    "wikimediaevents-desc": "이벤트로깅을 사용하여 위키미디어 관련 이벤트를 기록"
+	"@metadata": {
+		"authors": [
+			"Hym411"
+		]
+	},
+	"wikimediaevents-desc": "이벤트로깅을 사용하여 위키미디어 관련 이벤트를 기록"
 }

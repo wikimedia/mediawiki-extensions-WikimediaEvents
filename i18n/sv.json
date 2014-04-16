@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Ainali"
-        ]
-    },
-    "wikimediaevents-desc": "Loggar Wikimedia-specifika händelser med hjälp av EventLogging"
+	"@metadata": {
+		"authors": [
+			"Ainali"
+		]
+	},
+	"wikimediaevents-desc": "Loggar Wikimedia-specifika händelser med hjälp av EventLogging"
 }

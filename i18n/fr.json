@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Gomoko"
-        ]
-    },
-    "wikimediaevents-desc": "Trace les événements spécifiques à Wikimédia en utilisant EventLogging"
+	"@metadata": {
+		"authors": [
+			"Gomoko"
+		]
+	},
+	"wikimediaevents-desc": "Trace les événements spécifiques à Wikimédia en utilisant EventLogging"
 }

@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Toliño"
-        ]
-    },
-    "wikimediaevents-desc": "Rexistra os eventos específicos da Wikimedia mediante EventLogging"
+	"@metadata": {
+		"authors": [
+			"Toliño"
+		]
+	},
+	"wikimediaevents-desc": "Rexistra os eventos específicos da Wikimedia mediante EventLogging"
 }

@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Xuacu"
-        ]
-    },
-    "wikimediaevents-desc": "Rexistra socesos específicos de Wikimedia usando EventLogging"
+	"@metadata": {
+		"authors": [
+			"Xuacu"
+		]
+	},
+	"wikimediaevents-desc": "Rexistra socesos específicos de Wikimedia usando EventLogging"
 }

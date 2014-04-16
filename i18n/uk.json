@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Andriykopanytsia"
-        ]
-    },
-    "wikimediaevents-desc": "Записує у журнал події пов'язані з Вікімедіа, використовуючи EventLogging"
+	"@metadata": {
+		"authors": [
+			"Andriykopanytsia"
+		]
+	},
+	"wikimediaevents-desc": "Записує у журнал події пов'язані з Вікімедіа, використовуючи EventLogging"
 }

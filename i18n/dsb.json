@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Michawiki"
-        ]
-    },
-    "wikimediaevents-desc": "Protokolěrujo tšojenja, kótarež su specifiske za Wikimediju, z pomocu EventLogging"
+	"@metadata": {
+		"authors": [
+			"Michawiki"
+		]
+	},
+	"wikimediaevents-desc": "Protokolěrujo tšojenja, kótarež su specifiske za Wikimediju, z pomocu EventLogging"
 }
