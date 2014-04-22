@@ -48,7 +48,7 @@ class WikimediaEventsHooks {
 		if ( isset( $_SERVER[ 'HTTP_USER_AGENT' ] ) ) {
 			$event[ 'userAgent' ] = $_SERVER[ 'HTTP_USER_AGENT' ];
 		}
-		efLogServerSideEvent( 'PageContentSaveComplete', 5588433, $event );
+		EventLogging::logEvent( 'PageContentSaveComplete', 5588433, $event );
 
 		if ( $user->isAnon() ) {
 			return;
@@ -63,7 +63,7 @@ class WikimediaEventsHooks {
 		// If the editor signed up in the last thirty days, and if this is an
 		// NS_MAIN edit, log a NewEditorEdit event.
 		if ( $age <= 2592000 && $title->inNamespace( NS_MAIN ) ) {
-			efLogServerSideEvent( 'NewEditorEdit', 6792669, array(
+			EventLogging::logEvent( 'NewEditorEdit', 6792669, array(
 					'userId'    => $user->getId(),
 					'userAge'   => $age,
 					'editCount' => $editCount,
@@ -116,7 +116,7 @@ class WikimediaEventsHooks {
 						'value' => FormatJson::encode( $optValue ),
 						'isDefault' => User::getDefaultOption( $optName ) == $optValue,
 					) + $commonData;
-					efLogServerSideEvent( 'PrefUpdate', 5563398, $event );
+					EventLogging::logEvent( 'PrefUpdate', 5563398, $event );
 				}
 			}
 		}
@@ -136,7 +136,7 @@ class WikimediaEventsHooks {
 	 */
 	public static function onArticleDeleteComplete( WikiPage $article, User $user, $reason, $id ) {
 		$title = $article->getTitle();
-		efLogServerSideEvent( 'PageDeletion', 7481655, array(
+		EventLogging::logEvent( 'PageDeletion', 7481655, array(
 				'userId' => $user->getId(),
 				'userText' => $user->getName(),
 				'pageId' => $id,
@@ -163,7 +163,7 @@ class WikimediaEventsHooks {
 	protected static function logPageCreation( User $user, $pageId, Title $title,
 		$revId ) {
 
-		efLogServerSideEvent( 'PageCreation', 7481635, array(
+		EventLogging::logEvent( 'PageCreation', 7481635, array(
 				'userId' => $user->getId(),
 				'userText' => $user->getName(),
 				'pageId' => $pageId,
@@ -188,7 +188,7 @@ class WikimediaEventsHooks {
 	 * @return bool true in all cases
 	 */
 	public static function onTitleMoveComplete( Title &$oldTitle, Title &$newTitle, User &$user, $pageId, $redirectId, $reason ) {
-		efLogServerSideEvent( 'PageMove', 7495717, array(
+		EventLogging::logEvent( 'PageMove', 7495717, array(
 				'userId' => $user->getId(),
 				'userText' => $user->getName(),
 				'pageId' => $pageId,
