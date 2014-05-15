@@ -148,6 +148,29 @@ class WikimediaEventsHooks {
 	}
 
 	/**
+	 * Logs article undelete using pageRestored schema
+	 *
+	 * @see http://www.mediawiki.org/wiki/Manual:Hooks/ArticleUndelete
+	 * @see https://meta.wikimedia.org/wiki/Schema:PageRestoration
+	 * @param Title $title Title of article restored
+	 * @param boolean $created whether the revision created the page (default false)
+	 * @param string $comment Reason for undeleting the page
+	 * @param integer $oldPageId The ID of the article that was deleted
+	 */
+	public static function onArticleUndelete( $title, $created, $comment, $oldPageId ) {
+		global $wgUser;
+		EventLogging::logEvent( 'PageRestoration', 7758372, array(
+				'userId' => $wgUser->getId(),
+				'userText' => $wgUser->getName(),
+				'oldPageId' => $oldPageId,
+				'newPageId' => $title->getArticleID(),
+				'namespace' => $title->getNamespace(),
+				'title' => $title->getDBkey(),
+				'comment' => $comment,
+		) );
+	}
+
+	/**
 	 * Logs a page creation event, based on the given parameters.
 	 *
 	 * Currently, this is either a normal page creation, or an automatic creation

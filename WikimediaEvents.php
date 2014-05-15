@@ -72,5 +72,6 @@ $wgHooks['BeforePageDisplay'][] = 'WikimediaEventsHooks::onBeforePageDisplay';
 $wgHooks['PageContentSaveComplete'][] = 'WikimediaEventsHooks::onPageContentSaveComplete';
 $wgHooks['UserSaveOptions'][] = 'WikimediaEventsHooks::onUserSaveOptions';
 $wgHooks['ArticleDeleteComplete'][] = 'WikimediaEventsHooks::onArticleDeleteComplete';
+$wgHooks['ArticleUndelete'][] = 'WikimediaEventsHooks::onArticleUndelete';
 $wgHooks['TitleMoveComplete'][] = 'WikimediaEventsHooks::onTitleMoveComplete';
 $wgHooks['PageContentInsertComplete'][] = 'WikimediaEventsHooks::onPageContentInsertComplete';
