@@ -24,7 +24,7 @@
 	} );
 
 	mw.trackSubscribe( 'jquery.migrate', function ( topic, key ) {
-		mw.loader.using( [ 'mediawiki.inspect', 'schema.JQMigrateUsage' ], function () {
+		mw.loader.using( [ 'schema.JQMigrateUsage' ], function () {
 			mw.eventLog.logEvent( 'JQMigrateUsage', {
 				key: key,
 				pageId: mw.config.get( 'wgArticleId' ),
