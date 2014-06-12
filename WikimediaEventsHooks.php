@@ -255,4 +255,29 @@ class WikimediaEventsHooks {
 
 		return true;
 	}
+
+	/**
+	 * Logs edit conflicts with the EditConflict schema.
+	 *
+	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/EditPageBeforeConflictDiff
+	 * @see https://meta.wikimedia.org/wiki/Schema:EditConflict
+	 * @param EditPage &$editor
+	 * @param OutputPage &$out
+	 * @return bool true in all cases
+	 */
+	public static function onEditPageBeforeConflictDiff( &$editor, &$out ) {
+		$user = $out->getUser();
+		$title = $out->getTitle();
+
+		EventLogging::logEvent( 'EditConflict', 8860941, array(
+			'userId' => $user->getId(),
+			'userText' => $user->getName(),
+			'pageId' => $title->getArticleID(),
+			'namespace' => $title->getNamespace(),
+			'title' => $title->getDBkey(),
+			'revId' => (int)$title->getLatestRevID(),
+		) );
+
+		return true;
+	}
 }
