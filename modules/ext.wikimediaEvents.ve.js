@@ -21,7 +21,7 @@
 		} );
 	}
 
-	ve.trackSubscribe( 'performance', function ( topic, data ) {
+	ve.trackSubscribeAll( function ( topic, data ) {
 		if ( data.duration ) {
 			queue.push( 've.' + topic + '=' + Math.round( data.duration ) );
 			clearTimeout( timer );
