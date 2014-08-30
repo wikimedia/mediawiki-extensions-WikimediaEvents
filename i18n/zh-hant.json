@@ -1,8 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Liuxinyu970226"
+			"Liuxinyu970226",
+			"Cwlin0416"
 		]
 	},
-	"wikimediaevents-desc": "使用EventLogging的維基媒體特定事件日誌"
+	"wikimediaevents-desc": "EventLogging 的維基媒體特定事件記錄"
 }
