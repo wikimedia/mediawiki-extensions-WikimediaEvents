@@ -34,6 +34,11 @@ class WikimediaEventsHooks {
 			return;
 		}
 
+		// Tag the change with 'HHVM' if we're using HHVM.
+		if ( defined( 'HHVM_VERSION' ) ) {
+			ChangeTags::addTags( 'HHVM', null, $revision->getId() );
+		}
+
 		$isAPI = defined( 'MW_API' );
 		$isMobile = class_exists( 'MobileContext' ) && MobileContext::singleton()->shouldDisplayMobileView();
 		$revId = $revision->getId();
@@ -291,5 +296,14 @@ class WikimediaEventsHooks {
 		if ( defined( 'HHVM_VERSION' ) ) {
 			$vars['wgPoweredByHHVM'] = true;
 		}
+	}
+
+	/**
+	 * Register 'HHVM' change tag.
+	 *
+	 * @param array &$tags
+	 */
+	public static function onListDefinedTags( &$tags ) {
+		$tags[] = 'HHVM';
 	}
 }

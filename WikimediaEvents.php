@@ -82,3 +82,4 @@ $wgHooks['TitleMoveComplete'][] = 'WikimediaEventsHooks::onTitleMoveComplete';
 $wgHooks['PageContentInsertComplete'][] = 'WikimediaEventsHooks::onPageContentInsertComplete';
 $wgHooks['EditPageBeforeConflictDiff'][] = 'WikimediaEventsHooks::onEditPageBeforeConflictDiff';
 $wgHooks['MakeGlobalVariablesScript'][] = 'WikimediaEventsHooks::onMakeGlobalVariablesScript';
+$wgHooks['ListDefinedTags'][] = 'WikimediaEventsHooks::onListDefinedTags';
