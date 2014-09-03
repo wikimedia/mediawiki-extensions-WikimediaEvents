@@ -4,5 +4,6 @@
 			"Raimond Spekking"
 		]
 	},
-	"wikimediaevents-desc": "{{desc|name=Wikimedia Events|url=https://www.mediawiki.org/wiki/Extension:WikimediaEvents}}"
+	"wikimediaevents-desc": "{{desc|name=Wikimedia Events|url=https://www.mediawiki.org/wiki/Extension:WikimediaEvents}}",
+	"tag-HHVM": "{{notranslate}} Tag on edits made via HHVM"
 }

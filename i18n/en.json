@@ -4,5 +4,6 @@
             "Ori Livneh"
         ]
     },
-    "wikimediaevents-desc": "Logs Wikimedia-specific events using EventLogging"
+    "wikimediaevents-desc": "Logs Wikimedia-specific events using EventLogging",
+    "tag-HHVM": "[[mw:HHVM|HHVM]]"
 }
