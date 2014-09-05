@@ -22,6 +22,20 @@ class WikimediaEventsHooks {
 	}
 
 	/**
+	 * Tag changes made via HHVM
+	 *
+	 * @param RecentChange $rc
+	 * @return bool
+	 */
+	public static function onRecentChange_save( RecentChange $rc ) {
+		if ( wfIsHHVM() ) {
+			ChangeTags::addTags( 'HHVM', $rc->getAttribute( 'rc_id' ) );
+		}
+
+		return true;
+	}
+
+	/**
 	 * Log server-side event on successful page edit.
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
 	 * @see https://meta.wikimedia.org/wiki/Schema:PageContentSaveComplete
@@ -32,11 +46,6 @@ class WikimediaEventsHooks {
 
 		if ( !$revision ) {
 			return;
-		}
-
-		// Tag the change with 'HHVM' if we're using HHVM.
-		if ( defined( 'HHVM_VERSION' ) ) {
-			ChangeTags::addTags( 'HHVM', null, $revision->getId() );
 		}
 
 		$isAPI = defined( 'MW_API' );
@@ -293,7 +302,7 @@ class WikimediaEventsHooks {
 	 * @param OutputPage $out
 	 */
 	public static function onMakeGlobalVariablesScript( &$vars, OutputPage $out ) {
-		if ( defined( 'HHVM_VERSION' ) ) {
+		if ( wfIsHHVM() ) {
 			$vars['wgPoweredByHHVM'] = true;
 		}
 	}
