@@ -5,5 +5,7 @@
         ]
     },
     "wikimediaevents-desc": "Logs Wikimedia-specific events using EventLogging",
-    "tag-HHVM": "[[mw:HHVM|HHVM]]"
+    "tag-HHVM": "[[mw:HHVM|HHVM]]",
+    "hhvm-label": "HHVM",
+    "hhvm-desc": "Try using HHVM, an alternative PHP runtime, intended to improve general browsing and editing performance."
 }
