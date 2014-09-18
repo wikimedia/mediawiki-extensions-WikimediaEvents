@@ -61,11 +61,6 @@ $wgResourceModules += array(
 		'remoteExtPath' => 'WikimediaEvents/modules',
 		'targets' => array( 'desktop', 'mobile' ),
 	),
-	'ext.wikimediaEvents.backendPerformance' => array(
-		'scripts' => 'ext.wikimediaEvents.backendPerformance.js',
-		'localBasePath' => __DIR__ . '/modules',
-		'remoteExtPath' => 'WikimediaEvents/modules',
-	),
 );
 
 $wgVisualEditorPluginModules[] = 'ext.wikimediaEvents.ve';
@@ -94,5 +89,3 @@ $wgHooks['RecentChange_save'][] = 'WikimediaEventsHooks::onRecentChange_save';
 // Hooks for HHVM beta-feature
 
 $wgHooks['GetBetaFeaturePreferences'][] = 'WikimediaEventsHooks::onGetBetaFeaturePreferences';
-$wgHooks['UserSetCookies'][] = 'WikimediaEventsHooks::onUserSetCookies';
-$wgHooks['PreferencesFormPreSave'][] = 'WikimediaEventsHooks::onPreferencesFormPreSave';

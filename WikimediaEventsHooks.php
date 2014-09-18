@@ -16,12 +16,27 @@ class WikimediaEventsHooks {
 	 * @param Skin &$skin
 	 */
 	public static function onBeforePageDisplay( &$out, &$skin ) {
-		if ( !$out->getUser()->isAnon() ) {
-			$out->addModules( 'ext.wikimediaEvents.deprecate' );
-		}
+		$user = $out->getUser();
 
-		if ( self::enabledHHVMBetaFeature( $out->getUser() ) ) {
-			$out->addModules( 'ext.wikimediaEvents.backendPerformance' );
+		if ( $user->isAnon() ) {
+			return;
+		}
+		$out->addModules( 'ext.wikimediaEvents.deprecate' );
+
+		$req = $out->getRequest();
+		$hhvmEnabled = ( class_exists( 'BetaFeatures' ) && BetaFeatures::isFeatureEnabled( $user, 'HHVM' ) );
+		$currentCookieValue = $req->getCookie( 'HHVM', '' );
+
+		if ( $hhvmEnabled ) {
+			if ( $currentCookieValue !== 'true' ) {
+				// Set the cookie.
+				$req->response()->setcookie( 'HHVM', 'true', null, array( 'prefix' => '' ) );
+			}
+		} else {
+			if ( $currentCookieValue !== null ) {
+				// Clear the cookie.
+				$req->response()->setcookie( 'HHVM', '', time() - 86400, array( 'prefix' => '' ) );
+			}
 		}
 	}
 
@@ -318,60 +333,6 @@ class WikimediaEventsHooks {
 	 */
 	public static function onListDefinedTags( &$tags ) {
 		$tags[] = 'HHVM';
-	}
-
-	/**
-	 * Set the HHVM cookie on login
-	 *
-	 * @param User $user
-	 * @param array &$session
-	 * @param array &$cookies
-	 */
-	public static function onUserSetCookies( User $user, &$session, &$cookies ) {
-		// We can't use $cookies because we need to override the default prefix.
-		self::setHHVMCookie(
-			$user->getRequest()->response(),
-			self::enabledHHVMBetaFeature( $user )
-		);
-	}
-
-	/**
-	 * Set the HHVM cookie for the given WebResponse.
-	 *
-	 * @param WebResponse $response
-	 * @param bool $value
-	 */
-	private static function setHHVMCookie( WebResponse $response, $value ) {
-		$response->setcookie(
-			'HHVM',
-			$value ? 'true': '', // must be the string "true"
-			0, // expiry
-			array( 'prefix' => '' )
-		);
-	}
-
-	/**
-	 * Set the HHVM cookie after saving preferences
-	 *
-	 * @param $formData
-	 * @param PreferencesForm $form
-	 * @param User $user
-	 */
-	public static function onPreferencesFormPreSave( $formData, PreferencesForm $form, User $user ) {
-		self::setHHVMCookie(
-			$form->getRequest()->response(),
-			self::enabledHHVMBetaFeature( $user )
-		);
-	}
-
-	/**
-	 * Whether the user has enabled the HHVM BetaFeature
-	 *
-	 * @param User $user
-	 * @return bool
-	 */
-	private static function enabledHHVMBetaFeature( User $user ) {
-		return class_exists( 'BetaFeatures' ) && BetaFeatures::isFeatureEnabled( $user, 'HHVM' );
 	}
 
 	/**
