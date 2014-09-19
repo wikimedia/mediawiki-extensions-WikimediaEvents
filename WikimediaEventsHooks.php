@@ -25,17 +25,17 @@ class WikimediaEventsHooks {
 
 		$req = $out->getRequest();
 		$hhvmEnabled = ( class_exists( 'BetaFeatures' ) && BetaFeatures::isFeatureEnabled( $user, 'HHVM' ) );
-		$currentCookieValue = $req->getCookie( 'HHVM', '' );
+		$currentCookieValue = $req->getCookie( 'hhvm', '' );
 
 		if ( $hhvmEnabled ) {
 			if ( $currentCookieValue !== 'true' ) {
 				// Set the cookie.
-				$req->response()->setcookie( 'HHVM', 'true', null, array( 'prefix' => '' ) );
+				$req->response()->setcookie( 'hhvm', 'true', null, array( 'prefix' => '' ) );
 			}
 		} else {
 			if ( $currentCookieValue !== null ) {
 				// Clear the cookie.
-				$req->response()->setcookie( 'HHVM', '', time() - 86400, array( 'prefix' => '' ) );
+				$req->response()->setcookie( 'hhvm', '', time() - 86400, array( 'prefix' => '' ) );
 			}
 		}
 	}
