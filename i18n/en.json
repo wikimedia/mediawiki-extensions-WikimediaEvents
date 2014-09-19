@@ -6,6 +6,7 @@
     },
     "wikimediaevents-desc": "Logs Wikimedia-specific events using EventLogging",
     "tag-HHVM": "[[mw:HHVM|HHVM]]",
+    "tag-HHVM-description": "Revisions made with the HipHop Virtual Machine enabled instead of the Zend PHP interpreter (expected to improve performance, tagged for debugging/analysis)",
     "hhvm-label": "HHVM",
     "hhvm-desc": "Try using HHVM, an alternative PHP runtime, intended to improve general browsing and editing performance."
 }
