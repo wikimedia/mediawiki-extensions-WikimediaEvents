@@ -4,5 +4,7 @@
 			"Beta16"
 		]
 	},
-	"wikimediaevents-desc": "Registra eventi specifici Wikimedia utilizzando EventLogging"
+	"wikimediaevents-desc": "Registra eventi specifici Wikimedia utilizzando EventLogging",
+	"tag-HHVM-description": "Modifiche apportate con la macchina virtuale HipHop (HHVM) abilitata invece dell'interprete PHP Zend (dovrebbe migliorare le prestazioni, sono etichettate per il debug/analisi)",
+	"hhvm-desc": "Prova a utilizzare HHVM, un runtime PHP alternativo, destinato a migliorare la navigazione in generale e le prestazioni durante la modifica."
 }

@@ -4,5 +4,7 @@
 			"Metalhead64"
 		]
 	},
-	"wikimediaevents-desc": "Protokolliert wikimediaspezifische Ereignisse mit EventLogging"
+	"wikimediaevents-desc": "Protokolliert wikimediaspezifische Ereignisse mit EventLogging",
+	"tag-HHVM-description": "Versionen, die mit der aktivierten HipHop Virtual Machine anstatt des Zend-PHP-Interpreters durchgeführt wurden (erwartet zur Verbesserung der Leistung, markiert zur Fehlerbehebung/Analyse)",
+	"hhvm-desc": "Probiere die Verwendung von HHVM aus, einer alternativen PHP-Laufzeit, beabsichtigt zur Verbesserung des allgemeinen Browsens und der Bearbeitungsleistung."
 }

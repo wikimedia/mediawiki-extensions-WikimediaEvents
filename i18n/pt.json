@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Vitorvicentevalente"
+		]
+	},
+	"hhvm-desc": "Experimente utilizar a HHVM, uma alternativa ao tempo de execução PHP, destinada a melhorar a navegação em geral e o desempenho de edição."
+}

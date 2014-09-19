@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Chrumps"
+		]
+	},
+	"hhvm-desc": "Wypróbuj HHVM, alternatywną obsługę PHP, mającą na celu poprawę wydajności przeglądania i edycji."
+}
