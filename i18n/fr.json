@@ -1,8 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"Gomoko"
+			"Gomoko",
+			"Seb35"
 		]
 	},
-	"wikimediaevents-desc": "Trace les événements spécifiques à Wikimédia en utilisant EventLogging"
+	"wikimediaevents-desc": "Trace les événements spécifiques à Wikimédia en utilisant EventLogging",
+	"tag-HHVM-description": "Contributions faites avec la Machine virtuelle HipHop (HHVM) au lieu de l’interpréteur PHP Zend (cela devrait améliorer les performances, la balise sert à l’analyse et au débuggage)",
+	"hhvm-desc": "Essayez HHVM, un environnement d’exécution PHP alternatif, conçu pour améliorer la vitesse de chargement des pages lors de la navigation et de la contribution."
 }

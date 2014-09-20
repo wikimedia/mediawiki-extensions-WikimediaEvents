@@ -4,5 +4,7 @@
 			"Amire80"
 		]
 	},
-	"wikimediaevents-desc": "רישום ביומן של אירועים ייחודיים לוויקימדיה באמצעות EventLogging"
+	"wikimediaevents-desc": "רישום ביומן של אירועים ייחודיים לוויקימדיה באמצעות EventLogging",
+	"tag-HHVM-description": "שינויים שנעשו עם HipHop Virtual Machine ולא עם מפענח Zend PHP (זה צפוי לשפר ביצועים, נתיוג נעשה לשם ניפוי שגיאות וניתוח)",
+	"hhvm-desc": "לנסות להשתמש ב־HHVM, סביבת עבודה חלופית ל־PHP, שמיועדת לשפר ביצועים בגלישה ובעריכה."
 }
