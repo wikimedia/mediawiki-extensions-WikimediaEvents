@@ -342,9 +342,15 @@ class WikimediaEventsHooks {
 	 * @param array &$prefs
 	 */
 	public static function onGetBetaFeaturePreferences( User $user, array &$prefs ) {
+		$iconpath = $coreConfig->get( 'ExtensionAssetsPath' ) . "/WikimediaEvents";
+
 		$prefs['HHVM'] = array(
 			'label-message'   => 'hhvm-label',
 			'desc-message'    => 'hhvm-desc',
+			'screenshot'      => array(
+				'ltr' => "$iconpath/betafeatures-HHVM-ltr.svg",
+				'rtl' => "$iconpath/betafeatures-HHVM-rtl.svg",
+			),
 			'info-link'       => '//www.mediawiki.org/wiki/Special:MyLanguage/HHVM/About',
 			'discussion-link' => '//www.mediawiki.org/wiki/Talk:HHVM/About',
 		);
