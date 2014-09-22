@@ -1,8 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"Ainali"
+			"Ainali",
+			"Lokal Profil"
 		]
 	},
-	"wikimediaevents-desc": "Loggar Wikimedia-specifika händelser med hjälp av EventLogging"
+	"wikimediaevents-desc": "Loggar Wikimedia-specifika händelser med hjälp av EventLogging",
+	"tag-HHVM-description": "Ändringar gjorda med HipHop Virtual Machine aktiverat istället för Zend PHP-tolken (förväntas förbättra prestandan, taggade för felsökning/analys)",
+	"hhvm-desc": "Prova att använda HHVM, en alternativa PHP-körmiljö, som syftar till att förbättra den allmänna prestandan för navigering och redigering."
 }
