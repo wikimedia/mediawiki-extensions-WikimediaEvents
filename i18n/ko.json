@@ -1,8 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"Hym411"
+			"Hym411",
+			"Bluemersen",
+			"Revi"
 		]
 	},
-	"wikimediaevents-desc": "이벤트로깅을 사용하여 위키미디어 관련 이벤트를 기록"
+	"wikimediaevents-desc": "이벤트로깅을 사용하여 위키미디어 관련 이벤트를 기록",
+	"hhvm-desc": "전반적인 브라우징과 편집 성능을 향상시키기 위해 PHP의 새로운 런타임인 HHVM을 사용합니다."
 }
