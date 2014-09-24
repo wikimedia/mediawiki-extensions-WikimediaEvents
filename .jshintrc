@@ -1,9 +1,7 @@
 {
 	"predef": [
 		"mediaWiki",
-		"jQuery",
-		"QUnit",
-		"mediaWikiLoadStart"
+		"jQuery"
 	],
 
 	"camelcase": true,
