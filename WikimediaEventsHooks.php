@@ -342,8 +342,9 @@ class WikimediaEventsHooks {
 	 * @param array &$prefs
 	 */
 	public static function onGetBetaFeaturePreferences( User $user, array &$prefs ) {
-		$iconpath = $coreConfig->get( 'ExtensionAssetsPath' ) . "/WikimediaEvents";
+		global $wgExtensionAssetsPath;
 
+		$iconpath = $wgExtensionAssetsPath . '/WikimediaEvents';
 		$prefs['HHVM'] = array(
 			'label-message'   => 'hhvm-label',
 			'desc-message'    => 'hhvm-desc',
