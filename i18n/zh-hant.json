@@ -5,5 +5,8 @@
 			"Cwlin0416"
 		]
 	},
-	"wikimediaevents-desc": "EventLogging 的維基媒體特定事件記錄"
+	"wikimediaevents-desc": "EventLogging 的維基媒體特定事件記錄",
+	"tag-HHVM-description": "透過使用 HipHop 虛擬機器完成修定，替代 Zend PHP 直譯器 (預期可以提高效能，標記用於除錯/分析)",
+	"hhvm-label": "透過 HHVM 使用更快速伺服器",
+	"hhvm-desc": "HHVM 可在伺服器間切換使用較快速的伺服器，軟體尚在實驗中。 要讓這個工作成功，您的意見回饋非常重要。"
 }

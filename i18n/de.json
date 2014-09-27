@@ -6,5 +6,6 @@
 	},
 	"wikimediaevents-desc": "Protokolliert wikimediaspezifische Ereignisse mit EventLogging",
 	"tag-HHVM-description": "Versionen, die mit der aktivierten HipHop Virtual Machine anstatt des Zend-PHP-Interpreters durchgeführt wurden (erwartet zur Verbesserung der Leistung, markiert zur Fehlerbehebung/Analyse)",
-	"hhvm-desc": "Probiere die Verwendung von HHVM aus, einer alternativen PHP-Laufzeit, beabsichtigt zur Verbesserung des allgemeinen Browsens und der Bearbeitungsleistung."
+	"hhvm-label": "Schnellere Server mit HHVM",
+	"hhvm-desc": "Wechsle zu den Servern, die schneller laufen mit experimenteller Software und HHVM. Deine Rückmeldung ist wichtig, um aus dieser Arbeit einen Erfolg für jeden zu machen."
 }

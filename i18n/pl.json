@@ -4,5 +4,6 @@
 			"Chrumps"
 		]
 	},
+	"hhvm-label": "Szybsze serwery z HHVM",
 	"hhvm-desc": "Wypróbuj HHVM, alternatywną obsługę PHP, mającą na celu poprawę wydajności przeglądania i edycji."
 }

@@ -6,5 +6,6 @@
 	},
 	"wikimediaevents-desc": "使用EventLogging的维基媒体特定事件日志",
 	"tag-HHVM-description": "通过启用代替Zend PHP解析器的HipHop虚拟机做出的修订（预期提高性能，标记用于调试/分析）",
-	"hhvm-desc": "尝试使用HHVM，一个替代PHP运行时，旨在改进一般浏览和编辑性能。"
+	"hhvm-label": "基于HHVM的更快速服务器",
+	"hhvm-desc": "切换为基于实验性软件HHVM的运行更快的服务器。您的反馈对每个人对这项工作的成功至关重要。"
 }

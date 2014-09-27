@@ -1,12 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"Raimond Spekking"
+			"Raimond Spekking",
+			"Amire80"
 		]
 	},
 	"wikimediaevents-desc": "{{desc|name=Wikimedia Events|url=https://www.mediawiki.org/wiki/Extension:WikimediaEvents}}",
 	"tag-HHVM": "{{notranslate}} Tag on edits made via HHVM",
 	"tag-HHVM-description": "Description for the HHVM tag.",
-	"hhvm-label": "{{notranslate}} Name for the HHVM beta feature",
+	"hhvm-label": "Name for the HHVM beta feature",
 	"hhvm-desc": "Description of the HHVM beta feature"
 }

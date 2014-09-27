@@ -4,5 +4,6 @@
 			"Vitorvicentevalente"
 		]
 	},
-	"hhvm-desc": "Experimente utilizar a HHVM, uma alternativa ao tempo de execução PHP, destinada a melhorar a navegação em geral e o desempenho de edição."
+	"hhvm-label": "Servidores mais rápidos com HHVM",
+	"hhvm-desc": "Altere para servidores, do ''software'' experimental HHVM, que estão a funcionar de forma mais rápida. A sua opinião é fundamental para tornar isto num sucesso para todos."
 }
