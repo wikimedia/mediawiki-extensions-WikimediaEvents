@@ -1,8 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"Fitoschido"
+			"Fitoschido",
+			"Jonathan rrr"
 		]
 	},
-	"wikimediaevents-desc": "Registra eventos específicos de Wikimedia mediante EventLogging"
+	"wikimediaevents-desc": "Registra eventos específicos de Wikimedia mediante EventLogging",
+	"hhvm-label": "Servidores más veloces con HHVM",
+	"hhvm-desc": "Cambiar a los servidores que se ejecutan más rápido, software experimental, HHVM. Su opinión es vital para hacer de este trabajo un éxito para todos."
 }
