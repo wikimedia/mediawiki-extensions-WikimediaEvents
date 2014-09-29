@@ -1,9 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"Chrumps"
+			"Chrumps",
+			"Darellur"
 		]
 	},
+	"tag-HHVM-description": "Wprowadzono zmiany z HipHop Virtual Machine zamiast interpretatora Zend PHP (oczekuje się, że to doprowadzi do zwiększenia wydajności; przeznaczone dla naprawy/analizy)",
 	"hhvm-label": "Szybsze serwery z HHVM",
-	"hhvm-desc": "Wypróbuj HHVM, alternatywną obsługę PHP, mającą na celu poprawę wydajności przeglądania i edycji."
+	"hhvm-desc": "Przejdź do serwerów, które działają szybciej, kosztem eksperymentalnego oprogramowania - HHVM. Twoje zdanie jest bardzo ważne, aby ta praca była udana dla wszystkich."
 }

@@ -6,5 +6,6 @@
 	},
 	"wikimediaevents-desc": "Pomocí EventLogging zaznamenává události specifické pro Wikimedia",
 	"tag-HHVM-description": "Revize provedené se zapnutým HipHop Virtual Machine místo PHP interpretru Zend (očekáván vylepšený výkon, označeno pro ladění/analýzu)",
-	"hhvm-desc": "Zkuste použít HHVM, alternativní běhové prostředí PHP, zamýšlené k vylepšení rychlosti prohlížení a editování."
+	"hhvm-label": "Rychlejší servery s HHVM",
+	"hhvm-desc": "Přepne na servery, které běží na rychlejším experimentálním softwaru HHVM. Vaše testování je zásadní pro zajištění úspěchu tohoto projektu."
 }

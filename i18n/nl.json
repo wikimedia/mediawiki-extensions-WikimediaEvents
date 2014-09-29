@@ -1,8 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Siebrand"
+			"Siebrand",
+			"Sjoerddebruin"
 		]
 	},
-	"wikimediaevents-desc": "Logboeken voor Wikimediaspecifieke gebeurtenissen die EventLogging gebruiken"
+	"wikimediaevents-desc": "Logboeken voor Wikimediaspecifieke gebeurtenissen die EventLogging gebruiken",
+	"hhvm-label": "Snellere servers met HHVM"
 }
