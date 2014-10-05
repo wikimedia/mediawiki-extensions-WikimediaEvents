@@ -1,8 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
-			"Joseph"
+			"Joseph",
+			"Violetanka"
 		]
 	},
-	"wikimediaevents-desc": "EventLogging kullanarak Wikimedia'ya özel olayları günlüğe kaydeder"
+	"wikimediaevents-desc": "EventLogging kullanarak Wikimedia'ya özel olayları günlüğe kaydeder",
+	"tag-HHVM-description": "Zend PHP yorumlayıcısı yerine HipHop Virtual Machine kullanılarak yapılan denetimler (performans geliştirme, hata ayıklama/analiz etiketi bekleniyor)",
+	"hhvm-label": "HHVM ile daha hızlı sunucular",
+	"hhvm-desc": "Daha hızlı çalışan bu deneysel yazılımın sunucularına geçiş yapın, HHVM. Görüşleriniz bu işin başarıya ulaşmasında herkes için büyük bir önem taşımaktadır."
 }
