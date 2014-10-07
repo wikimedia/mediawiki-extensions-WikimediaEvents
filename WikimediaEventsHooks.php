@@ -39,8 +39,10 @@ class WikimediaEventsHooks {
 
 		$req = $out->getRequest();
 		$currentCookieValue = $req->getCookie( 'hhvm', '' );
-		if ( self::isUserInHHVMStudy( $user ) ||
-			( class_exists( 'BetaFeatures' ) && BetaFeatures::isFeatureEnabled( $user, 'HHVM' ) ) ) {
+		if (
+			( self::isUserInHHVMStudy( $user ) && $user->getId() % 2 === 0 ) ||
+			( class_exists( 'BetaFeatures' ) && BetaFeatures::isFeatureEnabled( $user, 'HHVM' ) )
+		) {
 			if ( $currentCookieValue !== 'true' ) {
 				// Set the cookie.
 				$req->response()->setcookie( 'hhvm', 'true', null, array( 'prefix' => '' ) );
