@@ -9,6 +9,20 @@
  */
 class WikimediaEventsHooks {
 
+	/* @var int UNIX timestamp representing the start of the HHVM editor productivity study. */
+	const HHVM_START = 1412726400;  // Wed, 08 Oct 2014 00:00:00 UTC
+
+	/**
+	 * Check if a user is in the HHVM study
+	 *
+	 * @param User $user
+	 * @return bool
+	 */
+	public static function isUserInHHVMStudy( User $user ) {
+		$ts = $user->getRegistration();
+		return ( $ts > 0 ) && ( wfTimestampOrNull( TS_UNIX, $ts ) >= self::HHVM_START );
+	}
+
 	/**
 	 * Adds 'ext.wikimediaEvents.deprecate' logging module for logged-in users.
 	 * @see https://meta.wikimedia.org/wiki/Schema:DeprecatedUsage
@@ -24,10 +38,9 @@ class WikimediaEventsHooks {
 		$out->addModules( 'ext.wikimediaEvents.deprecate' );
 
 		$req = $out->getRequest();
-		$hhvmEnabled = ( class_exists( 'BetaFeatures' ) && BetaFeatures::isFeatureEnabled( $user, 'HHVM' ) );
 		$currentCookieValue = $req->getCookie( 'hhvm', '' );
-
-		if ( $hhvmEnabled ) {
+		if ( self::isUserInHHVMStudy( $user ) ||
+			( class_exists( 'BetaFeatures' ) && BetaFeatures::isFeatureEnabled( $user, 'HHVM' ) ) ) {
 			if ( $currentCookieValue !== 'true' ) {
 				// Set the cookie.
 				$req->response()->setcookie( 'hhvm', 'true', null, array( 'prefix' => '' ) );
@@ -324,6 +337,8 @@ class WikimediaEventsHooks {
 		if ( wfIsHHVM() ) {
 			$vars['wgPoweredByHHVM'] = true;
 		}
+		// Emit wgHHVMStart in milliseconds, so that it can be compared against wgUserRegistration.
+		$vars['wgHHVMStart'] = self::HHVM_START * 1000;
 	}
 
 	/**
@@ -344,16 +359,18 @@ class WikimediaEventsHooks {
 	public static function onGetBetaFeaturePreferences( User $user, array &$prefs ) {
 		global $wgExtensionAssetsPath;
 
-		$iconpath = $wgExtensionAssetsPath . '/WikimediaEvents';
-		$prefs['HHVM'] = array(
-			'label-message'   => 'hhvm-label',
-			'desc-message'    => 'hhvm-desc',
-			'screenshot'      => array(
-				'ltr' => "$iconpath/betafeatures-HHVM-ltr.svg",
-				'rtl' => "$iconpath/betafeatures-HHVM-rtl.svg",
-			),
-			'info-link'       => '//www.mediawiki.org/wiki/Special:MyLanguage/HHVM/About',
-			'discussion-link' => '//www.mediawiki.org/wiki/Talk:HHVM/About',
-		);
+		if ( !self::isUserInHHVMStudy( $user ) ) {
+			$iconpath = $wgExtensionAssetsPath . '/WikimediaEvents';
+			$prefs['HHVM'] = array(
+				'label-message'   => 'hhvm-label',
+				'desc-message'    => 'hhvm-desc',
+				'screenshot'      => array(
+					'ltr' => "$iconpath/betafeatures-HHVM-ltr.svg",
+					'rtl' => "$iconpath/betafeatures-HHVM-rtl.svg",
+				),
+				'info-link'       => '//www.mediawiki.org/wiki/Special:MyLanguage/HHVM/About',
+				'discussion-link' => '//www.mediawiki.org/wiki/Talk:HHVM/About',
+			);
+		}
 	}
 }
