@@ -1,11 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
-			"Metalhead64"
+			"Metalhead64",
+			"Kghbln"
 		]
 	},
 	"wikimediaevents-desc": "Protokolliert wikimediaspezifische Ereignisse mit EventLogging",
-	"tag-HHVM-description": "Versionen, die mit der aktivierten HipHop Virtual Machine anstatt des Zend-PHP-Interpreters durchgeführt wurden (erwartet zur Verbesserung der Leistung, markiert zur Fehlerbehebung/Analyse)",
+	"tag-HHVM-description": "Versionen, die mit aktivierter „HipHop Virtual Machine“ anstatt des PHP-Interpreters „Zend“ erstellt wurden (Leistungssteigerungen werden erwartet, markiert zur Fehlerbehebung und -analyse)",
 	"hhvm-label": "Schnellere Server mit HHVM",
 	"hhvm-desc": "Wechsle zu den Servern, die schneller laufen mit experimenteller Software und HHVM. Deine Rückmeldung ist wichtig, um aus dieser Arbeit einen Erfolg für jeden zu machen."
 }
