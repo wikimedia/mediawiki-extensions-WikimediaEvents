@@ -4,5 +4,8 @@
 			"Xuacu"
 		]
 	},
-	"wikimediaevents-desc": "Rexistra socesos específicos de Wikimedia usando EventLogging"
+	"wikimediaevents-desc": "Rexistra socesos específicos de Wikimedia usando EventLogging",
+	"tag-HHVM-description": "Revisiones feches cola Máquina virtual HipHop activada en llugar del intérprete de PHP Zend (espérase aumentar el rindimientu, marcao pa depuración/analís)",
+	"hhvm-label": "Sirvidores más rápidos con HHVM",
+	"hhvm-desc": "Cambiar a los sirvidores que tán executando el software experimental, más rápidu, HHVM. La to opinión ye vital pa consiguir qu'esti trabayu seya un éxitu pa toos."
 }
