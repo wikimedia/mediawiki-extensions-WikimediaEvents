@@ -5,7 +5,7 @@
         ]
     },
     "wikimediaevents-desc": "Logs Wikimedia-specific events using EventLogging",
-    "tag-HHVM": "[[mw:HHVM|HHVM]]",
+    "tag-HHVM": "[[mw:HHVM/About|HHVM]]",
     "tag-HHVM-description": "Revisions made with the HipHop Virtual Machine enabled instead of the Zend PHP interpreter (expected to improve performance, tagged for debugging/analysis)",
     "hhvm-label": "Faster servers with HHVM",
     "hhvm-desc": "Switch over to the servers which are running faster, experimental software, HHVM. Your feedback is vital to making this work a success for everyone."
