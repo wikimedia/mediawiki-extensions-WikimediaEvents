@@ -50,7 +50,7 @@ class WikimediaEventsHooks {
 		} else {
 			if ( $currentCookieValue !== null ) {
 				// Clear the cookie.
-				$req->response()->setcookie( 'hhvm', '', time() - 86400, array( 'prefix' => '' ) );
+				$req->response()->setcookie( 'hhvm', '', - 86400, array( 'prefix' => '' ) );
 			}
 		}
 	}
