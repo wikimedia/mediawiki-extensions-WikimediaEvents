@@ -48,6 +48,11 @@ $wgResourceModules += array(
 		'schema' => 'JQMigrateUsage',
 		'revision' => 8773447,
 	),
+	'schema.Edit' => array(
+		'class' => 'ResourceLoaderSchemaModule',
+		'schema' => 'Edit',
+		'revision' => 10436599,
+	),
 	'ext.wikimediaEvents.ve' => array(
 		'scripts'       => 'ext.wikimediaEvents.ve.js',
 		'dependencies'  => 'ext.visualEditor.base',
