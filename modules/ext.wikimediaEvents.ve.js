@@ -22,7 +22,7 @@
 	}
 
 	ve.trackSubscribeAll( function ( topic, data ) {
-		if ( data.duration ) {
+		if ( data && data.duration ) {
 			queue.push( 've.' + topic + '=' + Math.round( data.duration ) );
 			clearTimeout( timer );
 			timer = setTimeout( dispatch, 2000 );
