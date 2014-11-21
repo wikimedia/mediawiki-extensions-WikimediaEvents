@@ -51,7 +51,7 @@ $wgResourceModules += array(
 	'schema.Edit' => array(
 		'class' => 'ResourceLoaderSchemaModule',
 		'schema' => 'Edit',
-		'revision' => 10590995,
+		'revision' => 10604157,
 	),
 	'ext.wikimediaEvents.ve' => array(
 		'scripts'       => 'ext.wikimediaEvents.ve.js',
