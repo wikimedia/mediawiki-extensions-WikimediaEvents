@@ -53,6 +53,11 @@ $wgResourceModules += array(
 		'schema' => 'Edit',
 		'revision' => 10676603,
 	),
+	'schema.SendBeaconReliability' => array(
+		'class' => 'ResourceLoaderSchemaModule',
+		'schema' => 'SendBeaconReliability',
+		'revision' => '10676430',
+	),
 	'ext.wikimediaEvents.ve' => array(
 		'scripts'       => 'ext.wikimediaEvents.ve.js',
 		'dependencies'  => 'ext.visualEditor.base',
@@ -62,6 +67,18 @@ $wgResourceModules += array(
 	),
 	'ext.wikimediaEvents.deprecate' => array(
 		'scripts'       => 'ext.wikimediaEvents.deprecate.js',
+		'localBasePath' => __DIR__ . '/modules',
+		'remoteExtPath' => 'WikimediaEvents/modules',
+		'targets' => array( 'desktop', 'mobile' ),
+	),
+	// This is for analytics code that is meant to load on all page views for both
+	// logged in and anonymous users.  It is intended that this module remain
+	// permanently (even if empty, to avoid errors on cached pages), and future code
+	// meeting this criteria be added to it.
+	'ext.wikimediaEvents' => array(
+		'scripts' => array(
+			'ext.wikimediaEvents.sendBeacon.js',
+		),
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
 		'targets' => array( 'desktop', 'mobile' ),
