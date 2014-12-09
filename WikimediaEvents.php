@@ -25,12 +25,23 @@ $wgExtensionCredits['other'][] = array(
 	'descriptionmsg' => 'wikimediaevents-desc',
 );
 
+// Configuration
+
+/**
+ * @var bool|string: Full URI or false if not set.
+ * Data is logged to this end point as key-value pairs in the query
+ * string. Must not contain a query string.
+ *
+ * @example string: '//log.example.org/statsd'
+ */
+$wgWMEStatsdBaseUri = false;
+
 // Messages
 
 $wgMessagesDirs['WikimediaEvents'] = __DIR__ . '/i18n';
 $wgExtensionMessagesFiles['WikimediaEvents'] = __DIR__ . '/WikimediaEvents.i18n.php';
 
-// Configs
+// Modules
 
 $wgResourceModules += array(
 	'schema.TimingData' => array(
@@ -71,6 +82,12 @@ $wgResourceModules += array(
 		'remoteExtPath' => 'WikimediaEvents/modules',
 		'targets' => array( 'desktop', 'mobile' ),
 	),
+	'ext.wikimediaEvents.statsd' => array(
+		'scripts'       => 'ext.wikimediaEvents.statsd.js',
+		'localBasePath' => __DIR__ . '/modules',
+		'remoteExtPath' => 'WikimediaEvents/modules',
+		'targets'       => array( 'desktop', 'mobile' ),
+	),
 	// This is for analytics code that is meant to load on all page views for both
 	// logged in and anonymous users.  It is intended that this module remain
 	// permanently (even if empty, to avoid errors on cached pages), and future code
@@ -104,6 +121,7 @@ $wgHooks['TitleMoveComplete'][] = 'WikimediaEventsHooks::onTitleMoveComplete';
 $wgHooks['PageContentInsertComplete'][] = 'WikimediaEventsHooks::onPageContentInsertComplete';
 $wgHooks['EditPageBeforeConflictDiff'][] = 'WikimediaEventsHooks::onEditPageBeforeConflictDiff';
 $wgHooks['MakeGlobalVariablesScript'][] = 'WikimediaEventsHooks::onMakeGlobalVariablesScript';
+$wgHooks['ResourceLoaderGetConfigVars'][] = 'WikimediaEventsHooks::onResourceLoaderGetConfigVars';
 $wgHooks['ListDefinedTags'][] = 'WikimediaEventsHooks::onListDefinedTags';
 $wgHooks['RecentChange_save'][] = 'WikimediaEventsHooks::onRecentChange_save';
 

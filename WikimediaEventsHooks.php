@@ -34,6 +34,11 @@ class WikimediaEventsHooks {
 	public static function onBeforePageDisplay( &$out, &$skin ) {
 		$out->addModules( 'ext.wikimediaEvents' );
 
+		global $wgWMEStatsdBaseUri;
+		if ( $wgWMEStatsdBaseUri !== false ) {
+			$out->addModules( 'ext.wikimediaEvents.statsd' );
+		}
+
 		$user = $out->getUser();
 
 		if ( $user->isAnon() ) {
@@ -345,6 +350,11 @@ class WikimediaEventsHooks {
 		}
 		// Emit wgHHVMStart in milliseconds, so that it can be compared against wgUserRegistration.
 		$vars['wgHHVMStart'] = self::HHVM_START * 1000;
+	}
+
+	public static function onResourceLoaderGetConfigVars( &$vars ) {
+		global $wgWMEStatsdBaseUri;
+		$vars['wgWMEStatsdBaseUri'] = $wgWMEStatsdBaseUri;
 	}
 
 	/**
