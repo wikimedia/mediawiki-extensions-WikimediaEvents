@@ -9,20 +9,6 @@
  */
 class WikimediaEventsHooks {
 
-	/* @var int UNIX timestamp representing the start of the HHVM editor productivity study. */
-	const HHVM_START = 1412726400;  // Wed, 08 Oct 2014 00:00:00 UTC
-
-	/**
-	 * Check if a user is in the HHVM study
-	 *
-	 * @param User $user
-	 * @return bool
-	 */
-	public static function isUserInHHVMStudy( User $user ) {
-		$ts = $user->getRegistration();
-		return ( $ts > 0 ) && ( wfTimestampOrNull( TS_UNIX, $ts ) >= self::HHVM_START );
-	}
-
 	/**
 	 * Adds 'ext.wikimediaEvents.deprecate' logging module for logged-in users.
 	 *
@@ -317,8 +303,6 @@ class WikimediaEventsHooks {
 		if ( wfIsHHVM() ) {
 			$vars['wgPoweredByHHVM'] = true;
 		}
-		// Emit wgHHVMStart in milliseconds, so that it can be compared against wgUserRegistration.
-		$vars['wgHHVMStart'] = self::HHVM_START * 1000;
 	}
 
 	public static function onResourceLoaderGetConfigVars( &$vars ) {
