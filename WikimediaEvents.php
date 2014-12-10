@@ -123,9 +123,3 @@ $wgHooks['EditPageBeforeConflictDiff'][] = 'WikimediaEventsHooks::onEditPageBefo
 $wgHooks['MakeGlobalVariablesScript'][] = 'WikimediaEventsHooks::onMakeGlobalVariablesScript';
 $wgHooks['ResourceLoaderGetConfigVars'][] = 'WikimediaEventsHooks::onResourceLoaderGetConfigVars';
 $wgHooks['ListDefinedTags'][] = 'WikimediaEventsHooks::onListDefinedTags';
-$wgHooks['RecentChange_save'][] = 'WikimediaEventsHooks::onRecentChange_save';
-
-
-// Hooks for HHVM beta-feature
-
-$wgHooks['GetBetaFeaturePreferences'][] = 'WikimediaEventsHooks::onGetBetaFeaturePreferences';

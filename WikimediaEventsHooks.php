@@ -45,37 +45,6 @@ class WikimediaEventsHooks {
 			return;
 		}
 		$out->addModules( 'ext.wikimediaEvents.deprecate' );
-
-		$req = $out->getRequest();
-		$currentCookieValue = $req->getCookie( 'hhvm', '' );
-		if (
-			( self::isUserInHHVMStudy( $user ) && $user->getId() % 2 === 0 ) ||
-			( class_exists( 'BetaFeatures' ) && BetaFeatures::isFeatureEnabled( $user, 'HHVM' ) )
-		) {
-			if ( $currentCookieValue !== 'true' ) {
-				// Set the cookie.
-				$req->response()->setcookie( 'hhvm', 'true', null, array( 'prefix' => '' ) );
-			}
-		} else {
-			if ( $currentCookieValue !== null ) {
-				// Clear the cookie.
-				$req->response()->setcookie( 'hhvm', '', - 86400, array( 'prefix' => '' ) );
-			}
-		}
-	}
-
-	/**
-	 * Tag changes made via HHVM
-	 *
-	 * @param RecentChange $rc
-	 * @return bool
-	 */
-	public static function onRecentChange_save( RecentChange $rc ) {
-		if ( wfIsHHVM() ) {
-			ChangeTags::addTags( 'HHVM', $rc->getAttribute( 'rc_id' ) );
-		}
-
-		return true;
 	}
 
 	/**
@@ -364,29 +333,5 @@ class WikimediaEventsHooks {
 	 */
 	public static function onListDefinedTags( &$tags ) {
 		$tags[] = 'HHVM';
-	}
-
-	/**
-	 * Register HHVM as a toggleable beta feature.
-	 *
-	 * @param User $user
-	 * @param array &$prefs
-	 */
-	public static function onGetBetaFeaturePreferences( User $user, array &$prefs ) {
-		global $wgExtensionAssetsPath;
-
-		if ( !self::isUserInHHVMStudy( $user ) ) {
-			$iconpath = $wgExtensionAssetsPath . '/WikimediaEvents';
-			$prefs['HHVM'] = array(
-				'label-message'   => 'hhvm-label',
-				'desc-message'    => 'hhvm-desc',
-				'screenshot'      => array(
-					'ltr' => "$iconpath/betafeatures-HHVM-ltr.svg",
-					'rtl' => "$iconpath/betafeatures-HHVM-rtl.svg",
-				),
-				'info-link'       => '//www.mediawiki.org/wiki/Special:MyLanguage/HHVM/About',
-				'discussion-link' => '//www.mediawiki.org/wiki/Talk:HHVM/About',
-			);
-		}
 	}
 }
