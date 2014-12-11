@@ -67,7 +67,7 @@ $wgResourceModules += array(
 	'schema.SendBeaconReliability' => array(
 		'class' => 'ResourceLoaderSchemaModule',
 		'schema' => 'SendBeaconReliability',
-		'revision' => 10676430,
+		'revision' => 10735916,
 	),
 	'ext.wikimediaEvents.ve' => array(
 		'scripts'       => 'ext.wikimediaEvents.ve.js',
