@@ -34,6 +34,20 @@ class WikimediaEventsHooks {
 	}
 
 	/**
+	 * On XAnalyticsHeader, insert a 'page_id' key with the page ID as value
+	 * and a 'ns' key with the namespace ID as value -- but only if the request
+	 * is for an actual page.
+	 */
+	public static function onXAnalyticsHeader( $out, &$headerItems ) {
+		$title = $out->getTitle();
+		$pageId = $title->getArticleId();
+		if ( is_int( $pageId ) && $pageId > 0 ) {
+			$headerItems['page_id'] = $pageId;
+			$headerItems['ns'] = $title->getNamespace();
+		}
+	}
+
+	/**
 	 * Log server-side event on successful page edit.
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
 	 * @see https://meta.wikimedia.org/wiki/Schema:PageContentSaveComplete
