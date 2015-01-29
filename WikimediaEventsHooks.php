@@ -325,11 +325,13 @@ class WikimediaEventsHooks {
 	}
 
 	/**
-	 * Register 'HHVM' change tag.
+	 * Register 'HHVM' change tag and mark it as active.
 	 *
 	 * @param array &$tags
+	 * @return bool
 	 */
 	public static function onListDefinedTags( &$tags ) {
 		$tags[] = 'HHVM';
+		return true;
 	}
 }
