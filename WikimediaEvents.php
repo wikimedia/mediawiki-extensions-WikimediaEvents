@@ -23,6 +23,7 @@ $wgExtensionCredits['other'][] = array(
 		'Benny Situ',
 	),
 	'descriptionmsg' => 'wikimediaevents-desc',
+	'license-name' => 'GPL-2.0+',
 );
 
 // Configuration
