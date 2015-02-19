@@ -65,13 +65,6 @@ $wgResourceModules += array(
 		'schema' => 'Edit',
 		'revision' => 10676603,
 	),
-	'ext.wikimediaEvents.ve' => array(
-		'scripts'       => 'ext.wikimediaEvents.ve.js',
-		'dependencies'  => 'ext.visualEditor.base',
-		'localBasePath' => __DIR__ . '/modules',
-		'remoteExtPath' => 'WikimediaEvents/modules',
-		'targets' => array( 'desktop', 'mobile' ),
-	),
 	'ext.wikimediaEvents.deprecate' => array(
 		'scripts'       => 'ext.wikimediaEvents.deprecate.js',
 		'localBasePath' => __DIR__ . '/modules',
@@ -85,8 +78,6 @@ $wgResourceModules += array(
 		'targets'       => array( 'desktop', 'mobile' ),
 	),
 );
-
-$wgVisualEditorPluginModules[] = 'ext.wikimediaEvents.ve';
 
 // Autoloader
 
