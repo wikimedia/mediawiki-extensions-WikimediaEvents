@@ -77,7 +77,7 @@ $wgResourceModules += array(
 	'schema.HttpsSupport' => array(
 		'class'    => 'ResourceLoaderSchemaModule',
 		'schema'   => 'HttpsSupport',
-		'revision' => 11437897,
+		'revision' => 11518527,
 	),
 	'ext.wikimediaEvents.statsd' => array(
 		'scripts'       => array(

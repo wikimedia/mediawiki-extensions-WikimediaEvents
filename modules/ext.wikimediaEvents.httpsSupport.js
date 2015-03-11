@@ -10,7 +10,8 @@
 ( function ( mw, $ ) {
 	'use strict';
 
-	var pixelSrc = '//performance.wikimedia.org/blank.gif';
+	var pixelSrc = '//wikimediafoundation.org/misc/blank.gif',
+		requestTimeout = 10 * 1000;
 
 	function inSample() {
 		var factor = mw.config.get( 'wgHttpsFeatureDetectionSamplingFactor' );
@@ -29,19 +30,21 @@
 		return defer;
 	}
 
-	function pingProtocol( proto, timeout ) {
+	function pingProtocol( proto ) {
 		var $beacon = $( '<img />' ),
-			defer = $.Deferred();
+			defer = $.Deferred(),
+			start = mw.now();
 
 		$beacon.on( 'load error abort timeout', defer.resolveWith );
 		setTimeout( function () {
 			$beacon.trigger( $.Event( 'timeout' ) );
-		}, timeout || 5000 );
-		$beacon.attr( 'src', proto + ':' + pixelSrc + '?' + new Date() );
+		}, requestTimeout );
+		$beacon.attr( 'src', proto + ':' + pixelSrc + '?' + proto );
 
 		return defer.then( function () {
 			var status = {}, ok = this.type === 'load' && $beacon.prop( 'width' ) === 1;
 			status[proto + 'Status'] = ok ? 'success' : this.type;
+			status[proto + 'Timing'] = Math.round( mw.now() - start );
 			return status;
 		} );
 	}
@@ -60,7 +63,7 @@
 			$.when(
 				pingProtocol( protocols.pop() ),
 				pingProtocol( protocols.pop() ),
-				sleep( 6000 )
+				sleep( requestTimeout * 1.1 )
 			).done( function ( firstStatus, secondStatus ) {
 				var event = $.extend( {
 					isAnon      : mw.config.get( 'wgUserId' ) === null,
