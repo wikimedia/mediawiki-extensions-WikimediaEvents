@@ -66,7 +66,7 @@ $wgResourceModules += array(
 	'schema.Edit' => array(
 		'class' => 'ResourceLoaderSchemaModule',
 		'schema' => 'Edit',
-		'revision' => 11319708,
+		'revision' => 11448630,
 	),
 	'ext.wikimediaEvents.deprecate' => array(
 		'scripts'       => 'ext.wikimediaEvents.deprecate.js',
