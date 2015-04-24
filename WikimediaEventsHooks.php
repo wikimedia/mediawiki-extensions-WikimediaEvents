@@ -40,10 +40,12 @@ class WikimediaEventsHooks {
 	 */
 	public static function onXAnalyticsHeader( $out, &$headerItems ) {
 		$title = $out->getTitle();
-		$pageId = $title->getArticleId();
-		if ( is_int( $pageId ) && $pageId > 0 ) {
-			$headerItems['page_id'] = $pageId;
-			$headerItems['ns'] = $title->getNamespace();
+		if ( $title !== null ) {
+			$pageId = $title->getArticleId();
+			if ( is_int( $pageId ) && $pageId > 0 ) {
+				$headerItems['page_id'] = $pageId;
+				$headerItems['ns'] = $title->getNamespace();
+			}
 		}
 	}
 
