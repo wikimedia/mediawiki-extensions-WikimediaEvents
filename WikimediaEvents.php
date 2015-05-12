@@ -58,11 +58,6 @@ $wgResourceModules += array(
 		'schema' => 'DeprecatedUsage',
 		'revision' => 7906187,
 	),
-	'schema.JQMigrateUsage' => array(
-		'class'  => 'ResourceLoaderSchemaModule',
-		'schema' => 'JQMigrateUsage',
-		'revision' => 8773447,
-	),
 	'schema.Edit' => array(
 		'class' => 'ResourceLoaderSchemaModule',
 		'schema' => 'Edit',
