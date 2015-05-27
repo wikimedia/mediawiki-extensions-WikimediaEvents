@@ -1,8 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Toliño"
+			"Toliño",
+			"Elisardojm"
 		]
 	},
-	"wikimediaevents-desc": "Rexistra os eventos específicos da Wikimedia mediante EventLogging"
+	"wikimediaevents-desc": "Rexistra os eventos específicos da Wikimedia mediante EventLogging",
+	"tag-HHVM-description": "Modificacións feitas coa Máquina Virtual HipHop (HHVM) no canto do interpretador PHP Zend (espérase mellorar o rendemento, marcado para depuración/análise)"
 }
