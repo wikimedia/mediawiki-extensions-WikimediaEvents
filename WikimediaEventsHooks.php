@@ -85,8 +85,14 @@ class WikimediaEventsHooks {
 		// Get the user's age, measured in seconds since registration.
 		$age = time() - wfTimestampOrNull( TS_UNIX, $user->getRegistration() );
 
-		// Get the user's edit count.
 		$editCount = $user->getEditCount();
+
+		if ( $editCount === 0 ) {
+			// It's the user's first edit! Report the time elapsed since the
+			// user registered as "ttfe" ("time to first edit").
+			$stats = RequestContext::getMain()->getStats();
+			$stats->timing( 'ttfe', $age );
+		}
 
 		// If the editor signed up in the last thirty days, and if this is an
 		// NS_MAIN edit, log a NewEditorEdit event.
