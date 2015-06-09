@@ -10,10 +10,6 @@
 class WikimediaEventsHooks {
 
 	/**
-	 * Adds 'ext.wikimediaEvents.deprecate' logging module for logged-in users.
-	 *
-	 * Adds 'ext.wikimediaEvents' for all users.
-	 * @see https://meta.wikimedia.org/wiki/Schema:DeprecatedUsage
 	 * @param OutputPage &$out
 	 * @param Skin &$skin
 	 */
@@ -26,11 +22,9 @@ class WikimediaEventsHooks {
 		}
 
 		$user = $out->getUser();
-
-		if ( $user->isAnon() ) {
-			return;
+		if ( $user->isLoggedIn() ) {
+			$out->addModules( 'ext.wikimediaEvents.loggedin' );
 		}
-		$out->addModules( 'ext.wikimediaEvents.deprecate' );
 	}
 
 	/**

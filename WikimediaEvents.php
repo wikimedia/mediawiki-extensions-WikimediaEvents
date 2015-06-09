@@ -63,8 +63,21 @@ $wgResourceModules += array(
 		'schema' => 'Edit',
 		'revision' => 11448630,
 	),
-	'ext.wikimediaEvents.deprecate' => array(
-		'scripts'       => 'ext.wikimediaEvents.deprecate.js',
+	'ext.wikimediaEvents' => array(
+		// Loaded globally for all users (including logged-out)
+		// Don't remove if empty!
+		'scripts'       => array(
+		),
+		'localBasePath' => __DIR__ . '/modules',
+		'remoteExtPath' => 'WikimediaEvents/modules',
+		'targets' => array( 'desktop', 'mobile' ),
+	),
+	'ext.wikimediaEvents.loggedin' => array(
+		// Loaded globally for all logged-in users
+		// Don't remove if empty!
+		'scripts'       => array(
+			'ext.wikimediaEvents.deprecate.js',
+		),
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
 		'targets' => array( 'desktop', 'mobile' ),
