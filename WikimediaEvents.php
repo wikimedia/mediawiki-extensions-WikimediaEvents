@@ -58,6 +58,11 @@ $wgResourceModules += array(
 		'schema' => 'DeprecatedUsage',
 		'revision' => 7906187,
 	),
+	'schema.ModuleLoadFailure' => array(
+		'class' => 'ResourceLoaderSchemaModule',
+		'schema' => 'ModuleLoadFailure',
+		'revision' => 12407847,
+	),
 	'schema.Edit' => array(
 		'class' => 'ResourceLoaderSchemaModule',
 		'schema' => 'Edit',
@@ -77,6 +82,7 @@ $wgResourceModules += array(
 		// Don't remove if empty!
 		'scripts'       => array(
 			'ext.wikimediaEvents.deprecate.js',
+			'ext.wikimediaEvents.resourceloader.js',
 		),
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
