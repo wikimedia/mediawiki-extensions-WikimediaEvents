@@ -337,4 +337,20 @@ class WikimediaEventsHooks {
 		$tags[] = 'HHVM';
 		return true;
 	}
+
+	/**
+	 * The javascript that records search metrics needs to know if it is on a
+	 * SERP or not. This ends up being non-trivial due to localization, so
+	 * make it trivial by injecting a boolean value to check.
+	 */
+	public function onSpecialSearchResults( $term, &$titleMatches, &$textMatches ) {
+		global $wgOut;
+
+		$wgOut->addJsConfigVars( array(
+			'wgIsSearchResultPage' => true,
+		) );
+		$wgOut->addModules( 'ext.wikimediaEvents.search' );
+
+		return true;
+	}
 }
