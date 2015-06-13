@@ -72,6 +72,7 @@ $wgResourceModules += array(
 		// Loaded globally for all users (including logged-out)
 		// Don't remove if empty!
 		'scripts'       => array(
+			'ext.wikimediaEvents.resourceloader.js',
 		),
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
@@ -82,7 +83,6 @@ $wgResourceModules += array(
 		// Don't remove if empty!
 		'scripts'       => array(
 			'ext.wikimediaEvents.deprecate.js',
-			'ext.wikimediaEvents.resourceloader.js',
 		),
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',

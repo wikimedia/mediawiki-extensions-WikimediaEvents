@@ -4,9 +4,13 @@
  * @see https://phabricator.wikimedia.org/T101806
  */
 ( function ( mw ) {
+	function oneIn( populationSize ) {
+		return Math.floor( Math.random() * populationSize ) === 0;
+	}
 
-	// Filter: Logged-in users
-	if ( !mw.config.get( 'wgUserName' ) ) {
+	// Filter: Unsampled logged-in users
+	// Filter: Sampled logged-out users
+	if ( !mw.config.get( 'wgUserName' ) && !oneIn( 100 ) ) {
 		return;
 	}
 

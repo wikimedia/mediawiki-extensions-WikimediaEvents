@@ -7,7 +7,7 @@
 		return Math.floor( Math.random() * populationSize ) === 0;
 	}
 
-	// Filter: Logged-in users
+	// Filter: Logged-in users only
 	// Filter: Sampled
 	if ( !mw.config.get( 'wgUserName' ) || !oneIn( 100 ) ) {
 		return;
