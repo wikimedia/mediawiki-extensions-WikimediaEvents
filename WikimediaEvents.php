@@ -87,11 +87,19 @@ $wgResourceModules += array(
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
 		'targets' => array( 'desktop', 'mobile' ),
+		'dependencies' => array(
+			'ext.wikimediaEvents.search',
+		),
 	),
 	'schema.HttpsSupport' => array(
 		'class'    => 'ResourceLoaderSchemaModule',
 		'schema'   => 'HttpsSupport',
 		'revision' => 11518527,
+	),
+	'schema.TestSearchSatisfaction' => array(
+		'class'    => 'ResourceLoaderSchemaModule',
+		'schema'   => 'TestSearchSatisfaction',
+		'revision' => 12423691,
 	),
 	'ext.wikimediaEvents.statsd' => array(
 		'scripts'       => array(
@@ -101,6 +109,18 @@ $wgResourceModules += array(
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
 		'targets'       => array( 'desktop', 'mobile' ),
+	),
+	'ext.wikimediaEvents.search' => array(
+		'scripts' => array(
+			'ext.wikimediaEvents.search.js',
+		),
+		'localBasePath' => __DIR__ . '/modules',
+		'remoteExtPath' => 'WikimediaEvents/modules',
+		'targets' => array( 'desktop', 'mobile' ),
+		'dependencies' => array(
+			'mediawiki.Uri',
+			'mediawiki.user',
+		),
 	),
 );
 
@@ -124,3 +144,4 @@ $wgHooks['MakeGlobalVariablesScript'][] = 'WikimediaEventsHooks::onMakeGlobalVar
 $wgHooks['ResourceLoaderGetConfigVars'][] = 'WikimediaEventsHooks::onResourceLoaderGetConfigVars';
 $wgHooks['ListDefinedTags'][] = 'WikimediaEventsHooks::onListDefinedTags';
 $wgHooks['XAnalyticsSetHeader'][] = 'WikimediaEventsHooks::onXAnalyticsHeader';
+$wgHooks['SpecialSearchResults'][] = 'WikimediaEventsHooks::onSpecialSearchResults';
