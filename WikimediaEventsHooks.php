@@ -328,7 +328,7 @@ class WikimediaEventsHooks {
 	}
 
 	/**
-	 * Register 'HHVM' change tag and mark it as active.
+	 * Register 'HHVM' change tag.
 	 *
 	 * @param array &$tags
 	 * @return bool
