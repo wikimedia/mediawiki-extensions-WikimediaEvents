@@ -40,6 +40,11 @@ $wgHttpsFeatureDetectionSamplingFactor = 1000;
  */
 $wgWMEStatsdBaseUri = false;
 
+/**
+ * @var bool: Whether geo/maps features specific to large Wikipedias should be tracked
+ */
+$wgWMETrackGeoFeatures = false;
+
 // Messages
 
 $wgMessagesDirs['WikimediaEvents'] = __DIR__ . '/i18n';
@@ -121,6 +126,20 @@ $wgResourceModules += array(
 			'mediawiki.Uri',
 			'mediawiki.user',
 		),
+	),
+	'schema.GeoFeatures' => array(
+		'class'    => 'ResourceLoaderSchemaModule',
+		'schema'   => 'GeoFeatures',
+		'revision' => 12518424,
+	),
+	'ext.wikimediaEvents.geoFeatures' => array(
+		'scripts'       => array(
+			'ext.wikimediaEvents.geoFeatures.js',
+		),
+		'localBasePath' => __DIR__ . '/modules',
+		'remoteExtPath' => 'WikimediaEvents/modules',
+		'targets'       => array( 'desktop', 'mobile' ),
+		'dependencies'  => array( 'schema.GeoFeatures' ),
 	),
 );
 

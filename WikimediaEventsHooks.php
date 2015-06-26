@@ -16,9 +16,13 @@ class WikimediaEventsHooks {
 	public static function onBeforePageDisplay( &$out, &$skin ) {
 		$out->addModules( 'ext.wikimediaEvents' );
 
-		global $wgWMEStatsdBaseUri;
+		global $wgWMEStatsdBaseUri, $wgWMETrackGeoFeatures;
 		if ( $wgWMEStatsdBaseUri !== false ) {
 			$out->addModules( 'ext.wikimediaEvents.statsd' );
+		}
+
+		if ( $wgWMETrackGeoFeatures ) {
+			$out->addModules( 'ext.wikimediaEvents.geoFeatures' );
 		}
 
 		$user = $out->getUser();
