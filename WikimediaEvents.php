@@ -28,9 +28,6 @@ $wgExtensionCredits['other'][] = array(
 
 // Configuration
 
-/** @var int|bool: Logs once per this many requests. */
-$wgHttpsFeatureDetectionSamplingFactor = 1000;
-
 /**
  * @var bool|string: Full URI or false if not set.
  * Data is logged to this end point as key-value pairs in the query
@@ -96,11 +93,6 @@ $wgResourceModules += array(
 			'ext.wikimediaEvents.search',
 		),
 	),
-	'schema.HttpsSupport' => array(
-		'class'    => 'ResourceLoaderSchemaModule',
-		'schema'   => 'HttpsSupport',
-		'revision' => 11518527,
-	),
 	'schema.TestSearchSatisfaction' => array(
 		'class'    => 'ResourceLoaderSchemaModule',
 		'schema'   => 'TestSearchSatisfaction',
@@ -109,7 +101,6 @@ $wgResourceModules += array(
 	'ext.wikimediaEvents.statsd' => array(
 		'scripts'       => array(
 			'ext.wikimediaEvents.statsd.js',
-			'ext.wikimediaEvents.httpsSupport.js',
 		),
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
