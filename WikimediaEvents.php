@@ -76,6 +76,9 @@ $wgResourceModules += array(
 		'scripts'       => array(
 			'ext.wikimediaEvents.resourceloader.js',
 		),
+		'dependencies' => array(
+			'ext.wikimediaEvents.search',
+		),
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
 		'targets' => array( 'desktop', 'mobile' ),
@@ -113,10 +116,7 @@ $wgResourceModules += array(
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
 		'targets' => array( 'desktop', 'mobile' ),
-		'dependencies' => array(
-			'mediawiki.Uri',
-			'mediawiki.user',
-		),
+		'dependencies' => 'mediawiki.Uri',
 	),
 	'schema.GeoFeatures' => array(
 		'class'    => 'ResourceLoaderSchemaModule',

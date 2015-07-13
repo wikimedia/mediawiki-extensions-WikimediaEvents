@@ -20,12 +20,6 @@
 		// code uses sendBeacon, so limit event collection to browsers with
 		// sendBeacon.
 		!navigator.sendBeacon ||
-		// the ext.wikimediaEvents resourceloader module needs to be deployed
-		// for at least 30 days to make into the varnish cache of article pages
-		// before we can reliably collect data from anon users.  Remove this
-		// after those 30 days are up and shift the mediawiki.user dependency down
-		// below.
-		mw.user.isAnon() ||
 		// If a non integer value was provided in the searchDepth query parameter
 		// just give up tracking at this point. That non-integer probably didn't
 		// come from us anyways.
@@ -36,6 +30,7 @@
 
 	mw.loader.using( [
 		'jquery.jStorage',
+		'mediawiki.user',
 		'ext.eventLogging',
 		'schema.TestSearchSatisfaction'
 	] ).then( function () {
