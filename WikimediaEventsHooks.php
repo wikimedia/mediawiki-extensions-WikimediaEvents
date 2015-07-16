@@ -85,11 +85,16 @@ class WikimediaEventsHooks {
 
 		$editCount = $user->getEditCount();
 
-		if ( $editCount === 0 ) {
-			// It's the user's first edit! Report the time elapsed since the
-			// user registered as "ttfe" ("time to first edit").
+
+		// Check if this edit brings the user's total edit count to a value
+		// that is a factor of ten. We consider these 'milestones'. The rate
+		// at which editors are hitting such milestones and the time it takes
+		// are important indicators of community health.
+		if ( $editCount === 0 || preg_match( '/^9+$/' , "$editCount" ) ) {
+			$milestone = $editCount + 1;
 			$stats = RequestContext::getMain()->getStats();
-			$stats->timing( 'ttfe', $age );
+			$stats->increment( "editor.milestones.{$editCount}" );
+			$stats->timing( "editor.milestones.timing.{$editCount}", $age );
 		}
 
 		// If the editor signed up in the last thirty days, and if this is an
