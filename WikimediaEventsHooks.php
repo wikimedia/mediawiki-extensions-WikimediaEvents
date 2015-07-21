@@ -93,8 +93,8 @@ class WikimediaEventsHooks {
 		if ( $editCount === 0 || preg_match( '/^9+$/' , "$editCount" ) ) {
 			$milestone = $editCount + 1;
 			$stats = RequestContext::getMain()->getStats();
-			$stats->increment( "editor.milestones.{$editCount}" );
-			$stats->timing( "editor.milestones.timing.{$editCount}", $age );
+			$stats->increment( "editor.milestones.{$milestone}" );
+			$stats->timing( "editor.milestones.timing.{$milestone}", $age );
 		}
 
 		// If the editor signed up in the last thirty days, and if this is an
