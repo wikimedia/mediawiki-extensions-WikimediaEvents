@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Albertas"
+		]
+	},
+	"wikimediaevents-desc": "Žurnalas Wikimedia specifinių įvykių, naudojant EventLogging",
+	"tag-HHVM-description": "Versija sukurta su aktyvuota Zend PHP interpretatoriaus HipHop virtualia mašina (tikėtasi, kad veikimas paspartės, pažymėta derinimui/analizavimui)"
+}
