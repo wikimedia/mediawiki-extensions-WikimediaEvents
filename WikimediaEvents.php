@@ -138,6 +138,7 @@ $wgResourceModules += array(
 
 $wgAutoloadClasses += array(
 	'WikimediaEventsHooks' => __DIR__ . '/WikimediaEventsHooks.php',
+	'AuthManagerStatsdHandler' => __DIR__ . '/includes/AuthManagerStatsdHandler.php',
 );
 
 // Hooks
