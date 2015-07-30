@@ -121,7 +121,7 @@ $wgResourceModules += array(
 	'schema.GeoFeatures' => array(
 		'class'    => 'ResourceLoaderSchemaModule',
 		'schema'   => 'GeoFeatures',
-		'revision' => 12518424,
+		'revision' => 12914994,
 	),
 	'ext.wikimediaEvents.geoFeatures' => array(
 		'scripts'       => array(

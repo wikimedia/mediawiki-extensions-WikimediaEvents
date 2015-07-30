@@ -4,8 +4,11 @@
  * @see https://meta.wikimedia.org/wiki/Schema:GeoFeatures
  */
 ( function( $, mw ) {
+	var oldHide = $.fn.hide,
+		// Which iframes have already been logged
+		tracked = {};
+
 	// Override hide() to track it
-	var oldHide = $.fn.hide;
 	$.fn.hide = function() {
 		$( this ).trigger( 'hide' );
 		return oldHide.apply( this, arguments );
@@ -71,6 +74,45 @@
 		}
 	}
 
+	/**
+	 * Returns whether at least part of a given element is scrolled into view
+	 * @param {jQuery} $el
+	 * @returns {bool}
+	 */
+	function isVisible( $el ) {
+		var $window = $( window ),
+			top = $window.scrollTop(),
+			bottom = top + $window.height(),
+			elTop = $el.offset().top,
+			elBottom = elTop + $el.height();
+
+		return ( elTop >= top && elTop <= bottom ) || ( elBottom >= top && elBottom <= bottom );
+	}
+
+	/**
+	 * Logs focus switches to a given iframe as interactions with a given feature
+	 *
+	 * @param {string} selector Selector of iframe to track
+	 * @param {string} feature Feature name to log
+	 */
+	function trackIframe( selector, feature ) {
+		$( window ).on( 'blur', function() {
+			// Wait for event loop to process updates to be sure
+			setTimeout( function() {
+				var $el;
+
+				// Fastest checks first
+				if ( !tracked[selector]
+					&& document.activeElement instanceof HTMLIFrameElement
+					&& ( $el = $( document.activeElement ) ).is( selector )
+				) {
+					tracked[selector] = true;
+					track( feature, 'interaction', $el.data( 'fromPrimaryCoordinate' ) === 'yes' );
+				}
+			}, 0 );
+		} );
+	}
+
 	// Track GeoHack usage
 	$( 'a[href^=\'//tools.wmflabs.org/geohack/geohack.php\']' ).on( 'click', function( event ) {
 		var $this = $( this );
@@ -97,4 +139,33 @@
 		var mapShown = $( 'iframe#openstreetmap' ).is( ':visible' );
 		track( 'WIWOSM', mapShown ? 'open' : 'close', true );
 	} );
+
+	// Track Wikivoyage maps
+	( function() {
+		function onScroll() {
+			if ( isVisible( $map ) ) {
+				track( 'Wikivoyage', 'view', false );
+				$( window ).off( 'scroll', onScroll );
+			}
+		}
+
+		var $map = $( '#mapwrap #mapdiv' );
+
+		if ( !$map.length ) {
+			return;
+		}
+
+		trackIframe( '#mapwrap #mapdiv iframe', 'Wikivoyage' );
+
+		// Log only 1 of 100 views to prevent a flood
+		if ( Math.random() * 100 > 1 ) {
+			return;
+		}
+
+		if ( isVisible( $map ) ) {
+			track( 'Wikivoyage', 'view', false );
+		} else {
+			$( window ).on( 'scroll', onScroll );
+		}
+	} ) ();
 }( jQuery, mediaWiki ) );
