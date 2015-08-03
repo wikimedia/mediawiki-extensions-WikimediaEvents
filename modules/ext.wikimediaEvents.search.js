@@ -71,7 +71,7 @@
 			};
 
 		if ( searchSessionId === 'rejected' ) {
-			// User was previously rejected by the 1 in 1000 sampling
+			// User was previously rejected by the 1 in 200 sampling
 			return;
 		} else if ( searchSessionId ) {
 			// User was previously chosen to participate in the test.
@@ -82,8 +82,8 @@
 		} else if (
 			// Most likely this means the users search session timed out.
 			!isSearchResultPage ||
-			// user was not chosen by 1 in 1000 sampling of search results
-			!oneIn( 1000 )
+			// user was not chosen by 1 in 200 sampling of search results
+			!oneIn( 200 )
 		) {
 			$.jStorage.set( 'searchSessionId', 'rejected', { TTL: 2 * sessionLifetimeMs } );
 			return;
