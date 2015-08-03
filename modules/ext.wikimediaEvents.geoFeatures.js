@@ -6,7 +6,8 @@
 ( function( $, mw ) {
 	var oldHide = $.fn.hide,
 		// Which iframes have already been logged
-		tracked = {};
+		tracked = {},
+		$geoHackLinks;
 
 	// Override hide() to track it
 	$.fn.hide = function() {
@@ -55,7 +56,7 @@
 	 * @param {bool} titleCoordinate Whether feature is used with the title coordinate
 	 * @param {string|undefined} [url] URL to follow once event has been logged
 	 */
-	function track( feature, action, titleCoordinate, url ) {
+	function doTrack( feature, action, titleCoordinate, url ) {
 		mw.eventLog.logEvent( 'GeoFeatures', {
 			'feature': feature,
 			'action': action,
@@ -107,44 +108,52 @@
 					&& ( $el = $( document.activeElement ) ).is( selector )
 				) {
 					tracked[selector] = true;
-					track( feature, 'interaction', $el.data( 'fromPrimaryCoordinate' ) === 'yes' );
+					doTrack( feature, 'interaction', $el.data( 'fromPrimaryCoordinate' ) === 'yes' );
 				}
 			}, 0 );
 		} );
 	}
 
 	// Track GeoHack usage
-	$( 'a[href^=\'//tools.wmflabs.org/geohack/geohack.php\']' ).on( 'click', function( event ) {
+	$geoHackLinks = $( 'a[href^=\'//tools.wmflabs.org/geohack/geohack.php\']' );
+	$geoHackLinks.on( 'click', function( event ) {
 		var $this = $( this );
-		track( 'GeoHack', 'open', isTitleCoordinate( $this ), $this.attr( 'href' ) );
+		doTrack( 'GeoHack', 'open', isTitleCoordinate( $this ), $this.attr( 'href' ) );
 		event.preventDefault();
 	} );
 
 	// Track WikiMiniAtlas usage
-	$( '.wmamapbutton' ).on( 'click', function() {
-		var $this = $( this ),
-			isTitle = isTitleCoordinate( $this ),
-			$container = $( 'iframe[src^=\'//wma.wmflabs.org/iframe.html\']' ).parent();
+	if ( $geoHackLinks.length ) {
+		// Give WMA time to load, can't hook to it cleanly because it's not in a RL module
+		setTimeout( function() {
+				$( '.wmamapbutton' ).on( 'click', function() {
+					var $this = $( this ),
+						isTitle = isTitleCoordinate( $this ),
+						$container = $( 'iframe[src^=\'//wma.wmflabs.org/iframe.html\']' ).parent();
 
-		if ( $container.is( ':visible' ) ) {
-			track( 'WikiMiniAtlas', 'open', isTitle );
-			$container.one( 'hide', function() {
-				track( 'WikiMiniAtlas', 'close', isTitle );
-			} );
-		}
-	} );
+					if ( $container.is( ':visible' ) ) {
+						doTrack( 'WikiMiniAtlas', 'open', isTitle );
+						$container.one( 'hide', function() {
+							doTrack( 'WikiMiniAtlas', 'close', isTitle );
+						} );
+					}
+				} );
+			},
+			1000
+		);
+	}
 
 	// Track WIWOSM usage
 	$( '.osm-icon-coordinates' ).on( 'click', function() {
 		var mapShown = $( 'iframe#openstreetmap' ).is( ':visible' );
-		track( 'WIWOSM', mapShown ? 'open' : 'close', true );
+		doTrack( 'WIWOSM', mapShown ? 'open' : 'close', true );
 	} );
 
 	// Track Wikivoyage maps
 	( function() {
 		function onScroll() {
 			if ( isVisible( $map ) ) {
-				track( 'Wikivoyage', 'view', false );
+				doTrack( 'Wikivoyage', 'view', false );
 				$( window ).off( 'scroll', onScroll );
 			}
 		}
@@ -163,7 +172,7 @@
 		}
 
 		if ( isVisible( $map ) ) {
-			track( 'Wikivoyage', 'view', false );
+			doTrack( 'Wikivoyage', 'view', false );
 		} else {
 			$( window ).on( 'scroll', onScroll );
 		}
