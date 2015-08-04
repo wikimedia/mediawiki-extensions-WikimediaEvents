@@ -3,7 +3,7 @@
  * @see https://phabricator.wikimedia.org/T103017
  * @see https://meta.wikimedia.org/wiki/Schema:GeoFeatures
  */
-( function( $, mw ) {
+( function( $, mw, undefined ) {
 	var oldHide = $.fn.hide,
 		// Which iframes have already been logged
 		tracked = {},
@@ -117,9 +117,24 @@
 	// Track GeoHack usage
 	$geoHackLinks = $( 'a[href^=\'//tools.wmflabs.org/geohack/geohack.php\']' );
 	$geoHackLinks.on( 'click', function( event ) {
-		var $this = $( this );
-		doTrack( 'GeoHack', 'open', isTitleCoordinate( $this ), $this.attr( 'href' ) );
-		event.preventDefault();
+		var $this = $( this ),
+			isTitle = isTitleCoordinate( $this );
+
+		// Don't override all the weird input combinations because this may, for example,
+		// result in link being opened in the same tab instead of another
+		if ( event.buttons === undefined
+			|| event.buttons > 1
+			|| event.altKey
+			|| event.ctrlKey
+			|| event.metaKey
+			|| event.shiftKey
+		) {
+			doTrack( 'GeoHack', 'open', isTitle );
+		} else {
+			// Ordinary click, override to ensure it's logged
+			doTrack( 'GeoHack', 'open', isTitle, $this.attr( 'href' ) );
+			event.preventDefault();
+		}
 	} );
 
 	// Track WikiMiniAtlas usage
