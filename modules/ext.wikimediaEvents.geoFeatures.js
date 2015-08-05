@@ -5,9 +5,12 @@
  */
 ( function( $, mw, undefined ) {
 	var oldHide = $.fn.hide,
-		// Which iframes have already been logged
+		// Which iframes are being tracked
 		tracked = {},
-		$geoHackLinks;
+		$geoHackLinks,
+		$document = $( document ),
+		wmaSelector = 'iframe[src^=\'//wma.wmflabs.org/iframe.html\']',
+		wiwosmSelector = 'iframe#openstreetmap';
 
 	// Override hide() to track it
 	$.fn.hide = function() {
@@ -100,15 +103,13 @@
 		$( window ).on( 'blur', function() {
 			// Wait for event loop to process updates to be sure
 			setTimeout( function() {
-				var $el;
-
 				// Fastest checks first
 				if ( !tracked[selector]
 					&& document.activeElement instanceof HTMLIFrameElement
-					&& ( $el = $( document.activeElement ) ).is( selector )
+					&& $( document.activeElement ).is( selector )
 				) {
 					tracked[selector] = true;
-					doTrack( feature, 'interaction', $el.data( 'fromPrimaryCoordinate' ) === 'yes' );
+					doTrack( feature, 'interaction', !!$document.data( 'isPrimary-' + feature ) );
 				}
 			}, 0 );
 		} );
@@ -139,13 +140,15 @@
 
 	// Track WikiMiniAtlas usage
 	if ( $geoHackLinks.length ) {
+		trackIframe( wmaSelector, 'WikiMiniAtlas' );
 		// Give WMA time to load, can't hook to it cleanly because it's not in a RL module
 		setTimeout( function() {
 				$( '.wmamapbutton' ).on( 'click', function() {
 					var $this = $( this ),
 						isTitle = isTitleCoordinate( $this ),
-						$container = $( 'iframe[src^=\'//wma.wmflabs.org/iframe.html\']' ).parent();
+						$container = $( wmaSelector ).parent();
 
+					$document.data( 'isPrimary-WikiMiniAtlas', isTitle );
 					if ( $container.is( ':visible' ) ) {
 						doTrack( 'WikiMiniAtlas', 'open', isTitle );
 						$container.one( 'hide', function() {
@@ -159,8 +162,10 @@
 	}
 
 	// Track WIWOSM usage
+	$document.data( 'isPrimary-WIWOSM', true );
+	trackIframe( wiwosmSelector, 'WIWOSM' );
 	$( '.osm-icon-coordinates' ).on( 'click', function() {
-		var mapShown = $( 'iframe#openstreetmap' ).is( ':visible' );
+		var mapShown = $( wiwosmSelector ).is( ':visible' );
 		doTrack( 'WIWOSM', mapShown ? 'open' : 'close', true );
 	} );
 
