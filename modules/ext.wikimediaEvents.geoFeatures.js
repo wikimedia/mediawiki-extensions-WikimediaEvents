@@ -124,6 +124,7 @@
 		// result in link being opened in the same tab instead of another
 		if ( event.buttons === undefined
 			|| event.buttons > 1
+			|| event.button
 			|| event.altKey
 			|| event.ctrlKey
 			|| event.metaKey
