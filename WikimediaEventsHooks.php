@@ -318,18 +318,6 @@ class WikimediaEventsHooks {
 		return true;
 	}
 
-	/**
-	 * On MakeGlobalVariablesScript, set 'wgPoweredByHHVM' config var.
-	 *
-	 * @param array &$vars
-	 * @param OutputPage $out
-	 */
-	public static function onMakeGlobalVariablesScript( &$vars, OutputPage $out ) {
-		if ( wfIsHHVM() ) {
-			$vars['wgPoweredByHHVM'] = true;
-		}
-	}
-
 	public static function onResourceLoaderGetConfigVars( &$vars ) {
 		global $wgWMEStatsdBaseUri;
 		$vars['wgWMEStatsdBaseUri'] = $wgWMEStatsdBaseUri;

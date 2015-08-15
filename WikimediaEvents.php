@@ -151,7 +151,6 @@ $wgHooks['ArticleUndelete'][] = 'WikimediaEventsHooks::onArticleUndelete';
 $wgHooks['TitleMoveComplete'][] = 'WikimediaEventsHooks::onTitleMoveComplete';
 $wgHooks['PageContentInsertComplete'][] = 'WikimediaEventsHooks::onPageContentInsertComplete';
 $wgHooks['EditPageBeforeConflictDiff'][] = 'WikimediaEventsHooks::onEditPageBeforeConflictDiff';
-$wgHooks['MakeGlobalVariablesScript'][] = 'WikimediaEventsHooks::onMakeGlobalVariablesScript';
 $wgHooks['ResourceLoaderGetConfigVars'][] = 'WikimediaEventsHooks::onResourceLoaderGetConfigVars';
 $wgHooks['ListDefinedTags'][] = 'WikimediaEventsHooks::onListDefinedTags';
 $wgHooks['XAnalyticsSetHeader'][] = 'WikimediaEventsHooks::onXAnalyticsHeader';
