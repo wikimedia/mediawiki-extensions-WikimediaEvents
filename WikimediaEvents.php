@@ -96,10 +96,10 @@ $wgResourceModules += array(
 			'ext.wikimediaEvents.search',
 		),
 	),
-	'schema.TestSearchSatisfaction' => array(
+	'schema.TestSearchSatisfaction2' => array(
 		'class'    => 'ResourceLoaderSchemaModule',
-		'schema'   => 'TestSearchSatisfaction',
-		'revision' => 12423691,
+		'schema'   => 'TestSearchSatisfaction2',
+		'revision' => 13223897,
 	),
 	'ext.wikimediaEvents.statsd' => array(
 		'scripts'       => array(

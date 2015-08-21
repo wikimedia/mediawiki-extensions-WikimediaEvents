@@ -4,27 +4,22 @@
  * @license GNU GPL v2 or later
  * @author Erik Bernhardson <ebernhardson@wikimedia.org>
  */
-( function ( mw, $ ) {
+( function ( mw, $, undefined ) {
 	var isSearchResultPage = mw.config.get( 'wgIsSearchResultPage' ),
-		depthFromSearch = parseInt( new mw.Uri( location.href ).query.searchDepth || 0 ),
-		cameFromSearchResult = depthFromSearch > 0;
+		uri = new mw.Uri( location.href ),
+		cameFromSearchResult = uri.query.wprov === 'cirrus';
 
 	function oneIn( populationSize ) {
 		return Math.floor( Math.random() * populationSize ) === 0;
 	}
 
-	if (
-		( !isSearchResultPage && !cameFromSearchResult ) ||
-		// Recording dwell time on an article page requires sending events from
-		// the unload handler. Those only work reliably when the eventlogging
-		// code uses sendBeacon, so limit event collection to browsers with
-		// sendBeacon.
-		!navigator.sendBeacon ||
-		// If a non integer value was provided in the searchDepth query parameter
-		// just give up tracking at this point. That non-integer probably didn't
-		// come from us anyways.
-		isNaN( depthFromSearch )
-	) {
+	if ( cameFromSearchResult ) {
+		// cleanup the location bar in supported browsers
+		if ( window.history.replaceState ) {
+			delete uri.query.wprov;
+			window.history.replaceState( {}, '', uri.toString() );
+		}
+	} else if ( !isSearchResultPage ) {
 		return;
 	}
 
@@ -32,15 +27,15 @@
 		'jquery.jStorage',
 		'mediawiki.user',
 		'ext.eventLogging',
-		'schema.TestSearchSatisfaction'
+		'schema.TestSearchSatisfaction2'
 	] ).then( function () {
 		var searchSessionId = $.jStorage.get( 'searchSessionId' ),
 			sessionLifetimeMs = 10 * 60 * 1000,
+			checkinTimes = [10,20,30,40,50,60,90,120,150,180,210,240,300,360,420],
 			pageId = mw.user.generateRandomSessionId(),
-			logEvent = function ( action ) {
-				mw.eventLog.logEvent(
-					'TestSearchSatisfaction',
-					{
+			logEvent = function ( action, checkinTime ) {
+				var evt = {
+						// searchResultPage, visitPage or checkin
 						action: action,
 						// identifies a single user performing searches within
 						// a limited time span.
@@ -54,24 +49,23 @@
 						// times from javascript, especially when using sendBeacon.
 						// This logId allows for later deduplication
 						logId: mw.user.generateRandomSessionId(),
-						// How many clicks away from the search result
-						// is the user currently.  The SERP is 0, links
-						// in the SERP are 1, etc. etc.
-						depth: depthFromSearch
-					}
-				);
+					};
+				if ( checkinTime !== undefined ) {
+					evt.checkin = checkinTime;
+				}
+				mw.eventLog.logEvent( 'TestSearchSatisfaction2', evt );
 			},
-			updateHrefWithDepth = function () {
+			updateHref = function () {
 				var uri = new mw.Uri( this.href );
 				// try to not add our query param to unnecessary places
 				if ( uri.path.substr( 0, 6 ) === '/wiki/' ) {
-					uri.query.searchDepth = depthFromSearch + 1;
+					uri.query.wprov = 'cirrus';
 					this.href = uri.toString();
 				}
 			};
 
 		if ( searchSessionId === 'rejected' ) {
-			// User was previously rejected by the 1 in 200 sampling
+			// User was previously rejected or timed out
 			return;
 		} else if ( searchSessionId ) {
 			// User was previously chosen to participate in the test.
@@ -82,7 +76,7 @@
 		} else if (
 			// Most likely this means the users search session timed out.
 			!isSearchResultPage ||
-			// user was not chosen by 1 in 200 sampling of search results
+			// user was not chosen in a sampling of search results
 			!oneIn( 200 )
 		) {
 			$.jStorage.set( 'searchSessionId', 'rejected', { TTL: 2 * sessionLifetimeMs } );
@@ -101,23 +95,17 @@
 			}
 		}
 
+		$( '#mw-content-text a:not(.external)' ).each( updateHref );
+
 		if ( isSearchResultPage ) {
-			logEvent( 'searchEngineResultPage' );
-			// we need some way to know that we just came from a
-			// search result page.  Due to localization its quite
-			// tricky to use document.referrer, so inject a query
-			// param into all search result links.  Its ugly but it
-			// works.
-			$( '.mw-search-result-heading a' ).each( updateHrefWithDepth );
-		} else if ( cameFromSearchResult ) {
-			// We record the 'visitPage' event on the target page,
-			// rather than in a click event from the SERP to guarantee
-			// we also get events when a user opens in a new tab.
+			logEvent( 'searchResultPage' );
+		} else {
 			logEvent( 'visitPage' );
-			$( window ).on( 'unload', $.proxy( logEvent, this, 'leavePage' ) );
-			// updateHrefWithDepth will ensure it only updates links to /wiki/,
-			// this selector is about as specific as we can manage here unfortunatly.
-			$( '#mw-content-text a:not(.external)' ).each( updateHrefWithDepth );
+			$( checkinTimes ).each( function ( _, checkin ) {
+				setTimeout( function () {
+					logEvent( 'checkin', checkin );
+				}, 1000 * checkin );
+			} );
 		}
 	} );
 }( mediaWiki, jQuery ) );
