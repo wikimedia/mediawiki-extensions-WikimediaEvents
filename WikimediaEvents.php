@@ -70,6 +70,11 @@ $wgResourceModules += array(
 		'schema' => 'Edit',
 		'revision' => 11448630,
 	),
+	'schema.DidYouMean' => array(
+		'class' => 'ResourceLoaderSchemaModule',
+		'schema' => 'DidYouMean',
+		'revision' => 13316693,
+	),
 	'ext.wikimediaEvents' => array(
 		// Loaded globally for all users (including logged-out)
 		// Don't remove if empty!
@@ -117,6 +122,14 @@ $wgResourceModules += array(
 		'remoteExtPath' => 'WikimediaEvents/modules',
 		'targets' => array( 'desktop', 'mobile' ),
 		'dependencies' => 'mediawiki.Uri',
+	),
+	'ext.wikimediaEvents.didyoumean' => array(
+		'scripts' => array(
+			'ext.wikimediaEvents.didyoumean.js',
+		),
+		'localBasePath' => __DIR__ . '/modules',
+		'remoteExtPath' => 'WikimediaEvents/modules',
+		'targets' => array( 'desktop' ),
 	),
 	'schema.GeoFeatures' => array(
 		'class'    => 'ResourceLoaderSchemaModule',
