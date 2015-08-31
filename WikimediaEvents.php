@@ -78,7 +78,7 @@ $wgResourceModules += array(
 	'schema.DidYouMean' => array(
 		'class' => 'ResourceLoaderSchemaModule',
 		'schema' => 'DidYouMean',
-		'revision' => 13316693,
+		'revision' => 13800499,
 	),
 	'schema.CompletionSuggestions' => array(
 		'class' => 'ResourceLoaderSchemaModule',
@@ -131,6 +131,7 @@ $wgResourceModules += array(
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
 		'targets' => array( 'desktop' ),
+		'dependencies' => 'mediawiki.Uri',
 	),
 	'ext.wikimediaEvents.geoFeatures' => array(
 		'scripts'       => array(
