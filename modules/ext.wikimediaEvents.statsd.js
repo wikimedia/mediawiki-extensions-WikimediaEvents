@@ -57,5 +57,6 @@
 			key: topic.substring( 'counter.'.length ),
 			value: count + 'c'
 		} );
+		schedule();
 	} );
 }( mediaWiki ) );
