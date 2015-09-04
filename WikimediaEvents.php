@@ -68,7 +68,7 @@ $wgResourceModules += array(
 	'schema.Edit' => array(
 		'class' => 'ResourceLoaderSchemaModule',
 		'schema' => 'Edit',
-		'revision' => 11448630,
+		'revision' => 13457736,
 	),
 	'schema.DidYouMean' => array(
 		'class' => 'ResourceLoaderSchemaModule',
