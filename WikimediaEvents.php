@@ -42,6 +42,11 @@ $wgWMEStatsdBaseUri = false;
  */
 $wgWMETrackGeoFeatures = false;
 
+/**
+ * @var bool Whether the completion suggestion experiment is enabled.
+ */
+$wgWMEEnableCompletionExperiment = false;
+
 // Messages
 
 $wgMessagesDirs['WikimediaEvents'] = __DIR__ . '/i18n';
@@ -75,11 +80,17 @@ $wgResourceModules += array(
 		'schema' => 'DidYouMean',
 		'revision' => 13316693,
 	),
+	'schema.CompletionSuggestions' => array(
+		'class' => 'ResourceLoaderSchemaModule',
+		'schema' => 'CompletionSuggestions',
+		'revision' => 13424343,
+	),
 	'ext.wikimediaEvents' => array(
 		// Loaded globally for all users (including logged-out)
 		// Don't remove if empty!
 		'scripts'       => array(
 			'ext.wikimediaEvents.resourceloader.js',
+			'ext.wikimediaEvents.searchSuggest.js',
 		),
 		'dependencies' => array(
 			'ext.wikimediaEvents.search',
