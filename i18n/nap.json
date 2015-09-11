@@ -4,5 +4,6 @@
 			"C.R."
 		]
 	},
-	"hhvm-label": "Server ca vanno cchiù ampresso ca teneno HHVM"
+	"wikimediaevents-desc": "Riggistra evente specifiche 'e Wikimedia ausanno 'o EventLogging",
+	"tag-HHVM-description": "Cagnamiente fatte 'a macchina virtuale HipHop abbiàte mmece 'a ll'interprete Zend PHP (avess'a migliurà 'e prestaziune, songo etichettate pe' ne ffà debug/analisi)"
 }
