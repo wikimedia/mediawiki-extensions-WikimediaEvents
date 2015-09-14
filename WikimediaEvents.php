@@ -85,12 +85,23 @@ $wgResourceModules += array(
 		'schema' => 'CompletionSuggestions',
 		'revision' => 13630018,
 	),
+	'schema.TestSearchSatisfaction2' => array(
+		'class'    => 'ResourceLoaderSchemaModule',
+		'schema'   => 'TestSearchSatisfaction2',
+		'revision' => 13223897,
+	),
+	'schema.GeoFeatures' => array(
+		'class'    => 'ResourceLoaderSchemaModule',
+		'schema'   => 'GeoFeatures',
+		'revision' => 12914994,
+	),
 	'ext.wikimediaEvents' => array(
 		// Loaded globally for all users (including logged-out)
 		// Don't remove if empty!
 		'scripts'       => array(
 			'ext.wikimediaEvents.resourceloader.js',
 			'ext.wikimediaEvents.searchSuggest.js',
+			'ext.wikimediaEvents.statsd.js',
 		),
 		'dependencies' => array(
 			'ext.wikimediaEvents.search', // independant test
@@ -113,19 +124,6 @@ $wgResourceModules += array(
 			'ext.wikimediaEvents.search',
 		),
 	),
-	'schema.TestSearchSatisfaction2' => array(
-		'class'    => 'ResourceLoaderSchemaModule',
-		'schema'   => 'TestSearchSatisfaction2',
-		'revision' => 13223897,
-	),
-	'ext.wikimediaEvents.statsd' => array(
-		'scripts'       => array(
-			'ext.wikimediaEvents.statsd.js',
-		),
-		'localBasePath' => __DIR__ . '/modules',
-		'remoteExtPath' => 'WikimediaEvents/modules',
-		'targets'       => array( 'desktop', 'mobile' ),
-	),
 	'ext.wikimediaEvents.search' => array(
 		'scripts' => array(
 			'ext.wikimediaEvents.search.js',
@@ -142,11 +140,6 @@ $wgResourceModules += array(
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
 		'targets' => array( 'desktop' ),
-	),
-	'schema.GeoFeatures' => array(
-		'class'    => 'ResourceLoaderSchemaModule',
-		'schema'   => 'GeoFeatures',
-		'revision' => 12914994,
 	),
 	'ext.wikimediaEvents.geoFeatures' => array(
 		'scripts'       => array(
