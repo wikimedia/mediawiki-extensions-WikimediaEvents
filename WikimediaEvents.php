@@ -102,9 +102,9 @@ $wgResourceModules += array(
 			'ext.wikimediaEvents.resourceloader.js',
 			'ext.wikimediaEvents.searchSuggest.js',
 			'ext.wikimediaEvents.statsd.js',
+			'ext.wikimediaEvents.search.js',
 		),
 		'dependencies' => array(
-			'ext.wikimediaEvents.search', // independant test
 			'mediawiki.user', // needed by searchSuggest
 		),
 		'localBasePath' => __DIR__ . '/modules',
@@ -121,17 +121,7 @@ $wgResourceModules += array(
 		'remoteExtPath' => 'WikimediaEvents/modules',
 		'targets' => array( 'desktop', 'mobile' ),
 		'dependencies' => array(
-			'ext.wikimediaEvents.search',
 		),
-	),
-	'ext.wikimediaEvents.search' => array(
-		'scripts' => array(
-			'ext.wikimediaEvents.search.js',
-		),
-		'localBasePath' => __DIR__ . '/modules',
-		'remoteExtPath' => 'WikimediaEvents/modules',
-		'targets' => array( 'desktop', 'mobile' ),
-		'dependencies' => 'mediawiki.Uri',
 	),
 	'ext.wikimediaEvents.didyoumean' => array(
 		'scripts' => array(
