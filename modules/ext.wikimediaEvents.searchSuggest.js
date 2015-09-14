@@ -6,33 +6,25 @@
  * @author Erik Bernhardson <ebernhardson@wikimedia.org>
  */
 ( function ( mw, $ ) {
+	// Unique random identifier used to correlate multiple
+	// events that occur within the same page load.
+	var pageViewToken = mw.user.generateRandomSessionId();
 
 	function oneIn( populationSize ) {
-		return Math.floor( Math.random() * populationSize ) === 0;
+		// extract a number with the first 52 bits of pageId.
+		// max js int holds 53 bits, 13 hex chars = 6.5 bytes = 52 bits.
+		var rand = parseInt(pageViewToken.substr(0, 13), 16);
+		return rand % populationSize === 0;
 	}
 
-	function participateInTest( bucket, callback ) {
-		var pageId = mw.user.generateRandomSessionId(),
-			logEvent = function ( numResults ) {
-				mw.eventLog.logEvent( 'CompletionSuggestions', {
-					bucket: bucket,
-					// The number of suggestions provided to the user
-					numResults: numResults,
-					// used to correlate actions that happen on the same page.
-					pageId: pageId,
-					// we noticed a number of events get sent multiple
-					// times from javascript, especially when using sendBeacon.
-					// This logId allows for later deduplication
-					logId: mw.user.generateRandomSessionId(),
-				} );
-			};
-
-		mw.searchSuggest.request = function ( api, query, response, maxRows ) {
-			return callback( api, query, function ( data ) {
-				logEvent( data.length );
-				response( data );
-			}, maxRows );
-		};
+	function logEvent( bucket, numResults ) {
+		mw.eventLog.logEvent( 'CompletionSuggestions', {
+			bucket: bucket,
+			// The number of suggestions provided to the user
+			numResults: numResults,
+			// used to correlate actions that happen on the same page view.
+			pageViewToken: pageViewToken
+		} );
 	}
 
 	$( document ).ready( function () {
@@ -46,7 +38,7 @@
 		if ( oneIn( sampleSize ) ) {
 			bucket = 'opensearch';
 			callback = mw.searchSuggest.request;
-		} else if ( oneIn( sampleSize ) ) {
+		} else if ( oneIn( sampleSize - 1 ) ) {
 			bucket = 'cirrus-suggest';
 			callback = function ( api, query, response, maxRows ) {
 				return api.get( {
@@ -63,15 +55,19 @@
 			return;
 		}
 
-        mw.searchSuggest.request = function ( api, query, response, maxRows ) {
-			mw.loader.using( [
-				'mediawiki.user',
+		var deferred;
+		mw.searchSuggest.request = function ( api, query, response, maxRows ) {
+			deferred = deferred || mw.loader.using( [
 				'ext.eventLogging',
 				'schema.CompletionSuggestions'
-			] ).then( function () {
-				participateInTest( bucket, callback );
-				mw.searchSuggest.request( api, query, response, maxRows );
-			} );
+			] );
+
+			return callback( api, query, function ( data ) {
+				response( data );
+				deferred.then( function () {
+					logEvent( bucket, data.length );
+				} );
+			}, maxRows );
 		};
 
 	} );

@@ -83,7 +83,7 @@ $wgResourceModules += array(
 	'schema.CompletionSuggestions' => array(
 		'class' => 'ResourceLoaderSchemaModule',
 		'schema' => 'CompletionSuggestions',
-		'revision' => 13424343,
+		'revision' => 13630018,
 	),
 	'ext.wikimediaEvents' => array(
 		// Loaded globally for all users (including logged-out)
@@ -93,7 +93,8 @@ $wgResourceModules += array(
 			'ext.wikimediaEvents.searchSuggest.js',
 		),
 		'dependencies' => array(
-			'ext.wikimediaEvents.search',
+			'ext.wikimediaEvents.search', // independant test
+			'mediawiki.user', // needed by searchSuggest
 		),
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
