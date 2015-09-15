@@ -115,6 +115,33 @@
 		} );
 	}
 
+	/**
+	 * Adds click handlers to buttons inserted via userscripts and thus appearing unpredictably
+	 * late. To intercept them reliably yet soon enough to catch all the clicks on them,
+	 * make several attempts 1 second apart.
+	 *
+	 * @param {string} selector
+	 * @param {function} callback
+	 * @param {int} attemptsLeft
+	 */
+	function trackButton( selector, callback, attemptsLeft ) {
+		if ( !attemptsLeft ) {
+			return;
+		}
+		// Give the tool some time to load, can't hook to it cleanly because it's not in a RL module
+		setTimeout( function() {
+				var $button = $( selector );
+
+				if ( $button.length ) {
+					$button.on( 'click', callback );
+				} else {
+					trackButton( selector, callback, attemptsLeft - 1 );
+				}
+			},
+			1000
+		);
+	}
+
 	// Track GeoHack usage
 	$geoHackLinks = $( 'a[href^=\'//tools.wmflabs.org/geohack/geohack.php\']' );
 	$geoHackLinks.on( 'click', function( event ) {
@@ -142,8 +169,7 @@
 	// Track WikiMiniAtlas usage
 	if ( $geoHackLinks.length ) {
 		trackIframe( wmaSelector, 'WikiMiniAtlas' );
-		// Give WMA time to load, can't hook to it cleanly because it's not in a RL module
-		setTimeout( function() {
+		mw.hook( 'WikiMiniAtlas.load' ).add( function() {
 				$( '.wmamapbutton' ).on( 'click', function() {
 					var $this = $( this ),
 						isTitle = isTitleCoordinate( $this ),
@@ -152,23 +178,25 @@
 					$document.data( 'isPrimary-WikiMiniAtlas', isTitle );
 					if ( $container.is( ':visible' ) ) {
 						doTrack( 'WikiMiniAtlas', 'open', isTitle );
-						$container.one( 'hide', function() {
+						$container.one( 'hide', function () {
 							doTrack( 'WikiMiniAtlas', 'close', isTitle );
 						} );
 					}
 				} );
-			},
-			1000
+			}
 		);
 	}
 
 	// Track WIWOSM usage
 	$document.data( 'isPrimary-WIWOSM', true );
 	trackIframe( wiwosmSelector, 'WIWOSM' );
-	$( '.osm-icon-coordinates' ).on( 'click', function() {
-		var mapShown = $( wiwosmSelector ).is( ':visible' );
-		doTrack( 'WIWOSM', mapShown ? 'open' : 'close', true );
-	} );
+	trackButton( '.osm-icon-coordinates',
+		function() {
+			var mapShown = $( wiwosmSelector ).is( ':visible' );
+			doTrack( 'WIWOSM', mapShown ? 'open' : 'close', true );
+		},
+		5
+	);
 
 	// Track Wikivoyage maps
 	( function() {
