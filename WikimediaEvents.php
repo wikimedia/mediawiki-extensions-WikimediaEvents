@@ -105,7 +105,8 @@ $wgResourceModules += array(
 			'ext.wikimediaEvents.search.js',
 		),
 		'dependencies' => array(
-			'mediawiki.user', // needed by searchSuggest
+			'mediawiki.user', // needed by searchSuggest.js
+			'mediawiki.Uri', // needed by search.js
 		),
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
