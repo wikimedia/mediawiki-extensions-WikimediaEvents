@@ -7,7 +7,10 @@
  * Track events of the form mw.track( 'counter.bar', 5 ); are logged as bar=5c
  * The shorthand mw.track( 'counter.baz' ); is equivalent to mw.track( 'counter.baz', 1 );
  *
- * $wgWMEStatsdBaseUri must point to a URL that accepts query strings like ?foo=1235ms&bar=5c&baz=1c
+ * Track events of the form mw.track( 'gauge.baz', 42 ); are logged as baz=42g.
+ * The value is assumed to be an integer (and rounded if not).
+ *
+ * $wgWMEStatsdBaseUri must point to a URL that accepts query strings like ?foo=1235ms&bar=5c&baz=42g
  */
 
 ( function ( mw ) {
@@ -56,6 +59,18 @@
 		queue.push( {
 			key: topic.substring( 'counter.'.length ),
 			value: count + 'c'
+		} );
+		schedule();
+	} );
+
+	mw.trackSubscribe( 'gauge.', function ( topic, value ) {
+		value = Math.round( value );
+		if ( isNaN( value ) ) {
+			return;
+		}
+		queue.push( {
+			key: topic.substring( 'gauge.'.length ),
+			value: value + 'g'
 		} );
 		schedule();
 	} );
