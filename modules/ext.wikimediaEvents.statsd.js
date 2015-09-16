@@ -14,7 +14,9 @@
  */
 
 ( function ( mw ) {
-	var timer = null, queue = [];
+	var timer = null,
+		queue = [],
+		batchSize = 50;
 
 	if ( !mw.config.get( 'wgWMEStatsdBaseUri' ) ) {
 		// Not configured, do nothing
@@ -22,13 +24,14 @@
 	}
 
 	function dispatch() {
-		var i, len, values;
-		// Send events in batches of 50
+		var i, values;
+		timer = null;
+		// Send events in batches
 		// Note that queue is an array, not an object, because keys can be repeated
 		while ( queue.length ) {
 			// Ideally we'd use .map() here, but we have to support old browsers that don't have it
-			values = queue.splice( 0, 50 );
-			for ( i = 0, len = values.length; i < len; i++ ) {
+			values = queue.splice( 0, batchSize );
+			for ( i = 0; i < values.length; i++ ) {
 				values[i] = values[i].key + '=' + values[i].value;
 			}
 			( new Image() ).src = mw.config.get( 'wgWMEStatsdBaseUri' ) + '?' + values.join( '&' );
@@ -36,11 +39,15 @@
 	}
 
 	function schedule() {
-		if ( timer !== null ) {
+		// Don't unconditionally re-create the timer as that may post-pone execution indefinitely
+		// if different page components send metrics less than 2s apart before the user closes
+		// their window. Instead, only re-delay execution if the queue is small.
+		if ( !timer ) {
+			timer = setTimeout( dispatch, 2000 );
+		} else if ( queue.length < batchSize ) {
 			clearTimeout( timer );
+			timer = setTimeout( dispatch, 2000 );
 		}
-		// Save up events until no events occur for 2 seconds
-		timer = setTimeout( dispatch, 2000 );
 	}
 
 	mw.trackSubscribe( 'timing.', function ( topic, time ) {
