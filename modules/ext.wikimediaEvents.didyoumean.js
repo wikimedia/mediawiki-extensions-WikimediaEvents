@@ -74,7 +74,7 @@
 			mw.loader.using( [
 				'mediawiki.user',
 				'ext.eventLogging',
-				'schema.DidYouMean',
+				'schema.DidYouMean'
 			] ).then( participateInTest );
 		}
 	} );

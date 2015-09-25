@@ -13,7 +13,7 @@
 	function oneIn( populationSize ) {
 		// extract a number with the first 52 bits of pageId.
 		// max js int holds 53 bits, 13 hex chars = 6.5 bytes = 52 bits.
-		var rand = parseInt(pageViewToken.substr(0, 13), 16);
+		var rand = parseInt( pageViewToken.slice( 0, 13 ), 16 );
 		return rand % populationSize === 0;
 	}
 
@@ -28,12 +28,12 @@
 	}
 
 	$( document ).ready( function () {
+		var bucket, callback, deferred,
+			sampleSize = 10000; // .01% sampling rate per bucket
+
 		if ( !mw.config.get( 'wgWMEEnableCompletionExperiment' ) ) {
 			return;
 		}
-
-		var bucket, callback,
-			sampleSize = 10000; // .01% sampling rate per bucket
 
 		if ( oneIn( sampleSize ) ) {
 			bucket = 'opensearch';
@@ -44,7 +44,7 @@
 				return api.get( {
 					action: 'cirrus-suggest',
 					text: query,
-					limit: maxRows,
+					limit: maxRows
 				} ).done( function ( data ) {
 					response( $.map( data.suggest, function ( suggestion ) {
 						return suggestion.title;
@@ -55,7 +55,6 @@
 			return;
 		}
 
-		var deferred;
 		mw.searchSuggest.request = function ( api, query, response, maxRows ) {
 			deferred = deferred || mw.loader.using( [
 				'ext.eventLogging',

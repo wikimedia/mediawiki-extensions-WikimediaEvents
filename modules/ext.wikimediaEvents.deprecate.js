@@ -1,5 +1,6 @@
-/**
+/*!
  * Track usage of deprecated JavaScript functionality
+ *
  * @see https://meta.wikimedia.org/wiki/Schema:DeprecatedUsage
  */
 ( function ( mw ) {
@@ -20,7 +21,7 @@
 				pageId: mw.config.get( 'wgArticleId' ),
 				revId: mw.config.get( 'wgCurRevisionId' ),
 				version: mw.config.get( 'wgVersion' ),
-				modules: mw.inspect.grep( deprecated ).join(',')
+				modules: mw.inspect.grep( deprecated ).join( ',' )
 			} );
 		} );
 	} );

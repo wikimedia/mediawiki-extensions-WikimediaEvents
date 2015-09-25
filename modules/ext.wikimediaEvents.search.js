@@ -31,7 +31,7 @@
 	] ).then( function () {
 		var searchSessionId = $.jStorage.get( 'searchSessionId' ),
 			sessionLifetimeMs = 10 * 60 * 1000,
-			checkinTimes = [10,20,30,40,50,60,90,120,150,180,210,240,300,360,420],
+			checkinTimes = [ 10, 20, 30, 40, 50, 60, 90, 120, 150, 180, 210, 240, 300, 360, 420 ],
 			pageId = mw.user.generateRandomSessionId(),
 			logEvent = function ( action, checkinTime ) {
 				var evt = {
@@ -48,7 +48,7 @@
 						// we noticed a number of events get sent multiple
 						// times from javascript, especially when using sendBeacon.
 						// This logId allows for later deduplication
-						logId: mw.user.generateRandomSessionId(),
+						logId: mw.user.generateRandomSessionId()
 					};
 				if ( checkinTime !== undefined ) {
 					evt.checkin = checkinTime;

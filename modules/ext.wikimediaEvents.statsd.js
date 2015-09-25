@@ -12,7 +12,6 @@
  *
  * $wgWMEStatsdBaseUri must point to a URL that accepts query strings like ?foo=1235ms&bar=5c&baz=42g
  */
-
 ( function ( mw ) {
 	var timer = null,
 		queue = [],
@@ -32,7 +31,7 @@
 			// Ideally we'd use .map() here, but we have to support old browsers that don't have it
 			values = queue.splice( 0, batchSize );
 			for ( i = 0; i < values.length; i++ ) {
-				values[i] = values[i].key + '=' + values[i].value;
+				values[ i ] = values[ i ].key + '=' + values[ i ].value;
 			}
 			( new Image() ).src = mw.config.get( 'wgWMEStatsdBaseUri' ) + '?' + values.join( '&' );
 		}

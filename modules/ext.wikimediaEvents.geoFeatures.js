@@ -1,9 +1,10 @@
-/**
+/*!
  * Track geo/mapping feature usage
+ *
  * @see https://phabricator.wikimedia.org/T103017
  * @see https://meta.wikimedia.org/wiki/Schema:GeoFeatures
  */
-( function( $, mw, undefined ) {
+( function ( $, mw ) {
 	var oldHide = $.fn.hide,
 		// Which iframes are being tracked
 		tracked = {},
@@ -13,7 +14,7 @@
 		wiwosmSelector = 'iframe#openstreetmap';
 
 	// Override hide() to track it
-	$.fn.hide = function() {
+	$.fn.hide = function () {
 		$( this ).trigger( 'hide' );
 		return oldHide.apply( this, arguments );
 	};
@@ -22,7 +23,7 @@
 	 * Checks whether given element is part of a title (primary) coordinate
 	 *
 	 * @param {jQuery} $el
-	 * @returns {bool}
+	 * @return {boolean}
 	 */
 	function isTitleCoordinate( $el ) {
 		return $el.is( '#coordinates *' );
@@ -32,7 +33,7 @@
 	 * Returns an unique token identifying current user
 	 * Code borrowed from WikiGrok
 	 *
-	 * @returns {string}
+	 * @return {string}
 	 */
 	function getToken() {
 		var cookieName = 'GeoFeaturesUser',
@@ -61,16 +62,16 @@
 	 */
 	function doTrack( feature, action, titleCoordinate, url ) {
 		mw.eventLog.logEvent( 'GeoFeatures', {
-			'feature': feature,
-			'action': action,
-			'titleCoordinate': titleCoordinate,
-			'userToken': getToken()
+			feature: feature,
+			action: action,
+			titleCoordinate: titleCoordinate,
+			userToken: getToken()
 		} );
 		// If the event was caused by a click on a link, follow this link after a delay to give
 		// the event time to be logged
 		if ( url ) {
 			setTimeout(
-				function() {
+				function () {
 					document.location = url;
 				},
 				200
@@ -80,8 +81,9 @@
 
 	/**
 	 * Returns whether at least part of a given element is scrolled into view
+	 *
 	 * @param {jQuery} $el
-	 * @returns {bool}
+	 * @return {boolean}
 	 */
 	function isVisible( $el ) {
 		var $window = $( window ),
@@ -100,15 +102,15 @@
 	 * @param {string} feature Feature name to log
 	 */
 	function trackIframe( selector, feature ) {
-		$( window ).on( 'blur', function() {
+		$( window ).on( 'blur', function () {
 			// Wait for event loop to process updates to be sure
-			setTimeout( function() {
+			setTimeout( function () {
 				// Fastest checks first
-				if ( !tracked[selector]
+				if ( !tracked[ selector ]
 					&& document.activeElement instanceof HTMLIFrameElement
 					&& $( document.activeElement ).is( selector )
 				) {
-					tracked[selector] = true;
+					tracked[ selector ] = true;
 					doTrack( feature, 'interaction', !!$document.data( 'isPrimary-' + feature ) );
 				}
 			}, 0 );
@@ -121,15 +123,15 @@
 	 * make several attempts 1 second apart.
 	 *
 	 * @param {string} selector
-	 * @param {function} callback
-	 * @param {int} attemptsLeft
+	 * @param {Function} callback
+	 * @param {number} attemptsLeft
 	 */
 	function trackButton( selector, callback, attemptsLeft ) {
 		if ( !attemptsLeft ) {
 			return;
 		}
 		// Give the tool some time to load, can't hook to it cleanly because it's not in a RL module
-		setTimeout( function() {
+		setTimeout( function () {
 				var $button = $( selector );
 
 				if ( $button.length ) {
@@ -144,7 +146,7 @@
 
 	// Track GeoHack usage
 	$geoHackLinks = $( 'a[href^=\'//tools.wmflabs.org/geohack/geohack.php\']' );
-	$geoHackLinks.on( 'click', function( event ) {
+	$geoHackLinks.on( 'click', function ( event ) {
 		var $this = $( this ),
 			isTitle = isTitleCoordinate( $this );
 
@@ -169,8 +171,8 @@
 	// Track WikiMiniAtlas usage
 	if ( $geoHackLinks.length ) {
 		trackIframe( wmaSelector, 'WikiMiniAtlas' );
-		mw.hook( 'WikiMiniAtlas.load' ).add( function() {
-				$( '.wmamapbutton' ).on( 'click', function() {
+		mw.hook( 'WikiMiniAtlas.load' ).add( function () {
+				$( '.wmamapbutton' ).on( 'click', function () {
 					var $this = $( this ),
 						isTitle = isTitleCoordinate( $this ),
 						$container = $( wmaSelector ).parent();
@@ -191,7 +193,7 @@
 	$document.data( 'isPrimary-WIWOSM', true );
 	trackIframe( wiwosmSelector, 'WIWOSM' );
 	trackButton( '.osm-icon-coordinates',
-		function() {
+		function () {
 			var mapShown = $( wiwosmSelector ).is( ':visible' );
 			doTrack( 'WIWOSM', mapShown ? 'open' : 'close', true );
 		},
@@ -199,7 +201,9 @@
 	);
 
 	// Track Wikivoyage maps
-	( function() {
+	( function () {
+		var $map;
+
 		function onScroll() {
 			if ( isVisible( $map ) ) {
 				doTrack( 'Wikivoyage', 'view', false );
@@ -207,7 +211,7 @@
 			}
 		}
 
-		var $map = $( '#mapwrap #mapdiv' );
+		$map = $( '#mapwrap #mapdiv' );
 
 		if ( !$map.length ) {
 			return;
@@ -225,5 +229,5 @@
 		} else {
 			$( window ).on( 'scroll', onScroll );
 		}
-	} ) ();
+	}() );
 }( jQuery, mediaWiki ) );

@@ -1,5 +1,6 @@
-/**
+/*!
  * Track denied ResourceLoader module requests
+ *
  * @see https://meta.wikimedia.org/wiki/Schema:ModuleLoadFailure
  * @see https://phabricator.wikimedia.org/T101806
  */
