@@ -88,7 +88,7 @@ $wgResourceModules += array(
 	'schema.TestSearchSatisfaction2' => array(
 		'class'    => 'ResourceLoaderSchemaModule',
 		'schema'   => 'TestSearchSatisfaction2',
-		'revision' => 13821644,
+		'revision' => 14098806,
 	),
 	'schema.GeoFeatures' => array(
 		'class'    => 'ResourceLoaderSchemaModule',

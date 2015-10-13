@@ -46,8 +46,6 @@
 			delete uri.query.wprov;
 			window.history.replaceState( {}, '', uri.toString() );
 		}
-	} else if ( !isSearchResultPage ) {
-		return;
 	}
 
 	mw.loader.using( [
@@ -56,13 +54,16 @@
 		'ext.eventLogging',
 		'schema.TestSearchSatisfaction2'
 	] ).then( function () {
-		var searchSessionId = $.jStorage.get( 'searchSessionId' ),
+		var controlGroup, commonTermsProfile,
+			searchSessionId = $.jStorage.get( 'searchSessionId' ),
 			searchToken = $.jStorage.get( 'searchToken' ),
 			sessionLifetimeMs = 10 * 60 * 1000,
 			tokenLifetimeMs = 24 * 60 * 60 * 1000,
 			checkinTimes = [ 10, 20, 30, 40, 50, 60, 90, 120, 150, 180, 210, 240, 300, 360, 420 ],
 			articleId = mw.config.get( 'wgArticleId' ),
 			pageViewId = mw.user.generateRandomSessionId(),
+			activeSubTest = $.jStorage.get( 'searchSubTest' ),
+			subTestGroups = [ 'default', 'default.control', 'strict', 'strict.control', 'aggressive_recall', 'aggressive_recall.control' ],
 			logEvent = function ( action, checkinTime ) {
 				var scrollTop = $( window ).scrollTop(),
 					evt = {
@@ -93,6 +94,10 @@
 					evt.query = mw.config.get( 'searchTerm' );
 					// the number of results shown on this page.
 					evt.hitsReturned = $( '.mw-search-result-heading' ).length;
+					if ( activeSubTest ) {
+						evt.subTest = 'common-terms:' + activeSubTest + ':' +
+							( mw.config.get( 'wgCirrusCommonTermsApplicable' ) ? 'enabled' : 'disabled' );
+					}
 				}
 				if ( articleId > 0 ) {
 					evt.articleId = articleId;
@@ -125,20 +130,17 @@
 			};
 
 		if ( searchSessionId === 'rejected' ) {
-			// User was previously rejected or timed out
+			// User was previously rejected
 			return;
 		} else if ( searchSessionId ) {
 			// User was previously chosen to participate in the test.
 			// When a new search is performed reset the session lifetime.
 			if ( isSearchResultPage ) {
 				$.jStorage.setTTL( 'searchSessionId', sessionLifetimeMs );
+				$.jStorage.setTTL( 'searchSubTest', sessionLifetimeMs );
 			}
-		} else if (
-			// Most likely this means the users search session timed out.
-			!isSearchResultPage ||
+		} else if ( !oneIn( 200 ) ) {
 			// user was not chosen in a sampling of search results
-			!oneIn( 200 )
-		) {
 			$.jStorage.set( 'searchSessionId', 'rejected', { TTL: 2 * sessionLifetimeMs } );
 			return;
 		} else {
@@ -165,10 +167,39 @@
 			}
 		}
 
+		if ( activeSubTest === null ) {
+			// include 1 in 10 of the users in the satisfaction metric into the common terms sub test.
+			activeSubTest = oneIn( 5 ) ? subTestGroups[Math.floor( Math.random() * subTestGroups.length )] : '';
+			$.jStorage.set( 'searchSubTest', activeSubTest, { TTL: sessionLifetimeMs } );
+			if ( $.jStorage.get( 'searchSubTest' ) !== activeSubTest ) {
+				// localstorage full, just opt them back out of the sub test
+				activeSubTest = '';
+			}
+		}
+
+		if ( activeSubTest !== '' ) {
+			controlGroup = activeSubTest.substring( activeSubTest.length - '.control'.length ) === '.control';
+			commonTermsProfile = controlGroup ? activeSubTest.substring( activeSubTest.length - '.control'.length ) : activeSubTest;
+
+			$( 'input[type="search"]' ).closest( 'form' ).append( $( '<input>' ).attr( {
+				type: 'hidden',
+				name: 'cirrusUseCommonTermsQuery',
+				value: 'yes'
+			} ) ).append( $( '<input>' ).attr( {
+				type: 'hidden',
+				name: 'cirrusCommonTermsQueryProfile',
+				value: commonTermsProfile
+			} ) ).append( $( '<input>' ).attr( {
+				type: 'hidden',
+				name: 'cirrusCommonTermsQueryControlGroup',
+				value: controlGroup ? 'yes' : 'no'
+			} ) );
+		}
+
 		if ( isSearchResultPage ) {
 			$( '.mw-search-result-heading a' ).each( updateSearchHref );
 			logEvent( 'searchResultPage' );
-		} else {
+		} else if ( cameFromSearchResult || isDeepSearchResult ) {
 			$( '#mw-content-text a:not(.external)' ).each( updateDeepHref );
 			logEvent( 'visitPage' );
 			$( checkinTimes ).each( function ( _, checkin ) {
