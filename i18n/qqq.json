@@ -6,6 +6,8 @@
 		]
 	},
 	"wikimediaevents-desc": "{{desc|name=Wikimedia Events|url=https://www.mediawiki.org/wiki/Extension:WikimediaEvents}}",
+	"tag-cross-wiki-upload": "Tag on cross-wiki uploads",
+	"tag-cross-wiki-upload-description": "Description for the cross-wiki-upload tag.",
 	"tag-HHVM": "{{notranslate}} Tag on edits made via HHVM",
 	"tag-HHVM-description": "Description for the HHVM tag."
 }

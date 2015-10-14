@@ -163,5 +163,7 @@ $wgHooks['PageContentInsertComplete'][] = 'WikimediaEventsHooks::onPageContentIn
 $wgHooks['EditPageBeforeConflictDiff'][] = 'WikimediaEventsHooks::onEditPageBeforeConflictDiff';
 $wgHooks['ResourceLoaderGetConfigVars'][] = 'WikimediaEventsHooks::onResourceLoaderGetConfigVars';
 $wgHooks['ListDefinedTags'][] = 'WikimediaEventsHooks::onListDefinedTags';
+$wgHooks['ChangeTagsListActive'][] = 'WikimediaEventsHooks::onChangeTagsListActive';
 $wgHooks['XAnalyticsSetHeader'][] = 'WikimediaEventsHooks::onXAnalyticsHeader';
 $wgHooks['SpecialSearchResults'][] = 'WikimediaEventsHooks::onSpecialSearchResults';
+$wgHooks['UploadComplete'][] = 'WikimediaEventsHooks::onUploadComplete';
