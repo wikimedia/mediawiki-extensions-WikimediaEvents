@@ -19,5 +19,8 @@
 	"predef": [
 		"mediaWiki",
 		"jQuery"
-	]
+	],
+	"globals": {
+		"JSON": true
+	}
 }

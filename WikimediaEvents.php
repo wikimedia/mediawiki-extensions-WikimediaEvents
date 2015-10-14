@@ -83,7 +83,7 @@ $wgResourceModules += array(
 	'schema.TestSearchSatisfaction2' => array(
 		'class'    => 'ResourceLoaderSchemaModule',
 		'schema'   => 'TestSearchSatisfaction2',
-		'revision' => 14318467,
+		'revision' => 14098806,
 	),
 	'schema.GeoFeatures' => array(
 		'class'    => 'ResourceLoaderSchemaModule',
@@ -109,6 +109,7 @@ $wgResourceModules += array(
 		'dependencies' => array(
 			'mediawiki.user', // needed by search.js, searchSuggest.js
 			'mediawiki.Uri', // needed by searchSatisfaction.js
+			'mediawiki.storage', // needed by searchSatisfaction.js
 			'schema.GeoFeatures', // needed by geoFeatures.js
 		),
 		'localBasePath' => __DIR__ . '/modules',
