@@ -322,13 +322,29 @@ class WikimediaEventsHooks {
 	}
 
 	/**
-	 * Register 'HHVM' change tag.
+	 * Register change tags.
 	 *
 	 * @param array &$tags
 	 * @return bool
 	 */
 	public static function onListDefinedTags( &$tags ) {
 		$tags[] = 'HHVM';
+		if ( wfWikiId() === 'commonswiki' ) {
+			$tags[] = 'cross-wiki-upload';
+		}
+		return true;
+	}
+
+	/**
+	 * Mark active change tags.
+	 *
+	 * @param array &$tags
+	 * @return bool
+	 */
+	public static function onChangeTagsListActive( &$tags ) {
+		if ( wfWikiId() === 'commonswiki' ) {
+			$tags[] = 'cross-wiki-upload';
+		}
 		return true;
 	}
 
@@ -344,6 +360,30 @@ class WikimediaEventsHooks {
 			'wgIsSearchResultPage' => true,
 		) );
 		$wgOut->addModules( 'ext.wikimediaEvents.didyoumean' );
+
+		return true;
+	}
+
+	/**
+	 * Add a change tag 'cross-wiki-upload' to cross-wiki uploads to Commons, to track usage of the
+	 * new feature. (Both to track adoption, and to let Commons editors review the uploads.) (T115328)
+	 */
+	public static function onUploadComplete( UploadBase $uploadBase ) {
+		if ( !defined( 'MW_API' ) ) {
+			return true;
+		}
+		if ( wfWikiId() !== 'commonswiki' ) {
+			return true;
+		}
+		$request = RequestContext::getMain()->getRequest();
+		if ( !$request->response()->getHeader( 'Access-Control-Allow-Origin' ) ) {
+			return true;
+		}
+
+		$revId = $uploadBase->getLocalFile()->getTitle()->getLatestRevID( Title::GAID_FOR_UPDATE );
+		DeferredUpdates::addCallableUpdate( function () use ( $revId ) {
+			ChangeTags::addTags( 'cross-wiki-upload', null, $revId );
+		} );
 
 		return true;
 	}

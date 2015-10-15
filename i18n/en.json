@@ -5,6 +5,8 @@
 		]
 	},
 	"wikimediaevents-desc": "Logs Wikimedia-specific events using EventLogging",
+	"tag-cross-wiki-upload": "Cross-wiki upload",
+	"tag-cross-wiki-upload-description": "Files uploaded from inside the visual editor on other wikis",
 	"tag-HHVM": "[[mw:Special:MyLanguage/HHVM/About|HHVM]]",
 	"tag-HHVM-description": "Revisions made with the HipHop Virtual Machine enabled instead of the Zend PHP interpreter (expected to improve performance, tagged for debugging/analysis)"
 }
