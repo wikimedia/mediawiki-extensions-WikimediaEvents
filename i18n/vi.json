@@ -5,6 +5,5 @@
 		]
 	},
 	"wikimediaevents-desc": "Ghi các sự kiện đặc biệt của Wikimedia vào nhật trình dùng EventLogging",
-	"tag-HHVM-description": "Các thay đổi được thực hiện qua máy ảo HipHop Virtual Machine (HHVM) thay vì trình thông dịch PHP Zend (dự kiến sẽ cải thiện hiệu suất; được gắn thẻ để gỡ lỗi và phân tích)",
-	"hhvm-desc": "Hãy thử sử dụng HHVM, một môi trường chạy PHP thay thế nhằm mục đích cải thiện sự duyệt Web nói chung và hiệu suất sửa đổi."
+	"tag-HHVM-description": "Các thay đổi được thực hiện qua máy ảo HipHop Virtual Machine (HHVM) thay vì trình thông dịch PHP Zend (dự kiến sẽ cải thiện hiệu suất; được gắn thẻ để gỡ lỗi và phân tích)"
 }

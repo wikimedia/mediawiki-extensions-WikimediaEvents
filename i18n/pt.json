@@ -3,7 +3,5 @@
 		"authors": [
 			"Vitorvicentevalente"
 		]
-	},
-	"hhvm-label": "Servidores mais rápidos com HHVM",
-	"hhvm-desc": "Altere para servidores, do software experimental HHVM, que estão a funcionar de forma mais rápida. A sua opinião é fundamental para tornar isto num sucesso para todos."
+	}
 }

@@ -8,7 +8,5 @@
 		]
 	},
 	"wikimediaevents-desc": "Trace les événements spécifiques à Wikimédia en utilisant EventLogging",
-	"tag-HHVM-description": "Contributions faites avec la Machine virtuelle HipHop (HHVM) au lieu de l’interpréteur PHP Zend (cela devrait améliorer les performances, la balise sert à l’analyse et au débuggage)",
-	"hhvm-label": "Accélération des serveurs avec HHVM",
-	"hhvm-desc": "Basculer vers les serveurs qui exécutent un logiciel expérimental plus rapide, HHVM. Votre rétroaction est nécessaires pour faire de ce travail un succès pour tout le monde."
+	"tag-HHVM-description": "Contributions faites avec la Machine virtuelle HipHop (HHVM) au lieu de l’interpréteur PHP Zend (cela devrait améliorer les performances, la balise sert à l’analyse et au débuggage)"
 }

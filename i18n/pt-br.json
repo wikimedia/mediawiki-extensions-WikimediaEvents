@@ -4,6 +4,5 @@
 			"Jefersonmoraes"
 		]
 	},
-	"tag-HHVM-description": "Revisões feitas com o HipHop Virtual Machine habilitado em vez de o intérprete Zend PHP (espera-se melhorar o desempenho, marcado para depuração/análise)",
-	"hhvm-label": "Servidores mais rápidos com HHVM"
+	"tag-HHVM-description": "Revisões feitas com o HipHop Virtual Machine habilitado em vez de o intérprete Zend PHP (espera-se melhorar o desempenho, marcado para depuração/análise)"
 }

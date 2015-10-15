@@ -5,6 +5,5 @@
 			"Miya"
 		]
 	},
-	"wikimediaevents-desc": "ウィキメディア特有のイベントを、EventLogging を使用して記録する",
-	"hhvm-desc": "より速い実験的ソフトウェア、HHVMを実行しているサーバーに切り替えます。このworkをすべてのひとにとって成功とするためには、あなたのフィードバックが重要です。"
+	"wikimediaevents-desc": "ウィキメディア特有のイベントを、EventLogging を使用して記録する"
 }

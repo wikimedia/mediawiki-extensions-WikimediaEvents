@@ -6,7 +6,5 @@
 		]
 	},
 	"wikimediaevents-desc": "רישום ביומן של אירועים ייחודיים לוויקימדיה באמצעות EventLogging",
-	"tag-HHVM-description": "שינויים שנעשו עם HipHop Virtual Machine ולא עם מפענח Zend PHP (זה צפוי לשפר ביצועים, התיוג נעשה לשם ניפוי שגיאות וניתוח)",
-	"hhvm-label": "שרתים מהירים יותר בעזרת HHVM",
-	"hhvm-desc": "לעבור לשרתים שמריצים תכנה ניסיונית ומהירה יותר – HHVM. המשוב שלכם חיוני להצלחת העבודה הזאת."
+	"tag-HHVM-description": "שינויים שנעשו עם HipHop Virtual Machine ולא עם מפענח Zend PHP (זה צפוי לשפר ביצועים, התיוג נעשה לשם ניפוי שגיאות וניתוח)"
 }
