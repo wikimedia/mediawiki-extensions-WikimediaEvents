@@ -6,5 +6,7 @@
 		]
 	},
 	"wikimediaevents-desc": "Protokolliert wikimediaspezifische Ereignisse mit EventLogging",
+	"tag-cross-wiki-upload": "Wikiübergreifender Upload",
+	"tag-cross-wiki-upload-description": "Dateien, die vom visuellen Editor auf anderen Wikis hochgeladen wurden.",
 	"tag-HHVM-description": "Versionen, die mit aktivierter „HipHop Virtual Machine“ anstatt des PHP-Interpreters „Zend“ erstellt wurden (Leistungssteigerungen werden erwartet, markiert zur Fehlerbehebung und -analyse)"
 }

@@ -5,5 +5,7 @@
 		]
 	},
 	"wikimediaevents-desc": "Заведува викимедиски настани со EventLogging",
+	"tag-cross-wiki-upload": "Подигање на сите викија",
+	"tag-cross-wiki-upload-description": "Податотеки подигнати од визуелниот уредник на други викија",
 	"tag-HHVM-description": "Овозможени се преработките направени со HipHop Virtual Machine наместо PHP-толкувачот Zend (се очекува да ја подобри работата, означен за поправка на грешки/анализа)"
 }
