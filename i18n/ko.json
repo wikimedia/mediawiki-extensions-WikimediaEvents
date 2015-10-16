@@ -4,8 +4,10 @@
 			"Hym411",
 			"Bluemersen",
 			"Revi",
-			"아라"
+			"아라",
+			"Yearning"
 		]
 	},
-	"wikimediaevents-desc": "EventLogging을 사용하여 위키미디어 관련 이벤트를 기록합니다"
+	"wikimediaevents-desc": "EventLogging을 사용하여 위키미디어 관련 이벤트를 기록합니다",
+	"tag-cross-wiki-upload-description": "다른 위키의 비주얼에디터의 내부로부터 파일을 업로드"
 }

@@ -5,5 +5,7 @@
 		]
 	},
 	"wikimediaevents-desc": "Pomocí EventLogging zaznamenává události specifické pro Wikimedia",
+	"tag-cross-wiki-upload": "Načteno z jiné wiki",
+	"tag-cross-wiki-upload-description": "Soubory načtené z prostředí VisualEditoru na jiných wiki",
 	"tag-HHVM-description": "Revize provedené se zapnutým HipHop Virtual Machine místo PHP interpretru Zend (očekáván vylepšený výkon, označeno pro ladění/analýzu)"
 }

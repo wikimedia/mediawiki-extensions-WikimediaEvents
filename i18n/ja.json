@@ -2,8 +2,10 @@
 	"@metadata": {
 		"authors": [
 			"Shirayuki",
-			"Miya"
+			"Miya",
+			"Sujiniku"
 		]
 	},
-	"wikimediaevents-desc": "ウィキメディア特有のイベントを、EventLogging を使用して記録する"
+	"wikimediaevents-desc": "ウィキメディア特有のイベントを、EventLogging を使用して記録する",
+	"tag-cross-wiki-upload-description": "他ウィキでのビジュアルエディターの内側から、ファイルをアップロード"
 }
