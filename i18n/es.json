@@ -2,8 +2,10 @@
 	"@metadata": {
 		"authors": [
 			"Fitoschido",
-			"Jonathan rrr"
+			"Jonathan rrr",
+			"Macofe"
 		]
 	},
-	"wikimediaevents-desc": "Registra eventos específicos de Wikimedia mediante EventLogging"
+	"wikimediaevents-desc": "Registra eventos específicos de Wikimedia mediante EventLogging",
+	"tag-cross-wiki-upload-description": "Archivos subidos desde dentro del editor visual en otros wikis"
 }

@@ -5,5 +5,7 @@
 		]
 	},
 	"wikimediaevents-desc": "Rexistra socesos específicos de Wikimedia usando EventLogging",
+	"tag-cross-wiki-upload": "Xubida ente wikis",
+	"tag-cross-wiki-upload-description": "Ficheros xubíos dende dientro del editor visual a otres wikis",
 	"tag-HHVM-description": "Revisiones feches cola Máquina virtual HipHop activada en llugar del intérprete de PHP Zend (espérase aumentar el rindimientu, marcao pa depuración/analís)"
 }
