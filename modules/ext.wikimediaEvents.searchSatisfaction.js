@@ -169,7 +169,7 @@
 
 		if ( activeSubTest === null ) {
 			// include 1 in 10 of the users in the satisfaction metric into the common terms sub test.
-			activeSubTest = oneIn( 5 ) ? subTestGroups[Math.floor( Math.random() * subTestGroups.length )] : '';
+			activeSubTest = subTestGroups[Math.floor( Math.random() * subTestGroups.length )];
 			$.jStorage.set( 'searchSubTest', activeSubTest, { TTL: sessionLifetimeMs } );
 			if ( $.jStorage.get( 'searchSubTest' ) !== activeSubTest ) {
 				// localstorage full, just opt them back out of the sub test
