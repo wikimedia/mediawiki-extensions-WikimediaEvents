@@ -438,7 +438,7 @@ class WikimediaEventsHooks {
 
 		$title = $uploadBase->getLocalFile()->getTitle();
 		$method = __METHOD__;
-		DeferredUpdates::addCallableUpdate( function () use ( $title ) {
+		DeferredUpdates::addCallableUpdate( function () use ( $title, $method ) {
 			$revId = $title->getLatestRevID( Title::GAID_FOR_UPDATE );
 			$logId = wfGetDB( DB_MASTER )->selectField(
 				'logging',
