@@ -436,9 +436,21 @@ class WikimediaEventsHooks {
 			return true;
 		}
 
-		$revId = $uploadBase->getLocalFile()->getTitle()->getLatestRevID( Title::GAID_FOR_UPDATE );
-		DeferredUpdates::addCallableUpdate( function () use ( $revId ) {
-			ChangeTags::addTags( 'cross-wiki-upload', null, $revId );
+		$title = $uploadBase->getLocalFile()->getTitle();
+		$method = __METHOD__;
+		DeferredUpdates::addCallableUpdate( function () use ( $title ) {
+			$revId = $title->getLatestRevID( Title::GAID_FOR_UPDATE );
+			$logId = wfGetDB( DB_MASTER )->selectField(
+				'logging',
+				'log_id',
+				array(
+					'log_type' => 'upload',
+					'log_page' => $title->getArticleID( Title::GAID_FOR_UPDATE ),
+				),
+				$method,
+				array( 'ORDER BY' => 'log_timestamp DESC' )
+			);
+			ChangeTags::addTags( 'cross-wiki-upload', null, $revId, $logId );
 		} );
 
 		return true;
