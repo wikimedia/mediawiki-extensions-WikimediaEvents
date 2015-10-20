@@ -112,6 +112,62 @@ class WikimediaEventsHooks {
 	}
 
 	/**
+	 * Log and update statistics whenever an editor reaches the active editor
+	 * threshold for this month.
+	 *
+	 * @see https://meta.wikimedia.org/wiki/Schema:EditorActivation
+	 * @see https://www.mediawiki.org/wiki/Analytics/Metric_definitions#Active_editor
+	 *
+	 * @param Revision &$revision
+	 * @param string $data
+	 * @param array $flags
+	 */
+	public static function onRevisionInsertComplete( &$revision, $data, $flags ) {
+		$context = RequestContext::getMain();
+		$user = $context->getUser();
+
+		// Anonymous users and bots don't count (sorry!)
+		if ( $user->isAnon() || $user->isAllowed( 'bot' ) ) {
+			return;
+		}
+
+		// Only mainspace edits qualify
+		if ( !$revision->getTitle()->inNamespace( NS_MAIN ) ) {
+			return;
+		}
+
+		// Check if this is the user's fifth mainspace edit this month.
+		// If it is, then this editor has just made the cut as an active
+		// editor for this wiki for this month.
+		DeferredUpdates::addCallableUpdate( function () use ( $context, $user ) {
+			$db = wfGetDB( DB_MASTER );
+
+			$since = date( 'Ym' ) . '00000000';
+			$numMainspaceEditsThisMonth = $db->selectRowCount(
+				array( 'revision', 'page' ),
+				'1',
+				array(
+					'rev_user'         => $user->getId(),
+					'rev_timestamp >= ' . $db->addQuotes( $db->timestamp( $since ) ),
+					'page_namespace'   => NS_MAIN,
+				),
+				__FILE__ . ':' . __LINE__,
+				array( 'LIMIT' => 6 ),
+				array( 'page' => array( 'INNER JOIN', 'rev_page = page_id' ) )
+			);
+
+			if ( $numMainspaceEditsThisMonth === 5 ) {
+				$month = date( 'm-Y' );
+				$context->getStats()->increment( 'editor.activation.' . $month );
+				EventLogging::logEvent( 'EditorActivation', 14208837, array(
+					'userId' => $user->getId(),
+					'month'  => $month,
+				) );
+			}
+		} );
+	}
+
+	/**
 	 * Handler for UserSaveOptions hook.
 	 * @see http://www.mediawiki.org/wiki/Manual:Hooks/UserSaveOptions
 	 * @param User $user user whose options are being saved

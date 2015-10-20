@@ -173,3 +173,4 @@ $wgHooks['ChangeTagsListActive'][] = 'WikimediaEventsHooks::onChangeTagsListActi
 $wgHooks['XAnalyticsSetHeader'][] = 'WikimediaEventsHooks::onXAnalyticsHeader';
 $wgHooks['SpecialSearchResults'][] = 'WikimediaEventsHooks::onSpecialSearchResults';
 $wgHooks['UploadComplete'][] = 'WikimediaEventsHooks::onUploadComplete';
+$wgHooks['RevisionInsertComplete'][] = 'WikimediaEventsHooks::onRevisionInsertComplete';
