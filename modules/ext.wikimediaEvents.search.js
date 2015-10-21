@@ -2,7 +2,7 @@
 ( function ( $ ) {
 	'use strict';
 
-	var defaults, depsPromise, sessionStartTime,
+	var defaults, sessionStartTime,
 		getRandomToken = function () {
 			return mw.user.generateRandomSessionId() + ( new Date() ).getTime().toString();
 		},
@@ -19,20 +19,15 @@
 		return;
 	}
 
-	depsPromise = mw.loader.using( [
-		'schema.Search',
-		'ext.eventLogging'
-	] );
-
-	defaults = {
-		platform: 'desktop',
-		userSessionToken: getRandomToken(),
-		searchSessionToken: getRandomToken()
-	};
-
 	mw.trackSubscribe( 'mediawiki.searchSuggest', function ( topic, data ) {
 		var loggingData = {
 			action: data.action
+		};
+
+		defaults = defaults || {
+			platform: 'desktop',
+			userSessionToken: getRandomToken(),
+			searchSessionToken: getRandomToken()
 		};
 
 		if ( data.action === 'session-start' ) {
@@ -51,7 +46,7 @@
 		}
 		loggingData.timeOffsetSinceStart = Math.round( this.timeStamp - sessionStartTime ) ;
 		$.extend( loggingData, defaults );
-		depsPromise.then( function () {
+		mw.loader.using( [ 'schema.Search' ] ).then( function () {
 			mw.eventLog.logEvent( 'Search', loggingData );
 		} );
 	} );
