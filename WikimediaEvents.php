@@ -88,17 +88,12 @@ $wgResourceModules += array(
 	'schema.TestSearchSatisfaction2' => array(
 		'class'    => 'ResourceLoaderSchemaModule',
 		'schema'   => 'TestSearchSatisfaction2',
-		'revision' => 14098806,
+		'revision' => 13223897,
 	),
 	'schema.GeoFeatures' => array(
 		'class'    => 'ResourceLoaderSchemaModule',
 		'schema'   => 'GeoFeatures',
 		'revision' => 12914994,
-	),
-	'schema.Search' => array(
-		'class'    => 'ResourceLoaderSchemaModule',
-		'schema'   => 'Search',
-		'revision' => 11670541,
 	),
 	'ext.wikimediaEvents' => array(
 		// Loaded globally for all users (including logged-out)
@@ -107,12 +102,11 @@ $wgResourceModules += array(
 			'ext.wikimediaEvents.resourceloader.js',
 			'ext.wikimediaEvents.searchSuggest.js',
 			'ext.wikimediaEvents.statsd.js',
-			'ext.wikimediaEvents.searchSatisfaction.js',
 			'ext.wikimediaEvents.search.js',
 		),
 		'dependencies' => array(
-			'mediawiki.user', // needed by search.js, searchSuggest.js
-			'mediawiki.Uri', // needed by searchSatisfaction.js
+			'mediawiki.user', // needed by searchSuggest.js
+			'mediawiki.Uri', // needed by search.js
 		),
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
