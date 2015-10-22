@@ -5,5 +5,7 @@
 			"Sjoerddebruin"
 		]
 	},
-	"wikimediaevents-desc": "Logboeken voor Wikimediaspecifieke gebeurtenissen die EventLogging gebruiken"
+	"wikimediaevents-desc": "Logboeken voor Wikimediaspecifieke gebeurtenissen die EventLogging gebruiken",
+	"tag-cross-wiki-upload": "Upload vanuit een andere wiki",
+	"tag-cross-wiki-upload-description": "Bestanden geüpload vanuit de visuele tekstverwerker in andere wiki's"
 }

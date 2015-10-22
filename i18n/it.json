@@ -7,5 +7,6 @@
 	},
 	"wikimediaevents-desc": "Registra eventi specifici Wikimedia utilizzando EventLogging",
 	"tag-cross-wiki-upload": "Caricamento cross-wiki",
+	"tag-cross-wiki-upload-description": "File caricati dall'editor visuale su altri wiki",
 	"tag-HHVM-description": "Modifiche apportate con la macchina virtuale HipHop (HHVM) abilitata invece dell'interprete PHP Zend (dovrebbe migliorare le prestazioni, sono etichettate per il debug/analisi)"
 }
