@@ -14,16 +14,9 @@ class WikimediaEventsHooks {
 	 * @param Skin &$skin
 	 */
 	public static function onBeforePageDisplay( &$out, &$skin ) {
-		global $wgWMETrackGeoFeatures;
-
 		$out->addModules( 'ext.wikimediaEvents' );
 
-		if ( $wgWMETrackGeoFeatures ) {
-			$out->addModules( 'ext.wikimediaEvents.geoFeatures' );
-		}
-
-		$user = $out->getUser();
-		if ( $user->isLoggedIn() ) {
+		if ( $out->getUser()->isLoggedIn() ) {
 			$out->addModules( 'ext.wikimediaEvents.loggedin' );
 		}
 	}

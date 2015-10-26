@@ -38,11 +38,6 @@ $wgExtensionCredits['other'][] = array(
 $wgWMEStatsdBaseUri = false;
 
 /**
- * @var bool: Whether geo/maps features specific to large Wikipedias should be tracked
- */
-$wgWMETrackGeoFeatures = false;
-
-/**
  * @var bool Whether the completion suggestion experiment is enabled.
  */
 $wgWMEEnableCompletionExperiment = false;
@@ -109,10 +104,12 @@ $wgResourceModules += array(
 			'ext.wikimediaEvents.statsd.js',
 			'ext.wikimediaEvents.searchSatisfaction.js',
 			'ext.wikimediaEvents.search.js',
+			'ext.wikimediaEvents.geoFeatures.js',
 		),
 		'dependencies' => array(
 			'mediawiki.user', // needed by search.js, searchSuggest.js
 			'mediawiki.Uri', // needed by searchSatisfaction.js
+			'schema.GeoFeatures', // needed by geoFeatures.js
 		),
 		'localBasePath' => __DIR__ . '/modules',
 		'remoteExtPath' => 'WikimediaEvents/modules',
@@ -138,15 +135,6 @@ $wgResourceModules += array(
 		'remoteExtPath' => 'WikimediaEvents/modules',
 		'targets' => array( 'desktop' ),
 		'dependencies' => 'mediawiki.Uri',
-	),
-	'ext.wikimediaEvents.geoFeatures' => array(
-		'scripts'       => array(
-			'ext.wikimediaEvents.geoFeatures.js',
-		),
-		'localBasePath' => __DIR__ . '/modules',
-		'remoteExtPath' => 'WikimediaEvents/modules',
-		'targets'       => array( 'desktop', 'mobile' ),
-		'dependencies'  => array( 'schema.GeoFeatures' ),
 	),
 );
 
