@@ -293,7 +293,7 @@ class WikimediaEventsHooks {
 	 * @param string $reason The reason that the title was moved
 	 * @return bool true in all cases
 	 */
-	public static function onTitleMoveComplete( Title &$oldTitle, Title &$newTitle, User &$user, $pageId, $redirectId, $reason ) {
+	public static function onTitleMoveComplete( Title $oldTitle, Title $newTitle, User $user, $pageId, $redirectId, $reason ) {
 		EventLogging::logEvent( 'PageMove', 7495717, array(
 				'userId' => $user->getId(),
 				'userText' => $user->getName(),
