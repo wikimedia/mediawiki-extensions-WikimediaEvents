@@ -93,7 +93,7 @@ $wgResourceModules += array(
 	'schema.Search' => array(
 		'class'    => 'ResourceLoaderSchemaModule',
 		'schema'   => 'Search',
-		'revision' => 12057910,
+		'revision' => 14361785,
 	),
 	'ext.wikimediaEvents' => array(
 		// Loaded globally for all users (including logged-out)
