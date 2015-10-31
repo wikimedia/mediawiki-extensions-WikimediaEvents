@@ -5,5 +5,7 @@
 		]
 	},
 	"wikimediaevents-desc": "Žurnalas Wikimedia specifinių įvykių, naudojant EventLogging",
+	"tag-cross-wiki-upload": "Tarp-vikinis įkėlimas",
+	"tag-cross-wiki-upload-description": "Failai įkelti naudojant kitų vikių vizualų redaktorių",
 	"tag-HHVM-description": "Versija sukurta su aktyvuota Zend PHP interpretatoriaus HipHop virtualia mašina (tikėtasi, kad veikimas paspartės, pažymėta derinimui/analizavimui)"
 }
