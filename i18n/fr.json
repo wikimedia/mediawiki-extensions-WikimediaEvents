@@ -4,11 +4,12 @@
 			"Gomoko",
 			"Seb35",
 			"Ltrlg",
-			"Sherbrooke"
+			"Sherbrooke",
+			"Urhixidur"
 		]
 	},
 	"wikimediaevents-desc": "Trace les événements spécifiques à Wikimédia en utilisant EventLogging",
 	"tag-cross-wiki-upload": "Téléchargement inter-wiki",
 	"tag-cross-wiki-upload-description": "Fichiers téléchargés depuis l’intérieur d’un éditeur visuel sur d’autres wikis",
-	"tag-HHVM-description": "Contributions faites avec la Machine virtuelle HipHop (HHVM) au lieu de l’interpréteur PHP Zend (cela devrait améliorer les performances, la balise sert à l’analyse et au débuggage)"
+	"tag-HHVM-description": "Contributions faites avec la machine virtuelle HipHop (HHVM) au lieu de l’interpréteur PHP Zend (cela devrait améliorer les performances, la balise sert à l’analyse et au débogage)"
 }
