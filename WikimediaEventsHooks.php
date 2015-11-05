@@ -50,6 +50,15 @@ class WikimediaEventsHooks {
 			return;
 		}
 
+		if ( PHP_SAPI !== 'cli' ) {
+			DeferredUpdates::addCallableUpdate( function () {
+				$context = RequestContext::getMain();
+				$timing = $context->getTiming();
+				$measure = $timing->measure( 'editResponseTime', 'requestStart', 'requestShutdown' );
+				$context->getStats()->timing( 'timing.editResponseTime', $measure['duration'] * 1000 );
+			} );
+		}
+
 		$isAPI = defined( 'MW_API' );
 		$isMobile = class_exists( 'MobileContext' ) && MobileContext::singleton()->shouldDisplayMobileView();
 		$revId = $revision->getId();
