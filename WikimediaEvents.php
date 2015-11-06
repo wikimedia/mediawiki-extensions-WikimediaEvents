@@ -99,7 +99,6 @@ $wgResourceModules += array(
 		// Loaded globally for all users (including logged-out)
 		// Don't remove if empty!
 		'scripts'       => array(
-			'ext.wikimediaEvents.resourceloader.js',
 			'ext.wikimediaEvents.searchSuggest.js',
 			'ext.wikimediaEvents.statsd.js',
 			'ext.wikimediaEvents.searchSatisfaction.js',
