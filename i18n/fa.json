@@ -1,9 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
-			"Ebraminio"
+			"Ebraminio",
+			"Reza1615"
 		]
 	},
 	"wikimediaevents-desc": "واردکردن رویدادهای به‌خصوص ویکی‌مدیا با استفاده از EventLogging",
+	"tag-cross-wiki-upload": "بارگذاری بین ویکی",
+	"tag-cross-wiki-upload-description": "پرونده‌های بارگذاری شده از درون ویرایشگر دیداری در سایر ویکی‌ها",
 	"tag-HHVM-description": "نسخه با ماشین مجازی هیپ‌هاپ به جای مفسر زند پی‌اچ‌پی درست شده‌اند (مستثنی‌شده برای بهبود کارایی، برای اشکال‌زدایی/تحلیل برچسپ زده شده است)"
 }
