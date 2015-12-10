@@ -55,7 +55,9 @@ class WikimediaEventsHooks {
 				$context = RequestContext::getMain();
 				$timing = $context->getTiming();
 				$measure = $timing->measure( 'editResponseTime', 'requestStart', 'requestShutdown' );
-				$context->getStats()->timing( 'timing.editResponseTime', $measure['duration'] * 1000 );
+				if ( $measure !== false ) {
+					$context->getStats()->timing( 'timing.editResponseTime', $measure['duration'] * 1000 );
+				}
 			} );
 		}
 
