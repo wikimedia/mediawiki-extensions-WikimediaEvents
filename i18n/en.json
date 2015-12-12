@@ -7,6 +7,10 @@
 	"wikimediaevents-desc": "Logs Wikimedia-specific events using EventLogging",
 	"tag-cross-wiki-upload": "Cross-wiki upload",
 	"tag-cross-wiki-upload-description": "Files uploaded from inside the wikitext and visual editors on other wikis",
+	"tag-cross-wiki-upload-1": "-",
+	"tag-cross-wiki-upload-2": "-",
+	"tag-cross-wiki-upload-3": "-",
+	"tag-cross-wiki-upload-4": "-",
 	"tag-HHVM": "[[mw:Special:MyLanguage/HHVM/About|HHVM]]",
 	"tag-HHVM-description": "Revisions made with the HipHop Virtual Machine enabled instead of the Zend PHP interpreter (expected to improve performance, tagged for debugging/analysis)"
 }
