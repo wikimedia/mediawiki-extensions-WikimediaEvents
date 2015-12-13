@@ -7,5 +7,5 @@
 		]
 	},
 	"wikimediaevents-desc": "ウィキメディア特有のイベントを、EventLogging を使用して記録する",
-	"tag-cross-wiki-upload-description": "他ウィキでのビジュアルエディターの内側から、ファイルをアップロード"
+	"tag-cross-wiki-upload-description": "他ウィキでのウィキテキストの内側およびビジュアルエディターの内側から、ファイルをアップロード"
 }
