@@ -440,9 +440,14 @@ class WikimediaEventsHooks {
 			return true;
 		}
 
+		$bucket = $request->getVal( 'bucket' );
+		if ( !in_array( $bucket, array( '1', '2', '3', '4' ) ) ) {
+			$bucket = null;
+		}
+
 		$title = $uploadBase->getLocalFile()->getTitle();
 		$method = __METHOD__;
-		DeferredUpdates::addCallableUpdate( function () use ( $title, $method ) {
+		DeferredUpdates::addCallableUpdate( function () use ( $title, $method, $bucket ) {
 			$revId = $title->getLatestRevID( Title::GAID_FOR_UPDATE );
 			$logId = wfGetDB( DB_MASTER )->selectField(
 				'logging',
@@ -454,7 +459,11 @@ class WikimediaEventsHooks {
 				$method,
 				array( 'ORDER BY' => 'log_timestamp DESC' )
 			);
-			ChangeTags::addTags( 'cross-wiki-upload', null, $revId, $logId );
+			$tags = array( 'cross-wiki-upload' );
+			if ( $bucket ) {
+				$tags[] = "cross-wiki-upload-$bucket";
+			}
+			ChangeTags::addTags( $tags, null, $revId, $logId );
 		} );
 
 		return true;
