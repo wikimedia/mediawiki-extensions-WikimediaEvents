@@ -7,11 +7,11 @@
 	},
 	"wikimediaevents-desc": "{{desc|name=Wikimedia Events|url=https://www.mediawiki.org/wiki/Extension:WikimediaEvents}}",
 	"tag-cross-wiki-upload": "Tag on cross-wiki uploads",
+	"tag-cross-wiki-upload-description": "Description for the cross-wiki-upload tag.",
 	"tag-cross-wiki-upload-1": "{{notranslate}} Tag on cross-wiki uploads submitted using interface option 1.",
 	"tag-cross-wiki-upload-2": "{{notranslate}} Tag on cross-wiki uploads submitted using interface option 2.",
 	"tag-cross-wiki-upload-3": "{{notranslate}} Tag on cross-wiki uploads submitted using interface option 3.",
 	"tag-cross-wiki-upload-4": "{{notranslate}} Tag on cross-wiki uploads submitted using interface option 4.",
-	"tag-cross-wiki-upload-description": "Description for the cross-wiki-upload tag.",
 	"tag-HHVM": "{{notranslate}} Tag on edits made via HHVM",
 	"tag-HHVM-description": "Description for the HHVM tag."
 }
