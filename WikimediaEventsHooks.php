@@ -391,6 +391,11 @@ class WikimediaEventsHooks {
 		$tags[] = 'HHVM';
 		if ( wfWikiId() === 'commonswiki' ) {
 			$tags[] = 'cross-wiki-upload';
+			// For A/B test
+			$tags[] = 'cross-wiki-upload-1';
+			$tags[] = 'cross-wiki-upload-2';
+			$tags[] = 'cross-wiki-upload-3';
+			$tags[] = 'cross-wiki-upload-4';
 		}
 		return true;
 	}
@@ -404,6 +409,11 @@ class WikimediaEventsHooks {
 	public static function onChangeTagsListActive( &$tags ) {
 		if ( wfWikiId() === 'commonswiki' ) {
 			$tags[] = 'cross-wiki-upload';
+			// For A/B test
+			$tags[] = 'cross-wiki-upload-1';
+			$tags[] = 'cross-wiki-upload-2';
+			$tags[] = 'cross-wiki-upload-3';
+			$tags[] = 'cross-wiki-upload-4';
 		}
 		return true;
 	}
@@ -440,6 +450,7 @@ class WikimediaEventsHooks {
 			return true;
 		}
 
+		// A/B test
 		$bucket = $request->getVal( 'bucket' );
 		if ( !in_array( $bucket, array( '1', '2', '3', '4' ) ) ) {
 			$bucket = null;
