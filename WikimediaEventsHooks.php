@@ -374,9 +374,8 @@ class WikimediaEventsHooks {
 	}
 
 	public static function onResourceLoaderGetConfigVars( &$vars ) {
-		global $wgWMEStatsdBaseUri, $wgWMEEnableCompletionExperiment;
+		global $wgWMEStatsdBaseUri;
 		$vars['wgWMEStatsdBaseUri'] = $wgWMEStatsdBaseUri;
-		$vars['wgWMEEnableCompletionExperiment'] = $wgWMEEnableCompletionExperiment;
 	}
 
 	/**

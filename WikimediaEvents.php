@@ -37,11 +37,6 @@ $wgExtensionCredits['other'][] = array(
  */
 $wgWMEStatsdBaseUri = false;
 
-/**
- * @var bool Whether the completion suggestion experiment is enabled.
- */
-$wgWMEEnableCompletionExperiment = false;
-
 // Messages
 
 $wgMessagesDirs['WikimediaEvents'] = __DIR__ . '/i18n';
@@ -99,14 +94,13 @@ $wgResourceModules += array(
 		// Loaded globally for all users (including logged-out)
 		// Don't remove if empty!
 		'scripts'       => array(
-			'ext.wikimediaEvents.searchSuggest.js',
 			'ext.wikimediaEvents.statsd.js',
 			'ext.wikimediaEvents.searchSatisfaction.js',
 			'ext.wikimediaEvents.search.js',
 			'ext.wikimediaEvents.geoFeatures.js',
 		),
 		'dependencies' => array(
-			'mediawiki.user', // needed by search.js, searchSuggest.js
+			'mediawiki.user', // needed by search.js
 			'mediawiki.Uri', // needed by searchSatisfaction.js
 			'mediawiki.storage', // needed by searchSatisfaction.js
 			'schema.GeoFeatures', // needed by geoFeatures.js
