@@ -12,147 +12,15 @@
  * @version 1.0
  */
 
-$wgExtensionCredits['other'][] = array(
-	'path' => __FILE__,
-	'name' => 'WikimediaEvents',
-	'version' => '1.1.0',
-	'url' => 'https://www.mediawiki.org/wiki/Extension:WikimediaEvents',
-	'author' => array(
-		'Matthew Flaschen',
-		'Ori Livneh',
-		'Benny Situ',
-	),
-	'descriptionmsg' => 'wikimediaevents-desc',
-	'license-name' => 'GPL-2.0+',
-);
-
-// Configuration
-
-/**
- * @var bool|string: Full URI or false if not set.
- * Data is logged to this end point as key-value pairs in the query
- * string. Must not contain a query string.
- *
- * @example string: '//log.example.org/statsd'
- */
-$wgWMEStatsdBaseUri = false;
-
-// Messages
-
-$wgMessagesDirs['WikimediaEvents'] = __DIR__ . '/i18n';
-$wgExtensionMessagesFiles['WikimediaEvents'] = __DIR__ . '/WikimediaEvents.i18n.php';
-
-// Modules
-
-$wgResourceModules += array(
-	'schema.TimingData' => array(
-		'class'  => 'ResourceLoaderSchemaModule',
-		'schema' => 'TimingData',
-		'revision' => 7254808,
-	),
-	'schema.DeprecatedUsage' => array(
-		'class'  => 'ResourceLoaderSchemaModule',
-		'schema' => 'DeprecatedUsage',
-		'revision' => 7906187,
-	),
-	'schema.ModuleLoadFailure' => array(
-		'class' => 'ResourceLoaderSchemaModule',
-		'schema' => 'ModuleLoadFailure',
-		'revision' => 12407847,
-	),
-	'schema.Edit' => array(
-		'class' => 'ResourceLoaderSchemaModule',
-		'schema' => 'Edit',
-		'revision' => 13457736,
-	),
-	'schema.DidYouMean' => array(
-		'class' => 'ResourceLoaderSchemaModule',
-		'schema' => 'DidYouMean',
-		'revision' => 13800499,
-	),
-	'schema.CompletionSuggestions' => array(
-		'class' => 'ResourceLoaderSchemaModule',
-		'schema' => 'CompletionSuggestions',
-		'revision' => 13630018,
-	),
-	'schema.TestSearchSatisfaction2' => array(
-		'class'    => 'ResourceLoaderSchemaModule',
-		'schema'   => 'TestSearchSatisfaction2',
-		'revision' => 14098806,
-	),
-	'schema.GeoFeatures' => array(
-		'class'    => 'ResourceLoaderSchemaModule',
-		'schema'   => 'GeoFeatures',
-		'revision' => 12914994,
-	),
-	'schema.Search' => array(
-		'class'    => 'ResourceLoaderSchemaModule',
-		'schema'   => 'Search',
-		'revision' => 14361785,
-	),
-	'ext.wikimediaEvents' => array(
-		// Loaded globally for all users (including logged-out)
-		// Don't remove if empty!
-		'scripts'       => array(
-			'ext.wikimediaEvents.statsd.js',
-			'ext.wikimediaEvents.searchSatisfaction.js',
-			'ext.wikimediaEvents.search.js',
-			'ext.wikimediaEvents.geoFeatures.js',
-		),
-		'dependencies' => array(
-			'mediawiki.user', // needed by search.js
-			'mediawiki.Uri', // needed by searchSatisfaction.js
-			'mediawiki.storage', // needed by searchSatisfaction.js
-			'schema.GeoFeatures', // needed by geoFeatures.js
-		),
-		'localBasePath' => __DIR__ . '/modules',
-		'remoteExtPath' => 'WikimediaEvents/modules',
-		'targets' => array( 'desktop', 'mobile' ),
-	),
-	'ext.wikimediaEvents.loggedin' => array(
-		// Loaded globally for all logged-in users
-		// Don't remove if empty!
-		'scripts'       => array(
-			'ext.wikimediaEvents.deprecate.js',
-		),
-		'localBasePath' => __DIR__ . '/modules',
-		'remoteExtPath' => 'WikimediaEvents/modules',
-		'targets' => array( 'desktop', 'mobile' ),
-		'dependencies' => array(
-		),
-	),
-	'ext.wikimediaEvents.didyoumean' => array(
-		'scripts' => array(
-			'ext.wikimediaEvents.didyoumean.js',
-		),
-		'localBasePath' => __DIR__ . '/modules',
-		'remoteExtPath' => 'WikimediaEvents/modules',
-		'targets' => array( 'desktop' ),
-		'dependencies' => 'mediawiki.Uri',
-	),
-);
-
-// Autoloader
-
-$wgAutoloadClasses += array(
-	'WikimediaEventsHooks' => __DIR__ . '/WikimediaEventsHooks.php',
-	'AuthManagerStatsdHandler' => __DIR__ . '/includes/AuthManagerStatsdHandler.php',
-);
-
-// Hooks
-
-$wgHooks['BeforePageDisplay'][] = 'WikimediaEventsHooks::onBeforePageDisplay';
-$wgHooks['PageContentSaveComplete'][] = 'WikimediaEventsHooks::onPageContentSaveComplete';
-$wgHooks['UserSaveOptions'][] = 'WikimediaEventsHooks::onUserSaveOptions';
-$wgHooks['ArticleDeleteComplete'][] = 'WikimediaEventsHooks::onArticleDeleteComplete';
-$wgHooks['ArticleUndelete'][] = 'WikimediaEventsHooks::onArticleUndelete';
-$wgHooks['TitleMoveComplete'][] = 'WikimediaEventsHooks::onTitleMoveComplete';
-$wgHooks['PageContentInsertComplete'][] = 'WikimediaEventsHooks::onPageContentInsertComplete';
-$wgHooks['EditPageBeforeConflictDiff'][] = 'WikimediaEventsHooks::onEditPageBeforeConflictDiff';
-$wgHooks['ResourceLoaderGetConfigVars'][] = 'WikimediaEventsHooks::onResourceLoaderGetConfigVars';
-$wgHooks['ListDefinedTags'][] = 'WikimediaEventsHooks::onListDefinedTags';
-$wgHooks['ChangeTagsListActive'][] = 'WikimediaEventsHooks::onChangeTagsListActive';
-$wgHooks['XAnalyticsSetHeader'][] = 'WikimediaEventsHooks::onXAnalyticsHeader';
-$wgHooks['SpecialSearchResults'][] = 'WikimediaEventsHooks::onSpecialSearchResults';
-$wgHooks['UploadComplete'][] = 'WikimediaEventsHooks::onUploadComplete';
-$wgHooks['RevisionInsertComplete'][] = 'WikimediaEventsHooks::onRevisionInsertComplete';
+if ( function_exists( 'wfLoadExtension' ) ) {
+	wfLoadExtension( 'WikimediaEvents' );
+	// Keep i18n globals so mergeMessageFileList.php doesn't break
+	$wgMessagesDirs['WikimediaEvents'] = __DIR__ . '/i18n';
+	/*wfWarn(
+		'Deprecated PHP entry point used for FooBar extension. Please use wfLoadExtension instead, ' .
+		'see https://www.mediawiki.org/wiki/Extension_registration for more details.'
+	);*/
+	return;
+} else {
+	die( 'This version of the WikimediaEvents extension requires MediaWiki 1.25+' );
+}
