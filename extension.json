@@ -1,0 +1,164 @@
+{
+	"name": "WikimediaEvents",
+	"version": "1.1.0",
+	"author": [
+		"Matthew Flaschen",
+		"Ori Livneh",
+		"Benny Situ"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:WikimediaEvents",
+	"descriptionmsg": "wikimediaevents-desc",
+	"license-name": "GPL-2.0+",
+	"config": {
+		"WMEStatsdBaseUri": false
+	},
+	"Hooks": {
+		"BeforePageDisplay": [
+			"WikimediaEventsHooks::onBeforePageDisplay"
+		],
+		"PageContentSaveComplete": [
+			"WikimediaEventsHooks::onPageContentSaveComplete"
+		],
+		"UserSaveOptions": [
+			"WikimediaEventsHooks::onUserSaveOptions"
+		],
+		"ArticleDeleteComplete": [
+			"WikimediaEventsHooks::onArticleDeleteComplete"
+		],
+		"ArticleUndelete": [
+			"WikimediaEventsHooks::onArticleUndelete"
+		],
+		"TitleMoveComplete": [
+			"WikimediaEventsHooks::onTitleMoveComplete"
+		],
+		"PageContentInsertComplete": [
+			"WikimediaEventsHooks::onPageContentInsertComplete"
+		],
+		"EditPageBeforeConflictDiff": [
+			"WikimediaEventsHooks::onEditPageBeforeConflictDiff"
+		],
+		"ResourceLoaderGetConfigVars":[
+			"WikimediaEventsHooks::onResourceLoaderGetConfigVars"
+		],
+		"ListDefinedTags": [
+			"WikimediaEventsHooks::onListDefinedTags"
+		],
+		"ChangeTagsListActive": [
+			"WikimediaEventsHooks::onChangeTagsListActive"
+		],
+		"XAnalyticsSetHeader": [
+			"WikimediaEventsHooks::onXAnalyticsHeader"
+		],
+		"SpecialSearchResults": [
+			"WikimediaEventsHooks::onSpecialSearchResults"
+		],
+		"UploadComplete": [
+			"WikimediaEventsHooks::onUploadComplete"
+		],
+		"RevisionInsertComplete": [
+			"WikimediaEventsHooks::onRevisionInsertComplete"
+		]
+	},
+	"MessagesDirs": {
+		"WikimediaEvents": [
+			"i18n"
+		]
+	},
+	"ExtensionMessageFiles": {
+		"WikimediaEvents": "WikimediaEvents.i18n.php"
+	},
+	"ResourceModules": {
+		"schema.TimingData": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "TimingData",
+			"revision": 7254808
+		},
+		"schema.DeprecatedUsage": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "DeprecatedUsage",
+			"revision": 7906187
+		},
+		"schema.ModuleLoadFailure": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "ModuleLoadFailure",
+			"revision": 12407847
+		},
+		"schema.Edit": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "Edit",
+			"revision": 13457736
+		},
+		"schema.DidYouMean": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "DidYouMean",
+			"revision": 13800499
+		},
+		"schema.CompletionSuggestions": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "CompletionSuggestions",
+			"revision": 13630018
+		},
+		"schema.TestSearchSatisfaction2": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "TestSearchSatisfaction2",
+			"revision": 14098806
+		},
+		"schema.GeoFeatures": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "GeoFeatures",
+			"revision": 12914994
+		},
+		"schema.Search": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "Search",
+			"revision": 14361785
+		},
+		"ext.wikimediaEvents": {
+			"scripts": [
+				"ext.wikimediaEvents.statsd.js",
+				"ext.wikimediaEvents.searchSatisfaction.js",
+				"ext.wikimediaEvents.search.js",
+				"ext.wikimediaEvents.geoFeatures.js"
+			],
+			"dependencies": [
+				"mediawiki.user",
+				"mediawiki.Uri",
+				"mediawiki.storage",
+				"schema.GeoFeatures"
+			],
+			"localBasePath": "modules",
+			"remoteExtPath": "WikimediaEvents/modules",
+			"targets": [
+				"desktop",
+				"mobile"
+			]
+		},
+		"ext.wikimediaEvents.loggedin": {
+			"scripts": [
+				"ext.wikimediaEvents.deprecate.js"
+			],
+			"localBasePath": "modules",
+			"remoteExtPath": "WikimediaEvents/modules",
+			"targets": [
+				"desktop",
+				"mobile"
+			],
+			"dependencies": []
+		},
+		"ext.wikimediaEvents.didyoumean": {
+			"scripts": [
+				"ext.wikimediaEvents.didyoumean.js"
+			],
+			"localBasePath": "modules",
+			"remoteExtPath": "WikimediaEvents/modules",
+			"targets": [
+				"desktop"
+			],
+			"dependencies": "mediawiki.Uri"
+		}
+	},
+	"AutoloadClasses": {
+		"WikimediaEventsHooks": "WikimediaEventsHooks.php",
+		"AuthManagerStatsdHandler": "includes/AuthManagerStatsdHandler.php"
+	}
+}
