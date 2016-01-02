@@ -37,7 +37,7 @@
 		"EditPageBeforeConflictDiff": [
 			"WikimediaEventsHooks::onEditPageBeforeConflictDiff"
 		],
-		"ResourceLoaderGetConfigVars":[
+		"ResourceLoaderGetConfigVars": [
 			"WikimediaEventsHooks::onResourceLoaderGetConfigVars"
 		],
 		"ListDefinedTags": [
@@ -160,5 +160,6 @@
 	"AutoloadClasses": {
 		"WikimediaEventsHooks": "WikimediaEventsHooks.php",
 		"AuthManagerStatsdHandler": "includes/AuthManagerStatsdHandler.php"
-	}
+	},
+	"manifest_version": 1
 }
