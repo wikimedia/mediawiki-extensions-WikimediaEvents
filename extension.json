@@ -9,8 +9,9 @@
 	"url": "https://www.mediawiki.org/wiki/Extension:WikimediaEvents",
 	"descriptionmsg": "wikimediaevents-desc",
 	"license-name": "GPL-2.0+",
-	"config": {
-		"WMEStatsdBaseUri": false
+	"AutoloadClasses": {
+		"WikimediaEventsHooks": "WikimediaEventsHooks.php",
+		"AuthManagerStatsdHandler": "includes/AuthManagerStatsdHandler.php"
 	},
 	"Hooks": {
 		"BeforePageDisplay": [
@@ -79,9 +80,6 @@
 			"i18n"
 		]
 	},
-	"ExtensionMessageFiles": {
-		"WikimediaEvents": "WikimediaEvents.i18n.php"
-	},
 	"ResourceModules": {
 		"schema.TimingData": {
 			"class": "ResourceLoaderSchemaModule",
@@ -147,8 +145,6 @@
 				"mediawiki.Uri",
 				"mediawiki.storage"
 			],
-			"localBasePath": "modules",
-			"remoteExtPath": "WikimediaEvents/modules",
 			"targets": [
 				"desktop",
 				"mobile"
@@ -158,8 +154,6 @@
 			"scripts": [
 				"ext.wikimediaEvents.deprecate.js"
 			],
-			"localBasePath": "modules",
-			"remoteExtPath": "WikimediaEvents/modules",
 			"targets": [
 				"desktop",
 				"mobile"
@@ -170,17 +164,18 @@
 			"scripts": [
 				"ext.wikimediaEvents.didyoumean.js"
 			],
-			"localBasePath": "modules",
-			"remoteExtPath": "WikimediaEvents/modules",
 			"targets": [
 				"desktop"
 			],
 			"dependencies": "mediawiki.Uri"
 		}
 	},
-	"AutoloadClasses": {
-		"WikimediaEventsHooks": "WikimediaEventsHooks.php",
-		"AuthManagerStatsdHandler": "includes/AuthManagerStatsdHandler.php"
+	"ResourceFileModulePaths": {
+		"localBasePath": "modules/",
+		"remoteSkinPath": "WikimediaEvents/modules"
+	},
+	"config": {
+		"WMEStatsdBaseUri": false
 	},
 	"manifest_version": 1
 }
