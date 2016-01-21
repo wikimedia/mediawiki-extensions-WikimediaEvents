@@ -52,8 +52,8 @@
 		"SpecialSearchResults": [
 			"WikimediaEventsHooks::onSpecialSearchResults"
 		],
-		"UploadComplete": [
-			"WikimediaEventsHooks::onUploadComplete"
+		"RecentChange_save": [
+			"WikimediaEventsHooks::onRecentChangeSave"
 		],
 		"RevisionInsertComplete": [
 			"WikimediaEventsHooks::onRevisionInsertComplete"
