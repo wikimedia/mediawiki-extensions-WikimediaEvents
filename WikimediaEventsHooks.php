@@ -187,7 +187,7 @@ class WikimediaEventsHooks {
 		// TODO (mattflaschen, 2013-06-13): Ideally this would be done more cleanly without
 		// looking explicitly at page names and URL parameters.
 		// Maybe a userInitiated flag passed to saveSettings would work.
-		if ( ( $wgOut->getTitle() && $wgOut->getTitle()->isSpecial( 'Preferences' ) )
+		if ( ( $wgOut && $wgOut->getTitle() && $wgOut->getTitle()->isSpecial( 'Preferences' ) )
 			|| ( defined( 'MW_API' ) && $wgOut->getRequest()->getVal( 'action' ) === 'options' )
 		) {
 			// $clone is the current user object before the new option values are set
