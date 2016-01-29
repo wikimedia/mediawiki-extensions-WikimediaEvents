@@ -486,4 +486,24 @@ class WikimediaEventsHooks {
 
 		return true;
 	}
+
+	public static function onArticleViewHeader() {
+		DeferredUpdates::addCallableUpdate( function () {
+			$context = RequestContext::getMain();
+			$timing = $context->getTiming();
+			if ( class_exists( 'MobileContext' )
+				&& MobileContext::singleton()->shouldDisplayMobileView()
+			) {
+				$platform = 'mobile';
+			} else {
+				$platform = 'desktop';
+			}
+
+			$measure = $timing->measure( 'viewResponseTime', 'requestStart', 'requestShutdown' );
+			if ( $measure !== false ) {
+				$context->getStats()->timing(
+					"timing.viewResponseTime.{$platform}", $measure['duration'] * 1000 );
+			}
+		} );
+	}
 }

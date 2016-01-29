@@ -28,6 +28,9 @@
 		"ArticleUndelete": [
 			"WikimediaEventsHooks::onArticleUndelete"
 		],
+		"ArticleViewHeader": [
+			"WikimediaEventsHooks::onArticleViewHeader"
+		],
 		"TitleMoveComplete": [
 			"WikimediaEventsHooks::onTitleMoveComplete"
 		],
