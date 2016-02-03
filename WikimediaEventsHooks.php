@@ -128,7 +128,7 @@ class WikimediaEventsHooks {
 	 */
 	public static function onRevisionInsertComplete( &$revision, $data, $flags ) {
 		$context = RequestContext::getMain();
-		$user = $context->getUser();
+		$user = User::newFromId( $revision->getUser( Revision::RAW ) );
 
 		// Anonymous users and bots don't count (sorry!)
 		if ( $user->isAnon() || $user->isAllowed( 'bot' ) ) {
