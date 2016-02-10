@@ -22,9 +22,13 @@ class WikimediaEventsHooks {
 	}
 
 	/**
-	 * On XAnalyticsHeader, insert a 'page_id' key with the page ID as value
+	 * On XAnalyticsHeader
+	 *
+	 * Insert a 'page_id' key with the page ID as value
 	 * and a 'ns' key with the namespace ID as value -- but only if the request
 	 * is for an actual page.
+	 *
+	 * Add a 'loggedIn' key with the value of 1 if the user is logged in
 	 */
 	public static function onXAnalyticsHeader( $out, &$headerItems ) {
 		$title = $out->getTitle();
@@ -34,6 +38,10 @@ class WikimediaEventsHooks {
 				$headerItems['page_id'] = $pageId;
 				$headerItems['ns'] = $title->getNamespace();
 			}
+		}
+
+		if( $out->getUser()->isLoggedIn() ) {
+			$headerItems['loggedIn'] = 1;
 		}
 	}
 
