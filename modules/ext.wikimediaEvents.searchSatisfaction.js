@@ -36,7 +36,6 @@
 			uri.query.wprov.substr( 0, wprovPrefix.length ) === wprovPrefix &&
 			uri.query.wprov.substr( wprovPrefix.length ), 10 ),
 		cameFromSearchResult = !isNaN( searchResultPosition ),
-		isDeepSearchResult = uri.query.wprov === 'sdlw1',
 		lastScrollTop = 0,
 		storageNamespace = 'wmE-sS-';
 
@@ -195,23 +194,6 @@
 				}
 			},
 			/**
-			 * Adds an attribute to the link to track the origin
-			 * of the link is from deep search.
-			 *
-			 * Expects to be run with an html anchor as `this`.
-			 *
-			 * @private
-			 */
-			updateDeepHref = function () {
-				var uri = new mw.Uri( this.href );
-				// try to not add our query param to unnecessary places. The
-				// wikitext parser always outputs /wiki/ for [[WikiLinks]].
-				if ( uri.path.indexOf( '/wiki/' ) > -1 ) {
-					uri.query.wprov = 'sdlw1';
-					this.href = uri.toString();
-				}
-			},
-			/**
 			 * Executes an action at the given times.
 			 *
 			 * @param {number[]} checkinTimes Times (in seconds from start) when the
@@ -240,8 +222,7 @@
 		if ( isSearchResultPage ) {
 			$( '#mw-content-text' ).on( 'click', '.mw-search-result-heading a', updateSearchHref );
 			logEvent( 'searchResultPage' );
-		} else if ( cameFromSearchResult || isDeepSearchResult ) {
-			$( '#mw-content-text' ).on( 'click', ' a:not(.external)', updateDeepHref );
+		} else if ( cameFromSearchResult ) {
 			logEvent( 'visitPage' );
 			interval( checkinTimes, function ( checkin ) {
 				logEvent( 'checkin', checkin );
@@ -262,9 +243,9 @@
 	/**
 	 * Logic starts here.
 	 */
-	if ( isSearchResultPage || cameFromSearchResult || isDeepSearchResult ) {
+	if ( isSearchResultPage || cameFromSearchResult ) {
 
-		if ( cameFromSearchResult || isDeepSearchResult ) {
+		if ( cameFromSearchResult ) {
 			cleanupHistoryState();
 		}
 
