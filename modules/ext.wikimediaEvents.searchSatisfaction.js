@@ -25,7 +25,7 @@
 		return;
 	}
 
-	var search, autoComplete, session,
+	var search, autoComplete, session, eventLog,
 		isSearchResultPage = mw.config.get( 'wgIsSearchResultPage' ),
 		uri = new mw.Uri( location.href ),
 		checkinTimes = [ 10, 20, 30, 40, 50, 60, 90, 120, 150, 180, 210, 240, 300, 360, 420 ],
@@ -226,6 +226,113 @@
 		setTimeout( action, 1000 * timeout );
 	}
 
+	/**
+	 * Increase deliverability of events fired close to unload, such as
+	 * autocomplete results that the user selects. Uses a bit of optimism that
+	 * multiple tabs are not working on the same localStorage queue at the same
+	 * time. Could perhaps be improved with locking, but not sure the
+	 * code+overhead is worth it.
+	 *
+	 * @return {Object}
+	 */
+	function extendMwEventLog() {
+		var self,
+			localQueue = {},
+			queueKey = 'wmE-Ss-queue';
+
+		// if we have send beacon or do not track is enabled do nothing
+		if ( navigator.sendBeacon || mw.eventLog.sendBeacon === $.noop ) {
+			return mw.eventLog;
+		}
+
+		self = $.extend( {}, mw.eventLog, {
+			/**
+			 * Transfer data to a remote server by making a lightweight
+			 * HTTP request to the specified URL.
+			 *
+			 * @param {string} url URL to request from the server.
+			 */
+			sendBeacon: function ( url ) {
+				// increase deliverability guarantee of events fired
+				// close to page unload, while adding some latency
+				// and chance of duplicate events
+				var img = document.createElement( 'img' ),
+					handler = function () {
+						delete localQueue[ url ];
+					};
+
+				localQueue[ url ] = true;
+				img.addEventListener( 'load', handler );
+				img.addEventListener( 'error', handler );
+				img.setAttribute( 'src', url );
+			},
+
+			/**
+			 * Construct and transmit to a remote server a record of some event
+			 * having occurred.
+			 *
+			 * This is a direct copy of mw.eventLog.logEvent. It is necessary
+			 * to override the call to sendBeacon.
+			 *
+			 * @param {string} schemaName
+			 * @param {Object} eventData
+			 * @return {jQuery.Promise}
+			 */
+			logEvent: function ( schemaName, eventData ) {
+				var event = self.prepare( schemaName, eventData ),
+					url = self.makeBeaconUrl( event ),
+					sizeError = self.checkUrlSize( schemaName, url ),
+					deferred = $.Deferred();
+
+				if ( !sizeError ) {
+					self.sendBeacon( url );
+					deferred.resolveWith( event, [ event ] );
+				} else {
+					deferred.rejectWith( event, [ event, sizeError ] );
+				}
+				return deferred.promise();
+			}
+		} );
+
+		$( document ).ready( function () {
+			var i, queue, key,
+				jsonQueue = mw.storage.get( queueKey );
+
+			if ( jsonQueue ) {
+				mw.storage.remove( queueKey );
+				queue = JSON.parse( jsonQueue );
+				for ( key in queue ) {
+					if ( queue.hasOwnProperty( key ) ) {
+						self.sendBeacon( queue[ i ] );
+					}
+				}
+			}
+		} );
+
+		$( window ).on( 'beforeunload', function () {
+			var jsonQueue, key,
+				queueIsEmpty = true;
+			// IE8 can't do Object.keys( x ).length, so
+			// we get this monstrosity
+			for ( key in localQueue ) {
+				if ( localQueue.hasOwnProperty( key ) ) {
+					queueIsEmpty = false;
+					break;
+				}
+			}
+			if ( !queueIsEmpty ) {
+				jsonQueue = mw.storage.get( queueKey );
+				if ( jsonQueue ) {
+					$.extend( localQueue, JSON.parse( jsonQueue ) );
+				}
+				mw.storage.set( queueKey, JSON.stringify( localQueue ) );
+				localQueue = {};
+			}
+		} );
+
+		return self;
+	}
+
 	function genLogEventFn( source, session ) {
 		return function ( action, extraData ) {
 			var scrollTop = $( window ).scrollTop(),
@@ -263,7 +370,8 @@
 
 			// ship the event
 			mw.loader.using( [ 'schema.TestSearchSatisfaction2' ] ).then( function () {
-				mw.eventLog.logEvent( 'TestSearchSatisfaction2', evt );
+				eventLog = eventLog || extendMwEventLog();
+				eventLog.logEvent( 'TestSearchSatisfaction2', evt );
 			} );
 		};
 	}
@@ -287,7 +395,14 @@
 				'click',
 				'.mw-search-result-heading a',
 				{ wprovPrefix: search.wprovPrefix },
-				updateSearchHref
+				function ( evt ) {
+					updateSearchHref( evt );
+					// test event, duplicated by visitPage event when
+					// the user arrives.
+					logEvent( 'click', {
+						position: $( evt.target ).data( 'serp-pos' )
+					} );
+				}
 			);
 			logEvent( 'searchResultPage', {
 				query: mw.config.get( 'searchTerm' ),
@@ -342,6 +457,13 @@
 				// to the link so we know when the user arrives they came from autocomplete
 				// and what position they clicked.
 				data.formData.linkParams.wprov = autoComplete.wprovPrefix + data.index;
+			} else if ( data.action === 'click-result' ) {
+				// test event, currently duplicated by visitPage event. Not
+				// sure yet if the work to provide better deliverability of
+				// unload events will be sufficient.
+				logEvent( 'click', {
+					position: data.clickIndex
+				} );
 			}
 		} );
 	}
