@@ -444,12 +444,21 @@ class WikimediaEventsHooks {
 	/**
 	 * Add a change tag 'cross-wiki-upload' to cross-wiki uploads to Commons, to track usage of the
 	 * new feature. (Both to track adoption, and to let Commons editors review the uploads.) (T115328)
+	 *
+	 * @param $recentChange RecentChange
+	 * @return bool
 	 */
-	public static function onUploadComplete( UploadBase $uploadBase ) {
+	public static function onRecentChangeSave( RecentChange $recentChange ) {
 		if ( !defined( 'MW_API' ) ) {
 			return true;
 		}
 		if ( wfWikiId() !== 'commonswiki' ) {
+			return true;
+		}
+		if ( !(
+			$recentChange->getAttribute( 'rc_log_type' ) === 'upload' &&
+			$recentChange->getAttribute( 'rc_log_action' ) === 'upload'
+		) ) {
 			return true;
 		}
 		$request = RequestContext::getMain()->getRequest();
@@ -463,26 +472,16 @@ class WikimediaEventsHooks {
 			$bucket = null;
 		}
 
-		$title = $uploadBase->getLocalFile()->getTitle();
-		$method = __METHOD__;
-		DeferredUpdates::addCallableUpdate( function () use ( $title, $method, $bucket ) {
-			$revId = $title->getLatestRevID( Title::GAID_FOR_UPDATE );
-			$logId = wfGetDB( DB_MASTER )->selectField(
-				'logging',
-				'log_id',
-				array(
-					'log_type' => 'upload',
-					'log_page' => $title->getArticleID( Title::GAID_FOR_UPDATE ),
-				),
-				$method,
-				array( 'ORDER BY' => 'log_timestamp DESC' )
-			);
-			$tags = array( 'cross-wiki-upload' );
-			if ( $bucket ) {
-				$tags[] = "cross-wiki-upload-$bucket";
-			}
-			ChangeTags::addTags( $tags, null, $revId, $logId );
-		} );
+		$tags = array( 'cross-wiki-upload' );
+		if ( $bucket ) {
+			$tags[] = "cross-wiki-upload-$bucket";
+		}
+		ChangeTags::addTags(
+			$tags,
+			$recentChange->getAttribute( 'rc_id' ),
+			$recentChange->getAttribute( 'rc_this_oldid' ),
+			$recentChange->getAttribute( 'rc_logid' )
+		);
 
 		return true;
 	}
