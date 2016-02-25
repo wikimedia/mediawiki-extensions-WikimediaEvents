@@ -54,10 +54,8 @@
 			now = new Date().getTime(),
 			maxSessionLifetimeMs = 10 * 60 * 1000,
 			maxTokenLifetimeMs = 24 * 60 * 60 * 1000,
-			subTestGroups = [ 'default', 'default.control', 'strict', 'strict.control', 'aggressive_recall', 'aggressive_recall.control' ],
 			searchSessionId,
 			searchToken,
-			activeSubTest,
 			isSessionValid,
 			isTokenValid,
 			/**
@@ -78,7 +76,6 @@
 		isSessionValid = sessionStartTime && ( now - parseInt( sessionStartTime, 10 ) ) < maxSessionLifetimeMs;
 		if ( isSessionValid ) {
 			searchSessionId = mw.storage.get( storageNamespace + 'sessionId' );
-			activeSubTest = mw.storage.get( storageNamespace + 'subTest' );
 		}
 		isTokenValid = tokenStartTime && ( now - parseInt( tokenStartTime, 10 ) ) < maxTokenLifetimeMs;
 		if ( isTokenValid ) {
@@ -121,16 +118,7 @@
 			}
 		}
 
-		if ( !activeSubTest ) {
-			// include 1 in 10 of the users in the satisfaction metric into the common terms sub test.
-			activeSubTest = subTestGroups[ Math.floor( Math.random() * subTestGroups.length ) ];
-			if ( !mw.storage.set( storageNamespace + 'subTest', activeSubTest ) || !mw.storage.set( storageNamespace + 'sessionStartTime', now )
-			) {
-				return false;
-			}
-		}
-
-		return activeSubTest !== '';
+		return true;
 	}
 
 	/**
@@ -147,7 +135,6 @@
 			searchSessionId = mw.storage.get( storageNamespace + 'sessionId' ),
 			pageViewId = mw.user.generateRandomSessionId(),
 			searchToken = mw.storage.get( storageNamespace + 'token' ),
-			activeSubTest = mw.storage.get( storageNamespace + 'subTest' ),
 			logEvent = function ( action, checkinTime ) {
 				var scrollTop = $( window ).scrollTop(),
 					evt = {
@@ -178,10 +165,6 @@
 					evt.query = mw.config.get( 'searchTerm' );
 					// the number of results shown on this page.
 					evt.hitsReturned = $( '.mw-search-result-heading' ).length;
-					if ( activeSubTest ) {
-						evt.subTest = 'common-terms:' + activeSubTest + ':' +
-							( mw.config.get( 'wgCirrusCommonTermsApplicable' ) ? 'enabled' : 'disabled' );
-					}
 				}
 				if ( articleId > 0 ) {
 					evt.articleId = articleId;
@@ -267,36 +250,6 @@
 	}
 
 	/**
-	 * Appends elements to the form that are needed
-	 * to track the search being made.
-	 *
-	 * @param {jQuery} $form Reference to the form.
-	 */
-	function appendElemsToForm( $form ) {
-		var activeSubTest = mw.storage.get( storageNamespace + 'subTest' ),
-			controlGroup = activeSubTest.substring( activeSubTest.length - '.control'.length ) === '.control',
-			commonTermsProfile = controlGroup ? activeSubTest.substring( activeSubTest.length - '.control'.length ) : activeSubTest;
-
-		$form.append(
-			$( '<input>' ).attr( {
-				type: 'hidden',
-				name: 'cirrusUseCommonTermsQuery',
-				value: 'yes'
-			} ),
-			$( '<input>' ).attr( {
-				type: 'hidden',
-				name: 'cirrusCommonTermsQueryProfile',
-				value: commonTermsProfile
-			} ),
-			$( '<input>' ).attr( {
-				type: 'hidden',
-				name: 'cirrusCommonTermsQueryControlGroup',
-				value: controlGroup ? 'yes' : 'no'
-			} )
-		);
-	}
-
-	/**
 	 * Cleanup the location bar in supported browsers.
 	 */
 	function cleanupHistoryState() {
@@ -319,22 +272,7 @@
 			if ( !initializeTest() ) {
 				return;
 			}
-			$( 'input[type=search]' ).one( 'focus', function () {
-				var $form = $( this ).closest( 'form' );
-				appendElemsToForm( $form );
-			} );
 			setupTest();
-		} );
-
-	} else {
-		$( document ).ready( function () {
-			$( 'input[type=search]' ).one( 'focus', function () {
-				if ( !initializeTest() ) {
-					return;
-				}
-				var $form = $( this ).closest( 'form' );
-				appendElemsToForm( $form );
-			} );
 		} );
 	}
 
