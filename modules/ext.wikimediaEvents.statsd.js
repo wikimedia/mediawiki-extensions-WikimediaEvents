@@ -15,10 +15,17 @@
 ( function ( mw ) {
 	var timer = null,
 		queue = [],
-		batchSize = 50;
+		batchSize = 50,
+		baseUrl = mw.config.get( 'wgWMEStatsdBaseUri' ),
+		// Based on mw.eventLog.Core#sendBeacon
+		sendBeacon = ( /1|yes/.test( navigator.doNotTrack ) )
+			? function () { /* noop */ }
+			: navigator.sendBeacon
+				? function ( url ) { try { navigator.sendBeacon( url ); } catch ( e ) {} }
+				: function ( url ) { ( new Image() ).src = url; };
 
-	if ( !mw.config.get( 'wgWMEStatsdBaseUri' ) ) {
-		// Not configured, do nothing
+	// Not configured, do nothing
+	if ( !baseUrl ) {
 		return;
 	}
 
@@ -33,7 +40,7 @@
 			for ( i = 0; i < values.length; i++ ) {
 				values[ i ] = values[ i ].key + '=' + values[ i ].value;
 			}
-			( new Image() ).src = mw.config.get( 'wgWMEStatsdBaseUri' ) + '?' + values.join( '&' );
+			sendBeacon( baseUrl + '?' + values.join( '&' ) );
 		}
 	}
 
