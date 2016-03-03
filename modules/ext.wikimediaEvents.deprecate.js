@@ -16,7 +16,7 @@
 
 	mw.trackSubscribe( 'mw.deprecate', function ( topic, deprecated ) {
 		mw.track(
-			'counter.mw.js.deprecate.' + ( deprecated.replace( /\W+/, '_' ) ),
+			'counter.mw.js.deprecate.' + ( deprecated.replace( /\W+/g, '_' ) ),
 			1
 		);
 	} );
