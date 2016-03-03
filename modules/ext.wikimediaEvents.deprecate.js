@@ -15,14 +15,9 @@
 	}
 
 	mw.trackSubscribe( 'mw.deprecate', function ( topic, deprecated ) {
-		mw.loader.using( [ 'mediawiki.inspect', 'schema.DeprecatedUsage' ], function () {
-			mw.eventLog.logEvent( 'DeprecatedUsage', {
-				method: deprecated,
-				pageId: mw.config.get( 'wgArticleId' ),
-				revId: mw.config.get( 'wgCurRevisionId' ),
-				version: mw.config.get( 'wgVersion' ),
-				modules: mw.inspect.grep( deprecated ).join( ',' )
-			} );
-		} );
+		mw.track(
+			'counter.mw.js.deprecate.' + ( deprecated.replace( /\W+/, '_' ) ),
+			1
+		);
 	} );
 }( mediaWiki ) );
