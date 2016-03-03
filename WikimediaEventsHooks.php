@@ -425,6 +425,17 @@ class WikimediaEventsHooks {
 		return true;
 	}
 
+	public static function onSpecialSearchGoResult( $term, Title $title, &$url ) {
+		$request = RequestContext::getMain()->getRequest();
+
+		$wprov = $request->getVal( 'wprov' );
+		if ( $wprov ) {
+			$url = $title->getFullURL( [ 'wprov' => $wprov ] );
+		}
+
+		return true;
+	}
+
 	/**
 	 * The javascript that records search metrics needs to know if it is on a
 	 * SERP or not. This ends up being non-trivial due to localization, so
