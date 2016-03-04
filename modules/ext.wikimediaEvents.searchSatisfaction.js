@@ -25,7 +25,7 @@
 		return;
 	}
 
-	var search, session,
+	var search, autoComplete, session,
 		isSearchResultPage = mw.config.get( 'wgIsSearchResultPage' ),
 		uri = new mw.Uri( location.href ),
 		checkinTimes = [ 10, 20, 30, 40, 50, 60, 90, 120, 150, 180, 210, 240, 300, 360, 420 ],
@@ -49,6 +49,10 @@
 	}
 
 	search = initFromWprov( 'srpw1_' );
+	autoComplete = initFromWprov( 'acrw1_' );
+	// with no position appended indicates the user submitted the
+	// autocomplete form.
+	autoComplete.cameFromAutocomplete = uri.query.wprov === 'acrw1';
 
 	// Cleanup the location bar in supported browsers.
 	if ( uri.query.wprov && window.history.replaceState ) {
@@ -126,14 +130,6 @@
 				if ( !session.set( 'sessionId', randomToken() ) ) {
 					return false;
 				}
-			}
-
-			if ( session.get( 'token' ) === null ) {
-				if ( !session.set( 'token', randomToken() ) ) {
-					return false;
-				}
-			} else {
-				session.refresh( 'token' );
 			}
 
 			// Unique token per page load to know which events occured
@@ -230,12 +226,14 @@
 		setTimeout( action, 1000 * timeout );
 	}
 
-	function genLogEventFn( session ) {
+	function genLogEventFn( source, session ) {
 		return function ( action, extraData ) {
 			var scrollTop = $( window ).scrollTop(),
 				evt = {
 					// searchResultPage, visitPage or checkin
 					action: action,
+					// source of the action, either search or autocomplete
+					source: source,
 					// identifies a single user performing searches within
 					// a limited time span.
 					searchSessionId: session.get( 'sessionId' ),
@@ -247,9 +245,9 @@
 					// identifies if a user has scrolled the page since the
 					// last event
 					scroll: scrollTop !== lastScrollTop,
-					// identifies a single user over a 24 hour timespan,
-					// allowing to tie together multiple search sessions
-					searchToken: session.get( 'token' )
+					// mediawiki session id to correlate with other schemas,
+					// such as QuickSurvey
+					mwSessionId: mw.user.sessionId()
 				};
 
 			lastScrollTop = scrollTop;
@@ -279,7 +277,7 @@
 	 * @param {SessionState} session
 	 */
 	function setupSearchTest( session ) {
-		var logEvent = genLogEventFn( session );
+		var logEvent = genLogEventFn( 'fulltext', session );
 
 		if ( isSearchResultPage ) {
 			// When a new search is performed reset the session lifetime.
@@ -306,15 +304,101 @@
 	}
 
 	/**
-	 * Logic starts here.
+	 * Sets up the autocomplete search test.
+	 *
+	 * It will log events and will put an attribute on some links
+	 * to track user satisfaction.
+	 *
+	 * @param {SessionState} session
 	 */
-	if ( isSearchResultPage || search.cameFromSearch ) {
-		$( document ).ready( function () {
-			session = new SessionState();
-			if ( session.get( 'enabled' ) ) {
-				setupSearchTest( session );
+	function setupAutocompleteTest( session ) {
+		var logEvent = genLogEventFn( 'autocomplete', session );
+
+		if ( autoComplete.cameFromSearch ) {
+			logEvent( 'visitPage', {
+				position: autoComplete.resultPosition
+			} );
+			interval( checkinTimes, function ( checkin ) {
+				logEvent( 'checkin', {
+					checkin: checkin
+				} );
+			} );
+		}
+
+		mw.trackSubscribe( 'mediawiki.searchSuggest', function ( topic, data ) {
+			if ( data.action === 'impression-results' ) {
+				// When a new search is performed reset the session lifetime.
+				session.refresh( 'sessionId' );
+
+				// run every time an autocomplete result is shown
+				logEvent( 'searchResultPage', {
+					hitsReturned: data.numberOfResults,
+					query: data.query,
+					inputLocation: data.inputLocation,
+					autocompleteType: data.resultSetType
+				} );
+			} else if ( data.action === 'render-one' ) {
+				// run when rendering anchors for suggestion results. Attaches a wprov
+				// to the link so we know when the user arrives they came from autocomplete
+				// and what position they clicked.
+				data.formData.linkParams.wprov = autoComplete.wprovPrefix + data.index;
 			}
 		} );
 	}
+
+	/**
+	 * Delay session initialization as late in the
+	 * process as possible, but only do it once.
+	 *
+	 * @param {Function} fn
+	 */
+	function setup( fn ) {
+		session = session || new SessionState();
+
+		if ( session.get( 'enabled' ) ) {
+			fn( session );
+		}
+	}
+
+	/**
+	 * Decorator to call the inner function at most one time.
+	 *
+	 * @param {Function} fn
+	 * @return {Function}
+	 */
+	function atMostOnce( fn ) {
+		var called = false;
+		return function () {
+			if ( !called ) {
+				fn();
+				called = true;
+			}
+		};
+	}
+
+	// Full text search satisfaction tracking
+	if ( isSearchResultPage || search.cameFromSearch ) {
+		$( document ).ready( function () {
+			setup( setupSearchTest );
+		} );
+	}
+
+	// Autocomplete satisfaction tracking
+	$( document ).ready( function () {
+		if ( autoComplete.cameFromSearch ) {
+			// user came here by selecting an autocomplete result,
+			// initialize on page load
+			setup( setupAutocompleteTest );
+		} else {
+			// delay initialization until the user clicks into the autocomplete
+			// box. Note there are two elements matching this selector, the
+			// main search box on Special:Search and the search box on every
+			// page. $.one fires once per element and not once ever, hence the
+			// decorator.
+			$( 'input[type=search]' ).one( 'focus', atMostOnce( function () {
+				setup( setupAutocompleteTest );
+			} ) );
+		}
+	} );
 
 }( mediaWiki, jQuery ) );
