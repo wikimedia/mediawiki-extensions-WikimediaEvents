@@ -2,9 +2,11 @@
 	"@metadata": {
 		"authors": [
 			"Joseph",
-			"Violetanka"
+			"Violetanka",
+			"Sayginer"
 		]
 	},
 	"wikimediaevents-desc": "EventLogging kullanarak Wikimedia'ya özel olayları günlüğe kaydeder",
+	"tag-cross-wiki-upload": "Vikilerarası yükleme",
 	"tag-HHVM-description": "Zend PHP yorumlayıcısı yerine HipHop Virtual Machine kullanılarak yapılan denetimler (performans geliştirme, hata ayıklama/analiz etiketi bekleniyor)"
 }
