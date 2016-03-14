@@ -25,7 +25,7 @@
 		return;
 	}
 
-	var search, autoComplete, session, eventLog,
+	var search, autoComplete, session, eventLog, initSubTest,
 		isSearchResultPage = mw.config.get( 'wgIsSearchResultPage' ),
 		uri = new mw.Uri( location.href ),
 		checkinTimes = [ 10, 20, 30, 40, 50, 60, 90, 120, 150, 180, 210, 240, 300, 360, 420 ],
@@ -67,6 +67,7 @@
 		// persistent state keys that have a lifetime
 			ttl = {
 				sessionId: 10 * 60 * 1000,
+				subTest: 10 * 60 * 1000,
 				token: 24 * 60 * 60 * 1000
 			},
 			now = new Date().getTime();
@@ -120,7 +121,7 @@
 			}
 			// If a sessionId exists the user was previously accepted into the test
 			if ( !sessionId ) {
-				if ( !oneIn( 200 ) ) {
+				if ( !oneIn( 100 ) ) {
 					// user was not chosen in a sampling of search results
 					session.set( 'sessionId', 'rejected' );
 					return false;
@@ -129,6 +130,11 @@
 				// have a search session id, generate one.
 				if ( !session.set( 'sessionId', randomToken() ) ) {
 					return false;
+				}
+
+				// Assign 50% of users to test bucket
+				if ( oneIn( 2 ) ) {
+					session.set( 'subTest', 'phraseBoostEq1' );
 				}
 			}
 
@@ -359,6 +365,10 @@
 
 			lastScrollTop = scrollTop;
 
+			if ( session.get( 'subTest' ) ) {
+				evt.subTest = session.get( 'subTest' );
+			}
+
 			if ( articleId > 0 ) {
 				evt.articleId = articleId;
 			}
@@ -469,6 +479,32 @@
 	}
 
 	/**
+	 * Decorator to call the inner function at most one time.
+	 *
+	 * @param {Function} fn
+	 * @return {Function}
+	 */
+	function atMostOnce( fn ) {
+		var called = false;
+		return function () {
+			if ( !called ) {
+				fn.apply( null, arguments );
+				called = true;
+			}
+		};
+	}
+
+	initSubTest = atMostOnce( function ( session ) {
+		if ( session.get( 'subTest' ) === 'phraseBoostEq1' ) {
+			$( '<input>' ).attr( {
+				type: 'hidden',
+				name: 'cirrusPhraseBoost',
+				value: '1'
+			} ).insertAfter( $( 'input[type=search]' ) );
+		}
+	} );
+
+	/**
 	 * Delay session initialization as late in the
 	 * process as possible, but only do it once.
 	 *
@@ -479,23 +515,8 @@
 
 		if ( session.get( 'enabled' ) ) {
 			fn( session );
+			initSubTest( session );
 		}
-	}
-
-	/**
-	 * Decorator to call the inner function at most one time.
-	 *
-	 * @param {Function} fn
-	 * @return {Function}
-	 */
-	function atMostOnce( fn ) {
-		var called = false;
-		return function () {
-			if ( !called ) {
-				fn();
-				called = true;
-			}
-		};
 	}
 
 	// Full text search satisfaction tracking
@@ -507,19 +528,28 @@
 
 	// Autocomplete satisfaction tracking
 	$( document ).ready( function () {
+		var initialize = atMostOnce( function () {
+			setup( setupAutocompleteTest );
+		} );
 		if ( autoComplete.cameFromSearch ) {
 			// user came here by selecting an autocomplete result,
 			// initialize on page load
-			setup( setupAutocompleteTest );
+			initialize();
 		} else {
 			// delay initialization until the user clicks into the autocomplete
 			// box. Note there are two elements matching this selector, the
 			// main search box on Special:Search and the search box on every
 			// page. $.one fires once per element and not once ever, hence the
 			// decorator.
-			$( 'input[type=search]' ).one( 'focus', atMostOnce( function () {
-				setup( setupAutocompleteTest );
-			} ) );
+			//
+			// This has to subscribe to multiple events to ensure it captures
+			// in modern  browsers (input) and less modern browsers (the rest).
+			// The atMostOne() makes sure we only truly initialize once.
+			$( 'input[type=search]' )
+				.one( 'input', initialize )
+				.one( 'change', initialize )
+				.one( 'paste', initialize )
+				.one( 'keypress', initialize );
 		}
 	} );
 
