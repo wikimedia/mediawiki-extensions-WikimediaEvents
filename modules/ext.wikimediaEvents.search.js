@@ -43,6 +43,9 @@
 			loggingData.numberOfResults = data.numberOfResults;
 		} else if ( data.action === 'submit-form' ) {
 			loggingData.numberOfResults = data.numberOfResults;
+		} else if ( data.action === 'render-one' ) {
+			// untracked event
+			return;
 		}
 		loggingData.timeOffsetSinceStart = Math.round( this.timeStamp - sessionStartTime ) ;
 		$.extend( loggingData, defaults );
