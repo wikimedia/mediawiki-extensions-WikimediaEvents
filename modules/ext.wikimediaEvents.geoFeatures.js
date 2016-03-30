@@ -36,7 +36,7 @@
 	 * @return {string}
 	 */
 	function getToken() {
-		var cookieName = 'GeoFeaturesUser',
+		var cookieName = 'GeoFeaturesUser2',
 			token = mw.cookie.get( cookieName );
 
 		if ( token ) {
@@ -45,9 +45,7 @@
 
 		token = mw.user.generateRandomSessionId();
 
-		mw.cookie.set( cookieName, token, {
-			expires: 90 * 24 * 3600
-		} );
+		mw.cookie.set( cookieName, token, { expires: 10 * 60 } );
 
 		return token;
 	}
@@ -57,15 +55,17 @@
 	 *
 	 * @param {string} feature Feature name
 	 * @param {string} action Action performed
-	 * @param {bool} titleCoordinate Whether feature is used with the title coordinate
+	 * @param {boolean} titleCoordinate Whether feature is used with the title coordinate
 	 * @param {string|undefined} [url] URL to follow once event has been logged
 	 */
 	function doTrack( feature, action, titleCoordinate, url ) {
-		mw.eventLog.logEvent( 'GeoFeatures', {
-			feature: feature,
-			action: action,
-			titleCoordinate: titleCoordinate,
-			userToken: getToken()
+		mw.loader.using( 'schema.geoFeatures' ).then( function () {
+			mw.eventLog.logEvent( 'GeoFeatures', {
+				feature: feature,
+				action: action,
+				titleCoordinate: titleCoordinate,
+				userToken: getToken()
+			} );
 		} );
 		// If the event was caused by a click on a link, follow this link after a delay to give
 		// the event time to be logged
@@ -144,90 +144,95 @@
 		);
 	}
 
-	// Track GeoHack usage
-	$geoHackLinks = $( 'a[href^=\'//tools.wmflabs.org/geohack/geohack.php\']' );
-	$geoHackLinks.on( 'click', function ( event ) {
-		var $this = $( this ),
-			isTitle = isTitleCoordinate( $this );
+	mw.requestIdleCallback( function () {
+		// Nuke old cookies
+		mw.cookie.set( 'GeoFeaturesUser', null );
 
-		// Don't override all the weird input combinations because this may, for example,
-		// result in link being opened in the same tab instead of another
-		if ( event.buttons === undefined
-			|| event.buttons > 1
-			|| event.button
-			|| event.altKey
-			|| event.ctrlKey
-			|| event.metaKey
-			|| event.shiftKey
-		) {
-			doTrack( 'GeoHack', 'open', isTitle );
-		} else {
-			// Ordinary click, override to ensure it's logged
-			doTrack( 'GeoHack', 'open', isTitle, $this.attr( 'href' ) );
-			event.preventDefault();
-		}
-	} );
+		// Track GeoHack usage
+		$geoHackLinks = $( 'a[href^=\'//tools.wmflabs.org/geohack/geohack.php\']' );
+		$geoHackLinks.on( 'click', function ( event ) {
+			var $this = $( this ),
+				isTitle = isTitleCoordinate( $this );
 
-	// Track WikiMiniAtlas usage
-	if ( $geoHackLinks.length ) {
-		trackIframe( wmaSelector, 'WikiMiniAtlas' );
-		mw.hook( 'WikiMiniAtlas.load' ).add( function () {
-				$( '.wmamapbutton' ).on( 'click', function () {
-					var $this = $( this ),
-						isTitle = isTitleCoordinate( $this ),
-						$container = $( wmaSelector ).parent();
-
-					$document.data( 'isPrimary-WikiMiniAtlas', isTitle );
-					if ( $container.is( ':visible' ) ) {
-						doTrack( 'WikiMiniAtlas', 'open', isTitle );
-						$container.one( 'hide', function () {
-							doTrack( 'WikiMiniAtlas', 'close', isTitle );
-						} );
-					}
-				} );
+			// Don't override all the weird input combinations because this may, for example,
+			// result in link being opened in the same tab instead of another
+			if ( event.buttons === undefined
+				|| event.buttons > 1
+				|| event.button
+				|| event.altKey
+				|| event.ctrlKey
+				|| event.metaKey
+				|| event.shiftKey
+			) {
+				doTrack( 'GeoHack', 'open', isTitle );
+			} else {
+				// Ordinary click, override to ensure it's logged
+				doTrack( 'GeoHack', 'open', isTitle, $this.attr( 'href' ) );
+				event.preventDefault();
 			}
+		} );
+
+		// Track WikiMiniAtlas usage
+		if ( $geoHackLinks.length ) {
+			trackIframe( wmaSelector, 'WikiMiniAtlas' );
+			mw.hook( 'WikiMiniAtlas.load' ).add( function () {
+					$( '.wmamapbutton' ).on( 'click', function () {
+						var $this = $( this ),
+							isTitle = isTitleCoordinate( $this ),
+							$container = $( wmaSelector ).parent();
+
+						$document.data( 'isPrimary-WikiMiniAtlas', isTitle );
+						if ( $container.is( ':visible' ) ) {
+							doTrack( 'WikiMiniAtlas', 'open', isTitle );
+							$container.one( 'hide', function () {
+								doTrack( 'WikiMiniAtlas', 'close', isTitle );
+							} );
+						}
+					} );
+				}
+			);
+		}
+
+		// Track WIWOSM usage
+		$document.data( 'isPrimary-WIWOSM', true );
+		trackIframe( wiwosmSelector, 'WIWOSM' );
+		trackButton( '.osm-icon-coordinates',
+			function () {
+				var mapShown = $( wiwosmSelector ).is( ':visible' );
+				doTrack( 'WIWOSM', mapShown ? 'open' : 'close', true );
+			},
+			5
 		);
-	}
 
-	// Track WIWOSM usage
-	$document.data( 'isPrimary-WIWOSM', true );
-	trackIframe( wiwosmSelector, 'WIWOSM' );
-	trackButton( '.osm-icon-coordinates',
-		function () {
-			var mapShown = $( wiwosmSelector ).is( ':visible' );
-			doTrack( 'WIWOSM', mapShown ? 'open' : 'close', true );
-		},
-		5
-	);
+		// Track Wikivoyage maps
+		( function () {
+			var $map;
 
-	// Track Wikivoyage maps
-	( function () {
-		var $map;
+			function onScroll() {
+				if ( isVisible( $map ) ) {
+					doTrack( 'Wikivoyage', 'view', false );
+					$( window ).off( 'scroll', onScroll );
+				}
+			}
 
-		function onScroll() {
+			$map = $( '#mapwrap #mapdiv' );
+
+			if ( !$map.length ) {
+				return;
+			}
+
+			trackIframe( '#mapwrap #mapdiv iframe', 'Wikivoyage' );
+
+			// Log only 1 of 100 views to prevent a flood
+			if ( Math.random() * 100 > 1 ) {
+				return;
+			}
+
 			if ( isVisible( $map ) ) {
 				doTrack( 'Wikivoyage', 'view', false );
-				$( window ).off( 'scroll', onScroll );
+			} else {
+				$( window ).on( 'scroll', onScroll );
 			}
-		}
-
-		$map = $( '#mapwrap #mapdiv' );
-
-		if ( !$map.length ) {
-			return;
-		}
-
-		trackIframe( '#mapwrap #mapdiv iframe', 'Wikivoyage' );
-
-		// Log only 1 of 100 views to prevent a flood
-		if ( Math.random() * 100 > 1 ) {
-			return;
-		}
-
-		if ( isVisible( $map ) ) {
-			doTrack( 'Wikivoyage', 'view', false );
-		} else {
-			$( window ).on( 'scroll', onScroll );
-		}
-	}() );
+		}() );
+	} );
 }( jQuery, mediaWiki ) );
