@@ -128,11 +128,13 @@
 		"ext.wikimediaEvents": {
 			"scripts": [
 				"ext.wikimediaEvents.statsd.js",
+				"ext.wikimediaEvents.rlfeature.js",
 				"ext.wikimediaEvents.searchSatisfaction.js",
 				"ext.wikimediaEvents.search.js",
 				"ext.wikimediaEvents.geoFeatures.js"
 			],
 			"dependencies": [
+				"ext.eventLogging.subscriber",
 				"mediawiki.user",
 				"mediawiki.Uri",
 				"mediawiki.storage"
