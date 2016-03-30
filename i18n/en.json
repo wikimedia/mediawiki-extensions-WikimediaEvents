@@ -12,5 +12,6 @@
 	"tag-cross-wiki-upload-3": "-",
 	"tag-cross-wiki-upload-4": "-",
 	"tag-HHVM": "[[mw:Special:MyLanguage/HHVM/About|HHVM]]",
-	"tag-HHVM-description": "Revisions made with the HipHop Virtual Machine enabled instead of the Zend PHP interpreter (expected to improve performance, tagged for debugging/analysis)"
+	"tag-HHVM-description": "Revisions made with the HipHop Virtual Machine enabled instead of the Zend PHP interpreter (expected to improve performance, tagged for debugging/analysis)",
+	"abusefilter-edit-builder-vars-user-wpzero": "Whether or not a user is editing through a zero-rated carrier via Wikipedia Zero"
 }

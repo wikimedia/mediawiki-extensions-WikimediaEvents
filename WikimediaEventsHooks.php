@@ -516,4 +516,30 @@ class WikimediaEventsHooks {
 			}
 		} );
 	}
+
+	/**
+	 * AbuseFilter-GenerateUserVars hook handler
+	 *
+	 * @param AbuseFilterVariableHolder $vars
+	 * @param User $user object
+	 */
+	public static function onAbuseFilterGenerateUserVars( $vars, $user ) {
+		global $wgRequest;
+
+		$vars->setVar(
+			'user_wpzero',
+			$wgRequest->getHeader( 'X-Carrier' ) !== false
+		);
+	}
+
+	/**
+	 * AbuseFilter-builder hook handler
+	 *
+	 * @param array $builder
+	 * @return bool
+	 */
+	public static function onAbuseFilterBuilder( &$builder ) {
+		$builder['vars']['user_wpzero'] = 'user-wpzero';
+	}
+
 }
