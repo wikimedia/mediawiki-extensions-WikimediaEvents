@@ -8,5 +8,6 @@
 	"wikimediaevents-desc": "רישום ביומן של אירועים ייחודיים לוויקימדיה באמצעות EventLogging",
 	"tag-cross-wiki-upload": "העלאה מוויקי אחר",
 	"tag-cross-wiki-upload-description": "קבצים שהועלו מתוך העורך החזותי ועורך קוד המקור באתרי ויקי אחרים",
-	"tag-HHVM-description": "שינויים שנעשו עם HipHop Virtual Machine ולא עם מפענח Zend PHP (זה צפוי לשפר ביצועים, התיוג נעשה לשם ניפוי שגיאות וניתוח)"
+	"tag-HHVM-description": "שינויים שנעשו עם HipHop Virtual Machine ולא עם מפענח Zend PHP (זה צפוי לשפר ביצועים, התיוג נעשה לשם ניפוי שגיאות וניתוח)",
+	"abusefilter-edit-builder-vars-user-wpzero": "האם המשתמש עורך דרך ספק חינם בתכנית ויקיפדיה אפס"
 }
