@@ -135,8 +135,7 @@
 			"dependencies": [
 				"mediawiki.user",
 				"mediawiki.Uri",
-				"mediawiki.storage",
-				"schema.GeoFeatures"
+				"mediawiki.storage"
 			],
 			"localBasePath": "modules",
 			"remoteExtPath": "WikimediaEvents/modules",
