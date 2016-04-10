@@ -3,9 +3,11 @@
 		"authors": [
 			"Fitoschido",
 			"Jonathan rrr",
-			"Macofe"
+			"Macofe",
+			"AlvaroMolina"
 		]
 	},
 	"wikimediaevents-desc": "Registra eventos específicos de Wikimedia mediante EventLogging",
-	"tag-cross-wiki-upload-description": "Archivos subidos desde dentro del editor visual en otros wikis"
+	"tag-cross-wiki-upload-description": "Archivos subidos desde dentro del editor visual en otros wikis",
+	"abusefilter-edit-builder-vars-user-wpzero": "Sea o no un usuario está editando a través de un índice cero de portador a través de Wikipedia Zero"
 }
