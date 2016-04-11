@@ -437,7 +437,33 @@
 	 * @param {SessionState} session
 	 */
 	function setupAutocompleteTest( session ) {
-		var logEvent = genLogEventFn( 'autocomplete', session );
+		var logEvent = genLogEventFn( 'autocomplete', session ),
+			track = function ( topic, data ) {
+				if ( data.action === 'impression-results' ) {
+					// When a new search is performed reset the session lifetime.
+					session.refresh( 'sessionId' );
+
+					// run every time an autocomplete result is shown
+					logEvent( 'searchResultPage', {
+						hitsReturned: data.numberOfResults,
+						query: data.query,
+						inputLocation: data.inputLocation,
+						autocompleteType: data.resultSetType
+					} );
+				} else if ( data.action === 'render-one' ) {
+					// run when rendering anchors for suggestion results. Attaches a wprov
+					// to the link so we know when the user arrives they came from autocomplete
+					// and what position they clicked.
+					data.formData.linkParams.wprov = autoComplete.wprovPrefix + data.index;
+				} else if ( data.action === 'click-result' ) {
+					// test event, currently duplicated by visitPage event. Not
+					// sure yet if the work to provide better deliverability of
+					// unload events will be sufficient.
+					logEvent( 'click', {
+						position: data.clickIndex
+					} );
+				}
+			};
 
 		if ( autoComplete.cameFromSearch ) {
 			logEvent( 'visitPage', {
@@ -450,32 +476,10 @@
 			} );
 		}
 
-		mw.trackSubscribe( 'mediawiki.searchSuggest', function ( topic, data ) {
-			if ( data.action === 'impression-results' ) {
-				// When a new search is performed reset the session lifetime.
-				session.refresh( 'sessionId' );
-
-				// run every time an autocomplete result is shown
-				logEvent( 'searchResultPage', {
-					hitsReturned: data.numberOfResults,
-					query: data.query,
-					inputLocation: data.inputLocation,
-					autocompleteType: data.resultSetType
-				} );
-			} else if ( data.action === 'render-one' ) {
-				// run when rendering anchors for suggestion results. Attaches a wprov
-				// to the link so we know when the user arrives they came from autocomplete
-				// and what position they clicked.
-				data.formData.linkParams.wprov = autoComplete.wprovPrefix + data.index;
-			} else if ( data.action === 'click-result' ) {
-				// test event, currently duplicated by visitPage event. Not
-				// sure yet if the work to provide better deliverability of
-				// unload events will be sufficient.
-				logEvent( 'click', {
-					position: data.clickIndex
-				} );
-			}
-		} );
+		// Old style jquery suggestions widget
+		mw.trackSubscribe( 'mediawiki.searchSuggest', track );
+		// New style OOui suggestions widget
+		mw.trackSubscribe( 'mw.widgets.SearchInputWidget', track );
 	}
 
 	/**
