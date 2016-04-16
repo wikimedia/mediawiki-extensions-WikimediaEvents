@@ -4,10 +4,11 @@
 			"Fitoschido",
 			"Jonathan rrr",
 			"Macofe",
-			"AlvaroMolina"
+			"AlvaroMolina",
+			"Lemondoge"
 		]
 	},
 	"wikimediaevents-desc": "Registra eventos específicos de Wikimedia mediante EventLogging",
-	"tag-cross-wiki-upload-description": "Archivos subidos desde dentro del editor visual en otros wikis",
+	"tag-cross-wiki-upload-description": "Los archivos que se cargan desde el interior de la wikitext y editores visuales en otros wikis",
 	"abusefilter-edit-builder-vars-user-wpzero": "Sea o no un usuario está editando a través de un índice cero de portador a través de Wikipedia Zero"
 }
