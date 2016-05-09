@@ -294,8 +294,11 @@
 			}
 		} );
 
+		// @todo only doing this when a new log event initializes event logging
+		// might be reducing our deliverability. Not sure the best way to
+		// handle.
 		$( document ).ready( function () {
-			var i, queue, key,
+			var queue, key,
 				jsonQueue = mw.storage.get( queueKey );
 
 			if ( jsonQueue ) {
@@ -303,7 +306,7 @@
 				queue = JSON.parse( jsonQueue );
 				for ( key in queue ) {
 					if ( queue.hasOwnProperty( key ) ) {
-						self.sendBeacon( queue[ i ] );
+						self.sendBeacon( queue[ key ] );
 					}
 				}
 			}
