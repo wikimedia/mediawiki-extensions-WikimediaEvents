@@ -1,4 +1,5 @@
 <?php
+use MediaWiki\Logger\LoggerFactory;
 
 /**
  * Hooks used for Wikimedia-related logging
@@ -559,6 +560,57 @@ class WikimediaEventsHooks {
 		$files = array_merge( $files, $ourFiles );
 		return true;
 		// @codeCoverageIgnoreEnd
+	}
+
+	public static function onDiffViewHeader(
+		DifferenceEngine $diff,
+		Revision $oldRev,
+		Revision $newRev
+	) {
+		if ( wfWikiID() !== 'dewiki' ) {
+			return true;
+		}
+		DeferredUpdates::addCallableUpdate( function () use( $oldRev, $newRev ){
+			$dbr = wfGetDB( DB_SLAVE );
+
+			$pageId = $oldRev->getPage();
+			$oldTimestamp = $oldRev->getTimestamp();
+			$newTimestamp = $newRev->getTimestamp();
+
+			$result = $dbr->selectRow(
+				'revision',
+				[
+					'revisions' => 'COUNT(*)',
+					'intermediate' => "SUM( IF( rev_timestamp > $oldTimestamp AND rev_timestamp < $newTimestamp, 1, 0 ) )",
+					'olderrevs' => "SUM( IF( rev_timestamp < $oldTimestamp, 1, 0 ) )",
+					'newerrevs' => "SUM( IF( rev_timestamp > $newTimestamp, 1, 0 ) )",
+				],
+				[ 'rev_page' => $pageId ],
+				__METHOD__
+			);
+
+			if ( !$result ) {
+				return true;
+			}
+
+			$values = array(
+				'timestamp' => wfTimestampNow(),
+				'oldid' => $oldRev->getId(),
+				'newid' => $newRev->getId(),
+				'pageid' => $pageId,
+				'revisions' => $result->revisions,
+				'intermediate' => $result->intermediate,
+				'olderrevs' => $result->olderrevs,
+				'newerrevs' => $result->newerrevs,
+			);
+
+			$logger = LoggerFactory::getInstance( 'dewiki_diffstats' );
+			$logger->info( 'dewiki diff page view', $values );
+
+			return true;
+		} );
+
+		return true;
 	}
 
 }
