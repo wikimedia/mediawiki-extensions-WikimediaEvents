@@ -396,7 +396,7 @@ class WikimediaEventsHooks {
 	 */
 	public static function onListDefinedTags( &$tags ) {
 		$tags[] = 'HHVM';
-		if ( wfWikiId() === 'commonswiki' ) {
+		if ( wfWikiID() === 'commonswiki' ) {
 			$tags[] = 'cross-wiki-upload';
 			// For A/B test
 			$tags[] = 'cross-wiki-upload-1';
@@ -414,7 +414,7 @@ class WikimediaEventsHooks {
 	 * @return bool
 	 */
 	public static function onChangeTagsListActive( &$tags ) {
-		if ( wfWikiId() === 'commonswiki' ) {
+		if ( wfWikiID() === 'commonswiki' ) {
 			$tags[] = 'cross-wiki-upload';
 			// For A/B test
 			$tags[] = 'cross-wiki-upload-1';
@@ -463,7 +463,7 @@ class WikimediaEventsHooks {
 		if ( !defined( 'MW_API' ) ) {
 			return true;
 		}
-		if ( wfWikiId() !== 'commonswiki' ) {
+		if ( wfWikiID() !== 'commonswiki' ) {
 			return true;
 		}
 		if ( !(
