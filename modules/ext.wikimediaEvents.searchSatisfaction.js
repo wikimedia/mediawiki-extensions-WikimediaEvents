@@ -25,7 +25,7 @@
 		return;
 	}
 
-	var search, autoComplete, session, eventLog,
+	var search, autoComplete, session, eventLog, initSubTest,
 		isSearchResultPage = mw.config.get( 'wgIsSearchResultPage' ),
 		uri = new mw.Uri( location.href ),
 		checkinTimes = [ 10, 20, 30, 40, 50, 60, 90, 120, 150, 180, 210, 240, 300, 360, 420 ],
@@ -67,6 +67,7 @@
 		// persistent state keys that have a lifetime
 			ttl = {
 				sessionId: 10 * 60 * 1000,
+				subTest: 10 * 60 * 1000,
 				token: 24 * 60 * 60 * 1000
 			},
 			now = new Date().getTime();
@@ -100,6 +101,8 @@
 		function initialize( session ) {
 
 			var sessionId = session.get( 'sessionId' ),
+				// increase enwiki sample size for textcat subtest
+				sampleSize = mw.config.get( 'wgDBname' ) === 'enwiki' ? 100 : 200,
 				/**
 				 * Determines whether the user is part of the population size.
 				 *
@@ -109,9 +112,28 @@
 				 */
 				oneIn = function ( populationSize ) {
 					var rand = mw.user.generateRandomSessionId(),
-					// take the first 52 bits of the rand value
+					// take the first 52 bits of the rand value to match js
+					// integer precision
 						parsed = parseInt( rand.slice( 0, 13 ), 16 );
 					return parsed % populationSize === 0;
+				},
+				/**
+				 * Choose a single bucket from a list of buckets with even
+				 * distribution
+				 *
+				 * @param {string[]} buckets
+				 * @return {string}
+				 * @private
+				 */
+				chooseBucket = function ( buckets ) {
+					var rand = mw.user.generateRandomSessionId(),
+					// take the first 52 bits of the rand value to match js
+					// integer precision
+						parsed = parseInt( rand.slice( 0, 13 ), 16 ),
+					// step size between buckets. No -1 on pow or the maximum
+					// value would be past the end.
+						step = Math.pow( 2, 52 ) / buckets.length;
+					return buckets[ Math.floor( parsed / step ) ];
 				};
 
 			if ( sessionId === 'rejected' ) {
@@ -120,7 +142,7 @@
 			}
 			// If a sessionId exists the user was previously accepted into the test
 			if ( !sessionId ) {
-				if ( !oneIn( 200 ) ) {
+				if ( !oneIn( sampleSize ) ) {
 					// user was not chosen in a sampling of search results
 					session.set( 'sessionId', 'rejected' );
 					return false;
@@ -129,6 +151,15 @@
 				// have a search session id, generate one.
 				if ( !session.set( 'sessionId', randomToken() ) ) {
 					return false;
+				}
+
+				// Assign 50% of enwiki users to subTest
+				if ( mw.config.get( 'wgDBname' ) === 'enwiki' && oneIn( 2 ) ) {
+					session.set( 'subTest', chooseBucket( [
+						'textcat1:a',
+						'textcat1:b',
+						'textcat1:c'
+					] ) );
 				}
 			}
 
@@ -362,6 +393,10 @@
 
 			lastScrollTop = scrollTop;
 
+			if ( session.get( 'subTest' ) ) {
+				evt.subTest = session.get( 'subTest' );
+			}
+
 			if ( articleId > 0 ) {
 				evt.articleId = articleId;
 			}
@@ -388,11 +423,22 @@
 	 * @param {SessionState} session
 	 */
 	function setupSearchTest( session ) {
-		var logEvent = genLogEventFn( 'fulltext', session );
+		var textCatExtra = [],
+			logEvent = genLogEventFn( 'fulltext', session );
+
+		// specific to textcat subtest
+		if ( mw.config.get( 'wgCirrusSearchAltLanguage' ) ) {
+			textCatExtra = mw.config.get( 'wgCirrusSearchAltLanguage' );
+		}
+		if ( mw.config.get( 'wgCirrusSearchAltLanguageNumResults' ) ) {
+			textCatExtra.push( mw.config.get( 'wgCirrusSearchAltLanguageNumResults' ) );
+		}
+		textCatExtra = textCatExtra.join( ',' );
 
 		if ( isSearchResultPage ) {
 			// When a new search is performed reset the session lifetime.
 			session.refresh( 'sessionId' );
+			session.refresh( 'subTest' );
 
 			$( '#mw-content-text' ).on(
 				'click',
@@ -403,13 +449,16 @@
 					// test event, duplicated by visitPage event when
 					// the user arrives.
 					logEvent( 'click', {
-						position: $( evt.target ).data( 'serp-pos' )
+						position: $( evt.target ).data( 'serp-pos' ),
+						extraParams: textCatExtra
 					} );
 				}
 			);
+
 			logEvent( 'searchResultPage', {
 				query: mw.config.get( 'searchTerm' ),
-				hitsReturned: $( '.mw-search-result-heading' ).length
+				hitsReturned: $( '.mw-search-result-heading' ).length,
+				extraParams: textCatExtra
 			} );
 		} else if ( search.cameFromSearch ) {
 			logEvent( 'visitPage', {
@@ -435,6 +484,7 @@
 				if ( data.action === 'impression-results' ) {
 					// When a new search is performed reset the session lifetime.
 					session.refresh( 'sessionId' );
+					session.refresh( 'subTest' );
 
 					// run every time an autocomplete result is shown
 					logEvent( 'searchResultPage', {
@@ -476,20 +526,6 @@
 	}
 
 	/**
-	 * Delay session initialization as late in the
-	 * process as possible, but only do it once.
-	 *
-	 * @param {Function} fn
-	 */
-	function setup( fn ) {
-		session = session || new SessionState();
-
-		if ( session.get( 'enabled' ) ) {
-			fn( session );
-		}
-	}
-
-	/**
 	 * Decorator to call the inner function at most one time.
 	 *
 	 * @param {Function} fn
@@ -499,10 +535,38 @@
 		var called = false;
 		return function () {
 			if ( !called ) {
-				fn();
+				fn.apply( this, arguments );
 				called = true;
 			}
 		};
+	}
+
+	// This could be called both by autocomplete and full
+	// text setup, so wrap in atMostOnce to ensure it's
+	// only run once.
+	initSubTest = atMostOnce( function ( session ) {
+		if ( session.get( 'subTest' ) ) {
+			$( '<input>' ).attr( {
+				type: 'hidden',
+				name: 'cirrusUserTesting',
+				value: session.get( 'subTest' )
+			} ).prependTo( $( 'input[type=search]' ).closest( 'form' ) );
+		}
+	} );
+
+	/**
+	 * Delay session initialization as late in the
+	 * process as possible, but only do it once.
+	 *
+	 * @param {Function} fn
+	 */
+	function setup( fn ) {
+		session = session || new SessionState();
+
+		if ( session.get( 'enabled' ) ) {
+			initSubTest( session );
+			fn( session );
+		}
 	}
 
 	// Full text search satisfaction tracking
@@ -514,19 +578,28 @@
 
 	// Autocomplete satisfaction tracking
 	$( document ).ready( function () {
+		var initialize = atMostOnce( function () {
+			setup( setupAutocompleteTest );
+		} );
+
 		if ( autoComplete.cameFromSearch ) {
 			// user came here by selecting an autocomplete result,
 			// initialize on page load
-			setup( setupAutocompleteTest );
+			initialize();
 		} else {
 			// delay initialization until the user clicks into the autocomplete
 			// box. Note there are two elements matching this selector, the
 			// main search box on Special:Search and the search box on every
-			// page. $.one fires once per element and not once ever, hence the
-			// decorator.
-			$( 'input[type=search]' ).one( 'focus', atMostOnce( function () {
-				setup( setupAutocompleteTest );
-			} ) );
+			// page.
+			//
+			// This has to subscribe to multiple events to ensure it captures
+			// in modern browsers (input) and less modern browsers (the rest).
+			// The atMostOnce() makes sure we only truly initialize once.
+			$( 'input[type=search]' )
+				.one( 'input', initialize )
+				.one( 'change', initialize )
+				.one( 'paste', initialize )
+				.one( 'keypress', initialize );
 		}
 	} );
 
