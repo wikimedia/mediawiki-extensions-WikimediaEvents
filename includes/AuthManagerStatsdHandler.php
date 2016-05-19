@@ -22,6 +22,7 @@
  * @file
  */
 
+use MediaWiki\MediaWikiServices;
 use Monolog\Handler\AbstractHandler;
 
 /**
@@ -39,28 +40,28 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 	public function handle( array $record ) {
 		$event = isset( $record['context']['event'] ) ? $record['context']['event'] : null;
 		$type = isset( $record['context']['type'] ) ? $record['context']['type'] : null;
-		$entrypoint = defined( 'MW_API' ) ? 'api' : 'web';
-		if ( $entrypoint === 'web' && wfWikiID() === 'loginwiki' ) {
-			$entrypoint = 'centrallogin';
-		}
+		$entrypoint = $this->getEntryPoint();
 		$status = isset( $record['context']['status'] ) ? $record['context']['status'] : null;
 		$successful = isset( $record['context']['successful'] ) ? $record['context']['successful'] : null;
 		$error = null;
 		if ( $status instanceof Status || $status instanceof StatusValue ) {
 			$successful = $status->isGood();
 			if ( !$successful ) {
-				$error = $status->getMessage()->getKey();
+				$errorArray = $status->getErrorsArray() ?: $status->getWarningsArray();
+				$error = $errorArray[0][0];
 			}
 		} elseif ( is_string( $status ) && $successful === false ) {
 			$error = $status;
 		} elseif ( is_numeric( $status ) && $successful === false ) {
 			$error = strval( $status );
+		} elseif( is_bool( $status ) ) {
+			$successful = $status;
 		}
 
 		// sanity check in case this was invoked from some non-metrics-related
 		// code by accident
 		if (
-			$record['channel'] !== 'authmanager'
+			$record['channel'] !== 'authmanager' && $record['channel'] !== 'authevents'
 			|| !$event || !is_string( $event )
 			|| ( $type && !is_string( $type ) )
 			|| ( $error && !is_string( $error ) )
@@ -77,9 +78,21 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 			$keyParts[] = $error;
 		}
 		$key = implode( '.', array_filter( $keyParts ) );
-		RequestContext::getMain()->getStats()->increment( $key );
+
+
+		// use of this class is set up in operations/mediawiki-config so no nice dependency injection
+		$stats = MediaWikiServices::getInstance()->getStatsdDataFactory();
+		$stats->increment( $key );
 
 		// pass to next handler
 		return false;
+	}
+
+	protected function getEntryPoint() {
+		$entrypoint = defined( 'MW_API' ) ? 'api' : 'web';
+		if ( $entrypoint === 'web' && wfWikiID() === 'loginwiki' ) {
+			$entrypoint = 'centrallogin';
+		}
+		return $entrypoint;
 	}
 }
