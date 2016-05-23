@@ -413,7 +413,8 @@
 	 * @param {SessionState} session
 	 */
 	function setupSearchTest( session ) {
-		var logEvent = genLogEventFn( 'fulltext', session );
+		var params,
+			logEvent = genLogEventFn( 'fulltext', session );
 
 		if ( isSearchResultPage ) {
 			// When a new search is performed reset the session lifetime.
@@ -434,10 +435,14 @@
 				}
 			);
 
-			logEvent( 'searchResultPage', {
+			params = {
 				query: mw.config.get( 'searchTerm' ),
 				hitsReturned: $( '.mw-search-result-heading' ).length
-			} );
+			};
+			if ( window.performance && window.performance.timing ) {
+				params.msToDisplayResults = window.performance.timing.domComplete - window.performance.timing.navigationStart;
+			}
+			logEvent( 'searchResultPage', params );
 		} else if ( search.cameFromSearch ) {
 			logEvent( 'visitPage', {
 				position: search.resultPosition
@@ -459,18 +464,26 @@
 	function setupAutocompleteTest( session ) {
 		var logEvent = genLogEventFn( 'autocomplete', session ),
 			track = function ( topic, data ) {
-				if ( data.action === 'impression-results' ) {
+				var params;
+
+				if ( data.action === 'session-start' ) {
+					session.set( 'autocompleteStart', new Date().getTime() );
+				} else if ( data.action === 'impression-results' ) {
 					// When a new search is performed reset the session lifetime.
 					session.refresh( 'sessionId' );
 					session.refresh( 'subTest' );
 
 					// run every time an autocomplete result is shown
-					logEvent( 'searchResultPage', {
+					params = {
 						hitsReturned: data.numberOfResults,
 						query: data.query,
 						inputLocation: data.inputLocation,
 						autocompleteType: data.resultSetType
-					} );
+					};
+					if ( session.has( 'autocompleteStart' ) ) {
+						params.msToDisplayResults = Math.round( new Date().getTime() - session.get( 'autocompleteStart' ) );
+					}
+					logEvent( 'searchResultPage', params );
 				} else if ( data.action === 'render-one' ) {
 					// run when rendering anchors for suggestion results. Attaches a wprov
 					// to the link so we know when the user arrives they came from autocomplete
