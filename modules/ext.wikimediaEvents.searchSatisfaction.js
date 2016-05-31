@@ -101,8 +101,7 @@
 		function initialize( session ) {
 
 			var sessionId = session.get( 'sessionId' ),
-				// increase enwiki sample size for textcat subtest
-				sampleSize = mw.config.get( 'wgDBname' ) === 'enwiki' ? 100 : 200,
+				sampleSize = 200,
 				/**
 				 * Determines whether the user is part of the population size.
 				 *
@@ -125,7 +124,7 @@
 				 * @return {string}
 				 * @private
 				 */
-				chooseBucket = function ( buckets ) {
+				chooseBucket = function ( buckets ) { // jshint ignore:line
 					var rand = mw.user.generateRandomSessionId(),
 					// take the first 52 bits of the rand value to match js
 					// integer precision
@@ -151,15 +150,6 @@
 				// have a search session id, generate one.
 				if ( !session.set( 'sessionId', randomToken() ) ) {
 					return false;
-				}
-
-				// Assign 50% of enwiki users to subTest
-				if ( mw.config.get( 'wgDBname' ) === 'enwiki' && oneIn( 2 ) ) {
-					session.set( 'subTest', chooseBucket( [
-						'textcat1:a',
-						'textcat1:b',
-						'textcat1:c'
-					] ) );
 				}
 			}
 
@@ -203,7 +193,7 @@
 		};
 
 		this.refresh = function ( type ) {
-			if ( ttl.hasOwnProperty( type ) ) {
+			if ( ttl.hasOwnProperty( type ) && mw.storage.get( key( type ) ) !== null ) {
 				mw.storage.set( key( type + 'EndTime' ), now + ttl[ type ] );
 			}
 		};
@@ -423,17 +413,7 @@
 	 * @param {SessionState} session
 	 */
 	function setupSearchTest( session ) {
-		var textCatExtra = [],
-			logEvent = genLogEventFn( 'fulltext', session );
-
-		// specific to textcat subtest
-		if ( mw.config.get( 'wgCirrusSearchAltLanguage' ) ) {
-			textCatExtra = mw.config.get( 'wgCirrusSearchAltLanguage' );
-		}
-		if ( mw.config.get( 'wgCirrusSearchAltLanguageNumResults' ) ) {
-			textCatExtra.push( mw.config.get( 'wgCirrusSearchAltLanguageNumResults' ) );
-		}
-		textCatExtra = textCatExtra.join( ',' );
+		var logEvent = genLogEventFn( 'fulltext', session );
 
 		if ( isSearchResultPage ) {
 			// When a new search is performed reset the session lifetime.
@@ -449,16 +429,14 @@
 					// test event, duplicated by visitPage event when
 					// the user arrives.
 					logEvent( 'click', {
-						position: $( evt.target ).data( 'serp-pos' ),
-						extraParams: textCatExtra
+						position: $( evt.target ).data( 'serp-pos' )
 					} );
 				}
 			);
 
 			logEvent( 'searchResultPage', {
 				query: mw.config.get( 'searchTerm' ),
-				hitsReturned: $( '.mw-search-result-heading' ).length,
-				extraParams: textCatExtra
+				hitsReturned: $( '.mw-search-result-heading' ).length
 			} );
 		} else if ( search.cameFromSearch ) {
 			logEvent( 'visitPage', {
@@ -545,13 +523,8 @@
 	// text setup, so wrap in atMostOnce to ensure it's
 	// only run once.
 	initSubTest = atMostOnce( function ( session ) {
-		if ( session.get( 'subTest' ) ) {
-			$( '<input>' ).attr( {
-				type: 'hidden',
-				name: 'cirrusUserTesting',
-				value: session.get( 'subTest' )
-			} ).prependTo( $( 'input[type=search]' ).closest( 'form' ) );
-		}
+		// jshint unused:false
+		// no sub test currently running
 	} );
 
 	/**
