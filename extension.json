@@ -172,7 +172,7 @@
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "modules/",
-		"remoteSkinPath": "WikimediaEvents/modules"
+		"remoteExtPath": "WikimediaEvents/modules"
 	},
 	"config": {
 		"WMEStatsdBaseUri": false
