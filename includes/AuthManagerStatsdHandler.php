@@ -45,6 +45,7 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 		$successful = isset( $record['context']['successful'] ) ? $record['context']['successful'] : null;
 		$error = null;
 		if ( $status instanceof Status || $status instanceof StatusValue ) {
+			$status = Status::wrap( $status );
 			$successful = $status->isGood();
 			if ( !$successful ) {
 				$errorArray = $status->getErrorsArray() ?: $status->getWarningsArray();
