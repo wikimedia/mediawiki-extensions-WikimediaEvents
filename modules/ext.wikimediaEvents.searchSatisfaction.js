@@ -79,8 +79,7 @@
 				sessionId: 10 * 60 * 1000,
 				subTest: 10 * 60 * 1000,
 				token: 24 * 60 * 60 * 1000
-			},
-			now = new Date().getTime();
+			};
 
 		/**
 		 * Generates a cache key specific to this session and key type.
@@ -139,19 +138,19 @@
 
 			if ( sessionId === 'rejected' ) {
 				// User was previously rejected
-				return false;
+				return;
 			}
 			// If a sessionId exists the user was previously accepted into the test
 			if ( !sessionId ) {
 				if ( !oneIn( sampleSize ) ) {
 					// user was not chosen in a sampling of search results
 					session.set( 'sessionId', 'rejected' );
-					return false;
+					return;
 				}
 				// User was chosen to participate in the test and does not yet
 				// have a search session id, generate one.
 				if ( !session.set( 'sessionId', randomToken() ) ) {
-					return false;
+					return;
 				}
 
 				// Assign 50% of users to subTest
@@ -167,9 +166,12 @@
 			// Unique token per page load to know which events occured
 			// within the exact same page.
 			session.set( 'pageViewId', randomToken() );
-
-			return true;
 		}
+
+		this.isActive = function () {
+			var sessionId = this.get( 'sessionId' );
+			return sessionId && sessionId !== 'rejected';
+		};
 
 		this.has = function ( type ) {
 			return this.get( type ) !== null;
@@ -178,7 +180,8 @@
 		this.get = function ( type ) {
 			if ( !state.hasOwnProperty( type ) ) {
 				if ( ttl.hasOwnProperty( type ) ) {
-					var endTime = parseInt( mw.storage.get( key( type + 'EndTime' ) ), 10 );
+					var endTime = parseInt( mw.storage.get( key( type + 'EndTime' ) ), 10 ),
+						now = new Date().getTime();
 					if ( endTime && endTime > now ) {
 						state[ type ] = mw.storage.get( key( type ) );
 					} else {
@@ -195,6 +198,7 @@
 
 		this.set = function ( type, value ) {
 			if ( ttl.hasOwnProperty( type ) ) {
+				var now = new Date().getTime();
 				if ( !mw.storage.set( key( type + 'EndTime' ), now + ttl[ type ] ) ) {
 					return false;
 				}
@@ -208,12 +212,13 @@
 		};
 
 		this.refresh = function ( type ) {
-			if ( ttl.hasOwnProperty( type ) && mw.storage.get( key( type ) ) !== null ) {
+			if ( this.isActive() && ttl.hasOwnProperty( type ) && mw.storage.get( key( type ) ) !== null ) {
+				var now = new Date().getTime();
 				mw.storage.set( key( type + 'EndTime' ), now + ttl[ type ] );
 			}
 		};
 
-		state.enabled = initialize( this );
+		initialize( this );
 
 		return this;
 	}
@@ -383,6 +388,12 @@
 					// not get completed before page unload
 					uniqueId: randomToken()
 				};
+
+			// Allow checkin events to fire after the session closes, as those
+			// are still meaningful.
+			if ( action !== 'checkin' && !session.isActive() ) {
+				return;
+			}
 
 			lastScrollTop = scrollTop;
 
@@ -590,7 +601,7 @@
 	function setup( fn ) {
 		session = session || new SessionState();
 
-		if ( session.get( 'enabled' ) ) {
+		if ( session.isActive() ) {
 			initSubTest( session );
 			fn( session );
 		}
