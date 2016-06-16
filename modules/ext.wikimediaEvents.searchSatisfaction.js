@@ -48,6 +48,16 @@
 		return res;
 	}
 
+	/**
+	 * Generate a unique token. Appends timestamp in base 36 to increase
+	 * uniqueness of the token.
+	 *
+	 * @return {string}
+	 */
+	function randomToken() {
+		return mw.user.generateRandomSessionId() + new Date().getTime().toString( 36 );
+	}
+
 	search = initFromWprov( 'srpw1_' );
 	autoComplete = initFromWprov( 'acrw1_' );
 	// with no position appended indicates the user submitted the
@@ -80,16 +90,6 @@
 		 */
 		function key( type ) {
 			return storageNamespace + '-' + type;
-		}
-
-		/**
-		 * Generate a unique token. Appends timestamp in base 36 to increase
-		 * uniqueness of the token.
-		 *
-		 * @return {string}
-		 */
-		function randomToken() {
-			return mw.user.generateRandomSessionId() + new Date().getTime().toString( 36 );
 		}
 
 		/**
@@ -160,6 +160,10 @@
 			return true;
 		}
 
+		this.has = function ( type ) {
+			return this.get( type ) !== null;
+		};
+
 		this.get = function ( type ) {
 			if ( !state.hasOwnProperty( type ) ) {
 				if ( ttl.hasOwnProperty( type ) ) {
@@ -201,24 +205,6 @@
 		state.enabled = initialize( this );
 
 		return this;
-	}
-
-	/**
-	 * Adds an attribute to the link to track the offset
-	 * of the result in the SERP.
-	 *
-	 * Expects to be run with an html anchor as `this`.
-	 *
-	 * @param {Event} evt jQuery Event object
-	 * @private
-	 */
-	function updateSearchHref( evt ) {
-		var uri = new mw.Uri( evt.target.href ),
-			offset = $( evt.target ).data( 'serp-pos' );
-		if ( offset ) {
-			uri.query.wprov = evt.data.wprovPrefix + offset;
-			evt.target.href = uri.toString();
-		}
 	}
 
 	/**
@@ -319,15 +305,15 @@
 		// might be reducing our deliverability. Not sure the best way to
 		// handle.
 		$( document ).ready( function () {
-			var queue, key,
+			var queue, url,
 				jsonQueue = mw.storage.get( queueKey );
 
 			if ( jsonQueue ) {
 				mw.storage.remove( queueKey );
 				queue = JSON.parse( jsonQueue );
-				for ( key in queue ) {
-					if ( queue.hasOwnProperty( key ) ) {
-						self.sendBeacon( queue[ key ] );
+				for ( url in queue ) {
+					if ( queue.hasOwnProperty( url ) ) {
+						self.sendBeacon( url );
 					}
 				}
 			}
@@ -378,7 +364,13 @@
 					scroll: scrollTop !== lastScrollTop,
 					// mediawiki session id to correlate with other schemas,
 					// such as QuickSurvey
-					mwSessionId: mw.user.sessionId()
+					mwSessionId: mw.user.sessionId(),
+					// unique event identifier to filter duplicate events. In
+					// testing these primarily come from browsers without
+					// sendBeacon using our extended event log implementation.
+					// Depending on speed of the network the request may or may
+					// not get completed before page unload
+					uniqueId: randomToken()
 				};
 
 			lastScrollTop = scrollTop;
@@ -424,13 +416,21 @@
 			$( '#mw-content-text' ).on(
 				'click',
 				'.mw-search-result-heading a',
-				{ wprovPrefix: search.wprovPrefix },
 				function ( evt ) {
-					updateSearchHref( evt );
-					// test event, duplicated by visitPage event when
-					// the user arrives.
+					var $target = $( evt.target ),
+						uri = new mw.Uri( $target.attr( 'href' ) ),
+						// Only the primary anchor has the data-serp-pos attribute, but we
+						// might be updating a sub-link like a section.
+						index = $target.closest( '.mw-search-result-heading' )
+							.find( '[data-serp-pos]' )
+							.data( 'serp-pos' );
+
+					if ( index !== undefined ) {
+						uri.query.wprov = search.wprovPrefix + index;
+						$target.attr( 'href', uri.toString() );
+					}
 					logEvent( 'click', {
-						position: $( evt.target ).data( 'serp-pos' )
+						position: index
 					} );
 				}
 			);
