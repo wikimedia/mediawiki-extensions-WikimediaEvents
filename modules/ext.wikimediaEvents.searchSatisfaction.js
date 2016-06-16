@@ -453,7 +453,7 @@
 						position: index,
 						// specific to textcat subtest. Links starting with // point to
 						// an alternate wiki.
-						extraParams: $target.attr( 'href' ).substr( 0, 2 ) === '//' ? 1 : 0
+						extraParams: $target.attr( 'href' ).substr( 0, 2 ) === '//' ? '1' : '0'
 					} );
 				}
 			);
