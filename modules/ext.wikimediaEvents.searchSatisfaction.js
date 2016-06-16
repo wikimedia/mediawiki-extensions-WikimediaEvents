@@ -99,9 +99,11 @@
 		 * @private
 		 */
 		function initialize( session ) {
-
 			var sessionId = session.get( 'sessionId' ),
-				sampleSize = 200,
+				haveSubTest = [
+					'enwiki', 'frwiki', 'eswiki', 'itwiki', 'dewiki'
+				].indexOf( mw.config.get( 'wgDBname' ) ) !== -1,
+				sampleSize = haveSubTest ? 100 : 200,
 				/**
 				 * Determines whether the user is part of the population size.
 				 *
@@ -150,6 +152,15 @@
 				// have a search session id, generate one.
 				if ( !session.set( 'sessionId', randomToken() ) ) {
 					return false;
+				}
+
+				// Assign 50% of users to subTest
+				if ( haveSubTest && oneIn( 2 ) ) {
+					session.set( 'subTest', chooseBucket( [
+						'textcat2:a',
+						'textcat2:b',
+						'textcat2:c'
+					] ) );
 				}
 			}
 
@@ -383,6 +394,10 @@
 				evt.articleId = articleId;
 			}
 
+			if ( mw.config.get( 'wgCirrusSearchRequestSetToken' ) ) {
+				evt.searchToken = mw.config.get( 'wgCirrusSearchRequestSetToken' );
+			}
+
 			// add any schema specific data
 			if ( extraData ) {
 				$.extend( evt, extraData );
@@ -406,6 +421,7 @@
 	 */
 	function setupSearchTest( session ) {
 		var params,
+			textCatExtra = [],
 			logEvent = genLogEventFn( 'fulltext', session );
 
 		if ( isSearchResultPage ) {
@@ -425,19 +441,39 @@
 							.find( '[data-serp-pos]' )
 							.data( 'serp-pos' );
 
-					if ( index !== undefined ) {
+					// If wprov is already defined it must have come from the
+					// backend interwiki test. Don't override it. This means we
+					// won't get a visitPage event, but we can't collect those
+					// for interwiki anyways.
+					if ( index !== undefined && uri.query.wprov === undefined ) {
 						uri.query.wprov = search.wprovPrefix + index;
 						$target.attr( 'href', uri.toString() );
 					}
 					logEvent( 'click', {
-						position: index
+						position: index,
+						// specific to textcat subtest. Links starting with // point to
+						// an alternate wiki.
+						extraParams: $target.attr( 'href' ).substr( 0, 2 ) === '//' ? 1 : 0
 					} );
 				}
 			);
 
+			// specific to textcat subtest
+			if ( mw.config.get( 'wgCirrusSearchAltLanguage' ) ) {
+				textCatExtra = $.extend( [], mw.config.get( 'wgCirrusSearchAltLanguage' ) );
+			} else {
+				textCatExtra = [ null, null ];
+			}
+			if ( mw.config.get( 'wgCirrusSearchAltLanguageNumResults' ) !== null ) {
+				textCatExtra.push( mw.config.get( 'wgCirrusSearchAltLanguageNumResults' ) );
+			} else {
+				textCatExtra.push( null );
+			}
+
 			params = {
 				query: mw.config.get( 'searchTerm' ),
-				hitsReturned: $( '.mw-search-result-heading' ).length
+				hitsReturned: $( '.mw-search-result-heading' ).length,
+				extraParams: textCatExtra.join( ',' )
 			};
 			if ( window.performance && window.performance.timing ) {
 				params.msToDisplayResults = window.performance.timing.domComplete - window.performance.timing.navigationStart;
@@ -536,8 +572,13 @@
 	// text setup, so wrap in atMostOnce to ensure it's
 	// only run once.
 	initSubTest = atMostOnce( function ( session ) {
-		// jshint unused:false
-		// no sub test currently running
+		if ( session.get( 'subTest' ) ) {
+			$( '<input>' ).attr( {
+				type: 'hidden',
+				name: 'cirrusUserTesting',
+				value: session.get( 'subTest' )
+			} ).prependTo( $( 'input[type=search]' ).closest( 'form' ) );
+		}
 	} );
 
 	/**
