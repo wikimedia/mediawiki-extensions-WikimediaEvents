@@ -59,7 +59,7 @@
 	 * @param {string|undefined} [url] URL to follow once event has been logged
 	 */
 	function doTrack( feature, action, titleCoordinate, url ) {
-		mw.loader.using( 'schema.geoFeatures' ).then( function () {
+		mw.loader.using( 'schema.GeoFeatures' ).then( function () {
 			mw.eventLog.logEvent( 'GeoFeatures', {
 				feature: feature,
 				action: action,
