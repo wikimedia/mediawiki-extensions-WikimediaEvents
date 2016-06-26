@@ -133,6 +133,7 @@
 		},
 		"ext.wikimediaEvents": {
 			"scripts": [
+				"ext.wikimediaEvents.events.js",
 				"ext.wikimediaEvents.statsd.js",
 				"ext.wikimediaEvents.rlfeature.js",
 				"ext.wikimediaEvents.searchSatisfaction.js",
