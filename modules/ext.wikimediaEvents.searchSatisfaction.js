@@ -487,8 +487,10 @@
 				hitsReturned: $( '.mw-search-result-heading' ).length,
 				extraParams: textCatExtra.join( ',' )
 			};
+			// This method is called from jQuery.ready which runs on DOMContentLoaded. Use domInteractive since that
+			// is immediately before DOMContentLoaded per spec.
 			if ( window.performance && window.performance.timing ) {
-				params.msToDisplayResults = window.performance.timing.domComplete - window.performance.timing.navigationStart;
+				params.msToDisplayResults = window.performance.timing.domInteractive - window.performance.timing.navigationStart;
 			}
 			logEvent( 'searchResultPage', params );
 		} else if ( search.cameFromSearch ) {
