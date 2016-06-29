@@ -444,7 +444,8 @@
 				'click',
 				'.mw-search-result-heading a',
 				function ( evt ) {
-					var $target = $( evt.target ),
+					// Sometimes the click event is on a span inside the anchor
+					var $target = $( evt.target ).closest( 'a' ),
 						uri = new mw.Uri( $target.attr( 'href' ) ),
 						// Only the primary anchor has the data-serp-pos attribute, but we
 						// might be updating a sub-link like a section.
@@ -511,7 +512,7 @@
 	function setupAutocompleteTest( session ) {
 		var logEvent = genLogEventFn( 'autocomplete', session ),
 			track = function ( topic, data ) {
-				var params;
+				var $wprov, params;
 
 				if ( data.action === 'session-start' ) {
 					session.set( 'autocompleteStart', new Date().getTime() );
@@ -537,11 +538,26 @@
 					// and what position they clicked.
 					data.formData.linkParams.wprov = autoComplete.wprovPrefix + data.index;
 				} else if ( data.action === 'click-result' ) {
-					// test event, currently duplicated by visitPage event. Not
-					// sure yet if the work to provide better deliverability of
-					// unload events will be sufficient.
 					logEvent( 'click', {
-						position: data.clickIndex
+						position: data.index
+					} );
+				} else if ( data.action === 'submit-form' ) {
+					// Click index needs to be detected from wprov form field. Note that
+					// it might not exist if the user hasn't highlighted anything yet.
+					// @todo this should only trigger when the user is selecting a search
+					// result and not when they search for something the user typed
+					$wprov = data.$form.find( 'input[name=wprov]' );
+					if ( $wprov.length ) {
+						$wprov.val( autoComplete.wprovPrefix + data.index );
+					} else {
+						$wprov = $( '<input>' ).attr( {
+							type: 'hidden',
+							name: 'wprov',
+							value: autoComplete.wprovPrefix + data.index
+						} ).appendTo( data.$form );
+					}
+					logEvent( 'click', {
+						position: data.index
 					} );
 				}
 			};

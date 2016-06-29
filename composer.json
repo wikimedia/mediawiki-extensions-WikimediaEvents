@@ -1,0 +1,10 @@
+{
+	"name"       : "mediawiki/wikimediaevents",
+	"type"       : "mediawiki-extension",
+	"license"    : "GPL-2.0+",
+	"minimum-stability": "dev",
+	"require-dev"    : {
+		"facebook/webdriver": "1.1.1",
+		"symfony/css-selector": "3.1.0"
+	}
+}
