@@ -34,7 +34,7 @@ class WikimediaEventsHooks {
 	public static function onXAnalyticsHeader( OutputPage $out, array &$headerItems ) {
 		$title = $out->getTitle();
 		if ( $title !== null ) {
-			$pageId = $title->getArticleId();
+			$pageId = $title->getArticleID();
 			$headerItems['ns'] = $title->getNamespace();
 			if ( is_int( $pageId ) && $pageId > 0 ) {
 				$headerItems['page_id'] = $pageId;
@@ -47,7 +47,7 @@ class WikimediaEventsHooks {
 			}
 		}
 
-		if( $out->getUser()->isLoggedIn() ) {
+		if ( $out->getUser()->isLoggedIn() ) {
 			$headerItems['loggedIn'] = 1;
 		}
 	}
