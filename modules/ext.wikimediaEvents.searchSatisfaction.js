@@ -98,11 +98,9 @@
 		 * @private
 		 */
 		function initialize( session ) {
+
 			var sessionId = session.get( 'sessionId' ),
-				haveSubTest = [
-					'enwiki', 'frwiki', 'eswiki', 'itwiki', 'dewiki'
-				].indexOf( mw.config.get( 'wgDBname' ) ) !== -1,
-				sampleSize = haveSubTest ? 100 : 200,
+				sampleSize = 200,
 				/**
 				 * Determines whether the user is part of the population size.
 				 *
@@ -151,15 +149,6 @@
 				// have a search session id, generate one.
 				if ( !session.set( 'sessionId', randomToken() ) ) {
 					return;
-				}
-
-				// Assign 50% of users to subTest
-				if ( haveSubTest && oneIn( 2 ) ) {
-					session.set( 'subTest', chooseBucket( [
-						'textcat2:a',
-						'textcat2:b',
-						'textcat2:c'
-					] ) );
 				}
 			}
 
@@ -432,7 +421,6 @@
 	 */
 	function setupSearchTest( session ) {
 		var params,
-			textCatExtra = [],
 			logEvent = genLogEventFn( 'fulltext', session );
 
 		if ( isSearchResultPage ) {
@@ -453,39 +441,19 @@
 							.find( '[data-serp-pos]' )
 							.data( 'serp-pos' );
 
-					// If wprov is already defined it must have come from the
-					// backend interwiki test. Don't override it. This means we
-					// won't get a visitPage event, but we can't collect those
-					// for interwiki anyways.
-					if ( index !== undefined && uri.query.wprov === undefined ) {
+					if ( index !== undefined ) {
 						uri.query.wprov = search.wprovPrefix + index;
 						$target.attr( 'href', uri.toString() );
 					}
 					logEvent( 'click', {
-						position: index,
-						// specific to textcat subtest. Links starting with // point to
-						// an alternate wiki.
-						extraParams: $target.attr( 'href' ).substr( 0, 2 ) === '//' ? '1' : '0'
+						position: index
 					} );
 				}
 			);
 
-			// specific to textcat subtest
-			if ( mw.config.get( 'wgCirrusSearchAltLanguage' ) ) {
-				textCatExtra = $.extend( [], mw.config.get( 'wgCirrusSearchAltLanguage' ) );
-			} else {
-				textCatExtra = [ null, null ];
-			}
-			if ( mw.config.get( 'wgCirrusSearchAltLanguageNumResults' ) !== null ) {
-				textCatExtra.push( mw.config.get( 'wgCirrusSearchAltLanguageNumResults' ) );
-			} else {
-				textCatExtra.push( null );
-			}
-
 			params = {
 				query: mw.config.get( 'searchTerm' ),
-				hitsReturned: $( '.mw-search-result-heading' ).length,
-				extraParams: textCatExtra.join( ',' )
+				hitsReturned: $( '.mw-search-result-heading' ).length
 			};
 			// This method is called from jQuery.ready which runs on DOMContentLoaded. Use domInteractive since that
 			// is immediately before DOMContentLoaded per spec.
@@ -601,13 +569,8 @@
 	// text setup, so wrap in atMostOnce to ensure it's
 	// only run once.
 	initSubTest = atMostOnce( function ( session ) {
-		if ( session.get( 'subTest' ) ) {
-			$( '<input>' ).attr( {
-				type: 'hidden',
-				name: 'cirrusUserTesting',
-				value: session.get( 'subTest' )
-			} ).prependTo( $( 'input[type=search]' ).closest( 'form' ) );
-		}
+		// jshint unused:false
+		// no sub test currently running
 	} );
 
 	/**
