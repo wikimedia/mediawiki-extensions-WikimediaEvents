@@ -24,19 +24,18 @@ class WikimediaEventsHooks {
 	/**
 	 * On XAnalyticsHeader
 	 *
-	 * Insert a 'page_id' key with the page ID as value
-	 * and a 'ns' key with the namespace ID as value -- but only if the request
-	 * is for an actual page.
+	 * Insert a 'page_id' key with the page ID as value (if the request is for a page with a pageid)
+	 * Insert a 'ns' key with the namespace ID as value (if the request is for a valid title)
 	 *
 	 * Add a 'loggedIn' key with the value of 1 if the user is logged in
 	 */
-	public static function onXAnalyticsHeader( $out, &$headerItems ) {
+	public static function onXAnalyticsHeader( OutputPage $out, array &$headerItems ) {
 		$title = $out->getTitle();
 		if ( $title !== null ) {
 			$pageId = $title->getArticleId();
+			$headerItems['ns'] = $title->getNamespace();
 			if ( is_int( $pageId ) && $pageId > 0 ) {
 				$headerItems['page_id'] = $pageId;
-				$headerItems['ns'] = $title->getNamespace();
 			}
 		}
 
