@@ -26,6 +26,8 @@ class WikimediaEventsHooks {
 	 *
 	 * Insert a 'page_id' key with the page ID as value (if the request is for a page with a pageid)
 	 * Insert a 'ns' key with the namespace ID as value (if the request is for a valid title)
+	 * Insert a 'special' key with the resolved name of the special page (if the request is for a
+	 * special page)
 	 *
 	 * Add a 'loggedIn' key with the value of 1 if the user is logged in
 	 */
@@ -36,6 +38,12 @@ class WikimediaEventsHooks {
 			$headerItems['ns'] = $title->getNamespace();
 			if ( is_int( $pageId ) && $pageId > 0 ) {
 				$headerItems['page_id'] = $pageId;
+			}
+			if ( $title->isSpecialPage() ) {
+				list( $name, /* $subpage */ ) = SpecialPageFactory::resolveAlias( $title->getDBkey() );
+				if ( $name !== null ) {
+					$headerItems['special'] = $name;
+				}
 			}
 		}
 
