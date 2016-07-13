@@ -24,6 +24,9 @@ class WikimediaEventsHooks {
 	/**
 	 * On XAnalyticsHeader
 	 *
+	 * When adding new headers here please update the docs:
+	 * https://wikitech.wikimedia.org/wiki/X-Analytics
+	 *
 	 * Insert a 'page_id' key with the page ID as value (if the request is for a page with a pageid)
 	 * Insert a 'ns' key with the namespace ID as value (if the request is for a valid title)
 	 * Insert a 'special' key with the resolved name of the special page (if the request is for a
