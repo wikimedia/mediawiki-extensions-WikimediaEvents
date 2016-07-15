@@ -5,7 +5,7 @@
 		]
 	},
 	"wikimediaevents-desc": "Logs Wikimedia-specific events using EventLogging",
-	"tag-cross-wiki-upload": "Cross-wiki upload",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Cross-wiki upload]]",
 	"tag-cross-wiki-upload-description": "Files uploaded from inside the wikitext and visual editors on other wikis",
 	"tag-cross-wiki-upload-1": "-",
 	"tag-cross-wiki-upload-2": "-",
