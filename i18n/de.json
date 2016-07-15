@@ -6,7 +6,7 @@
 		]
 	},
 	"wikimediaevents-desc": "Protokolliert wikimediaspezifische Ereignisse mit EventLogging",
-	"tag-cross-wiki-upload": "Wikiübergreifender Upload",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Wikiübergreifender Upload]]",
 	"tag-cross-wiki-upload-description": "Dateien, die von innerhalb des Wikitext- und visuellen Editors auf anderen Wikis hochgeladen wurden.",
 	"tag-HHVM-description": "Versionen, die mit aktivierter „HipHop Virtual Machine“ anstatt des PHP-Interpreters „Zend“ erstellt wurden (Leistungssteigerungen werden erwartet, markiert zur Fehlerbehebung und -analyse)",
 	"abusefilter-edit-builder-vars-user-wpzero": "Ob ein Benutzer durch einen gratisbewerteten Mobilfunkanbieter über Wikipedia Zero bearbeitet"
