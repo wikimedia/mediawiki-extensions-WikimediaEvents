@@ -7,11 +7,12 @@
 			"Sherbrooke",
 			"Urhixidur",
 			"Orlodrim",
-			"Verdy p"
+			"Verdy p",
+			"Wladek92"
 		]
 	},
 	"wikimediaevents-desc": "Trace les événements spécifiques à Wikimédia en utilisant EventLogging",
-	"tag-cross-wiki-upload": "Téléchargement inter-wiki",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Téléchargement inter-wiki]]",
 	"tag-cross-wiki-upload-description": "Fichiers téléversés directement depuis l’éditeur de wikicode ou l’éditeur visuel sur d’autres wikis",
 	"tag-HHVM-description": "Contributions faites avec la machine virtuelle HipHop (HHVM) au lieu de l’interpréteur PHP Zend (cela devrait améliorer les performances, la balise sert à l’analyse et au débogage)",
 	"abusefilter-edit-builder-vars-user-wpzero": "Indique si un utilisateur est en train de modifier par un fournisseur gratuit pour Wikipédia Zéro"

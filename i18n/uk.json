@@ -8,7 +8,7 @@
 		]
 	},
 	"wikimediaevents-desc": "Записує у журнал події пов'язані з Вікімедіа, використовуючи EventLogging",
-	"tag-cross-wiki-upload": "Крос-вікі завантаження",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Крос-вікі завантаження]]",
 	"tag-cross-wiki-upload-description": "Файли, завантажені всередині редактора вікірозмітки та візуального редактора в інших вікі",
 	"tag-HHVM-description": "Версії, створені увімкненою HipHop Virtual Machine замість інтерпретатора Zend PHP (очікується покращення результативності; помічено для налагодження/аналізу)",
 	"abusefilter-edit-builder-vars-user-wpzero": "Чи користувач редагує через оператора мобільного зв'язку з нульовим тарифом через Wikipedia Zero"
