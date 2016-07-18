@@ -1,11 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
-			"Albertas"
+			"Albertas",
+			"Eitvys200"
 		]
 	},
 	"wikimediaevents-desc": "Žurnalas Wikimedia specifinių įvykių, naudojant EventLogging",
-	"tag-cross-wiki-upload": "Tarp-vikinis įkėlimas",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Tarp-vikinis įkėlimas]]",
 	"tag-cross-wiki-upload-description": "Failai įkelti naudojant kitų vikių vikiteksto ir vizualius redaktorius",
 	"tag-HHVM-description": "Versija sukurta su aktyvuota Zend PHP interpretatoriaus HipHop virtualia mašina (tikėtasi, kad veikimas paspartės, pažymėta derinimui/analizavimui)"
 }
