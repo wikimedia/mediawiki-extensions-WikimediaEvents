@@ -615,7 +615,7 @@ class WikimediaEventsHooks {
 			);
 
 			$logger = LoggerFactory::getInstance( 'dewiki_diffstats' );
-			$logger->info( 'dewiki diff page view', $values );
+			$logger->debug( 'dewiki diff page view', $values );
 
 			return true;
 		} );
