@@ -580,7 +580,7 @@ class WikimediaEventsHooks {
 		if ( wfWikiID() !== 'dewiki' ) {
 			return true;
 		}
-		DeferredUpdates::addCallableUpdate( function () use( $oldRev, $newRev ){
+		DeferredUpdates::addCallableUpdate( function () use( $oldRev, $newRev, $diff ){
 			$dbr = wfGetDB( DB_SLAVE );
 
 			$pageId = $oldRev->getPage();
@@ -607,12 +607,22 @@ class WikimediaEventsHooks {
 				'timestamp' => wfTimestampNow(),
 				'oldid' => $oldRev->getId(),
 				'newid' => $newRev->getId(),
+				'oldtimestamp' => $oldTimestamp,
+				'newtimestamp' => $newTimestamp,
 				'pageid' => $pageId,
 				'revisions' => $result->revisions,
 				'intermediate' => $result->intermediate,
 				'olderrevs' => $result->olderrevs,
 				'newerrevs' => $result->newerrevs,
 			);
+
+			if ( class_exists( BetaFeatures::class ) ) {
+				if ( BetaFeatures::isFeatureEnabled( $diff->getUser(), 'revisionslider' ) ) {
+					$values['revslider'] = 'enabled';
+				} else {
+					$values['revslider'] = 'disabled';
+				}
+			}
 
 			$logger = LoggerFactory::getInstance( 'dewiki_diffstats' );
 			$logger->info( 'dewiki diff page view', $values );
