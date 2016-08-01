@@ -14,9 +14,6 @@
 		"AuthManagerStatsdHandler": "includes/AuthManagerStatsdHandler.php"
 	},
 	"Hooks": {
-		"DiffViewHeader": [
-			"WikimediaEventsHooks::onDiffViewHeader"
-		],
 		"BeforePageDisplay": [
 			"WikimediaEventsHooks::onBeforePageDisplay"
 		],
