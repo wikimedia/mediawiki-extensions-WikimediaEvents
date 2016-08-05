@@ -27,7 +27,13 @@
 
 	// Task: https://phabricator.wikimedia.org/T141344
 	// Based on mediawiki-core:/resources/src/json-skip.js
-	passJSON = !!( window.JSON && JSON.stringify && JSON.parse );
+	passJSON = !!( window.JSON && JSON.stringify && JSON.parse )
+		// Either 'json' isn't registered/loaded, or it is and it was skipped
+		// If it was not skipped and the above JSON interface was provided
+		// by the polyfill, consider client 'fail', not 'pass'
+		&& ( !mw.loader.moduleRegistry.json
+			|| mw.loader.moduleRegistry.json.skipped === true
+		);
 
 	if ( passJSON ) {
 		mw.track( 'counter.mw.js.support_json.pass', 1 );
