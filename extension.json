@@ -70,9 +70,6 @@
 		],
 		"AbuseFilter-builder": [
 			"WikimediaEventsHooks::onAbuseFilterBuilder"
-		],
-		"UnitTestsList": [
-			"WikimediaEventsHooks::onUnitTestsList"
 		]
 	},
 	"MessagesDirs": {
