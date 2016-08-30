@@ -100,7 +100,8 @@
 		function initialize( session ) {
 
 			var sessionId = session.get( 'sessionId' ),
-				sampleSize = 200,
+				haveSubTest = mw.config.get( 'wgDBname' ) === 'enwiki',
+				sampleSize = haveSubTest ? 66 : 200,
 				/**
 				 * Determines whether the user is part of the population size.
 				 *
@@ -149,6 +150,16 @@
 				// have a search session id, generate one.
 				if ( !session.set( 'sessionId', randomToken() ) ) {
 					return;
+				}
+
+				if ( haveSubTest && !oneIn( 3 ) ) {
+					session.set( 'subTest', chooseBucket( [
+						'bm25:control',
+						'bm25:allfield',
+						'bm25:inclinks',
+						'bm25:inclinks_pv',
+						'bm25:inclinks_pv_rev'
+					] ) );
 				}
 			}
 
@@ -569,8 +580,13 @@
 	// text setup, so wrap in atMostOnce to ensure it's
 	// only run once.
 	initSubTest = atMostOnce( function ( session ) {
-		// jshint unused:false
-		// no sub test currently running
+		if ( session.get( 'subTest' ) ) {
+			$( '<input>' ).attr( {
+				type: 'hidden',
+				name: 'cirrusUserTesting',
+				value: session.get( 'subTest' )
+			} ).prependTo( $( 'input[type=search]' ).closest( 'form' ) );
+		}
 	} );
 
 	/**
