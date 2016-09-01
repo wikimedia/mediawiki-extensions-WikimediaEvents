@@ -123,11 +123,6 @@
 			"schema": "Search",
 			"revision": 14361785
 		},
-		"schema.VET135171": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "VET135171",
-			"revision": 15651962
-		},
 		"ext.wikimediaEvents": {
 			"scripts": [
 				"ext.wikimediaEvents.events.js",
