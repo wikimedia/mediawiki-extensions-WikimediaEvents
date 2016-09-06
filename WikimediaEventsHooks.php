@@ -552,4 +552,56 @@ class WikimediaEventsHooks {
 	public static function onAbuseFilterBuilder( &$builder ) {
 		$builder['vars']['user_wpzero'] = 'user-wpzero';
 	}
+
+	/**
+	 * Called after building form options on pages inheriting from
+	 * ChangesListSpecialPage (in core: RecentChanges, RecentChangesLinked
+	 * and Watchlist).
+	 *
+	 * @param $special ChangesListSpecialPage instance
+	 * @param &$filters Associative array of filter definitions.
+	 */
+	public static function onChangesListSpecialPageFilters( $special, &$filters ) {
+		$logData = [
+			'pagename' => $special->getName()
+		];
+
+		$knownFilters = [
+			'hideminor' => 'bool',
+			'hidebots' => 'bool',
+			'hideanons' => 'bool',
+			'hidepatrolled' => 'bool',
+			'hidemyself' => 'bool',
+			'hideliu' => 'bool',
+			'hidecategorization' => 'bool',
+			'invert' => 'bool',
+			'associated' => 'bool',
+			'namespace' => 'integer',
+			'tagfilter' => 'string',
+
+			// Extension:Wikidata
+			'hideWikibase' => 'bool',
+
+			// Extension:FlaggedRevs
+			'hideReviewed' => 'bool',
+
+			// Extension:ORES
+			'hidenondamaging' => 'bool',
+		];
+
+		$webParams = $special->getRequest()->getQueryValues();
+		foreach ( $webParams as $param => $value ) {
+			if ( array_key_exists( $param, $knownFilters ) && $value !== '' ) {
+				$logData[ $param ] = $knownFilters[ $param ] === 'bool' ?
+					(bool)$value : $value;
+			}
+		}
+
+		// Log the existing filters
+		EventLogging::logEvent(
+			'ChangesListFilters',
+			15876023,
+			$logData
+		);
+	}
 }
