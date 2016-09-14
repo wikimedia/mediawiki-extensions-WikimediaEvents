@@ -6,7 +6,9 @@
 			"Meno25"
 		]
 	},
+	"wikimediaevents-desc": "يسجل الأحداث المتعلقة بويكيميديا باستخدام EventLogging",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|رفع عبر الويكي]]",
 	"tag-cross-wiki-upload-description": "الملفات التي تم تحميلها من داخل نصوص ويكي والبصرية المحررين على الويكي أخرى",
-	"tag-HHVM-description": "تعديلات باستخدام آلة هيب هوب الافتراضية لتعويض آلية بي إتش بي زند، لتحسين الأداء والتنقيح البرمجي"
+	"tag-HHVM-description": "تعديلات باستخدام آلة هيب هوب الافتراضية لتعويض آلية بي إتش بي زند، لتحسين الأداء والتنقيح البرمجي",
+	"abusefilter-edit-builder-vars-user-wpzero": "ما إذا كان المستخدم يحرر من خلال شبكة اتصال بدون تكلفة من خلال Wikipedia Zero"
 }
