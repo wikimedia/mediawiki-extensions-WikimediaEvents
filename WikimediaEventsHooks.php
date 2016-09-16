@@ -562,6 +562,11 @@ class WikimediaEventsHooks {
 	 * @param &$filters Associative array of filter definitions.
 	 */
 	public static function onChangesListSpecialPageFilters( $special, &$filters ) {
+		// For volume/capacity reasons, only log this for logged-in users
+		if ( $special->getUser()->isAnon() ) {
+			return;
+		}
+
 		$logData = [
 			'pagename' => $special->getName()
 		];
