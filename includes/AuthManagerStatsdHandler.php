@@ -26,8 +26,21 @@ use MediaWiki\MediaWikiServices;
 use Monolog\Handler\AbstractHandler;
 
 /**
- * Counts authentication-related log calls (those sent to the 'authmanager'
+ * Counts authentication-related log events (those sent to the 'authevents'
  * channel) via StatsD.
+ *
+ * Events can include the following data in their context:
+ *   - 'event': (string, required) the type of the event (e.g. 'login').
+ *   - 'type': (string) a subtype for more complex events.
+ *   - 'successful': (bool) whether the attempt was successful. Can be omitted if 'status' is
+ *     a Status or a StatusValue.
+ *   - 'status': (Status|StatusValue|string|int) attempt status (such as an error message key).
+ *     string/int values will be ignored unless 'successful' is false.
+ *
+ * Will result in a ping to a graphite key that looks like
+ * <MediaWiki root>.authmanager.<event>.<type>.<entrypoint>.[success|failure].<status>
+ * Some segments will be omitted when the appropriate data is not present.
+ * <entrypoint> is 'web' or 'centrallogin' or 'api' and filled automatically.
  *
  * Used to alert on sudden, unexplained changes in e.g. the number of login
  * errors.
