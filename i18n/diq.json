@@ -2,9 +2,11 @@
 	"@metadata": {
 		"authors": [
 			"Gorizon",
-			"Mirzali"
+			"Mirzali",
+			"Kumkumuk"
 		]
 	},
 	"wikimediaevents-desc": "Be EventLogging ra weqeyanê xısusiyan vir de qeyd keno",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Cross-wiki bıselagne]]",
 	"tag-HHVM-description": "Heruna rawekerê Zend PHPi de, be gurenayışê HipHop Virtual Machine rayo ke sayekerdışi benê (raverberdışê perfomansi, xetaweçinıtış/etiketê analizi yeno pawıtene)"
 }
