@@ -44,6 +44,8 @@ require_once __DIR__ . '/../../vendor/autoload.php';
  *   sudo rm -rf /var/cache/apache2/mod_cache_disk/*
  */
 class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
+	static private $mwBaseUrl;
+
 	protected $webDriver;
 
 	public function setUp() {
@@ -82,10 +84,13 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 
 		$baseUrl = getenv( 'SELENIUM_URL_BASE' );
 		if ( !$baseUrl ) {
-			$baseUrl = "http://localhost:8080/wiki/";
+			// Need to use cirrustest for the api action to rebuild the suggester
+			// to work. Note sure yet if this causes any issues for Cirrus browser
+			// tests...
+			$baseUrl = "http://cirrustest.wiki.local.wmftest.net:8080/wiki/";
 		}
 		// evil hax to attach our own property
-		$this->webDriver->mwBaseUrl = $baseUrl;
+		self::$mwBaseUrl = $baseUrl;
 
 		$eventLoggingPath = getenv( 'MW_EVENT_LOG' );
 		if ( $eventLoggingPath ) {
@@ -95,6 +100,17 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 		}
 		if ( !is_file( $this->eventLoggingPath ) ) {
 			throw new \RuntimeException( "Couldn't find eventlogging.log. Please provide a path with MW_EVENT_LOG environment var" );
+		}
+
+		static $initializedSuggester = null;
+		if ( $initializedSuggester === null ) {
+			$initializedSuggester = (bool)getenv( 'SKIP_SUGGESTER_INIT' );
+		}
+		if ( !$initializedSuggester ) {
+			// The autocomplete tests expect nothing more than 'Main Page' to exist, so
+			// no other setup is necessary.
+			$this->apiCall(['action' => 'cirrus-suggest-index']);
+			$initializedSuggester = true;
 		}
 	}
 
@@ -124,6 +140,7 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 			),
 			"full text search click through, back, click different result" => array(
 				array(
+					$this->ensurePage('Something else', 'contains the word main in the content'),
 					$this->visitPage( "Special:Search?search=main" ),
 					$this->clickSearchResult( 0 ),
 					$this->sleep( 2 ),
@@ -165,8 +182,9 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 			),
 			"full text search alt title click through" => array(
 				array(
+					$this->ensurePage( 'With Headings', "Something\n==Role==\nmore content" ),
 					$this->visitPage( "Special:Search?search=role" ),
-					$this->ctrlClickAltTitleSearchResult( 0 ),
+					$this->clickAltTitleSearchResult( 0 ),
 				),
 				array(
 					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
@@ -176,6 +194,7 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 			),
 			"full text search alt title ctrl-click through" => array(
 				array(
+					$this->ensurePage( 'With Headings', "Something\n==Role==\nmore content" ),
 					$this->visitPage( "Special:Search?search=role" ),
 					$this->ctrlClickAltTitleSearchResult( 0 ),
 				),
@@ -603,6 +622,10 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 		$seen = array();
 		foreach ( $actualEvents as $idx => $envelope ) {
 			$actualEvent = $envelope['event'];
+			// Only concerned with satisfaction events
+			if ( $envelope['schema'] !== 'TestSearchSatisfaction2' ) {
+				continue;
+			}
 			// Filter unreliable checkin events
 			if ( $actualEvent['action'] === 'checkin' ) {
 				continue;
@@ -662,7 +685,7 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 
 	protected function visitPage( $url ) {
 		return function ( $webDriver ) use ( $url ) {
-			$webDriver->get( $webDriver->mwBaseUrl . $url );
+			$webDriver->get( self::$mwBaseUrl . $url );
 		};
 	}
 
@@ -889,7 +912,8 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 			$context = null;
 		}
 
-		return json_decode( file_get_contents( 'http://localhost:8080/w/api.php?' . http_build_query( $params + array(
+		$apiUrl = str_replace( '/wiki/', '/w/api.php', self::$mwBaseUrl );
+		return json_decode( file_get_contents( $apiUrl . '?' . http_build_query( $params + array(
 			'format' => 'json',
 			'formatversion' => 2,
 		) ), false, $context ), true );
