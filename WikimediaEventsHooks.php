@@ -458,7 +458,6 @@ class WikimediaEventsHooks {
 		$wgOut->addJsConfigVars( array(
 			'wgIsSearchResultPage' => true,
 		) );
-		$wgOut->addModules( 'ext.wikimediaEvents.didyoumean' );
 
 		return true;
 	}

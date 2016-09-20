@@ -30,8 +30,15 @@
 		uri = new mw.Uri( location.href ),
 		checkinTimes = [ 10, 20, 30, 40, 50, 60, 90, 120, 150, 180, 210, 240, 300, 360, 420 ],
 		lastScrollTop = 0,
-		articleId = mw.config.get( 'wgArticleId' )
-		;
+		articleId = mw.config.get( 'wgArticleId' ),
+		// map from dym wprov values to eventlogging inputLocation values
+		didYouMeanMap = {
+			dym1: 'dym-suggest',
+			dymr1: 'dym-rewritten',
+			dymo1: 'dym-original'
+		},
+		// some browsers can't do Object.keys properly, so manually maintain the list
+		didYouMeanList = [ 'dym1', 'dymr1', 'dymo1' ];
 
 	function extractResultPosition( uri, wprovPrefix ) {
 		return parseInt( uri.query.wprov &&
@@ -59,6 +66,11 @@
 	}
 
 	search = initFromWprov( 'srpw1_' );
+	search.didYouMean = uri.query.wprov &&
+		uri.query.wprov.substr( 0, search.wprovPrefix.length ) === search.wprovPrefix &&
+		didYouMeanList.indexOf( uri.query.wprov.substr( search.wprovPrefix.length ) ) >= 0 &&
+		uri.query.wprov.substr( search.wprovPrefix.length );
+
 	autoComplete = initFromWprov( 'acrw1_' );
 	// with no position appended indicates the user submitted the
 	// autocomplete form.
@@ -74,7 +86,8 @@
 		// currently loaded state
 		var state = {},
 			storageNamespace = 'wmE-sS-',
-		// persistent state keys that have a lifetime
+		// persistent state keys that have a lifetime. unlisted
+		// keys are not persisted between page loads.
 			ttl = {
 				sessionId: 10 * 60 * 1000,
 				subTest: 10 * 60 * 1000,
@@ -464,7 +477,7 @@
 				evt.searchToken = mw.config.get( 'wgCirrusSearchRequestSetToken' );
 			}
 
-			// add any schema specific data
+			// add any action specific data
 			if ( extraData ) {
 				$.extend( evt, extraData );
 			}
@@ -474,6 +487,16 @@
 				eventLog = eventLog || extendMwEventLog();
 				eventLog.logEvent( 'TestSearchSatisfaction2', evt );
 			} );
+		};
+	}
+
+	/**
+	 */
+	function genAttachWprov( value ) {
+		return function () {
+			var uri = new mw.Uri( this.href );
+			uri.query.wprov = value;
+			this.href = uri.toString();
 		};
 	}
 
@@ -494,26 +517,57 @@
 			session.refresh( 'sessionId' );
 			session.refresh( 'subTest' );
 
+			// Standard did you mean suggestion when the user gets results for
+			// their original query
+			$( '#mw-search-DYM-suggestion' ).each( genAttachWprov(
+				search.wprovPrefix + 'dym1'
+			) );
+
+			// Link to the current (rewritten) search after we have rewritten the original
+			// query into the did you mean query.
+			$( '#mw-search-DYM-rewritten' ).each( genAttachWprov(
+				search.wprovPrefix + 'dymr1'
+			) );
+
+			// Link to the original search after we have rewritten the original query
+			// into the did you mean query
+			$( '#mw-search-DYM-original' ).each( genAttachWprov(
+				search.wprovPrefix + 'dymo1'
+			) );
+
 			$( '#mw-content-text' ).on(
 				'click',
-				'.mw-search-result-heading a',
+				'.mw-search-result-heading a, #mw-search-DYM-suggestion, #mw-search-DYM-original, #mw-search-DYM-rewritten',
 				function ( evt ) {
+					var wprov,
 					// Sometimes the click event is on a span inside the anchor
-					var $target = $( evt.target ).closest( 'a' ),
-						uri = new mw.Uri( $target.attr( 'href' ) ),
-						// Only the primary anchor has the data-serp-pos attribute, but we
-						// might be updating a sub-link like a section.
-						index = $target.closest( '.mw-search-result-heading' )
-							.find( '[data-serp-pos]' )
-							.data( 'serp-pos' );
+						$target = $( evt.target ).closest( 'a' ),
+						params = {
+							// Only the primary anchor has the data-serp-pos attribute, but we
+							// might be updating a sub-link like a section.
+							position: $target.closest( '.mw-search-result-heading' )
+								.find( '[data-serp-pos]' )
+								.data( 'serp-pos' )
+						};
 
-					if ( index !== undefined ) {
-						uri.query.wprov = search.wprovPrefix + index;
-						$target.attr( 'href', uri.toString() );
+					if ( params.position !== undefined ) {
+						wprov = params.position;
+					} else if ( $target.is( '#mw-search-DYM-suggestion' ) ) {
+						wprov = 'dym1';
+					} else if ( $target.is( '#mw-search-DYM-original' ) ) {
+						wprov = 'dymo1';
+					} else if ( $target.is( '#mw-search-DYM-rewritten' ) ) {
+						wprov = 'dymr1';
 					}
-					logEvent( 'click', {
-						position: index
-					} );
+
+					if ( wprov !== undefined ) {
+						genAttachWprov( search.wprovPrefix + wprov ).apply( $target.get( 0 ) );
+					}
+
+					// Only log click events for clicks on search results, not did you mean
+					if ( params.position !== undefined ) {
+						logEvent( 'click', params );
+					}
 				}
 			);
 
@@ -521,13 +575,28 @@
 				query: mw.config.get( 'searchTerm' ),
 				hitsReturned: $( '.mw-search-result-heading' ).length
 			};
+
+			// Track what did you mean suggestions were displayed on the page
+			if ( $( '#mw-search-DYM-suggestion' ).length ) {
+				params.didYouMeanVisible = 'yes';
+			} else if ( $( '#mw-search-DYM-rewritten' ).length ) {
+				params.didYouMeanVisible = 'autorewrite';
+			} else {
+				params.didYouMeanVisible = 'no';
+			}
+
 			// This method is called from jQuery.ready which runs on DOMContentLoaded. Use domInteractive since that
 			// is immediately before DOMContentLoaded per spec.
 			if ( window.performance && window.performance.timing ) {
 				params.msToDisplayResults = window.performance.timing.domInteractive - window.performance.timing.navigationStart;
 			}
+			if ( search.didYouMean ) {
+				params.inputLocation = didYouMeanMap[ search.didYouMean ];
+			}
+
 			logEvent( 'searchResultPage', params );
-		} else if ( search.cameFromSearch ) {
+		}
+		if ( search.cameFromSearch ) {
 			logEvent( 'visitPage', {
 				position: search.resultPosition
 			} );
@@ -599,6 +668,9 @@
 			};
 
 		if ( autoComplete.cameFromSearch ) {
+			// @todo should this still fire if autocomplete sent the user
+			// to Special:Search? This is incredibly common, for example,
+			// for the autocomplete on the main special search page.
 			logEvent( 'visitPage', {
 				position: autoComplete.resultPosition
 			} );

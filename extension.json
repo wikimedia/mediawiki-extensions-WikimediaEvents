@@ -101,11 +101,6 @@
 			"schema": "Edit",
 			"revision": 13457736
 		},
-		"schema.DidYouMean": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "DidYouMean",
-			"revision": 13800499
-		},
 		"schema.CompletionSuggestions": {
 			"class": "ResourceLoaderSchemaModule",
 			"schema": "CompletionSuggestions",
@@ -114,7 +109,7 @@
 		"schema.TestSearchSatisfaction2": {
 			"class": "ResourceLoaderSchemaModule",
 			"schema": "TestSearchSatisfaction2",
-			"revision": 15700292
+			"revision": 15922352
 		},
 		"schema.GeoFeatures": {
 			"class": "ResourceLoaderSchemaModule",
@@ -154,15 +149,6 @@
 				"mobile"
 			],
 			"dependencies": []
-		},
-		"ext.wikimediaEvents.didyoumean": {
-			"scripts": [
-				"ext.wikimediaEvents.didyoumean.js"
-			],
-			"targets": [
-				"desktop"
-			],
-			"dependencies": "mediawiki.Uri"
 		}
 	},
 	"ResourceFileModulePaths": {

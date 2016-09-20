@@ -427,10 +427,44 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 			),
 			// Note that this test requires some page to exist with the text 'mani page', or the
 			// did you mean will be rewritten automatically and return search results for 'main page'
-			'full text search click the "did you mean" result' => array(
+			'full text search click the "did you mean" rewritten result' => array(
 				// actions
 				array(
 					$this->visitPage( "Special:Search?search=mani%20page" ),
+					// if the button is clicked too quickly the event doesn't fire because
+					// js hasn't loaded.
+					$this->sleep( 2 ),
+					$this->clickDidYouMeanRewritten(),
+					$this->sleep( 2 ),
+				),
+				// expected events
+				array(
+					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null, 'inputLocation' => null, 'didYouMeanVisible' => 'autorewrite' ),
+					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null, 'inputLocation' => 'dym-rewritten', 'didYouMeanVisible' => 'no' ),
+				),
+			),
+			'full text search click the "did you mean" original result' => array(
+				// actions
+				array(
+					$this->visitPage( "Special:Search?search=mani%20page" ),
+					// if the button is clicked too quickly the event doesn't fire because
+					// js hasn't loaded.
+					$this->sleep( 2 ),
+					$this->clickDidYouMeanOriginal(),
+					$this->sleep( 2 ),
+				),
+				// expected events
+				array(
+					// @TODO the did you mean should be integrated and trigger some click event
+					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null, 'inputLocation' => null, 'didYouMeanVisible' => 'autorewrite' ),
+					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null, 'inputLocation' => 'dym-original', 'didYouMeanVisible' => 'yes' ),
+				),
+			),
+			'full text search click the "did you mean" suggestion result' => array(
+				// actions
+				array(
+					$this->ensurePage( "Misspelled", "main paeg" ),
+					$this->visitPage( "Special:Search?search=main%20paeg" ),
 					// if the button is clicked too quickly the event doesn't fire because
 					// js hasn't loaded.
 					$this->sleep( 2 ),
@@ -439,8 +473,8 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 				// expected events
 				array(
 					// @TODO the did you mean should be integrated and trigger some click event
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
+					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null, 'inputLocation' => null, 'didYouMeanVisible' => 'yes' ),
+					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null, 'inputLocation' => 'dym-suggest', 'didYouMeanVisible' => 'no' ),
 				),
 			),
 			'Special:Search bar type then enter' => array(
@@ -741,10 +775,40 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 		};
 	}
 
+	/**
+	 * Shown when the original search query was run, but the
+	 * search engine has a suggestion for a better query
+	 */
 	protected function clickDidYouMeanSuggestion() {
 		return function ( $webDriver ) {
 			$webDriver->findElement( WebDriverBy::cssSelector(
-				'.searchdidyoumean a'
+				'#mw-search-DYM-suggestion'
+			) )->click();
+		};
+	}
+
+	/**
+	 * Shown when the rewritten search query was run. Gives
+	 * the user a direct link to this search, which might show
+	 * a new did you mean.
+	*/
+	protected function clickDidYouMeanRewritten() {
+		return function ( $webDriver ) {
+			$webDriver->findElement( WebDriverBy::cssSelector(
+				'#mw-search-DYM-rewritten'
+			) )->click();
+		};
+	}
+
+	/**
+	 * Shown when the rewritten search query was run. Gives
+	 * the user a direct link to the original search without
+	 * it being rewritten.
+	*/
+	protected function clickDidYouMeanOriginal() {
+		return function ( $webDriver ) {
+			$webDriver->findElement( WebDriverBy::cssSelector(
+				'#mw-search-DYM-original'
 			) )->click();
 		};
 	}
