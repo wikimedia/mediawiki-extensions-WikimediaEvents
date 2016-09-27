@@ -498,12 +498,7 @@ class WikimediaEventsHooks {
 		if ( $bucket ) {
 			$tags[] = "cross-wiki-upload-$bucket";
 		}
-		ChangeTags::addTags(
-			$tags,
-			$recentChange->getAttribute( 'rc_id' ),
-			$recentChange->getAttribute( 'rc_this_oldid' ),
-			$recentChange->getAttribute( 'rc_logid' )
-		);
+		$recentChange->addTags( $tags );
 
 		return true;
 	}
