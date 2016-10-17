@@ -113,7 +113,35 @@
 		function initialize( session ) {
 
 			var sessionId = session.get( 'sessionId' ),
-				sampleSize = 200,
+				sampleSize = ( function () {
+					var dbName = mw.config.get( 'wgDBname' ),
+						subTests = {
+							zhwiki: {
+								// 1:16 overall sessions into test
+								test: 16,
+								// 1:13 of test sessions reserved for dashboard
+								// 12:13 sessions split evenly between test buckets
+								subTest: 13
+							},
+							jawiki: {
+								test: 16,
+								subTest: 13
+							},
+							thwiki: {
+								test: 5,
+								subTest: 39
+							}
+						};
+
+					if ( subTests[ dbName ] ) {
+						return subTests[ dbName ];
+					} else {
+						return {
+							test: 200,
+							subTest: null
+						};
+					}
+				} )(),
 				/**
 				 * Determines whether the user is part of the population size.
 				 *
@@ -153,7 +181,7 @@
 			}
 			// If a sessionId exists the user was previously accepted into the test
 			if ( !sessionId ) {
-				if ( !oneIn( sampleSize ) ) {
+				if ( !oneIn( sampleSize.test ) ) {
 					// user was not chosen in a sampling of search results
 					session.set( 'sessionId', 'rejected' );
 					return;
@@ -162,6 +190,13 @@
 				// have a search session id, generate one.
 				if ( !session.set( 'sessionId', randomToken() ) ) {
 					return;
+				}
+
+				if ( sampleSize.subTest !== null && !oneIn( sampleSize.subTest ) ) {
+					session.set( 'subTest', chooseBucket( [
+						'bm25:control',
+						'bm25:inclinks_pv'
+					] ) );
 				}
 			}
 
@@ -707,8 +742,13 @@
 	// text setup, so wrap in atMostOnce to ensure it's
 	// only run once.
 	initSubTest = atMostOnce( function ( session ) {
-		// jshint unused:false
-		// no sub test currently running
+		if ( session.get( 'subTest' ) ) {
+			$( '<input>' ).attr( {
+				type: 'hidden',
+				name: 'cirrusUserTesting',
+				value: session.get( 'subTest' )
+			} ).prependTo( $( 'input[type=search]' ).closest( 'form' ) );
+		}
 	} );
 
 	/**
