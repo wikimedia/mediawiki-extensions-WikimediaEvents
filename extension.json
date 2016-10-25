@@ -121,10 +121,16 @@
 			"schema": "Search",
 			"revision": 14361785
 		},
+		"schema.Kartographer": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "Kartographer",
+			"revision": 16010805
+		},
 		"ext.wikimediaEvents": {
 			"scripts": [
 				"ext.wikimediaEvents.events.js",
 				"ext.wikimediaEvents.statsd.js",
+				"ext.wikimediaEvents.kartographer.js",
 				"ext.wikimediaEvents.rlfeature.js",
 				"ext.wikimediaEvents.searchSatisfaction.js",
 				"ext.wikimediaEvents.geoFeatures.js"
