@@ -116,19 +116,11 @@
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
 						subTests = {
-							zhwiki: {
-								// 1:16 overall sessions into test
-								test: 16,
-								// 1:13 of test sessions reserved for dashboard
-								// 12:13 sessions split evenly between test buckets
-								subTest: 13
-							},
-							jawiki: {
-								test: 16,
-								subTest: 13
-							},
 							thwiki: {
+								// 1:5 overall sessions into test
 								test: 5,
+								// 1:39 of test sessions reserved for dashboard
+								// 38:39 sessions split evenly between test buckets
 								subTest: 39
 							}
 						};
