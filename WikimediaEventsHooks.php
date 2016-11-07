@@ -603,4 +603,25 @@ class WikimediaEventsHooks {
 			$logData
 		);
 	}
+
+	/**
+	 * Called when User::getBlockedStatus() has been set
+	 *
+	 * @param $user User object
+	 */
+	public static function onGetBlockedStatus( $user ) {
+		$blocked = $user->mBlock instanceof Block;
+		$rc = RequestContext::getMain();
+		$request = $rc->getRequest();
+		$isCookieSetOnAutoblock = $rc->getConfig()->get( 'CookieSetOnAutoblock' );
+		$blockCookieVal = $request->getCookie( 'BlockID' );
+		$trigger = $user->blockTrigger;
+		if ( $isCookieSetOnAutoblock && $blockCookieVal > 0 && $blocked && $trigger !== false ) {
+			$logData = [
+				'ip' => $request->getIP(),
+				'block' => $trigger
+			];
+			EventLogging::logEvent( 'CookieBlock', 16046548, $logData );
+		}
+	}
 }
