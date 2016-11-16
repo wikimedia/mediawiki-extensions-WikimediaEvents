@@ -33,8 +33,8 @@
 
 	}
 
-	function check() {
-		if ( document[ hidden ] === true && !( mwLoadEnd && document.readyState === 'complete' ) ) {
+	function changeHandler() {
+		if ( !( mwLoadEnd && document.readyState === 'complete' ) ) {
 			trackOnce( 'hidden' );
 		}
 	}
@@ -64,8 +64,11 @@
 		return;
 	}
 
-	check();
-	document.addEventListener( eventName, check, false );
+	document.addEventListener( eventName, changeHandler, false );
+	// Initial value
+	if ( document[ hidden ] === true ) {
+		trackOnce( 'hidden' );
+	}
 	trackOnce( 'supported' );
 	if ( vendor ) {
 		trackOnce( 'vendor' );
