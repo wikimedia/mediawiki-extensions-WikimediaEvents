@@ -1,7 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"Vitorvicentevalente"
+			"Vitorvicentevalente",
+			"Hamilton Abreu"
 		]
-	}
+	},
+	"wikimediaevents-desc": "Regista eventos específicos da Wikimedia usando EventLogging",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Importações interwikis]]",
+	"tag-cross-wiki-upload-description": "Ficheiros importados a partir dos editores visuais e de texto wiki de outras wikis",
+	"tag-HHVM-description": "Revisões executadas com a Máquina Virtual HipHop (HHVM) ativada em vez do interpretador PHP Zend (melhorias de desempenho esperadas, etiquetadas para análise e despiste de erros)",
+	"abusefilter-edit-builder-vars-user-wpzero": "Se um utilizador está, ou não, a editar através de um operador gratuito usando o Wikipédia Zero"
 }
