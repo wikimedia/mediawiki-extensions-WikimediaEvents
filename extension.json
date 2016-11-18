@@ -135,7 +135,6 @@
 				"ext.wikimediaEvents.statsd.js",
 				"ext.wikimediaEvents.kartographer.js",
 				"ext.wikimediaEvents.rlfeature.js",
-				"ext.wikimediaEvents.visibilitychange.js",
 				"ext.wikimediaEvents.searchSatisfaction.js",
 				"ext.wikimediaEvents.geoFeatures.js"
 			],
