@@ -73,6 +73,9 @@
 		],
 		"ChangesListSpecialPageFilters": [
 			"WikimediaEventsHooks::onChangesListSpecialPageFilters"
+		],
+		"GetBlockedStatus": [
+			"WikimediaEventsHooks::onGetBlockedStatus"
 		]
 	},
 	"MessagesDirs": {
