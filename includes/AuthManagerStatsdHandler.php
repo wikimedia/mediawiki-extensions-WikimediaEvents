@@ -31,7 +31,7 @@ use Monolog\Handler\AbstractHandler;
  *
  * Events can include the following data in their context:
  *   - 'event': (string, required) the type of the event (e.g. 'login').
- *   - 'type': (string) a subtype for more complex events.
+ *   - 'eventType': (string) a subtype for more complex events.
  *   - 'successful': (bool) whether the attempt was successful. Can be omitted if 'status' is
  *     a Status or a StatusValue.
  *   - 'status': (Status|StatusValue|string|int) attempt status (such as an error message key).
@@ -51,11 +51,11 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 	 * {@inheritdoc}
 	 */
 	public function handle( array $record ) {
-		$event = isset( $record['context']['event'] ) ? $record['context']['event'] : null;
-		$type = isset( $record['context']['type'] ) ? $record['context']['type'] : null;
+		$event = $this->getField( 'event', $record['context'] );
+		$type = $this->getField( [ 'eventType', 'type' ] , $record['context'] );
 		$entrypoint = $this->getEntryPoint();
-		$status = isset( $record['context']['status'] ) ? $record['context']['status'] : null;
-		$successful = isset( $record['context']['successful'] ) ? $record['context']['successful'] : null;
+		$status = $this->getField( 'status', $record['context'] );
+		$successful = $this->getField( 'successful', $record['context'] );
 		$error = null;
 		if ( $status instanceof Status || $status instanceof StatusValue ) {
 			$status = Status::wrap( $status );
@@ -108,5 +108,20 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 			$entrypoint = 'centrallogin';
 		}
 		return $entrypoint;
+	}
+
+	/**
+	 * Get a field from an array without triggering errors if it does not exist
+	 * @param string|array $field Field name or list of field name + fallbacks
+	 * @param array $data
+	 * @return mixed Field value, or null if field was missing
+	 */
+	protected function getField( $field, array $data ) {
+		foreach ( (array)$field as $key ) {
+			if ( isset( $data[$key] ) ) {
+				return $data[$key];
+			}
+		}
+		return null;
 	}
 }
