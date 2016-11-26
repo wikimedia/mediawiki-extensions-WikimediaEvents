@@ -57,6 +57,10 @@ class AuthManagerStatsdHandlerTest extends MediaWikiTestCase {
 			], 'authmanager.autocreate' ],
 			'type' => [  [
 				'channel' => 'authevents',
+				'context' => [ 'event' => 'autocreate', 'eventType' => 'session' ],
+			], 'authmanager.autocreate.session' ],
+			'type fallback' => [  [
+				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'type' => 'session' ],
 			], 'authmanager.autocreate.session' ],
 			'success' => [  [
