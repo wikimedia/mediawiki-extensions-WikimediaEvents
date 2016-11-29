@@ -95,6 +95,10 @@
 
 		options = options || {};
 
+		if ( options.sampling && !randomOneIn( options.sampling ) ) {
+			return;
+		}
+
 		if ( options.extra ) {
 			event.extra = ( $.type( options.extra ) !== 'string' ) ? JSON.stringify( options.extra ) : options.extra;
 		}
@@ -102,7 +106,13 @@
 			event.duration = options.duration;
 		}
 		event.sampling = ( options.sampling || 1 ) * userSampling;
-		mw.eventLog.logEvent( 'Kartographer', event );
+
+		mw.loader.using( [
+			'ext.eventLogging',
+			'schema.Kartographer'
+		] ).then( function () {
+			mw.eventLog.logEvent( 'Kartographer', event );
+		} );
 	}
 
 	/**
@@ -140,6 +150,39 @@
 			};
 
 			switch ( data.action ) {
+				case 'initialize':
+					data.feature.on( 'click contextmenu', function () {
+						options = $.extend( {}, options, { sampling: 100 } );
+						logEvent( data.feature.featureType, 'map-click', data.isFullScreen, options );
+					} );
+					data.feature.on( 'zoomend', function () {
+						options = $.extend( {}, options, { sampling: 100 } );
+						logEvent( data.feature.featureType, 'zoom', data.isFullScreen, options );
+					} );
+					data.feature.on( 'dragend', function () {
+						options = $.extend( {}, options, { sampling: 100 } );
+						logEvent( data.feature.featureType, 'drag', data.isFullScreen, options );
+					} );
+					data.feature.on( 'popupopen', function () {
+						logEvent( data.feature.featureType, 'marker-click', data.isFullScreen, options );
+					} );
+					data.feature.$container.on( 'click', '.leaflet-popup-content a', function () {
+						var $link = $( this ),
+							destination;
+
+						if ( $link.hasClass( 'extiw' ) ) {
+							destination = 'interwiki';
+						} else if ( $link.hasClass( 'external' ) ) {
+							destination = 'external';
+						} else {
+							destination = 'internal';
+						}
+						options = $.extend( {}, options );
+						options.extra.destination = destination;
+
+						logEvent( data.feature.featureType, 'discovery', data.isFullScreen, options );
+					} );
+					return;
 				case 'view':
 					options.sampling = 100;
 					break;
@@ -160,16 +203,7 @@
 					break;
 			}
 
-			if ( options.sampling && !randomOneIn( options.sampling ) ) {
-				return;
-			}
-
-			mw.loader.using( [
-				'ext.eventLogging',
-				'schema.Kartographer'
-			] ).then( function () {
-				logEvent( data.feature.featureType, data.action, data.isFullScreen, options );
-			} );
+			logEvent( data.feature.featureType, data.action, data.isFullScreen, options );
 		} );
 	} );
 
