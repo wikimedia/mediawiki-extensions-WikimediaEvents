@@ -152,16 +152,16 @@
 			switch ( data.action ) {
 				case 'initialize':
 					data.feature.on( 'click contextmenu', function () {
-						options = $.extend( {}, options, { sampling: 100 } );
-						logEvent( data.feature.featureType, 'map-click', data.isFullScreen, options );
+						var opts = $.extend( {}, options, { sampling: 100 } );
+						logEvent( data.feature.featureType, 'map-click', data.isFullScreen, opts );
 					} );
 					data.feature.on( 'zoomend', function () {
-						options = $.extend( {}, options, { sampling: 100 } );
-						logEvent( data.feature.featureType, 'zoom', data.isFullScreen, options );
+						var opts = $.extend( {}, options, { sampling: 100 } );
+						logEvent( data.feature.featureType, 'zoom', data.isFullScreen, opts );
 					} );
 					data.feature.on( 'dragend', function () {
-						options = $.extend( {}, options, { sampling: 100 } );
-						logEvent( data.feature.featureType, 'drag', data.isFullScreen, options );
+						var opts = $.extend( {}, options, { sampling: 100 } );
+						logEvent( data.feature.featureType, 'drag', data.isFullScreen, opts );
 					} );
 					data.feature.on( 'popupopen', function () {
 						logEvent( data.feature.featureType, 'marker-click', data.isFullScreen, options );
