@@ -9,9 +9,9 @@
 	var isMobile = mw.config.get( 'skin' ) === 'minerva',
 		userToken,
 		trackedFeatures = {},
-		// We only track 1% of the user sessions.
+		// We only track 10% of the user sessions.
 		// A user session id is defined in a cookie that lasts 10 minutes.
-		userSampling = 100;
+		userSampling = 10;
 
 	/**
 	 * Returns an unique token identifying current user.
