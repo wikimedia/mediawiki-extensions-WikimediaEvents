@@ -127,7 +127,7 @@
 		"schema.Kartographer": {
 			"class": "ResourceLoaderSchemaModule",
 			"schema": "Kartographer",
-			"revision": 16010805
+			"revision": 16132745
 		},
 		"ext.wikimediaEvents": {
 			"scripts": [

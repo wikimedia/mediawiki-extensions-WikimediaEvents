@@ -74,19 +74,21 @@
 	 * @param {string} featureType
 	 * @param {string} action
 	 * @param {boolean} isFullScreen
+	 * @param {boolean} isFirstInteraction
 	 * @param {Object} [options]
 	 * @param {number} [options.duration]
 	 * @param {number} [options.sampling] Specific sampling applied to current event.
 	 * @param {*} [options.extra]
 	 * @private
 	 */
-	function logEvent( featureType, action, isFullScreen, options ) {
+	function logEvent( featureType, action, isFullScreen, isFirstInteraction, options ) {
 
 		var event = {
 			feature: featureType,
 			action: action,
 			fullscreen: isFullScreen,
 			mobile: isMobile,
+			firstInteraction: isFirstInteraction,
 			// we noticed a number of events get sent multiple
 			// times from javascript, especially when using sendBeacon.
 			// This userToken allows for later deduplication.
@@ -140,7 +142,8 @@
 
 		mw.trackSubscribe( 'mediawiki.kartographer', function ( topic, data ) {
 			var options = {},
-				tracking = getFeatureTrack( data.feature );
+				tracking = getFeatureTrack( data.feature ),
+				isInteraction = false;
 
 			if ( !tracking ) {
 				return;
@@ -149,22 +152,30 @@
 				route: data.feature.fullScreenRoute
 			};
 
+			function isFirstInteraction( isInteraction ) {
+				if ( isInteraction && !tracking.engaged ) {
+					tracking.engaged = true;
+					return true;
+				}
+				return false;
+			}
+
 			switch ( data.action ) {
 				case 'initialize':
 					data.feature.on( 'click contextmenu', function () {
 						var opts = $.extend( {}, options, { sampling: 100 } );
-						logEvent( data.feature.featureType, 'map-click', data.isFullScreen, opts );
+						logEvent( data.feature.featureType, 'map-click', data.isFullScreen, isFirstInteraction( true ), opts );
 					} );
 					data.feature.on( 'zoomend', function () {
 						var opts = $.extend( {}, options, { sampling: 100 } );
-						logEvent( data.feature.featureType, 'zoom', data.isFullScreen, opts );
+						logEvent( data.feature.featureType, 'zoom', data.isFullScreen, isFirstInteraction( true ), opts );
 					} );
 					data.feature.on( 'dragend', function () {
 						var opts = $.extend( {}, options, { sampling: 100 } );
-						logEvent( data.feature.featureType, 'drag', data.isFullScreen, opts );
+						logEvent( data.feature.featureType, 'drag', data.isFullScreen, isFirstInteraction( true ), opts );
 					} );
 					data.feature.on( 'popupopen', function () {
-						logEvent( data.feature.featureType, 'marker-click', data.isFullScreen, options );
+						logEvent( data.feature.featureType, 'marker-click', data.isFullScreen, isFirstInteraction( true ), options );
 					} );
 					data.feature.$container.on( 'click', '.leaflet-popup-content a', function () {
 						var $link = $( this ),
@@ -180,30 +191,41 @@
 						options = $.extend( {}, options );
 						options.extra.destination = destination;
 
-						logEvent( data.feature.featureType, 'discovery', data.isFullScreen, options );
+						logEvent( data.feature.featureType, 'discovery', data.isFullScreen, isFirstInteraction( true ), options );
 					} );
 					return;
 				case 'view':
 					options.sampling = 100;
+					isInteraction = false;
 					break;
 				case 'open':
+					isInteraction = true;
+					tracking.openedAt = this.timeStamp;
+					break;
 				case 'hashopen':
+					isInteraction = false;
 					tracking.openedAt = this.timeStamp;
 					break;
 				case 'close':
+					isInteraction = true;
 					tracking.closedAt = this.timeStamp;
 					options.duration = parseInt( tracking.closedAt - tracking.openedAt, 10 );
 					break;
 				case 'sidebar-click':
+					isInteraction = true;
 					options.extra.service = data.service;
 					options.extra.type = data.type;
 					break;
 				case 'sidebar-type':
+					isInteraction = true;
 					options.extra.type = data.type;
+					break;
+				default:
+					isInteraction = true;
 					break;
 			}
 
-			logEvent( data.feature.featureType, data.action, data.isFullScreen, options );
+			logEvent( data.feature.featureType, data.action, data.isFullScreen, isFirstInteraction( isInteraction ), options );
 		} );
 	} );
 
