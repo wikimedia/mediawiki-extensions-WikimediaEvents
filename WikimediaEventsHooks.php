@@ -452,7 +452,7 @@ class WikimediaEventsHooks {
 	 * SERP or not. This ends up being non-trivial due to localization, so
 	 * make it trivial by injecting a boolean value to check.
 	 */
-	public static function onSpecialSearchResults( $term, &$titleMatches, &$textMatches ) {
+	public static function onSpecialSearchResults( $term, $titleMatches, $textMatches ) {
 		global $wgOut;
 
 		$wgOut->addJsConfigVars( array(
