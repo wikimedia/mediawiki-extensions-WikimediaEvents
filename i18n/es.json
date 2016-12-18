@@ -5,10 +5,13 @@
 			"Jonathan rrr",
 			"Macofe",
 			"AlvaroMolina",
-			"Lemondoge"
+			"Lemondoge",
+			"Dgstranz"
 		]
 	},
 	"wikimediaevents-desc": "Registra eventos específicos de Wikimedia mediante EventLogging",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Importaciones interwiki]]",
 	"tag-cross-wiki-upload-description": "Archivos subidos desde dentro de los editores visual y de de wikitexto en otros wikis",
+	"tag-HHVM-description": "Revisiones ejecutadas con la máquina virtual HipHop (HHVM) en lugar del intérprete de PHP Zend (se espera que mejore el rendimiento, se ha etiquetado para la depuración y el análisis)",
 	"abusefilter-edit-builder-vars-user-wpzero": "Sea o no un usuario está editando a través de un índice cero de portador a través de Wikipedia Zero"
 }
