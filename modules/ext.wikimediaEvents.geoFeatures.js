@@ -131,66 +131,66 @@
 			return;
 		}
 		// Give the tool some time to load, can't hook to it cleanly because it's not in a RL module
-		setTimeout( function () {
-				var $button = $( selector );
+		setTimeout(
+			function () {
+				mw.requestIdleCallback( function () {
+					var $button = $( selector );
 
-				if ( $button.length ) {
-					$button.on( 'click', callback );
-				} else {
-					trackButton( selector, callback, attemptsLeft - 1 );
-				}
+					if ( $button.length ) {
+						$button.on( 'click', callback );
+					} else {
+						trackButton( selector, callback, attemptsLeft - 1 );
+					}
+				}, 1000 );
 			},
 			1000
 		);
 	}
 
 	mw.requestIdleCallback( function () {
-		// Nuke old cookies
-		mw.cookie.set( 'GeoFeaturesUser', null );
-
 		// Track GeoHack usage
-		$geoHackLinks = $( 'a[href^=\'//tools.wmflabs.org/geohack/geohack.php\']' );
-		$geoHackLinks.on( 'click', function ( event ) {
-			var $this = $( this ),
-				isTitle = isTitleCoordinate( $this );
+		$geoHackLinks = $( 'a[href^="//tools.wmflabs.org/geohack/geohack.php"]' );
 
-			// Don't override all the weird input combinations because this may, for example,
-			// result in link being opened in the same tab instead of another
-			if ( event.buttons === undefined
-				|| event.buttons > 1
-				|| event.button
-				|| event.altKey
-				|| event.ctrlKey
-				|| event.metaKey
-				|| event.shiftKey
-			) {
-				doTrack( 'GeoHack', 'open', isTitle );
-			} else {
-				// Ordinary click, override to ensure it's logged
-				doTrack( 'GeoHack', 'open', isTitle, $this.attr( 'href' ) );
-				event.preventDefault();
-			}
-		} );
-
-		// Track WikiMiniAtlas usage
 		if ( $geoHackLinks.length ) {
+			$geoHackLinks.on( 'click', function ( event ) {
+				var $this = $( this ),
+					isTitle = isTitleCoordinate( $this );
+
+				// Don't override all the weird input combinations because this may, for example,
+				// result in link being opened in the same tab instead of another
+				if ( event.buttons === undefined
+					|| event.buttons > 1
+					|| event.button
+					|| event.altKey
+					|| event.ctrlKey
+					|| event.metaKey
+					|| event.shiftKey
+				) {
+					doTrack( 'GeoHack', 'open', isTitle );
+				} else {
+					// Ordinary click, override to ensure it's logged
+					doTrack( 'GeoHack', 'open', isTitle, $this.attr( 'href' ) );
+					event.preventDefault();
+				}
+			} );
+
+			// Track WikiMiniAtlas usage
 			trackIframe( wmaSelector, 'WikiMiniAtlas' );
 			mw.hook( 'WikiMiniAtlas.load' ).add( function () {
-					$( '.wmamapbutton' ).on( 'click', function () {
-						var $this = $( this ),
-							isTitle = isTitleCoordinate( $this ),
-							$container = $( wmaSelector ).parent();
+				$( '.wmamapbutton' ).on( 'click', function () {
+					var $this = $( this ),
+						isTitle = isTitleCoordinate( $this ),
+						$container = $( wmaSelector ).parent();
 
-						$document.data( 'isPrimary-WikiMiniAtlas', isTitle );
-						if ( $container.is( ':visible' ) ) {
-							doTrack( 'WikiMiniAtlas', 'open', isTitle );
-							$container.one( 'hide', function () {
-								doTrack( 'WikiMiniAtlas', 'close', isTitle );
-							} );
-						}
-					} );
-				}
-			);
+					$document.data( 'isPrimary-WikiMiniAtlas', isTitle );
+					if ( $container.is( ':visible' ) ) {
+						doTrack( 'WikiMiniAtlas', 'open', isTitle );
+						$container.one( 'hide', function () {
+							doTrack( 'WikiMiniAtlas', 'close', isTitle );
+						} );
+					}
+				} );
+			} );
 		}
 
 		// Track WIWOSM usage
