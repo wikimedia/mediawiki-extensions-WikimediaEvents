@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"authors": [
+			"Jon Harald Søby"
+		]
+	},
+	"wikimediaevents-desc": "Logger Wikimedia-spesifikke hendelser med EventLogging",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Krysswikiopplasting]]",
+	"tag-cross-wiki-upload-description": "Filer som lastes opp fra wikiteksteditoren og den visuelle editoren på andre wikier",
+	"tag-HHVM-description": "Revisjoner gjort med HipHop Virtual Machine slått på i stedet for Zend-PHP-tolkeren (forventes å forbedre ytelse, tagges for debugging og analyse)",
+	"abusefilter-edit-builder-vars-user-wpzero": "Hvorvidt en bruker redigerer fra en gratisleverandør via Wikipedia Zero"
+}
