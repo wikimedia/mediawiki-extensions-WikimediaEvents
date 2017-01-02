@@ -5,6 +5,12 @@
 	"minimum-stability": "dev",
 	"require-dev"    : {
 		"facebook/webdriver": "1.1.1",
-		"symfony/css-selector": "3.1.0"
+		"symfony/css-selector": "3.1.0",
+		"jakub-onderka/php-parallel-lint": "0.9.2"
+	},
+	"scripts": {
+		"test": [
+			"parallel-lint . --exclude vendor"
+		]
 	}
 }
