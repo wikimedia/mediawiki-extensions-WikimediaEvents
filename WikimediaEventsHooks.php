@@ -563,7 +563,7 @@ class WikimediaEventsHooks {
 
 		$logData = [
 			'pagename' => $special->getName(),
-			'enhancedFiltersEnabled' => (bool)$this->getUser()->getOption( 'rcenhancedfilters' )
+			'enhancedFiltersEnabled' => (bool)$special->getUser()->getOption( 'rcenhancedfilters' )
 		];
 
 		$knownFilters = [
