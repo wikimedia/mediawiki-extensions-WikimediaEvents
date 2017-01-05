@@ -562,7 +562,8 @@ class WikimediaEventsHooks {
 		}
 
 		$logData = [
-			'pagename' => $special->getName()
+			'pagename' => $special->getName(),
+			'enhancedFiltersEnabled' => (bool)$this->getUser()->getOption( 'rcenhancedfilters' )
 		];
 
 		$knownFilters = [
@@ -599,7 +600,7 @@ class WikimediaEventsHooks {
 		// Log the existing filters
 		EventLogging::logEvent(
 			'ChangesListFilters',
-			15876023,
+			16174591,
 			$logData
 		);
 	}
