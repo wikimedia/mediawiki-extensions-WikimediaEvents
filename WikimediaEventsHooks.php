@@ -592,8 +592,13 @@ class WikimediaEventsHooks {
 		$webParams = $special->getRequest()->getQueryValues();
 		foreach ( $webParams as $param => $value ) {
 			if ( array_key_exists( $param, $knownFilters ) && $value !== '' && $value !== null ) {
-				$logData[ $param ] = $knownFilters[ $param ] === 'bool' ?
-					(bool)$value : $value;
+				if ( $knownFilters[ $param ] === 'bool' ) {
+					$logData[ $param ] = (bool)$value;
+				} else if ( $knownFilters[ $param ] === 'integer' ) {
+					$logData[ $param ] = (int)$value;
+				} else {
+					$logData[ $param ] = (string)$value;
+				}
 			}
 		}
 
