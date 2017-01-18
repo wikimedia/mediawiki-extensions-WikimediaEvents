@@ -617,12 +617,13 @@ class WikimediaEventsHooks {
 		$isCookieSetOnAutoblock = $rc->getConfig()->get( 'CookieSetOnAutoblock' );
 		$blockCookieVal = $request->getCookie( 'BlockID' );
 		$trigger = $user->blockTrigger;
-		if ( $isCookieSetOnAutoblock && $blockCookieVal > 0 && $blocked && $trigger !== false ) {
+		if ( $isCookieSetOnAutoblock && $blockCookieVal > 0 && $blocked ) {
 			$logData = [
 				'ip' => $request->getIP(),
-				'block' => $trigger
+				'is_cookie_block' => $trigger === 'cookie-block'
 			];
-			EventLogging::logEvent( 'CookieBlock', 16046548, $logData );
+			EventLogging::logEvent( 'CookieBlock', 16241436, $logData );
 		}
 	}
+
 }
