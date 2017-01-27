@@ -112,7 +112,7 @@
 		"schema.TestSearchSatisfaction2": {
 			"class": "ResourceLoaderSchemaModule",
 			"schema": "TestSearchSatisfaction2",
-			"revision": 15922352
+			"revision": 16270835
 		},
 		"schema.GeoFeatures": {
 			"class": "ResourceLoaderSchemaModule",

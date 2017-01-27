@@ -113,15 +113,38 @@
 		function initialize( session ) {
 
 			var sessionId = session.get( 'sessionId' ),
+				// List of valid sub-test buckets
+				validBuckets = [
+					'recall_sidebar_results',
+					'random_sidebar_results',
+					'no_sidebar'
+				],
+				// Sampling to use when choosing which users should participate in test
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
+						// Currently unused, but provides a place
+						// to handle wiki-specific sampling
 						subTests = {
-							thwiki: {
-								// 1:5 overall sessions into test
-								test: 5,
-								// 1:39 of test sessions reserved for dashboard
-								// 38:39 sessions split evenly between test buckets
-								subTest: 39
+							fawiki: {
+								// 1 in 200 users search sessions will be recorded
+								// by event logging
+								test: 200,
+								// 1 in 10 (of the 1 in 200) will be bucketed into
+								// the sub-test. The other 9 in 10 are reserved for
+								// dashboarding.
+								subTest: 10
+							},
+							itwiki: {
+								test: 200,
+								subTest: 10
+							},
+							cawiki: {
+								test: 200,
+								subTest: 10
+							},
+							plwiki: {
+								test: 200,
+								subTest: 10
 							}
 						};
 
@@ -184,11 +207,8 @@
 					return;
 				}
 
-				if ( sampleSize.subTest !== null && !oneIn( sampleSize.subTest ) ) {
-					session.set( 'subTest', chooseBucket( [
-						'bm25:control',
-						'bm25:inclinks_pv'
-					] ) );
+				if ( sampleSize.subTest !== null && oneIn( sampleSize.subTest ) ) {
+					session.set( 'subTest', chooseBucket( validBuckets ) );
 				}
 			}
 
@@ -458,7 +478,7 @@
 		return function ( action, extraData ) {
 			var scrollTop = $( window ).scrollTop(),
 				evt = {
-					// searchResultPage, visitPage or checkin
+					// searchResultPage, visitPage, checkin, click, iwclick or ssclick
 					action: action,
 					// source of the action, either search or autocomplete
 					source: source,
@@ -562,6 +582,36 @@
 				search.wprovPrefix + 'dymo1'
 			) );
 
+			// Sister-search results
+			if ( session.has( 'subTest' ) ) {
+				$( '#mw-content-text' ).on(
+					'click',
+					'.iw-result__title a, .iw-result__mini-gallery a, .iw-result__footer a',
+					function ( evt ) {
+						var $target = $( evt.target ).closest( 'a' ),
+							href = $target.attr( 'href' );
+
+						// Shouldn't happen, but just in case.
+						if ( href === undefined ) {
+							href = '';
+						}
+
+						logEvent( 'ssclick', {
+							// This is a little bit of a lie, it's actually the
+							// position of the interwiki group, but we only
+							// show one result per so it seems to work.
+							position: $target.closest( '.iw-resultset' ).data( 'iw-resultset-pos' ),
+
+							// Attach the url that was clicked. Analysis can
+							// use this to decide which wiki the user went to,
+							// along with if it was an article or search link.
+							extraParams: href
+						} );
+					}
+				);
+			}
+
+			// Primary search results
 			$( '#mw-content-text' ).on(
 				'click',
 				'.mw-search-result-heading a, #mw-search-DYM-suggestion, #mw-search-DYM-original, #mw-search-DYM-rewritten',
@@ -569,6 +619,11 @@
 					var wprov,
 					// Sometimes the click event is on a span inside the anchor
 						$target = $( evt.target ).closest( 'a' ),
+					// Distinguish between standard 'on-wiki' results, and interwiki results that point
+					// to another language
+						clickType = $target.closest( '.mw-search-result-heading' ).find( 'a.extiw' ).length > 0
+							? 'iwclick'
+							: 'click',
 						params = {
 							// Only the primary anchor has the data-serp-pos attribute, but we
 							// might be updating a sub-link like a section.
@@ -593,7 +648,7 @@
 
 					// Only log click events for clicks on search results, not did you mean
 					if ( params.position !== undefined ) {
-						logEvent( 'click', params );
+						logEvent( clickType, params );
 					}
 				}
 			);
