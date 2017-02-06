@@ -94,6 +94,11 @@
 			"schema": "DeprecatedUsage",
 			"revision": 7906187
 		},
+		"schema.ReadingDepth": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "ReadingDepth",
+			"revision": 16325045
+		},
 		"schema.ModuleLoadFailure": {
 			"class": "ResourceLoaderSchemaModule",
 			"schema": "ModuleLoadFailure",
@@ -134,6 +139,7 @@
 				"ext.wikimediaEvents.events.js",
 				"ext.wikimediaEvents.statsd.js",
 				"ext.wikimediaEvents.kartographer.js",
+				"ext.wikimediaEvents.readingDepth.js",
 				"ext.wikimediaEvents.rlfeature.js",
 				"ext.wikimediaEvents.searchSatisfaction.js",
 				"ext.wikimediaEvents.geoFeatures.js"
@@ -142,6 +148,7 @@
 				"ext.eventLogging.subscriber",
 				"mediawiki.user",
 				"mediawiki.Uri",
+				"mediawiki.experiments",
 				"mediawiki.storage"
 			],
 			"targets": [
@@ -165,6 +172,8 @@
 		"remoteExtPath": "WikimediaEvents/modules"
 	},
 	"config": {
+		"WMEReadingDepthSamplingRate": 0.005,
+		"WMEReadingDepthEnabled": false,
 		"WMEStatsdBaseUri": false
 	},
 	"manifest_version": 1
