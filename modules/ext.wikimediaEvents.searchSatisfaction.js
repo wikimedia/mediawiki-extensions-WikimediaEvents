@@ -126,25 +126,25 @@
 						// to handle wiki-specific sampling
 						subTests = {
 							fawiki: {
-								// 1 in 200 users search sessions will be recorded
+								// 1 in 10 users search sessions will be recorded
 								// by event logging
-								test: 200,
-								// 1 in 10 (of the 1 in 200) will be bucketed into
-								// the sub-test. The other 9 in 10 are reserved for
+								test: 10,
+								// 1 in 2 (of the 1 in 10) will be bucketed into
+								// the sub-test. The other 1 in 2 are reserved for
 								// dashboarding.
-								subTest: 10
+								subTest: 2
 							},
 							itwiki: {
-								test: 200,
-								subTest: 10
+								test: 50,
+								subTest: 2
 							},
 							cawiki: {
-								test: 200,
-								subTest: 10
+								test: 10,
+								subTest: 2
 							},
 							plwiki: {
-								test: 200,
-								subTest: 10
+								test: 50,
+								subTest: 2
 							}
 						};
 
