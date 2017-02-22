@@ -13,14 +13,16 @@
 	*
 	* @param {PerformanceTiming} perf See
 	*  https://developer.mozilla.org/en-US/docs/Web/API/PerformanceTiming.
-	* @param {Float} from time in ms at which navigation commenced
-	* @return {Integer|undefined} time in ms when first paint occurred or undefined if not available.
+	* @return {number|undefined} Time, in milliseconds since the UNIX epoch, when
+	*  the document was first painted by the UA; or `undefined` if the UA doesn't
+	*  report first paint time or reports a first paint time that's before the UA
+	*  began loading the document
 	*/
-	function getFirstPaintTime( perf, from ) {
+	function getFirstPaintTime( perf ) {
 		var chromeLoadTimes,
 			timing = perf.timing;
 
-		if ( timing.msFirstPaint > from ) {
+		if ( timing.msFirstPaint > timing.navigationStart ) {
 			return timing.msFirstPaint;
 		/* global chrome */
 		} else if ( window.chrome && $.isFunction( chrome.loadTimes ) ) {
@@ -58,7 +60,7 @@
 		var now,
 			// will always be defined.
 			domInteractive = perf.timing.domInteractive,
-			fp = getFirstPaintTime( perf, navStart ),
+			fp = getFirstPaintTime( perf ),
 			data = $.extend( {}, EVENT, {
 				action: action,
 				domInteractiveTime: domInteractive - navStart,
