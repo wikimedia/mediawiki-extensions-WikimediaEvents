@@ -74,9 +74,8 @@
 			data.totalLength = Math.round( now - from );
 			data.visibleLength =  Math.round( now - from - msPaused );
 		}
-		mw.loader.using( 'schema.ReadingDepth' ).then( function () {
-			mw.eventLog.logEvent( 'ReadingDepth', data );
-		} );
+
+		mw.track( 'event.ReadingDepth', data );
 	}
 
 	/**
