@@ -151,14 +151,11 @@
 	}
 
 	/**
-	 * Checks whether the current browser supports sendBeacon feature.
-	 *
-	 * FIXME: Rename this to be consistent with `supportsNavigationTiming`, which
-	 * itself is consistent with the wording used in `isEnabled`.
+	 * Checks whether the UA supports the Beacon API.
 	 *
 	 * @return {boolean}
 	 */
-	function isSendBeaconCapable() {
+	function supportsBeacon() {
 		return $.isFunction( navigator.sendBeacon );
 	}
 
@@ -173,17 +170,17 @@
 	}
 
 	/**
-	 * Checks whether the browser is capable and should track reading depth.
-	 * A browser is considered capable if it supports send beacon and navigationTiming
-	 * It should track if the user is in the sampling group and the schema has been enabled
-	 * by a sysadmin.
+	 * Checks whether the browser is capable and should track reading depth. A
+	 * browser is considered capable if it supports the Beacon APIs and the
+	 * Navigation Timing API. It should track if the user is in the sampling group
+	 * and the schema has been enabled by a sysadmin.
 	 *
 	 * @return {boolean}
 	 */
 	function isEnabled() {
 		return config.get( 'wgWMEReadingDepthEnabled' ) &&
 			supportsNavigationTiming() &&
-			isSendBeaconCapable() &&
+			supportsBeacon() &&
 			isInSample( config.get( 'wgWMEReadingDepthSamplingRate', 0 ) );
 	}
 
