@@ -36,17 +36,18 @@
 	 * @return {string}
 	 */
 	function getToken() {
-		var cookieName = 'GeoFeaturesUser2',
-			token = mw.cookie.get( cookieName );
+		var keyName = 'wmE-GeoFeaturesUser',
+			token = mw.storage.session.get( keyName ),
+			parts = token && token.split( '|' ),
+			now = ( new Date() ).getTime(),
+			cut = now - ( 10 * 60 * 1000 ); // 10 minutes ago
 
-		if ( token ) {
-			return token;
+		if ( parts && parts[ 1 ] >= cut ) {
+			return parts[ 0 ];
 		}
 
 		token = mw.user.generateRandomSessionId();
-
-		mw.cookie.set( cookieName, token, { expires: 10 * 60 } );
-
+		mw.storage.session.set( keyName, token + '|' + now );
 		return token;
 	}
 
