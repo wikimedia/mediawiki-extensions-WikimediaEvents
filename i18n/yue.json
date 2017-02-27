@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"authors": [
+			"Ktchankt"
+		]
+	},
+	"wikimediaevents-desc": "用咗EventLogging嘅維基媒體特定事件記錄",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|跨 wiki 上載]]",
+	"tag-cross-wiki-upload-description": "由其他wiki嘅文字同可見編輯器上載嘅檔案",
+	"tag-HHVM-description": "啟用 HipHop 虛擬機器去改，取代 Zend PHP 直譯器 （預期可以提高效能，標記除錯/分析）",
+	"abusefilter-edit-builder-vars-user-wpzero": "用戶係咪用Wikipedia Zero數據量豁免計劃去編輯"
+}

@@ -8,5 +8,6 @@
 	"wikimediaevents-desc": "Registra eventi specifici Wikimedia utilizzando EventLogging",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Caricamento cross-wiki]]",
 	"tag-cross-wiki-upload-description": "File caricati dagli editor wikitesto e visuale su altri wiki",
-	"tag-HHVM-description": "Modifiche apportate con la macchina virtuale HipHop (HHVM) abilitata invece dell'interprete PHP Zend (dovrebbe migliorare le prestazioni, sono etichettate per il debug/analisi)"
+	"tag-HHVM-description": "Modifiche apportate con la macchina virtuale HipHop (HHVM) abilitata invece dell'interprete PHP Zend (dovrebbe migliorare le prestazioni, sono etichettate per il debug/analisi)",
+	"abusefilter-edit-builder-vars-user-wpzero": "Se un utente sta modificando attraverso un operatore gratuito tramite Wikipedia Zero"
 }
