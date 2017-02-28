@@ -142,7 +142,7 @@
 					} else {
 						trackButton( selector, callback, attemptsLeft - 1 );
 					}
-				}, 1000 );
+				} );
 			},
 			1000
 		);
