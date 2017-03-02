@@ -141,9 +141,14 @@
 				"ext.wikimediaEvents.kartographer.js",
 				"ext.wikimediaEvents.readingDepth.js",
 				"ext.wikimediaEvents.rlfeature.js",
-				"ext.wikimediaEvents.searchSatisfaction.js",
 				"ext.wikimediaEvents.geoFeatures.js"
 			],
+			"skinScripts": {
+				"default": [
+					"ext.wikimediaEvents.searchSatisfaction.js"
+				],
+				"minerva": []
+			},
 			"dependencies": [
 				"ext.eventLogging.subscriber",
 				"mediawiki.user",
