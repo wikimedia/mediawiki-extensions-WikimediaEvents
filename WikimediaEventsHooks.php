@@ -554,8 +554,8 @@ class WikimediaEventsHooks {
 	 * ChangesListSpecialPage (in core: RecentChanges, RecentChangesLinked
 	 * and Watchlist).
 	 *
-	 * @param $special ChangesListSpecialPage instance
-	 * @param &$filters Associative array of filter definitions.
+	 * @param ChangesListSpecialPage $special Special page
+	 * @param array &$filters Filter definitions.
 	 */
 	public static function onChangesListSpecialPageFilters( $special, &$filters ) {
 		// For volume/capacity reasons, only log this for logged-in users
@@ -570,16 +570,24 @@ class WikimediaEventsHooks {
 
 		$knownFilters = [
 			'hideminor' => 'bool',
+			'hidemajor' => 'bool',
 			'hidebots' => 'bool',
+			'hidehumans' => 'bool',
 			'hideanons' => 'bool',
 			'hidepatrolled' => 'bool',
+			'hideunpatrolled' => 'bool',
 			'hidemyself' => 'bool',
+			'hidebyothers' => 'bool',
 			'hideliu' => 'bool',
 			'hidecategorization' => 'bool',
+			'hidepageedits' => 'bool',
+			'hidenewpages' => 'bool',
+			'hidelog' => 'bool',
 			'invert' => 'bool',
 			'associated' => 'bool',
 			'namespace' => 'integer',
 			'tagfilter' => 'string',
+			'userExpLevel' => 'string',
 
 			// Extension:Wikidata
 			'hideWikibase' => 'bool',
@@ -589,6 +597,8 @@ class WikimediaEventsHooks {
 
 			// Extension:ORES
 			'hidenondamaging' => 'bool',
+			'damaging' => 'string',
+			'goodfaith' => 'string',
 		];
 
 		$webParams = $special->getRequest()->getQueryValues();
@@ -607,7 +617,7 @@ class WikimediaEventsHooks {
 		// Log the existing filters
 		EventLogging::logEvent(
 			'ChangesListFilters',
-			16174591,
+			16403617,
 			$logData
 		);
 	}
