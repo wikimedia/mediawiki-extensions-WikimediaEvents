@@ -574,7 +574,8 @@
 	 */
 	function setupSearchTest( session ) {
 		var params,
-			logEvent = genLogEventFn( 'fulltext', session );
+			logEvent = genLogEventFn( 'fulltext', session ),
+			iwResultSet;
 
 		if ( isSearchResultPage ) {
 			// When a new search is performed reset the session lifetime.
@@ -674,6 +675,18 @@
 				query: mw.config.get( 'searchTerm' ),
 				hitsReturned: $( '.mw-search-result-heading' ).length
 			};
+
+			// Track which sister wiki results were shown in the sidebar and in what order
+			if ( session.has( 'subTest' ) ) {
+				iwResultSet = [];
+				$( 'li.iw-resultset' ).each( function () {
+					iwResultSet.push( {
+						result: $( this ).attr( 'class' ).match( /(?:^|\s)iw-resultset--(\S+)/ )[ 1 ],
+						position: $( this ).data( 'iw-resultset-pos' )
+					} );
+				} );
+				params.extraParams = JSON.stringify( iwResultSet );
+			}
 
 			// Track what did you mean suggestions were displayed on the page
 			if ( $( '#mw-search-DYM-suggestion' ).length ) {
