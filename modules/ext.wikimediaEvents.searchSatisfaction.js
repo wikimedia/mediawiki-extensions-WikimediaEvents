@@ -113,13 +113,54 @@
 		function initialize( session ) {
 
 			var sessionId = session.get( 'sessionId' ),
-				// No sub-tests currently running
-				validBuckets = [],
+				// List of valid sub-test buckets
+				validBuckets = [
+					'recall_sidebar_results',
+					'no_sidebar'
+				],
+				// Sampling to use when choosing which users should participate in test
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
 						// Currently unused, but provides a place
 						// to handle wiki-specific sampling
 						subTests = {
+							arwiki: {
+								// 1 in 25 users search sessions will be recorded
+								// by event logging
+								test: 25,
+								// 1 in 8 (of the 1 in 25) will be reserved for
+								// dashboarding. The other 7 in 8 are split equally
+								// into buckets.
+								subTest: 8
+							},
+							cawiki: {
+								test: 6,
+								subTest: 34
+							},
+							dewiki: {
+								test: 108,
+								subTest: 2
+							},
+							fawiki: {
+								test: 8,
+								subTest: 25
+							},
+							frwiki: {
+								test: 70,
+								subTest: 3
+							},
+							itwiki: {
+								test: 42,
+								subTest: 5
+							},
+							plwiki: {
+								test: 35,
+								subTest: 6
+							},
+							ruwiki: {
+								test: 71,
+								subTest: 3
+							}
 						};
 
 					if ( subTests[ dbName ] ) {
@@ -181,6 +222,8 @@
 					return;
 				}
 
+				// 1 in sampleSize.subTest reserved for dashboarding, the rest split
+				// evenly into buckets.
 				if ( sampleSize.subTest !== null && !oneIn( sampleSize.subTest ) ) {
 					session.set( 'subTest', chooseBucket( validBuckets ) );
 				}
@@ -452,7 +495,7 @@
 		return function ( action, extraData ) {
 			var scrollTop = $( window ).scrollTop(),
 				evt = {
-					// searchResultPage, visitPage, checkin, click or iwclick
+					// searchResultPage, visitPage, checkin, click, iwclick or ssclick
 					action: action,
 					// source of the action, either search or autocomplete
 					source: source,
@@ -556,6 +599,36 @@
 				search.wprovPrefix + 'dymo1'
 			) );
 
+			// Sister-search results
+			if ( session.has( 'subTest' ) ) {
+				$( '#mw-content-text' ).on(
+					'click',
+					'.iw-result__title a, .iw-result__mini-gallery a, .iw-result__footer a',
+					function ( evt ) {
+						var $target = $( evt.target ).closest( 'a' ),
+							href = $target.attr( 'href' );
+
+						// Shouldn't happen, but just in case.
+						if ( href === undefined ) {
+							href = '';
+						}
+
+						logEvent( 'ssclick', {
+							// This is a little bit of a lie, it's actually the
+							// position of the interwiki group, but we only
+							// show one result per so it seems to work.
+							position: $target.closest( '.iw-resultset' ).data( 'iw-resultset-pos' ),
+
+							// Attach the url that was clicked. Analysis can
+							// use this to decide which wiki the user went to,
+							// along with if it was an article or search link.
+							extraParams: href
+						} );
+					}
+				);
+			}
+
+			// Primary search results
 			$( '#mw-content-text' ).on(
 				'click',
 				'.mw-search-result-heading a, #mw-search-DYM-suggestion, #mw-search-DYM-original, #mw-search-DYM-rewritten',
