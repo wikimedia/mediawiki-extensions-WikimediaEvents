@@ -134,6 +134,11 @@
 			"schema": "Kartographer",
 			"revision": 16132745
 		},
+		"schema.ChangesListHighlights": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "ChangesListHighlights",
+			"revision": 16449602
+		},
 		"ext.wikimediaEvents": {
 			"scripts": [
 				"ext.wikimediaEvents.events.js",
