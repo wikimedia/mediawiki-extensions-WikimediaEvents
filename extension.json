@@ -137,7 +137,7 @@
 		"schema.ChangesListHighlights": {
 			"class": "ResourceLoaderSchemaModule",
 			"schema": "ChangesListHighlights",
-			"revision": 16449602
+			"revision": 16484288
 		},
 		"ext.wikimediaEvents": {
 			"scripts": [
