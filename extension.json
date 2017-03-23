@@ -139,6 +139,11 @@
 			"schema": "ChangesListHighlights",
 			"revision": 16449602
 		},
+		"schema.ChangesListClickTracking": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "ChangesListClickTracking",
+			"revision": 16484895
+		},
 		"ext.wikimediaEvents": {
 			"scripts": [
 				"ext.wikimediaEvents.events.js",
@@ -168,13 +173,16 @@
 		},
 		"ext.wikimediaEvents.loggedin": {
 			"scripts": [
-				"ext.wikimediaEvents.deprecate.js"
+				"ext.wikimediaEvents.deprecate.js",
+				"ext.wikimediaEvents.recentChangesClicks.js"
 			],
 			"targets": [
 				"desktop",
 				"mobile"
 			],
-			"dependencies": []
+			"dependencies": [
+				"mediawiki.user"
+			]
 		}
 	},
 	"ResourceFileModulePaths": {
