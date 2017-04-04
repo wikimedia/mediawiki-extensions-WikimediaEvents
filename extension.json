@@ -150,7 +150,6 @@
 				"ext.wikimediaEvents.statsd.js",
 				"ext.wikimediaEvents.kartographer.js",
 				"ext.wikimediaEvents.readingDepth.js",
-				"ext.wikimediaEvents.rlfeature.js",
 				"ext.wikimediaEvents.geoFeatures.js"
 			],
 			"skinScripts": {
