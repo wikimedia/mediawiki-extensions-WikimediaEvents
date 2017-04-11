@@ -68,7 +68,7 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 			$error = $status;
 		} elseif ( is_numeric( $status ) && $successful === false ) {
 			$error = strval( $status );
-		} elseif( is_bool( $status ) ) {
+		} elseif ( is_bool( $status ) ) {
 			$successful = $status;
 		}
 
