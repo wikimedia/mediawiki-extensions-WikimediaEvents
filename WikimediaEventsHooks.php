@@ -1,5 +1,6 @@
 <?php
 use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\MediaWikiServices;
 
 /**
  * Hooks used for Wikimedia-related logging
@@ -641,6 +642,89 @@ class WikimediaEventsHooks {
 				'is_cookie_block' => $trigger === 'cookie-block'
 			];
 			EventLogging::logEvent( 'CookieBlock', 16241436, $logData );
+		}
+	}
+
+	/**
+	 * In spring 2017 WMDE will run a banner campaign with a GuidedTour to encourage users to
+	 * create an account and edit.
+	 * The banner campaign will link to a page (see example)
+	 * https://de.wikipedia.org/wiki/Wikipedia:Wikimedia_Deutschland/Fehler_korrigieren?campaign=wmde2017spring
+	 *
+	 * The campaign that this code is relevant for will run from the 12th to 22nd April.
+	 *
+	 * @author addshore on behalf of WMDE
+	 *
+	 * @param Title $title
+	 * @param $unused
+	 * @param OutputPage $output
+	 * @param User $user
+	 * @param WebRequest $request
+	 * @param MediaWiki $mediaWiki
+	 */
+	public static function onBeforeInitializeWMDESpring2017(
+		$title,
+		$unused,
+		$output,
+		$user,
+		$request,
+		$mediaWiki
+	) {
+		// Only run for dewiki
+		if ( wfWikiID() !== 'dewiki' ) {
+			return;
+		}
+
+		$hasCampaignGetValue = $request->getVal( 'campaign' ) === 'wmde2017spring';
+		$hasNoCampaignGetValue = $request->getVal( 'campaign' ) === null;
+		$hasCampaignCookie = $request->getCookie( 'campaign-wmde2017spring' ) !== null;
+
+		$stats = MediaWikiServices::getInstance()->getStatsdDataFactory();
+
+		/**
+		 * If an anon user clicks on the banner and doesn't yet have a session cookie then
+		 * add a session cookie and count the click.
+		 */
+		if ( $user->isAnon() && $hasCampaignGetValue && !$hasCampaignCookie ) {
+			$request->response()->setCookie( 'campaign-wmde2017spring', 1, null );
+			$stats->increment( 'wmde.campaign.2017spring.banner.click' );
+			wfDebugLog( 'WMDE', 'Spring2017 - 1 - Banner click by anon user without cookie' );
+		}
+
+		/**
+		 * If an anon user with the cookie, views the create account page without a campaign
+		 * value set then inject it into the WebRequest object.
+		 */
+		if (
+			$user->isAnon() &&
+			$hasCampaignCookie &&
+			$title->isSpecial( 'CreateAccount' ) &&
+			$hasNoCampaignGetValue
+		) {
+			$request->setVal( 'campaign', 'wmde2017spring' );
+			wfDebugLog( 'WMDE', 'Spring2017 - 2 - Inject campaign value on CreateAccount' );
+		}
+
+		/**
+		 * If a registered user appears with the campaign cookie (thus had clicked the banner)
+		 * and a main namespace page is being viewed, decide to show the tour or not based on
+		 * dumb maths.
+		 */
+		if (
+			!$user->isAnon() &&
+			$hasCampaignCookie &&
+			$title->getNamespace() === NS_MAIN &&
+			$mediaWiki->getAction() === 'view'
+		) {
+			$request->response()->clearCookie( 'campaign-wmde2017spring' );
+			if ( $user->getId() % 2 == 0 ) {
+				GuidedTourLauncher::launchTourByCookie( 'einführung', '0' );
+				$stats->increment( 'wmde.campaign.2017spring.tour.trigger' );
+				wfDebugLog( 'WMDE', 'Spring2017 - 3 - GuidedTour for user: ' . $user->getId() );
+			} else {
+				$stats->increment( 'wmde.campaign.2017spring.tour.discard' );
+				wfDebugLog( 'WMDE', 'Spring2017 - 3 - NO GuidedTour for user: ' . $user->getId() );
+			}
 		}
 	}
 
