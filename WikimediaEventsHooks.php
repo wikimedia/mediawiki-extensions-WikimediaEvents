@@ -718,7 +718,7 @@ class WikimediaEventsHooks {
 		) {
 			$request->response()->clearCookie( 'campaign-wmde2017spring' );
 			if ( $user->getId() % 2 == 0 ) {
-				GuidedTourLauncher::launchTourByCookie( urlencode( 'einführung' ), 'willkommen' );
+				GuidedTourLauncher::launchTourByCookie( urlencode( 'einfuhrung' ), 'willkommen' );
 				$stats->increment( 'wmde.campaign.2017spring.tour.trigger' );
 				wfDebugLog( 'WMDE', 'Spring2017 - 3 - GuidedTour for user: ' . $user->getId() );
 			} else {
