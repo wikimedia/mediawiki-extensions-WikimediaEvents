@@ -14,9 +14,6 @@
 		"AuthManagerStatsdHandler": "includes/AuthManagerStatsdHandler.php"
 	},
 	"Hooks": {
-		"BeforeInitialize": [
-			"WikimediaEventsHooks::onBeforeInitializeWMDESpring2017"
-		],
 		"BeforePageDisplay": [
 			"WikimediaEventsHooks::onBeforePageDisplay"
 		],
