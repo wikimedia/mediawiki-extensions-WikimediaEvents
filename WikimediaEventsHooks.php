@@ -556,9 +556,8 @@ class WikimediaEventsHooks {
 	 * and Watchlist).
 	 *
 	 * @param ChangesListSpecialPage $special Special page
-	 * @param array &$filters Filter definitions.
 	 */
-	public static function onChangesListSpecialPageFilters( $special, &$filters ) {
+	public static function onChangesListSpecialPageStructuredFilters( $special ) {
 		// For volume/capacity reasons, only log this for logged-in users
 		if ( $special->getUser()->isAnon() ) {
 			return;

@@ -74,8 +74,8 @@
 		"AbuseFilter-builder": [
 			"WikimediaEventsHooks::onAbuseFilterBuilder"
 		],
-		"ChangesListSpecialPageFilters": [
-			"WikimediaEventsHooks::onChangesListSpecialPageFilters"
+		"ChangesListSpecialPageStructuredFilters": [
+			"WikimediaEventsHooks::onChangesListSpecialPageStructuredFilters"
 		],
 		"GetBlockedStatus": [
 			"WikimediaEventsHooks::onGetBlockedStatus"
