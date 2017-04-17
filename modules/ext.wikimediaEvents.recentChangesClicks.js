@@ -47,15 +47,16 @@
 			$( '.mw-changeslist' ).on( 'click', 'a[href]', function ( e ) {
 				var selector,
 					type = 'unknown',
-					$link = $( this ),
-					target = new mw.Uri( $link.attr( 'href' ) );
+					$link = $( this );
 				if ( e.which === 3 ) {
 					return;
 				}
 
 				// Add fromrc=1 to the URL
+				// DISABLED for now because it messes with link visited colors (T158458#3161869)
+				/*target = new mw.Uri( $link.attr( 'href' ) );
 				target.extend( { fromrc: 1 } );
-				$link.attr( 'href', target.toString() );
+				$link.attr( 'href', target.toString() );*/
 
 				// Figure out the link type
 				for ( selector in linkTypes ) {
