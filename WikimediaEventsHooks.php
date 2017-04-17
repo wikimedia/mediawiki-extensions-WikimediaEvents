@@ -70,13 +70,13 @@ class WikimediaEventsHooks {
 			return;
 		}
 
+		$stats = MediaWikiServices::getInstance()->getStatsdDataFactory();
 		if ( PHP_SAPI !== 'cli' ) {
-			DeferredUpdates::addCallableUpdate( function () {
-				$context = RequestContext::getMain();
-				$timing = $context->getTiming();
+			DeferredUpdates::addCallableUpdate( function () use ( $stats ) {
+				$timing = RequestContext::getMain()->getTiming();
 				$measure = $timing->measure( 'editResponseTime', 'requestStart', 'requestShutdown' );
 				if ( $measure !== false ) {
-					$context->getStats()->timing( 'timing.editResponseTime', $measure['duration'] * 1000 );
+					$stats->timing( 'timing.editResponseTime', $measure['duration'] * 1000 );
 				}
 			} );
 		}
@@ -113,7 +113,6 @@ class WikimediaEventsHooks {
 		// are important indicators of community health.
 		if ( $editCount === 0 || preg_match( '/^9+$/' , "$editCount" ) ) {
 			$milestone = $editCount + 1;
-			$stats = RequestContext::getMain()->getStats();
 			$stats->increment( "editor.milestones.{$milestone}" );
 			$stats->timing( "editor.milestones.timing.{$milestone}", $age );
 		}
@@ -147,7 +146,6 @@ class WikimediaEventsHooks {
 	 * @param array $flags
 	 */
 	public static function onRevisionInsertComplete( &$revision, $data, $flags ) {
-		$context = RequestContext::getMain();
 		$user = User::newFromId( $revision->getUser( Revision::RAW ) );
 
 		// Anonymous users and bots don't count (sorry!)
@@ -163,7 +161,7 @@ class WikimediaEventsHooks {
 		// Check if this is the user's fifth mainspace edit this month.
 		// If it is, then this editor has just made the cut as an active
 		// editor for this wiki for this month.
-		DeferredUpdates::addCallableUpdate( function () use ( $context, $user ) {
+		DeferredUpdates::addCallableUpdate( function () use ( $user ) {
 			$db = wfGetDB( DB_MASTER );
 
 			$since = date( 'Ym' ) . '00000000';
@@ -182,7 +180,8 @@ class WikimediaEventsHooks {
 
 			if ( $numMainspaceEditsThisMonth === 5 ) {
 				$month = date( 'm-Y' );
-				$context->getStats()->increment( 'editor.activation.' . $month );
+				MediaWikiServices::getInstance()
+					->getStatsdDataFactory()->increment( 'editor.activation.' . $month );
 				EventLogging::logEvent( 'EditorActivation', 14208837, array(
 					'userId' => $user->getId(),
 					'month'  => $month,
@@ -519,7 +518,7 @@ class WikimediaEventsHooks {
 
 			$measure = $timing->measure( 'viewResponseTime', 'requestStart', 'requestShutdown' );
 			if ( $measure !== false ) {
-				$context->getStats()->timing(
+				MediaWikiServices::getInstance()->getStatsdDataFactory()->timing(
 					"timing.viewResponseTime.{$platform}", $measure['duration'] * 1000 );
 			}
 		} );
