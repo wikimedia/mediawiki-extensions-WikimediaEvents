@@ -117,16 +117,79 @@
 				validBuckets = [],
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
-						// Currently unused, but provides a place
-						// to handle wiki-specific sampling
+						// Provides a place to handle wiki-specific sampling,
+						// overriding the default (1 in 10, see below) rate.
+						// For example: enwiki uses 1 in 2000 sampling rate,
+						// but wikidata uses 1 in 5 sampling rate because of
+						// drastic differences in traffic and search usage.
 						subTests = {
+							commonswiki: {
+								test: 30,
+								subTest: null
+							},
+							dewiki: {
+								test: 350,
+								subTest: null
+							},
+							enwiki: {
+								test: 2000,
+								subTest: null
+							},
+							eswiki: {
+								test: 200,
+								subTest: null
+							},
+							frwiki: {
+								test: 150,
+								subTest: null
+							},
+							itwiki: {
+								test: 100,
+								subTest: null
+							},
+							jawiki: {
+								test: 100,
+								subTest: null
+							},
+							kowiki: {
+								test: 30,
+								subTest: null
+							},
+							nlwiki: {
+								test: 30,
+								subTest: null
+							},
+							plwiki: {
+								test: 50,
+								subTest: null
+							},
+							ptwiki: {
+								test: 60,
+								subTest: null
+							},
+							ruwiki: {
+								test: 250,
+								subTest: null
+							},
+							wikidatawiki: {
+								test: 5,
+								subTest: null
+							},
+							zhwiki: {
+								test: 100,
+								subTest: null
+							}
 						};
-
 					if ( subTests[ dbName ] ) {
 						return subTests[ dbName ];
 					} else {
+						// By default, all wikis (except those specified above)
+						// use a 1 in 10 sampling rate when randomly picking a
+						// visitor for this particular event logging, which will
+						// allow us to record more search sessions than the
+						// previous 1 in 200 sampling rate.
 						return {
-							test: 200,
+							test: 10,
 							subTest: null
 						};
 					}
