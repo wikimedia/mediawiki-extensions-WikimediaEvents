@@ -183,7 +183,8 @@
 				"mobile"
 			],
 			"dependencies": [
-				"mediawiki.user"
+				"mediawiki.user",
+				"mediawiki.Uri"
 			]
 		}
 	},
