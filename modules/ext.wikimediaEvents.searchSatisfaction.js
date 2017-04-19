@@ -127,12 +127,20 @@
 								test: 30,
 								subTest: null
 							},
+							cswiki: {
+								test: 40,
+								subTest: null
+							},
 							dewiki: {
 								test: 350,
 								subTest: null
 							},
 							enwiki: {
 								test: 2000,
+								subTest: null
+							},
+							enwiktionary: {
+								test: 40,
 								subTest: null
 							},
 							eswiki: {
@@ -160,7 +168,7 @@
 								subTest: null
 							},
 							plwiki: {
-								test: 50,
+								test: 60,
 								subTest: null
 							},
 							ptwiki: {
