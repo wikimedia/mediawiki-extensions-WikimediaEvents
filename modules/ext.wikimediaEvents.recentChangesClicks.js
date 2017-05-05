@@ -97,5 +97,19 @@
 			} );
 		}
 
+		// Click tracking for top links (T164617)
+		$( '.mw-recentchanges-toplinks' ).on( 'click', 'a[href]', function ( e ) {
+			var $link = $( this );
+
+			if ( e.which === 3 ) {
+				return;
+			}
+
+			mw.track( 'event.RecentChangesTopLinks', {
+				url: $link.prop( 'href' ),
+				label: $link.text()
+			} );
+		} );
+
 	} );
 }( jQuery, mediaWiki ) );

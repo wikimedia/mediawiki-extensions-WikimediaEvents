@@ -144,6 +144,11 @@
 			"schema": "ChangesListClickTracking",
 			"revision": 16484895
 		},
+		"schema.RecentChangesTopLinks": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "RecentChangesTopLinks",
+			"revision": 16699164
+		},
 		"ext.wikimediaEvents": {
 			"scripts": [
 				"ext.wikimediaEvents.events.js",
