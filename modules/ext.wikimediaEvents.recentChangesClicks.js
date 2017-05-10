@@ -107,7 +107,8 @@
 
 			mw.track( 'event.RecentChangesTopLinks', {
 				url: $link.prop( 'href' ),
-				label: $link.text()
+				label: $link.text(),
+				loggedIn: !mw.user.isAnon()
 			} );
 		} );
 
