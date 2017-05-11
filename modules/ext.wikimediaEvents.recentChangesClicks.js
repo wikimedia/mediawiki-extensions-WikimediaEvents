@@ -5,23 +5,22 @@
  * @author Roan Kattouw <rkattouw@wikimedia.org>
  */
 ( function ( $, mw ) {
-	var linkTypes = {
-		'.mw-changeslist-diff': 'diff',
-		'.mw-changeslist-history': 'history',
-		'.mw-changeslist-title': 'page',
-		'.mw-userlink': 'user',
-		'.mw-usertoollinks-talk': 'talk',
-		'.mw-usertoollinks-contribs': 'contribs',
-		'.mw-usertoollinks-block': 'block',
-		'.mw-rollback-link a': 'rollback',
-		'.mw-diff-edit a': 'edit',
-		'.mw-diff-undo a': 'undo',
-		'.mw-thanks-thank-link': 'thank',
-		'.patrollink a': 'patrol'
-	};
-
 	$( function () {
-		var uri = new mw.Uri();
+		var uri = new mw.Uri(),
+			linkTypes = {
+				'.mw-changeslist-diff': 'diff',
+				'.mw-changeslist-history': 'history',
+				'.mw-changeslist-title': 'page',
+				'.mw-userlink': 'user',
+				'.mw-usertoollinks-talk': 'talk',
+				'.mw-usertoollinks-contribs': 'contribs',
+				'.mw-usertoollinks-block': 'block',
+				'.mw-rollback-link a': 'rollback',
+				'.mw-diff-edit a': 'edit',
+				'.mw-diff-undo a': 'undo',
+				'.mw-thanks-thank-link': 'thank',
+				'.patrollink a': 'patrol'
+			};
 
 		function trackClick( type, fromPage ) {
 			mw.track( 'event.ChangesListClickTracking', {
@@ -43,7 +42,7 @@
 			return 'page';
 		}
 
-		if ( $( 'body' ).hasClass( 'mw-special-Recentchanges' ) ) {
+		if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'Recentchanges' ) {
 			$( '.mw-changeslist' ).on( 'click', 'a[href]', function ( e ) {
 				var selector,
 					type = 'unknown',
@@ -72,6 +71,21 @@
 				// Log an event
 				trackClick( type, 'Recentchanges' );
 			} );
+
+			// Click tracking for top links (T164617)
+			$( '.mw-recentchanges-toplinks' ).on( 'click', 'a[href]', function ( e ) {
+				var $link = $( this );
+
+				if ( e.which === 3 ) {
+					return;
+				}
+
+				mw.track( 'event.RecentChangesTopLinks', {
+					url: $link.prop( 'href' ),
+					label: $link.text(),
+					loggedIn: !mw.user.isAnon()
+				} );
+			} );
 		} else if ( uri.query.fromrc === '1' ) {
 			$( 'body' ).on( 'click', 'a[href]', function ( e ) {
 				var selector, type,
@@ -96,21 +110,6 @@
 				trackClick( type, getPageType() );
 			} );
 		}
-
-		// Click tracking for top links (T164617)
-		$( '.mw-recentchanges-toplinks' ).on( 'click', 'a[href]', function ( e ) {
-			var $link = $( this );
-
-			if ( e.which === 3 ) {
-				return;
-			}
-
-			mw.track( 'event.RecentChangesTopLinks', {
-				url: $link.prop( 'href' ),
-				label: $link.text(),
-				loggedIn: !mw.user.isAnon()
-			} );
-		} );
 
 	} );
 }( jQuery, mediaWiki ) );
