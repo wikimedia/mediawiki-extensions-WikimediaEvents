@@ -1,8 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"संजीव कुमार"
+			"संजीव कुमार",
+			"Sfic"
 		]
 	},
-	"tag-HHVM-description": "पुराने पीएचपी भाषांतरकार उपकरण के स्थान पर हिपहॉप आभासी यंत्र को सक्षम करके किये गये संशोधन (निष्पादन की गुणवता में सुधार अपेक्षित, कमियाँ दूर करने/विश्लेषण करने के लिए चिप्पियाँ लगाई जा रही हैं।)"
+	"wikimediaevents-desc": "Logs Wikimedia-specific events using EventLogging",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Cross-wiki upload]]",
+	"tag-cross-wiki-upload-description": "Files uploaded from inside the wikitext and visual editors on other wikis",
+	"tag-HHVM-description": "पुराने पीएचपी भाषांतरकार उपकरण के स्थान पर हिपहॉप आभासी यंत्र को सक्षम करके किये गये संशोधन (निष्पादन की गुणवता में सुधार अपेक्षित, कमियाँ दूर करने/विश्लेषण करने के लिए चिप्पियाँ लगाई जा रही हैं।)",
+	"abusefilter-edit-builder-vars-user-wpzero": "Whether or not a user is editing through a zero-rated carrier via Wikipedia Zero"
 }
