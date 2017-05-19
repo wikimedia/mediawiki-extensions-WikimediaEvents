@@ -2,11 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Chrumps",
-			"Darellur",
-			"Woytecr"
+			"Darellur"
 		]
 	},
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Przesłanie z innej wiki]]",
-	"tag-cross-wiki-upload-description": "Pliki przesłane z poziomu edytora wikikodu lub wizualnego na innej wiki",
 	"tag-HHVM-description": "Wprowadzono zmiany z HipHop Virtual Machine zamiast interpretatora Zend PHP (oczekuje się, że to doprowadzi do zwiększenia wydajności; przeznaczone dla naprawy/analizy)"
 }
