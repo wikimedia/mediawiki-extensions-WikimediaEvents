@@ -4,11 +4,13 @@
 			"Okras",
 			"Meshkov.a",
 			"Striking Blue",
-			"Kaganer"
+			"Kaganer",
+			"Facenapalm"
 		]
 	},
 	"wikimediaevents-desc": "Ведёт журнал определённых Викимедиа событий с использованием EventLogging",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Загрузка через другой вики-проект («кросс-вики»)]]",
 	"tag-cross-wiki-upload-description": "Файлы, загруженные из текстового и визуального редакторов в других вики",
-	"tag-HHVM-description": "Правки, внесёные с включенной HipHop Virtual Machine вместо Zend PHP-интерпретатора (в результате ожидается повышение производительности; отмечено для отладки/анализа)"
+	"tag-HHVM-description": "Правки, внесёные с включенной HipHop Virtual Machine вместо Zend PHP-интерпретатора (в результате ожидается повышение производительности; отмечено для отладки/анализа)",
+	"abusefilter-edit-builder-vars-user-wpzero": "Редактирует ли участник через бесплатного оператора связи с помощью Wikipedia Zero"
 }
