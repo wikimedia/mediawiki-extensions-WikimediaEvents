@@ -7,7 +7,7 @@ class AuthManagerStatsdHandlerTest extends MediaWikiTestCase {
 	 * @dataProvider provideHandle
 	 */
 	public function testHandle( $record, $expectedKey ) {
-		$stats = $this->getMock ( StatsdDataFactory::class );
+		$stats = $this->getMock( StatsdDataFactory::class );
 		$this->setService( 'StatsdDataFactory', $stats );
 		$handler = $this->getMockBuilder( AuthManagerStatsdHandler::class )
 			->setMethods( [ 'getEntryPoint' ] )->getMock();
@@ -28,72 +28,70 @@ class AuthManagerStatsdHandlerTest extends MediaWikiTestCase {
 		$multiStatus->fatal( 'bar' );
 
 		return [
-			'no event' => [  [
+			'no event' => [ [
 				'channel' => 'authmanager',
 				'context' => [ 'foo' => 'bar' ],
 			], null ],
-			'wrong type' => [  [
+			'wrong type' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'type' => Status::newGood() ],
 			], null ],
 
-			'right channel' => [  [
+			'right channel' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate' ],
 			], 'authmanager.autocreate' ],
-			'old channel' => [  [
+			'old channel' => [ [
 				'channel' => 'authmanager',
 				'context' => [ 'event' => 'autocreate' ],
 			], 'authmanager.autocreate' ],
-			'wrong channel' => [  [
+			'wrong channel' => [ [
 				'channel' => 'authentication',
 				'context' => [ 'event' => 'autocreate' ],
 			], null ],
 
-
-			'simple' => [  [
+			'simple' => [ [
 				'channel' => 'authevents',
-				'context' => [ 'event' => 'autocreate'  ],
+				'context' => [ 'event' => 'autocreate' ],
 			], 'authmanager.autocreate' ],
-			'type' => [  [
+			'type' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'eventType' => 'session' ],
 			], 'authmanager.autocreate.session' ],
-			'type fallback' => [  [
+			'type fallback' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'type' => 'session' ],
 			], 'authmanager.autocreate.session' ],
-			'success' => [  [
+			'success' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'successful' => true ],
 			], 'authmanager.autocreate.success' ],
-			'failure' => [  [
+			'failure' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'successful' => false ],
 			], 'authmanager.autocreate.failure' ],
-			'success with status' => [  [
+			'success with status' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'successful' => true, 'status' => 'snafu' ],
 			], 'authmanager.autocreate.success' ],
-			'failure with status' => [  [
+			'failure with status' => [ [
 				'channel' => 'authevents',
-				'context' => [ 'event' => 'autocreate', 'successful' => false, 'status' => 'snafu'  ],
+				'context' => [ 'event' => 'autocreate', 'successful' => false, 'status' => 'snafu' ],
 			], 'authmanager.autocreate.failure.snafu' ],
 
-
-			'Status, good' => [  [
+			'Status, good' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'status' => Status::newGood() ],
 			], 'authmanager.autocreate.success' ],
-			'Status, bad' => [  [
+			'Status, bad' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'status' => Status::newFatal( 'snafu' ) ],
 			], 'authmanager.autocreate.failure.snafu' ],
-			'Status, multiple' => [  [
+			'Status, multiple' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'status' => $multiStatus ],
 			], 'authmanager.autocreate.failure.foo' ],
-			'StatusValue' => [  [
+			'StatusValue' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'status' => StatusValue::newGood() ],
 			], 'authmanager.autocreate.success' ],

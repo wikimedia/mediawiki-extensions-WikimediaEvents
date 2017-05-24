@@ -82,15 +82,16 @@ class WikimediaEventsHooks {
 		}
 
 		$isAPI = defined( 'MW_API' );
-		$isMobile = class_exists( 'MobileContext' ) && MobileContext::singleton()->shouldDisplayMobileView();
+		$isMobile = class_exists( 'MobileContext' )
+			&& MobileContext::singleton()->shouldDisplayMobileView();
 		$revId = $revision->getId();
 		$title = $article->getTitle();
 
-		$event = array(
+		$event = [
 			'revisionId' => $revId,
 			'isAPI'      => $isAPI,
 			'isMobile'   => $isMobile,
-		);
+		];
 
 		if ( isset( $_SERVER[ 'HTTP_USER_AGENT' ] ) ) {
 			$event[ 'userAgent' ] = $_SERVER[ 'HTTP_USER_AGENT' ];
@@ -106,12 +107,11 @@ class WikimediaEventsHooks {
 
 		$editCount = $user->getEditCount();
 
-
 		// Check if this edit brings the user's total edit count to a value
 		// that is a factor of ten. We consider these 'milestones'. The rate
 		// at which editors are hitting such milestones and the time it takes
 		// are important indicators of community health.
-		if ( $editCount === 0 || preg_match( '/^9+$/' , "$editCount" ) ) {
+		if ( $editCount === 0 || preg_match( '/^9+$/', "$editCount" ) ) {
 			$milestone = $editCount + 1;
 			$stats->increment( "editor.milestones.{$milestone}" );
 			$stats->timing( "editor.milestones.timing.{$milestone}", $age );
@@ -120,7 +120,7 @@ class WikimediaEventsHooks {
 		// If the editor signed up in the last thirty days, and if this is an
 		// NS_MAIN edit, log a NewEditorEdit event.
 		if ( $age <= 2592000 && $title->inNamespace( NS_MAIN ) ) {
-			EventLogging::logEvent( 'NewEditorEdit', 6792669, array(
+			EventLogging::logEvent( 'NewEditorEdit', 6792669, [
 					'userId'    => $user->getId(),
 					'userAge'   => $age,
 					'editCount' => $editCount,
@@ -128,7 +128,7 @@ class WikimediaEventsHooks {
 					'revId'     => $revId,
 					'isAPI'     => $isAPI,
 					'isMobile'  => $isMobile,
-				) );
+				] );
 		}
 
 		return true;
@@ -166,26 +166,26 @@ class WikimediaEventsHooks {
 
 			$since = date( 'Ym' ) . '00000000';
 			$numMainspaceEditsThisMonth = $db->selectRowCount(
-				array( 'revision', 'page' ),
+				[ 'revision', 'page' ],
 				'1',
-				array(
+				[
 					'rev_user'         => $user->getId(),
 					'rev_timestamp >= ' . $db->addQuotes( $db->timestamp( $since ) ),
 					'page_namespace'   => NS_MAIN,
-				),
+				],
 				__FILE__ . ':' . __LINE__,
-				array( 'LIMIT' => 6 ),
-				array( 'page' => array( 'INNER JOIN', 'rev_page = page_id' ) )
+				[ 'LIMIT' => 6 ],
+				[ 'page' => [ 'INNER JOIN', 'rev_page = page_id' ] ]
 			);
 
 			if ( $numMainspaceEditsThisMonth === 5 ) {
 				$month = date( 'm-Y' );
 				MediaWikiServices::getInstance()
 					->getStatsdDataFactory()->increment( 'editor.activation.' . $month );
-				EventLogging::logEvent( 'EditorActivation', 14208837, array(
+				EventLogging::logEvent( 'EditorActivation', 14208837, [
 					'userId' => $user->getId(),
 					'month'  => $month,
-				) );
+				] );
 			}
 		} );
 	}
@@ -212,23 +212,23 @@ class WikimediaEventsHooks {
 			// $clone is the current user object before the new option values are set
 			$clone = User::newFromId( $user->getId() );
 
-			$commonData = array(
+			$commonData = [
 				'version' => '1',
 				'userId' => $user->getId(),
 				'saveTimestamp' => wfTimestampNow(),
-			);
+			];
 
 			foreach ( $options as $optName => $optValue ) {
 				// loose comparision is required since some of the values
 				// are not consistent in the two variables, eg, '' vs false
 				if ( $clone->getOption( $optName ) != $optValue ) {
-					$event = array(
+					$event = [
 						'property' => $optName,
 						// Encode value as JSON.
 						// This is parseable and allows a consistent type for validation.
 						'value' => FormatJson::encode( $optValue ),
 						'isDefault' => User::getDefaultOption( $optName ) == $optValue,
-					) + $commonData;
+					] + $commonData;
 					EventLogging::logEvent( 'PrefUpdate', 5563398, $event );
 				}
 			}
@@ -249,14 +249,14 @@ class WikimediaEventsHooks {
 	 */
 	public static function onArticleDeleteComplete( WikiPage $article, User $user, $reason, $id ) {
 		$title = $article->getTitle();
-		EventLogging::logEvent( 'PageDeletion', 7481655, array(
+		EventLogging::logEvent( 'PageDeletion', 7481655, [
 				'userId' => $user->getId(),
 				'userText' => $user->getName(),
 				'pageId' => $id,
 				'namespace' => $title->getNamespace(),
 				'title' => $title->getDBkey(),
 				'comment' => $reason,
-			) );
+			] );
 		return true;
 	}
 
@@ -272,7 +272,7 @@ class WikimediaEventsHooks {
 	 */
 	public static function onArticleUndelete( $title, $created, $comment, $oldPageId ) {
 		global $wgUser;
-		EventLogging::logEvent( 'PageRestoration', 7758372, array(
+		EventLogging::logEvent( 'PageRestoration', 7758372, [
 				'userId' => $wgUser->getId(),
 				'userText' => $wgUser->getName(),
 				'oldPageId' => $oldPageId,
@@ -280,7 +280,7 @@ class WikimediaEventsHooks {
 				'namespace' => $title->getNamespace(),
 				'title' => $title->getDBkey(),
 				'comment' => $comment,
-		) );
+		] );
 	}
 
 	/**
@@ -299,14 +299,14 @@ class WikimediaEventsHooks {
 	protected static function logPageCreation( User $user, $pageId, Title $title,
 		$revId ) {
 
-		EventLogging::logEvent( 'PageCreation', 7481635, array(
+		EventLogging::logEvent( 'PageCreation', 7481635, [
 				'userId' => $user->getId(),
 				'userText' => $user->getName(),
 				'pageId' => $pageId,
 				'namespace' => $title->getNamespace(),
 				'title' => $title->getDBkey(),
 				'revId' => $revId,
-		) );
+		] );
 	}
 
 	/**
@@ -323,8 +323,10 @@ class WikimediaEventsHooks {
 	 * @param string $reason The reason that the title was moved
 	 * @return bool true in all cases
 	 */
-	public static function onTitleMoveComplete( Title $oldTitle, Title $newTitle, User $user, $pageId, $redirectId, $reason ) {
-		EventLogging::logEvent( 'PageMove', 7495717, array(
+	public static function onTitleMoveComplete( Title $oldTitle, Title $newTitle, User $user,
+		$pageId, $redirectId, $reason
+	) {
+		EventLogging::logEvent( 'PageMove', 7495717, [
 				'userId' => $user->getId(),
 				'userText' => $user->getName(),
 				'pageId' => $pageId,
@@ -334,7 +336,7 @@ class WikimediaEventsHooks {
 				'newTitle' => $newTitle->getDBkey(),
 				'redirectId' => $redirectId,
 				'comment' => $reason,
-			) );
+			] );
 
 		if ( $redirectId !== 0 ) {
 			// The redirect was not suppressed, so log its creation.
@@ -382,14 +384,14 @@ class WikimediaEventsHooks {
 		$user = $out->getUser();
 		$title = $out->getTitle();
 
-		EventLogging::logEvent( 'EditConflict', 8860941, array(
+		EventLogging::logEvent( 'EditConflict', 8860941, [
 			'userId' => $user->getId(),
 			'userText' => $user->getName(),
 			'pageId' => $title->getArticleID(),
 			'namespace' => $title->getNamespace(),
 			'title' => $title->getDBkey(),
 			'revId' => (int)$title->getLatestRevID(),
-		) );
+		] );
 
 		return true;
 	}
@@ -457,9 +459,9 @@ class WikimediaEventsHooks {
 	public static function onSpecialSearchResults( $term, $titleMatches, $textMatches ) {
 		global $wgOut;
 
-		$wgOut->addJsConfigVars( array(
+		$wgOut->addJsConfigVars( [
 			'wgIsSearchResultPage' => true,
-		) );
+		] );
 
 		return true;
 	}
@@ -491,11 +493,11 @@ class WikimediaEventsHooks {
 
 		// A/B test
 		$bucket = $request->getVal( 'bucket' );
-		if ( !in_array( $bucket, array( '1', '2', '3', '4' ) ) ) {
+		if ( !in_array( $bucket, [ '1', '2', '3', '4' ] ) ) {
 			$bucket = null;
 		}
 
-		$tags = array( 'cross-wiki-upload' );
+		$tags = [ 'cross-wiki-upload' ];
 		if ( $bucket ) {
 			$tags[] = "cross-wiki-upload-$bucket";
 		}
@@ -606,7 +608,7 @@ class WikimediaEventsHooks {
 			if ( array_key_exists( $param, $knownFilters ) && $value !== '' && $value !== null ) {
 				if ( $knownFilters[ $param ] === 'bool' ) {
 					$logData[ $param ] = (bool)$value;
-				} else if ( $knownFilters[ $param ] === 'integer' ) {
+				} elseif ( $knownFilters[ $param ] === 'integer' ) {
 					$logData[ $param ] = (int)$value;
 				} else {
 					$logData[ $param ] = (string)$value;

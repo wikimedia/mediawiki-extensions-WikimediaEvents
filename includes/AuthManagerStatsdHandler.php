@@ -52,7 +52,7 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 	 */
 	public function handle( array $record ) {
 		$event = $this->getField( 'event', $record['context'] );
-		$type = $this->getField( [ 'eventType', 'type' ] , $record['context'] );
+		$type = $this->getField( [ 'eventType', 'type' ], $record['context'] );
 		$entrypoint = $this->getEntryPoint();
 		$status = $this->getField( 'status', $record['context'] );
 		$successful = $this->getField( 'successful', $record['context'] );
@@ -84,7 +84,7 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 		}
 
 		// some key parts can be null and will be removed by array_filter
-		$keyParts = array( 'authmanager', $event, $type, $entrypoint );
+		$keyParts = [ 'authmanager', $event, $type, $entrypoint ];
 		if ( $successful === true ) {
 			$keyParts[] = 'success';
 		} elseif ( $successful === false ) {
@@ -92,7 +92,6 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 			$keyParts[] = $error;
 		}
 		$key = implode( '.', array_filter( $keyParts ) );
-
 
 		// use of this class is set up in operations/mediawiki-config so no nice dependency injection
 		$stats = MediaWikiServices::getInstance()->getStatsdDataFactory();

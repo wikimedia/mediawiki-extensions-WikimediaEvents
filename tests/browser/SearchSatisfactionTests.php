@@ -26,7 +26,8 @@ require_once __DIR__ . '/../../vendor/autoload.php';
  *   ~/bin/chromedriver &
  *   vagrant ssh -- -R 9515:localhost:9515
  * From inside the vagrant session:
- *   SELENIUM_BROWSER=chrome phpunit /vagrant/mediawiki/extensions/WikimediaEvents/tests/browser/SearchSatisfactionTest.php
+ *   SELENIUM_BROWSER=chrome phpunit
+ *       /vagrant/mediawiki/extensions/WikimediaEvents/tests/browser/SearchSatisfactionTest.php
  *
  * Specific tests can be run using phpunit's --filter argument against test names:
  *   SELENIUM_BROWSER=firefox phpunit /.../SearchSatisfactionTest.php --filter 'full text search'
@@ -70,9 +71,10 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 			$url = '';
 			$capClass = 'Facebook\WebDriver\Remote\DesiredCapabilities';
 			if ( $browser && method_exists( $capClass, $browser ) ) {
-				$cap = call_user_func( array( $capClass, $browser ) );
+				$cap = call_user_func( [ $capClass, $browser ] );
 			} else {
-				throw new \RuntimeException( 'SELENIUM_BROWSER environment var must be set to a known browser' );
+				throw new \RuntimeException(
+					'SELENIUM_BROWSER environment var must be set to a known browser' );
 			}
 		}
 		if ( getenv( 'SELENIUM_BROWSER_URL' ) ) {
@@ -99,7 +101,8 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 			$this->eventLoggingPath = '/vagrant/logs/eventlogging.log';
 		}
 		if ( !is_file( $this->eventLoggingPath ) ) {
-			throw new \RuntimeException( "Couldn't find eventlogging.log. Please provide a path with MW_EVENT_LOG environment var" );
+			throw new \RuntimeException( "Couldn't find eventlogging.log. " .
+				"Please provide a path with MW_EVENT_LOG environment var" );
 		}
 
 		static $initializedSuggester = null;
@@ -109,230 +112,231 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 		if ( !$initializedSuggester ) {
 			// The autocomplete tests expect nothing more than 'Main Page' to exist, so
 			// no other setup is necessary.
-			$this->apiCall(['action' => 'cirrus-suggest-index']);
+			$this->apiCall( [ 'action' => 'cirrus-suggest-index' ] );
 			$initializedSuggester = true;
 		}
 	}
 
 	public function somethingProvider() {
-		return array(
-			"full text search click through" => array(
-				array(
+		return [
+			"full text search click through" => [
+				[
 					$this->visitPage( "Special:Search?search=main" ),
 					$this->clickSearchResult( 0 ),
-				),
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'fulltext', 'position' => 0 ),
-					array( 'action' => 'visitPage', 'source' => 'fulltext', 'position' => 0 ),
-				),
-			),
-			"full text search ctrl-click through" => array(
-				array(
+				],
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'fulltext', 'position' => 0 ],
+					[ 'action' => 'visitPage', 'source' => 'fulltext', 'position' => 0 ],
+				],
+			],
+			"full text search ctrl-click through" => [
+				[
 					$this->visitPage( "Special:Search?search=main" ),
 					$this->ctrlClickSearchResult( 0 ),
-				),
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'fulltext', 'position' => 0 ),
-					array( 'action' => 'visitPage', 'source' => 'fulltext', 'position' => 0 ),
-				),
-			),
-			"full text search click through, back, click different result" => array(
-				array(
-					$this->ensurePage('Something else', 'contains the word main in the content'),
+				],
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'fulltext', 'position' => 0 ],
+					[ 'action' => 'visitPage', 'source' => 'fulltext', 'position' => 0 ],
+				],
+			],
+			"full text search click through, back, click different result" => [
+				[
+					$this->ensurePage( 'Something else', 'contains the word main in the content' ),
 					$this->visitPage( "Special:Search?search=main" ),
 					$this->clickSearchResult( 0 ),
 					$this->sleep( 2 ),
 					$this->clickBackButton(),
 					$this->clickSearchResult( 1 ),
-				),
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'fulltext', 'position' => 0 ),
-					array( 'action' => 'visitPage', 'source' => 'fulltext', 'position' => 0 ),
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'fulltext', 'position' => 1 ),
-					array( 'action' => 'visitPage', 'source' => 'fulltext', 'position' => 1 ),
-				),
-			),
-			"full text search redirect click through" => array(
-				array(
+				],
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'fulltext', 'position' => 0 ],
+					[ 'action' => 'visitPage', 'source' => 'fulltext', 'position' => 0 ],
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'fulltext', 'position' => 1 ],
+					[ 'action' => 'visitPage', 'source' => 'fulltext', 'position' => 1 ],
+				],
+			],
+			"full text search redirect click through" => [
+				[
 					$this->ensurePage( "Redirect", "#REDIRECT [[Main Page]]" ),
 					$this->visitPage( "Special:Search?search=redirect&fulltext=1" ),
 					$this->clickRedirectSearchResult( 0 ),
-				),
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'fulltext', 'position' => 0 ),
-					array( 'action' => 'visitPage', 'source' => 'fulltext', 'position' => 0 ),
-				)
-			),
-			"full text search redirect ctrl-click through" => array(
-				array(
+				],
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'fulltext', 'position' => 0 ],
+					[ 'action' => 'visitPage', 'source' => 'fulltext', 'position' => 0 ],
+				]
+			],
+			"full text search redirect ctrl-click through" => [
+				[
 					$this->ensurePage( "Redirect", "#REDIRECT [[Main Page]]" ),
 					$this->visitPage( "Special:Search?search=redirect&fulltext=1" ),
 					$this->ctrlClickRedirectSearchResult( 0 ),
-				),
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'fulltext', 'position' => 0 ),
-					array( 'action' => 'visitPage', 'source' => 'fulltext', 'position' => 0 ),
-				)
-			),
-			"full text search alt title click through" => array(
-				array(
+				],
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'fulltext', 'position' => 0 ],
+					[ 'action' => 'visitPage', 'source' => 'fulltext', 'position' => 0 ],
+				]
+			],
+			"full text search alt title click through" => [
+				[
 					$this->ensurePage( 'With Headings', "Something\n==Role==\nmore content" ),
 					$this->visitPage( "Special:Search?search=role" ),
 					$this->clickAltTitleSearchResult( 0 ),
-				),
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'fulltext', 'position' => 0 ),
-					array( 'action' => 'visitPage', 'source' => 'fulltext', 'position' => 0 ),
-				)
-			),
-			"full text search alt title ctrl-click through" => array(
-				array(
+				],
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'fulltext', 'position' => 0 ],
+					[ 'action' => 'visitPage', 'source' => 'fulltext', 'position' => 0 ],
+				]
+			],
+			"full text search alt title ctrl-click through" => [
+				[
 					$this->ensurePage( 'With Headings', "Something\n==Role==\nmore content" ),
 					$this->visitPage( "Special:Search?search=role" ),
 					$this->ctrlClickAltTitleSearchResult( 0 ),
-				),
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'fulltext', 'position' => 0 ),
-					array( 'action' => 'visitPage', 'source' => 'fulltext', 'position' => 0 ),
-				)
-			),
-			"skin autocomplete click through" => array(
+				],
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'fulltext', 'position' => 0 ],
+					[ 'action' => 'visitPage', 'source' => 'fulltext', 'position' => 0 ],
+				]
+			],
+			"skin autocomplete click through" => [
 				// actions
-				array(
+				[
 					$this->visitPage( "Main_Page" ),
 					$this->typeIntoSkinAutocomplete( "main" ),
 					$this->waitForSkinAutocomplete(),
 					$this->clickSkinAutocompleteResult( 0 ),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ),
-				),
-			),
-			"skin autocomplete via enter key" => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ],
+				],
+			],
+			"skin autocomplete via enter key" => [
 				// actions
-				array(
+				[
 					$this->visitPage( "Main_Page" ),
 					$this->typeIntoSkinAutocomplete( "main" ),
 					$this->waitForSkinAutocomplete(),
 					$this->typeIntoSkinAutocomplete( "\n" ),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ),
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-				),
-			),
-			"skin autocomplete via click on 'containing...'" => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ],
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
+				],
+			],
+			"skin autocomplete via click on 'containing...'" => [
 				// actions
-				array(
+				[
 					$this->visitPage( "Main_Page" ),
 					$this->typeIntoSkinAutocomplete( "main" ),
 					$this->waitForSkinAutocomplete(),
 					$this->clickSkinAutocompleteContaining(),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ),
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-				),
-			),
-			"skin autocomplete via arrow up and enter on 'containing...'" => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ],
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
+				],
+			],
+			"skin autocomplete via arrow up and enter on 'containing...'" => [
 				// actions
-				array(
+				[
 					$this->visitPage( "Main_Page" ),
 					$this->typeIntoSkinAutocomplete( "main" ),
 					$this->waitForSkinAutocomplete(),
 					$this->typeIntoSkinAutocomplete( WebDriverKeys::ARROW_UP . "\n" ),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ),
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-				),
-			),
-			"skin autocomplete via arrow down and enter" => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ],
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
+				],
+			],
+			"skin autocomplete via arrow down and enter" => [
 				// actions
-				array(
+				[
 					$this->visitPage( "Main_Page" ),
 					$this->typeIntoSkinAutocomplete( "main" ),
 					$this->waitForSkinAutocomplete(),
 					$this->typeIntoSkinAutocomplete( WebDriverKeys::ARROW_DOWN . "\n" ),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ),
-				),
-			),
-			"skin autocomplete via arrow down and magnifying glass" => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ],
+				],
+			],
+			"skin autocomplete via arrow down and magnifying glass" => [
 				// actions
-				array(
+				[
 					$this->visitPage( "Main_Page" ),
 					$this->typeIntoSkinAutocomplete( "main" ),
 					$this->waitForSkinAutocomplete(),
 					$this->typeIntoSkinAutocomplete( WebDriverKeys::ARROW_DOWN ),
 					$this->clickMagnifyingGlass(),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ),
-				),
-			),
-			"skin autocomplete via typed exact match and enter" => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ],
+				],
+			],
+			"skin autocomplete via typed exact match and enter" => [
 				// actions
-				array(
+				[
 					$this->visitPage( "Main_Page" ),
 					$this->typeIntoSkinAutocomplete( "Main Page" ),
 					$this->waitForSkinAutocomplete(),
 					$this->typeIntoSkinAutocomplete( "\n" ),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ),
-				),
-			),
-			"skin autocomplete via typed exact match and magnifying glass" => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ],
+				],
+			],
+			"skin autocomplete via typed exact match and magnifying glass" => [
 				// actions
-				array(
+				[
 					$this->visitPage( "Main_Page" ),
 					$this->typeIntoSkinAutocomplete( "Main Page" ),
 					// the user might not do this, but it makes the test more reliable
 					// to guarantee the SERP event comes in.
 					$this->waitForSkinAutocomplete(),
 					$this->clickMagnifyingGlass(),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ),
-				),
-			),
-			'skin autocomplete selecting via down arrow, editing to title match, wait for results, and press enter' => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ],
+				],
+			],
+			'skin autocomplete selecting via down arrow, editing to title match, ' .
+				'wait for results, and press enter' => [
 				// actions
-				array(
+				[
 					$this->visitPage( "Main_Page" ),
 					$this->typeIntoSkinAutocomplete( "Main Page" ),
 					$this->waitForSkinAutocomplete(),
@@ -343,18 +347,18 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 					),
 					$this->waitForSkinAutocomplete(),
 					$this->typeIntoSkinAutocomplete( "\n" ),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ),
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-				),
-			),
-			'skin autocomplete selecting via down arrow, editing to title match, and press enter' => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ],
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+				],
+			],
+			'skin autocomplete selecting via down arrow, editing to title match, and press enter' => [
 				// actions
-				array(
+				[
 					$this->visitPage( "Main_Page" ),
 					$this->typeIntoSkinAutocomplete( "Main Page" ),
 					$this->waitForSkinAutocomplete(),
@@ -363,262 +367,270 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 						str_repeat( WebDriverKeys::BACKSPACE, 4 ) .
 						"page\n"
 					),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ),
-				),
-			),
-			'skin autocomplete selecting via down arrow, editing to non-title match, and press enter' => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ],
+				],
+			],
+			'skin autocomplete selecting via down arrow, editing to non-title match, and press enter' => [
 				// actions
-				array(
+				[
 					$this->visitPage( "Main_Page" ),
 					$this->typeIntoSkinAutocomplete( "Main Page" ),
 					$this->waitForSkinAutocomplete(),
 					$this->typeIntoSkinAutocomplete( WebDriverKeys::ARROW_DOWN ),
 					$this->typeIntoSkinAutocomplete( str_repeat( WebDriverKeys::BACKSPACE, 4 ) . "\n" ),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ),
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-				),
-			),
-			'skin autocomplete selecting via down arrow, editing to non-title match, and click magnifying glass' => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ],
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
+				],
+			],
+			'skin autocomplete selecting via down arrow, editing to non-title match, ' .
+				'and click magnifying glass' => [
 				// actions
-				array(
+				[
 					$this->visitPage( "Main_Page" ),
 					$this->typeIntoSkinAutocomplete( "Main Page" ),
 					$this->waitForSkinAutocomplete(),
 					$this->typeIntoSkinAutocomplete( WebDriverKeys::ARROW_DOWN ),
 					$this->typeIntoSkinAutocomplete( str_repeat( WebDriverKeys::BACKSPACE, 4 ) ),
 					$this->clickMagnifyingGlass(),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ),
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-				),
-			),
-			'skin autocomplete selecting via down arrow, editing to title match, and click magnifying glass' => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ],
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
+				],
+			],
+			'skin autocomplete selecting via down arrow, editing to title match, ' .
+				'and click magnifying glass' => [
 				// actions
-				array(
+				[
 					$this->visitPage( "Main_Page" ),
 					$this->typeIntoSkinAutocomplete( "Main Page" ),
 					$this->waitForSkinAutocomplete(),
 					$this->typeIntoSkinAutocomplete( WebDriverKeys::ARROW_DOWN ),
 					$this->typeIntoSkinAutocomplete( str_repeat( WebDriverKeys::BACKSPACE, 4 ) . "page" ),
 					$this->clickMagnifyingGlass(),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ),
-				),
-			),
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ],
+				],
+			],
 			// Note that this test requires some page to exist with the text 'mani page', or the
 			// did you mean will be rewritten automatically and return search results for 'main page'
-			'full text search click the "did you mean" rewritten result' => array(
+			'full text search click the "did you mean" rewritten result' => [
 				// actions
-				array(
+				[
 					$this->visitPage( "Special:Search?search=mani%20page" ),
 					// if the button is clicked too quickly the event doesn't fire because
 					// js hasn't loaded.
 					$this->sleep( 2 ),
 					$this->clickDidYouMeanRewritten(),
 					$this->sleep( 2 ),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null, 'inputLocation' => null, 'didYouMeanVisible' => 'autorewrite' ),
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null, 'inputLocation' => 'dym-rewritten', 'didYouMeanVisible' => 'no' ),
-				),
-			),
-			'full text search click the "did you mean" original result' => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null,
+						'inputLocation' => null, 'didYouMeanVisible' => 'autorewrite' ],
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null,
+						'inputLocation' => 'dym-rewritten', 'didYouMeanVisible' => 'no' ],
+				],
+			],
+			'full text search click the "did you mean" original result' => [
 				// actions
-				array(
+				[
 					$this->visitPage( "Special:Search?search=mani%20page" ),
 					// if the button is clicked too quickly the event doesn't fire because
 					// js hasn't loaded.
 					$this->sleep( 2 ),
 					$this->clickDidYouMeanOriginal(),
 					$this->sleep( 2 ),
-				),
+				],
 				// expected events
-				array(
+				[
 					// @TODO the did you mean should be integrated and trigger some click event
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null, 'inputLocation' => null, 'didYouMeanVisible' => 'autorewrite' ),
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null, 'inputLocation' => 'dym-original', 'didYouMeanVisible' => 'yes' ),
-				),
-			),
-			'full text search click the "did you mean" suggestion result' => array(
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null,
+						'inputLocation' => null, 'didYouMeanVisible' => 'autorewrite' ],
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null,
+						'inputLocation' => 'dym-original', 'didYouMeanVisible' => 'yes' ],
+				],
+			],
+			'full text search click the "did you mean" suggestion result' => [
 				// actions
-				array(
+				[
 					$this->ensurePage( "Misspelled", "main paeg" ),
 					$this->visitPage( "Special:Search?search=main%20paeg" ),
 					// if the button is clicked too quickly the event doesn't fire because
 					// js hasn't loaded.
 					$this->sleep( 2 ),
 					$this->clickDidYouMeanSuggestion(),
-				),
+				],
 				// expected events
-				array(
+				[
 					// @TODO the did you mean should be integrated and trigger some click event
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null, 'inputLocation' => null, 'didYouMeanVisible' => 'yes' ),
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null, 'inputLocation' => 'dym-suggest', 'didYouMeanVisible' => 'no' ),
-				),
-			),
-			'Special:Search bar type then enter' => array(
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null,
+						'inputLocation' => null, 'didYouMeanVisible' => 'yes' ],
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null,
+						'inputLocation' => 'dym-suggest', 'didYouMeanVisible' => 'no' ],
+				],
+			],
+			'Special:Search bar type then enter' => [
 				// actions
-				array(
+				[
 					$this->visitPage( 'Special:Search' ),
 					$this->typeIntoSearchAutocomplete( "main" ),
 					$this->waitForSearchAutocomplete(),
 					$this->typeIntoSearchAutocomplete( "\n" ),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ),
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-				),
-			),
-			'Special:Search bar type, arrow down, enter' => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ],
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
+				],
+			],
+			'Special:Search bar type, arrow down, enter' => [
 				// actions
-				array(
+				[
 					$this->visitPage( 'Special:Search' ),
 					$this->typeIntoSearchAutocomplete( "main" ),
 					$this->waitForSearchAutocomplete(),
 					$this->typeIntoSearchAutocomplete( WebDriverKeys::ARROW_DOWN . "\n" ),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ),
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-				),
-			),
-			'Special:Search bar type, click result with mouse' => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ],
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
+				],
+			],
+			'Special:Search bar type, click result with mouse' => [
 				// actions
-				array(
+				[
 					$this->visitPage( 'Special:Search' ),
 					$this->typeIntoSearchAutocomplete( 'main' ),
 					$this->waitForSearchAutocomplete(),
 					$this->clickSearchAutocompleteResult( 0 ),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ),
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-				),
-			),
-			'full text search ctrl-click for new tab' => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ],
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
+				],
+			],
+			'full text search ctrl-click for new tab' => [
 				// actions
-				array(
+				[
 					$this->visitPage( 'Special:Search?search=main' ),
 					$this->ctrlClickSearchResult( 0 ),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'fulltext', 'position' => 0 ),
-					array( 'action' => 'visitPage', 'source' => 'fulltext', 'position' => 0 ),
-				),
-			),
-			'skin autocomplete ctrl-click result for new tab' => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'fulltext', 'position' => 0 ],
+					[ 'action' => 'visitPage', 'source' => 'fulltext', 'position' => 0 ],
+				],
+			],
+			'skin autocomplete ctrl-click result for new tab' => [
 				// actions
-				array(
+				[
 					$this->visitPage( 'Special:Search' ),
 					$this->typeIntoSkinAutocomplete( 'main' ),
 					$this->waitForSkinAutocomplete(),
 					$this->ctrlClickSkinAutocompleteResult( 0 ),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ),
-				),
-			),
-			'skin autocomplete arrow down and ctrl-click result for new tab' => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ],
+				],
+			],
+			'skin autocomplete arrow down and ctrl-click result for new tab' => [
 				// actions
-				array(
+				[
 					$this->visitPage( 'Special:Search' ),
 					$this->typeIntoSkinAutocomplete( 'main' ),
 					$this->waitForSkinAutocomplete(),
 					$this->typeIntoSkinAutocomplete( WebDriverKeys::ARROW_DOWN ),
 					$this->ctrlClickSkinAutocompleteResult( 0 ),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ),
-				),
-			),
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ],
+				],
+			],
 			// This test is a bit odd because the ctrl-click doesn't trigger a new tab,
 			// it gets eaten by the ooui widget and a search is performed in the browser
-			'Special:Search autocomplete ctrl-click result' => array(
+			'Special:Search autocomplete ctrl-click result' => [
 				// actions
-				array(
+				[
 					$this->visitPage( 'Special:Search' ),
-					$this->typeIntoSearchAutocomplete( 'main '),
+					$this->typeIntoSearchAutocomplete( 'main ' ),
 					$this->waitForSearchAutocomplete(),
 					$this->ctrlClickSearchAutocompleteResult( 0 ),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ),
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-				),
-			),
-			'skin autocomplete non-exact match ctrl-click magnifying glass for new tab' => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => 0 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => 0 ],
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
+				],
+			],
+			'skin autocomplete non-exact match ctrl-click magnifying glass for new tab' => [
 				// actions
-				array(
+				[
 					$this->visitPage( 'Main_Page' ),
 					$this->typeIntoSkinAutocomplete( 'main' ),
 					$this->waitForSkinAutocomplete(),
 					$this->ctrlClickMagnifyingGlass(),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ),
-					array( 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ),
-				),
-			),
-			'skin autocomplete exact match ctrl-click magnifying glass for new tab' => array(
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ],
+					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
+				],
+			],
+			'skin autocomplete exact match ctrl-click magnifying glass for new tab' => [
 				// actions
-				array(
+				[
 					$this->visitPage( 'Main_Page' ),
 					$this->typeIntoSkinAutocomplete( 'main page' ),
 					$this->waitForSkinAutocomplete(),
 					$this->ctrlClickMagnifyingGlass(),
-				),
+				],
 				// expected events
-				array(
-					array( 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ),
-					array( 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ),
-					array( 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ),
-				),
-			),
-		);
+				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
+					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ],
+					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ],
+				],
+			],
+		];
 	}
 
 	/**
@@ -650,10 +662,10 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 		$wantedKeys = array_flip( array_keys( reset( $expectedEvents ) ) );
 		$defaults = array_combine(
 			array_keys( $wantedKeys ),
-			array_fill(0, count( $wantedKeys ), null )
+			array_fill( 0, count( $wantedKeys ), null )
 		);
-		$finalEvents = array();
-		$seen = array();
+		$finalEvents = [];
+		$seen = [];
 		foreach ( $actualEvents as $idx => $envelope ) {
 			$actualEvent = $envelope['event'];
 			// Only concerned with satisfaction events
@@ -707,7 +719,7 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 
 	private function collectEvents( $prevPosition ) {
 		$log = file_get_contents( $this->eventLoggingPath );
-		$events = array();
+		$events = [];
 		foreach ( explode( "\n", substr( $log, $prevPosition ) ) as $line ) {
 			if ( trim( $line ) ) {
 				$events[] = json_decode( $line, true );
@@ -723,7 +735,6 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 		};
 	}
 
-
 	protected function waitForSkinAutocomplete() {
 		return function ( $webDriver ) {
 			$webDriver->wait()->until(
@@ -736,7 +747,7 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 
 	protected function typeIntoSkinAutocomplete( $chars ) {
 		return function ( $webDriver ) use ( $chars ) {
-			sleep(1);
+			sleep( 1 );
 			$webDriver->findElement( WebDriverBy::id( 'searchInput' ) )->sendKeys( $chars );
 		};
 	}
@@ -913,16 +924,15 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 		};
 	}
 
-
 	protected function getContent( $title ) {
 		$url = 'http://localhost:8080/w/api.php';
-		$response = $this->apiCall( array(
+		$response = $this->apiCall( [
 			'titles' => $title,
 			'action' => 'query',
 			'prop' => 'revisions',
 			'rvlimit' => 1,
 			'rvprop' => 'content',
-		) );
+		] );
 		if ( empty( $response['query']['pages'] ) ) {
 			return null;
 		}
@@ -935,7 +945,7 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 	}
 
 	protected function ensurePage( $title, $content ) {
-		static $seen = array();
+		static $seen = [];
 		return function () use ( $title, $content, &$seen ) {
 			// makes bold assumption title/content will always match
 			if ( isset( $seen[$title] ) ) {
@@ -947,17 +957,17 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 			if ( trim( $content ) === trim( $currentContent ) ) {
 				return;
 			}
-			$response = $this->apiCall( array(
+			$response = $this->apiCall( [
 				'action' => 'query',
 				'meta' => 'tokens',
-			) );
-			$response = $this->apiCall( array(), array(
+			] );
+			$response = $this->apiCall( [], [
 				'action' => 'edit',
 				'title' => $title,
 				'text' => $content,
 				'summary' => 'automated WikimediaEvents browser test edit',
 				'token' => $response['query']['tokens']['csrftoken'],
-			) );
+			] );
 			// give time for jobs to work their way through
 			sleep( 10 );
 		};
@@ -965,22 +975,22 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 
 	protected function apiCall( array $params, $postData = null ) {
 		if ( $postData ) {
-			$context = stream_context_create( array(
-				'http' => array(
+			$context = stream_context_create( [
+				'http' => [
 					'method' => 'POST',
 					'header' => 'Content-type: application/x-www-form-urlencoded',
 					'content' => http_build_query( $postData ),
-				),
-			) );
+				],
+			] );
 		} else {
 			$context = null;
 		}
 
 		$apiUrl = str_replace( '/wiki/', '/w/api.php', self::$mwBaseUrl );
-		return json_decode( file_get_contents( $apiUrl . '?' . http_build_query( $params + array(
+		return json_decode( file_get_contents( $apiUrl . '?' . http_build_query( $params + [
 			'format' => 'json',
 			'formatversion' => 2,
-		) ), false, $context ), true );
+		] ), false, $context ), true );
 	}
 
 	/**
