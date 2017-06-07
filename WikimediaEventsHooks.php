@@ -59,24 +59,38 @@ class WikimediaEventsHooks {
 
 	/**
 	 * Log server-side event on successful page edit.
+	 *
+	 * Imported from EventLogging extension
+	 *
+	 * @param WikiPage $article
+	 * @param User $user
+	 * @param Content $content
+	 * @param string $summary
+	 * @param bool $isMinor
+	 * @param bool $isWatch
+	 * @param string $section
+	 * @param int $flags
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
 	 * @see https://meta.wikimedia.org/wiki/Schema:PageContentSaveComplete
 	 */
-	// Imported from EventLogging extension
-	public static function onPageContentSaveComplete( $article, $user, $content, $summary,
-		$isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId ) {
+	public static function onPageContentSaveComplete(
+		$article, $user, $content, $summary,
+		$isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId
+	) {
 		if ( !$revision ) {
 			return;
 		}
 
 		$stats = MediaWikiServices::getInstance()->getStatsdDataFactory();
 		if ( PHP_SAPI !== 'cli' ) {
-			DeferredUpdates::addCallableUpdate( function () use ( $stats ) {
+			$size = $content->getSize();
+			DeferredUpdates::addCallableUpdate( function () use ( $stats, $size ) {
 				$timing = RequestContext::getMain()->getTiming();
 				$measure = $timing->measure( 'editResponseTime', 'requestStart', 'requestShutdown' );
 				if ( $measure !== false ) {
 					$stats->timing( 'timing.editResponseTime', $measure['duration'] * 1000 );
 				}
+				$stats->gauge( 'edit.newContentSize', $size );
 			} );
 		}
 
@@ -129,8 +143,6 @@ class WikimediaEventsHooks {
 					'isMobile'  => $isMobile,
 				] );
 		}
-
-		return true;
 	}
 
 	/**
