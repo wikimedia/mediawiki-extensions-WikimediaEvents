@@ -678,7 +678,7 @@
 				iwResultSet = [];
 				$( 'li.iw-resultset' ).each( function () {
 					iwResultSet.push( {
-						result: $( this ).attr( 'class' ).match( /(?:^|\s)iw-resultset--(\S+)/ )[ 1 ],
+						source: $( this ).data( 'iw-resultset-source' ),
 						position: $( this ).data( 'iw-resultset-pos' )
 					} );
 				} );
