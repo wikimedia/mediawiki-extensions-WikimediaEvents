@@ -98,4 +98,3 @@ class AuthManagerStatsdHandlerTest extends MediaWikiTestCase {
 		];
 	}
 }
-
