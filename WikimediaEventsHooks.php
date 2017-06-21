@@ -65,7 +65,6 @@ class WikimediaEventsHooks {
 	// Imported from EventLogging extension
 	public static function onPageContentSaveComplete( $article, $user, $content, $summary,
 		$isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId ) {
-
 		if ( !$revision ) {
 			return;
 		}
@@ -298,7 +297,6 @@ class WikimediaEventsHooks {
 	 */
 	protected static function logPageCreation( User $user, $pageId, Title $title,
 		$revId ) {
-
 		EventLogging::logEvent( 'PageCreation', 7481635, [
 				'userId' => $user->getId(),
 				'userText' => $user->getName(),
@@ -364,7 +362,6 @@ class WikimediaEventsHooks {
 	 */
 	public static function onPageContentInsertComplete( WikiPage $wikiPage, User $user,
 		Content $content, $summary, $isMinor, $isWatch, $section, $flags, Revision $revision ) {
-
 		$title = $wikiPage->getTitle();
 		self::logPageCreation( $user, $wikiPage->getId(), $title, $revision->getId() );
 
