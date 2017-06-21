@@ -113,8 +113,8 @@
 		function initialize( session ) {
 
 			var sessionId = session.get( 'sessionId' ),
-				// No sub-tests currently running
-				validBuckets = [],
+				// Explore Similar AB test
+				validBuckets = [ 'explore_similar_control', 'explore_similar_test' ],
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
 						// Provides a place to handle wiki-specific sampling,
@@ -136,8 +136,8 @@
 								subTest: null
 							},
 							enwiki: {
-								test: 2000,
-								subTest: null
+								test: 1000,
+								subTest: 2
 							},
 							enwiktionary: {
 								test: 40,
@@ -686,6 +686,71 @@
 					} );
 				}
 			);
+
+			/**
+			 * Loading Explore Similar module for A/B test
+			 */
+			if ( session.get( 'subTest' ) === 'explore_similar_test' ) {
+				mw.loader.load( 'ext.cirrus.explore-similar' );
+			}
+			/**
+			 * Explore similar event logging
+			 * Listens for custom event sent by the Explore Similar module.
+			 * These events pass along extra data that conforms to the
+			 * searchSatisfaction2 schema.
+			 *
+			 */
+			mw.trackSubscribe( 'ext.CirrusSearch.exploreSimilar.open', function ( topic, data ) {
+				// `params` is cloned to avoid overriding the `extraParam` property.
+				var esParams = $.extend( true, {}, params ),
+					extraParams = JSON.stringify( {
+						hoverId: data.hoverId,
+						section: data.section,
+						results: data.results
+					} );
+				esParams.extraParams = extraParams;
+
+				logEvent( 'hover-on', esParams );
+			} );
+
+			mw.trackSubscribe( 'ext.CirrusSearch.exploreSimilar.close', function ( topic, data ) {
+
+				var esParams = $.extend( true, {}, params ),
+					extraParams = JSON.stringify( {
+						hoverId: data.hoverId
+					} );
+
+				esParams.extraParams = extraParams;
+
+				logEvent( 'hover-off', esParams );
+			} );
+
+			mw.trackSubscribe( 'ext.CirrusSearch.exploreSimilar.click', function ( topic, data ) {
+
+				var esParams = $.extend( true, {}, params ),
+					extraParams = JSON.stringify( {
+						hoverId: data.hoverId,
+						section: data.section,
+						result: data.result
+					} ),
+					pos = $( data.eventTarget ).parents( 'li' ).find( '.mw-search-result-heading > a' ).data( 'serp-pos' ),
+					anchor = $( data.eventTarget ).closest( 'a' ),
+					wprov = search.wprovPrefix + pos + '_es';
+
+				esParams.extraParams = extraParams;
+
+				// adding wprov to the href.
+				genAttachWprov( wprov ).apply( $( anchor ).get( 0 ) );
+
+				logEvent( 'esclick', esParams );
+			} );
+
+			/**
+			 * Loading Explore Similar module for A/B test
+			 */
+			if ( session.get( 'subTest' ) === 'explore_similar_test' ) {
+				mw.loader.load( 'ext.cirrus.explore-similar' );
+			}
 
 			serpExtras = {
 				offset: $( '.results-info' ).data( 'mw-num-results-offset' )
