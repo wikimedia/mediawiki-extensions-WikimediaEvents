@@ -44,7 +44,7 @@
 
 		if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'Recentchanges' ) {
 			$( '.mw-changeslist' ).on( 'click', 'a[href]', function ( e ) {
-				var selector,
+				var selector, target,
 					type = 'unknown',
 					$link = $( this );
 				if ( e.which === 3 ) {
@@ -52,10 +52,9 @@
 				}
 
 				// Add fromrc=1 to the URL
-				// DISABLED for now because it messes with link visited colors (T158458#3161869)
-				/*target = new mw.Uri( $link.attr( 'href' ) );
+				target = new mw.Uri( $link.attr( 'href' ) );
 				target.extend( { fromrc: 1 } );
-				$link.attr( 'href', target.toString() );*/
+				$link.attr( 'href', target.toString() );
 
 				// Figure out the link type
 				for ( selector in linkTypes ) {
@@ -109,6 +108,10 @@
 				// Log an event
 				trackClick( type, getPageType() );
 			} );
+
+			// Remove fromrc=1 from the URL
+			delete uri.query.fromrc;
+			history.replaceState( null, document.title, uri );
 		}
 
 	} );
