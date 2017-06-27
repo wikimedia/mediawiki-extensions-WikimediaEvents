@@ -201,7 +201,7 @@
 							subTest: null
 						};
 					}
-				} )(),
+				}() ),
 				/**
 				 * Determines whether the user is part of the population size.
 				 *
@@ -252,7 +252,7 @@
 					return;
 				}
 
-				if ( sampleSize.subTest !== null && !oneIn( sampleSize.subTest ) ) {
+				if ( sampleSize.subTest !== null && oneIn( sampleSize.subTest ) ) {
 					session.set( 'subTest', chooseBucket( validBuckets ) );
 				}
 			}
@@ -666,6 +666,24 @@
 					if ( params.position !== undefined ) {
 						logEvent( clickType, params );
 					}
+				}
+			);
+
+			// Sister-search results
+			$( '#mw-interwiki-results' ).on(
+				'click',
+				'.iw-result__title a, .iw-result__mini-gallery a, .iw-result__footer a',
+				function ( evt ) {
+					var $target = $( evt.target ).closest( 'a' ),
+						href = $target.attr( 'href' ) || '';
+
+					logEvent( 'ssclick', {
+						// This is a little bit of a lie, it's actually the
+						// position of the interwiki group, but we only
+						// show one result per so it seems to work.
+						position: $target.closest( '.iw-resultset' ).data( 'iw-resultset-pos' ),
+						extraParams: href
+					} );
 				}
 			);
 
