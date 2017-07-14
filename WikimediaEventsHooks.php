@@ -634,27 +634,6 @@ class WikimediaEventsHooks {
 	}
 
 	/**
-	 * Called when User::getBlockedStatus() has been set
-	 *
-	 * @param $user User object
-	 */
-	public static function onGetBlockedStatus( $user ) {
-		$blocked = $user->mBlock instanceof Block;
-		$rc = RequestContext::getMain();
-		$request = $rc->getRequest();
-		$isCookieSetOnAutoblock = $rc->getConfig()->get( 'CookieSetOnAutoblock' );
-		$blockCookieVal = $request->getCookie( 'BlockID' );
-		$trigger = $user->blockTrigger;
-		if ( $isCookieSetOnAutoblock && $blockCookieVal > 0 && $blocked ) {
-			$logData = [
-				'ip' => $request->getIP(),
-				'is_cookie_block' => $trigger === 'cookie-block'
-			];
-			EventLogging::logEvent( 'CookieBlock', 16241436, $logData );
-		}
-	}
-
-	/**
 	 * In summer 2017 WMDE will run a banner campaign with a GuidedTour to encourage users to
 	 * create an account and edit.
 	 * The banner campaign will link to one of 2 pages (see examples)
