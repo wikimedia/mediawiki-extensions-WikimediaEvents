@@ -142,7 +142,7 @@
 		"schema.ChangesListFilterGrouping": {
 			"class": "ResourceLoaderSchemaModule",
 			"schema": "ChangesListFilterGrouping",
-			"revision": 16987669
+			"revision": 17008168
 		},
 		"schema.ChangesListClickTracking": {
 			"class": "ResourceLoaderSchemaModule",
