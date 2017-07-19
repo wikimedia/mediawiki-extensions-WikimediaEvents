@@ -152,6 +152,11 @@
 			"schema": "RecentChangesTopLinks",
 			"revision": 16732249
 		},
+		"schema.HumanSearchRelevance": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "HumanSearchRelevance",
+			"revision": 17036485
+		},
 		"ext.wikimediaEvents": {
 			"scripts": [
 				"ext.wikimediaEvents.events.js",
@@ -163,7 +168,8 @@
 			],
 			"skinScripts": {
 				"default": [
-					"ext.wikimediaEvents.searchSatisfaction.js"
+					"ext.wikimediaEvents.searchSatisfaction.js",
+					"ext.wikimediaEvents.humanSearchRelevance.js"
 				],
 				"minerva": []
 			},
@@ -190,6 +196,20 @@
 			"dependencies": [
 				"mediawiki.user",
 				"mediawiki.Uri"
+			]
+		},
+		"ext.wikimediaEvents.humanSearchRel": {
+			"messages": [
+				"wikimediaevents-humanrel-question-a",
+				"wikimediaevents-humanrel-question-b",
+				"wikimediaevents-humanrel-question-c",
+				"wikimediaevents-humanrel-question-d",
+				"wikimediaevents-humanrel-yes",
+				"wikimediaevents-humanrel-no",
+				"wikimediaevents-humanrel-unsure"
+			],
+			"styles": [
+				"ext.wikimediaEvents.humanSearchRelevance.css"
 			]
 		}
 	},
