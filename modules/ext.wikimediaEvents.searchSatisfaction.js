@@ -113,8 +113,8 @@
 		function initialize( session ) {
 
 			var sessionId = session.get( 'sessionId' ),
-				// Explore Similar AB test
-				validBuckets = [ 'explore_similar_control', 'explore_similar_test' ],
+				// No sub-tests currently running
+				validBuckets = [],
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
 						// Provides a place to handle wiki-specific sampling,
@@ -136,8 +136,8 @@
 								subTest: null
 							},
 							enwiki: {
-								test: 1000,
-								subTest: 2
+								test: 2000,
+								subTest: null
 							},
 							enwiktionary: {
 								test: 40,
@@ -688,12 +688,6 @@
 			);
 
 			/**
-			 * Loading Explore Similar module for A/B test
-			 */
-			if ( session.get( 'subTest' ) === 'explore_similar_test' ) {
-				mw.loader.load( 'ext.cirrus.explore-similar' );
-			}
-			/**
 			 * Explore similar event logging
 			 * Listens for custom event sent by the Explore Similar module.
 			 * These events pass along extra data that conforms to the
@@ -744,13 +738,6 @@
 
 				logEvent( 'esclick', esParams );
 			} );
-
-			/**
-			 * Loading Explore Similar module for A/B test
-			 */
-			if ( session.get( 'subTest' ) === 'explore_similar_test' ) {
-				mw.loader.load( 'ext.cirrus.explore-similar' );
-			}
 
 			serpExtras = {
 				offset: $( '.results-info' ).data( 'mw-num-results-offset' )
