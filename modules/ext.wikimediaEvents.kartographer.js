@@ -225,6 +225,10 @@
 					break;
 			}
 
+			if ( data.action.endsWith( 'layer' ) ) {
+				options.extra.layer = data.options.extra.layer;
+			}
+
 			logEvent( data.feature.featureType, data.action, data.isFullScreen, isFirstInteraction( isInteraction ), options );
 		} );
 	} );
