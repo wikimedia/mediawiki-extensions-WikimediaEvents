@@ -15,5 +15,12 @@
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Téléversement inter-wiki]]",
 	"tag-cross-wiki-upload-description": "Fichiers téléversés directement depuis l’éditeur de wikicode ou l’éditeur visuel sur d’autres wikis",
 	"tag-HHVM-description": "Contributions faites avec la machine virtuelle HipHop (HHVM) au lieu de l’interpréteur PHP Zend (cela devrait améliorer les performances, la balise sert à l’analyse et au débogage)",
-	"abusefilter-edit-builder-vars-user-wpzero": "Indique si un utilisateur est en train de modifier par un fournisseur gratuit pour Wikipédia Zéro"
+	"abusefilter-edit-builder-vars-user-wpzero": "Indique si un utilisateur est en train de modifier par un fournisseur gratuit pour Wikipédia Zéro",
+	"wikimediaevents-humanrel-question-a": "Voulez-vous cliquer sur cette page en recherchant '$1' ?",
+	"wikimediaevents-humanrel-question-b": "Si vous recherchez '$1', cet article serait-il un bon résultat ?",
+	"wikimediaevents-humanrel-question-c": "Si vous recherchez '$1', cet article serait-il pertinent ?",
+	"wikimediaevents-humanrel-question-d": "Si quelqu’un a cherché '$1', aimerait-il lire cet article ?",
+	"wikimediaevents-humanrel-yes": "Oui",
+	"wikimediaevents-humanrel-no": "Non",
+	"wikimediaevents-humanrel-unsure": "Je ne sais pas"
 }

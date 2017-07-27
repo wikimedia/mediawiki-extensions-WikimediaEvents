@@ -9,5 +9,12 @@
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Importações interwikis]]",
 	"tag-cross-wiki-upload-description": "Ficheiros importados a partir dos editores visuais e de texto wiki de outras wikis",
 	"tag-HHVM-description": "Revisões executadas com a Máquina Virtual HipHop (HHVM) ativada em vez do interpretador PHP Zend (melhorias de desempenho esperadas, etiquetadas para análise e despiste de erros)",
-	"abusefilter-edit-builder-vars-user-wpzero": "Se um utilizador está, ou não, a editar através de um operador gratuito usando o Wikipédia Zero"
+	"abusefilter-edit-builder-vars-user-wpzero": "Se um utilizador está, ou não, a editar através de um operador gratuito usando o Wikipédia Zero",
+	"wikimediaevents-humanrel-question-a": "Visitaria esta página se procurasse '$1'?",
+	"wikimediaevents-humanrel-question-b": "Se estivesse à procura de '$1', este artigo seria um bom resultado?",
+	"wikimediaevents-humanrel-question-c": "Se tivesse pesquisado '$1' este artigo seria relevante?",
+	"wikimediaevents-humanrel-question-d": "Se alguém procurasse '$1' quereria ler este artigo?",
+	"wikimediaevents-humanrel-yes": "Sim",
+	"wikimediaevents-humanrel-no": "Não",
+	"wikimediaevents-humanrel-unsure": "Não sei"
 }
