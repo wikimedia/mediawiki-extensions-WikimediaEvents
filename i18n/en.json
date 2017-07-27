@@ -13,5 +13,12 @@
 	"tag-cross-wiki-upload-4": "-",
 	"tag-HHVM": "[[mw:Special:MyLanguage/HHVM/About|HHVM]]",
 	"tag-HHVM-description": "Revisions made with the HipHop Virtual Machine enabled instead of the Zend PHP interpreter (expected to improve performance, tagged for debugging/analysis)",
-	"abusefilter-edit-builder-vars-user-wpzero": "Whether or not a user is editing through a zero-rated carrier via Wikipedia Zero"
+	"abusefilter-edit-builder-vars-user-wpzero": "Whether or not a user is editing through a zero-rated carrier via Wikipedia Zero",
+	"wikimediaevents-humanrel-question-a": "Would you click on this page when searching for '$1'?",
+	"wikimediaevents-humanrel-question-b": "If you searched for '$1', would this article be a good result?",
+	"wikimediaevents-humanrel-question-c": "If you searched for '$1', would this article be relevant?",
+	"wikimediaevents-humanrel-question-d": "If someone searched for '$1', would they want to read this article?",
+	"wikimediaevents-humanrel-yes": "Yes",
+	"wikimediaevents-humanrel-no": "No",
+	"wikimediaevents-humanrel-unsure": "I don't know"
 }
