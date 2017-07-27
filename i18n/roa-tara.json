@@ -8,5 +8,8 @@
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Carecamende cross-uicchi]]",
 	"tag-cross-wiki-upload-description": "File carecate da le cangiature de uicchiteste e visuale sus a otre uicchi",
 	"tag-HHVM-description": "Revisiune fatte cu 'a maghene virtuale HipHop abbilitate invece de l'inderprete Zend PHP (tranne ca pe migliorà 'a valocità, signate pe debugging/analise)",
-	"abusefilter-edit-builder-vars-user-wpzero": "Ce 'n'utende ste cange ausanne 'n'operatore cu Uicchipèdie Zero"
+	"abusefilter-edit-builder-vars-user-wpzero": "Ce 'n'utende ste cange ausanne 'n'operatore cu Uicchipèdie Zero",
+	"wikimediaevents-humanrel-yes": "Sìne",
+	"wikimediaevents-humanrel-no": "None",
+	"wikimediaevents-humanrel-unsure": "Non g'u sacce"
 }
