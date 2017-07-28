@@ -4,5 +4,8 @@
 			"Aftabuzzaman"
 		]
 	},
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|ক্রস-উইকি আপলোড]]"
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|ক্রস-উইকি আপলোড]]",
+	"wikimediaevents-humanrel-yes": "হ্যাঁ",
+	"wikimediaevents-humanrel-no": "না",
+	"wikimediaevents-humanrel-unsure": "আমি জানি না"
 }
