@@ -113,8 +113,12 @@
 		function initialize( session ) {
 
 			var sessionId = session.get( 'sessionId' ),
-				// No sub-tests currently running
-				validBuckets = [],
+				// LTR sub test
+				// Test is running on enwiki only, which reports ~14k sessions per day
+				// at the 1:2000 sampling. Sampling increased to 1:500, so 56k sessions
+				// per day.  Those 56k sessions will be split 15k to dashboards, and
+				// 7k per bucket, for ~50k per bucket in a week.
+				validBuckets = [ 'control', 'ltr-20', 'ltr-i-20', 'ltr-1024', 'ltr-i-1024', 'ltr-i-20-1024' ],
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
 						// Provides a place to handle wiki-specific sampling,
@@ -136,8 +140,8 @@
 								subTest: null
 							},
 							enwiki: {
-								test: 2000,
-								subTest: null
+								test: 500,
+								subTest: 0.75
 							},
 							enwiktionary: {
 								test: 40,
@@ -214,7 +218,16 @@
 					// take the first 52 bits of the rand value to match js
 					// integer precision
 						parsed = parseInt( rand.slice( 0, 13 ), 16 );
-					return parsed % populationSize === 0;
+					if ( populationSize < 1 ) {
+						// Population size < 1 switches to percentage based
+						// sampling. .75 will accept 75% of the population.
+						// This is necessary if you want sampling > 50%. It
+						// does make the name of the function misleading
+						// though.
+						return parsed / Math.pow( 2, 52 ) < populationSize;
+					} else {
+						return parsed % populationSize === 0;
+					}
 				},
 				/**
 				 * Choose a single bucket from a list of buckets with even
