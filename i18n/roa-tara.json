@@ -9,6 +9,10 @@
 	"tag-cross-wiki-upload-description": "File carecate da le cangiature de uicchiteste e visuale sus a otre uicchi",
 	"tag-HHVM-description": "Revisiune fatte cu 'a maghene virtuale HipHop abbilitate invece de l'inderprete Zend PHP (tranne ca pe migliorà 'a valocità, signate pe debugging/analise)",
 	"abusefilter-edit-builder-vars-user-wpzero": "Ce 'n'utende ste cange ausanne 'n'operatore cu Uicchipèdie Zero",
+	"wikimediaevents-humanrel-question-a": "Vue ccù cazze sus a sta pàgene quanne ste cirche pe '$1'?",
+	"wikimediaevents-humanrel-question-b": "Ce tu è cercate pe '$1', vue ca sta vôsce jè 'nu belle resultate?",
+	"wikimediaevents-humanrel-question-c": "Ce tu è cercate pe '$1', vue ca sta vôsce jè rilevande?",
+	"wikimediaevents-humanrel-question-d": "Ce quacchedune ave cercate pe '$1', lore volene leggere sta vôsce?",
 	"wikimediaevents-humanrel-yes": "Sìne",
 	"wikimediaevents-humanrel-no": "None",
 	"wikimediaevents-humanrel-unsure": "Non g'u sacce"

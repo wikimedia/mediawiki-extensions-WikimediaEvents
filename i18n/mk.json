@@ -5,8 +5,15 @@
 		]
 	},
 	"wikimediaevents-desc": "Заведува викимедиски настани со EventLogging",
-	"tag-cross-wiki-upload": "Подигање на сите викија",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Подигање на сите викија]]",
 	"tag-cross-wiki-upload-description": "Податотеки подигнати од викитекстуалниот и визуелниот уредник на други викија",
 	"tag-HHVM-description": "Овозможени се преработките направени со HipHop Virtual Machine наместо PHP-толкувачот Zend (се очекува да ја подобри работата, означен за поправка на грешки/анализа)",
-	"abusefilter-edit-builder-vars-user-wpzero": "Дали корисникот уредува преку услужник за бесплатна употреба со Википедија Нула"
+	"abusefilter-edit-builder-vars-user-wpzero": "Дали корисникот уредува преку услужник за бесплатна употреба со Википедија Нула",
+	"wikimediaevents-humanrel-question-a": "Дали би стиснале на страницава кога го пребарувате „$1“?",
+	"wikimediaevents-humanrel-question-b": "Го пребаравте „$1“, дали статијава би била добро совпаѓање?",
+	"wikimediaevents-humanrel-question-c": "Ако го пребаравте „$1“, дали статијава би била релевантна?",
+	"wikimediaevents-humanrel-question-d": "Ако некој го пребара „$1“, дали би сакал да ја прочита статијава?",
+	"wikimediaevents-humanrel-yes": "Да",
+	"wikimediaevents-humanrel-no": "Не",
+	"wikimediaevents-humanrel-unsure": "Не знам"
 }

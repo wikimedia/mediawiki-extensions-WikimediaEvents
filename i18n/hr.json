@@ -1,7 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"MaGa"
+			"MaGa",
+			"Wumbolo"
 		]
-	}
+	},
+	"wikimediaevents-humanrel-question-a": "Biste li kliknuli ovu stranicu prilikom pretraživanja '$1'?",
+	"wikimediaevents-humanrel-question-d": "Ako netko pretražuje '$1', bi li pročitali ovaj članak?",
+	"wikimediaevents-humanrel-yes": "Da",
+	"wikimediaevents-humanrel-no": "Ne",
+	"wikimediaevents-humanrel-unsure": "Ne znam"
 }
