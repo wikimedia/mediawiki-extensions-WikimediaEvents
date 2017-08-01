@@ -10,5 +10,8 @@
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Subida inter-wiki]]",
 	"tag-cross-wiki-upload-description": "Ficheiros subidos dende o texto wiki e editores visuais noutras wikis",
 	"tag-HHVM-description": "Modificacións feitas coa Máquina Virtual HipHop (HHVM) no canto do interpretador PHP Zend (espérase mellorar o rendemento, marcado para depuración/análise)",
-	"abusefilter-edit-builder-vars-user-wpzero": "Indique se un usuario está editando a través dun operador gratuíto a través de Wikipedia Zero"
+	"abusefilter-edit-builder-vars-user-wpzero": "Indique se un usuario está editando a través dun operador gratuíto a través de Wikipedia Zero",
+	"wikimediaevents-humanrel-yes": "Si",
+	"wikimediaevents-humanrel-no": "Non",
+	"wikimediaevents-humanrel-unsure": "Non sei"
 }
