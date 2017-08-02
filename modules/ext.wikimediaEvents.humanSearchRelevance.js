@@ -280,9 +280,9 @@
 
 			content.append( buttons.$element );
 			content.append( $( '<small/>' ).append( $( '<a/>', {
-				href: '//wikimediafoundation.org/wiki/Privacy_policy',
+				href: '//wikimediafoundation.org/wiki/Search_Relevance_Survey_Privacy_Statement',
 				target: '_blank'
-			} ).text( 'Privacy Policy' ) ) );
+			} ).text( mw.message( 'wikimediaevents-humanrel-privacy-statement' ) ) ) );
 
 			notification = mw.notification.notify( content, {
 				autoHide: true,

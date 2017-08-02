@@ -205,7 +205,8 @@
 				"wikimediaevents-humanrel-question-d",
 				"wikimediaevents-humanrel-yes",
 				"wikimediaevents-humanrel-no",
-				"wikimediaevents-humanrel-unsure"
+				"wikimediaevents-humanrel-unsure",
+				"wikimediaevents-huamnrel-privacy-statement"
 			],
 			"styles": [
 				"ext.wikimediaEvents.humanSearchRelevance.css"
