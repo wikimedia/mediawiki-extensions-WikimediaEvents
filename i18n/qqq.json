@@ -23,5 +23,5 @@
 	"wikimediaevents-humanrel-yes": "Positive answer to articles relevance to a search query.\n\nAppears with the question: {{msg-mw|wikimediaevents-humanrel-question-a}}\n\n{{Identical|Yes}}",
 	"wikimediaevents-humanrel-no": "Negative answer to articles relevance to a search query.\n\nAppears with the question: {{msg-mw|wikimediaevents-humanrel-question-a}}\n\n{{Identical|No}}",
 	"wikimediaevents-humanrel-unsure": "Indecisive answer to articles relevance to a search query.\n\nSee also: {{msg-mw|wikimediaevents-humanrel-question-a}}, {{msg-mw|wikimediaevents-humanrel-yes}}, {{msg-mw|wikimediaevents-humanrel-no}}",
-	"wikimediaevents-huamnrel-privacy-statement": "Text for link to the survey privacy statement."
+	"wikimediaevents-humanrel-privacy-statement": "Text for link to the survey privacy statement."
 }
