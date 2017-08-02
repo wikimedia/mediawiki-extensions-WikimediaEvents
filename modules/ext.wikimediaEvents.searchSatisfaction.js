@@ -755,6 +755,13 @@
 				serpExtras.iw = iwResultSet;
 			}
 
+			// Interleaved AB testing. This records the page id's that belong
+			// to each team, which can be matched up to the articleId property
+			// of click/visitPage events.
+			if ( mw.config.exists( 'wgCirrusSearchTeamDraft' ) ) {
+				serpExtras.teamDraft = mw.config.get( 'wgCirrusSearchTeamDraft' );
+			}
+
 			params = {
 				query: mw.config.get( 'searchTerm' ),
 				hitsReturned: $( '.results-info' ).data( 'mw-num-results-total' ),
