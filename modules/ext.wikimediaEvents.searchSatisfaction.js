@@ -118,7 +118,8 @@
 				// at the 1:2000 sampling. Sampling increased to 1:500, so 56k sessions
 				// per day.  Those 56k sessions will be split 15k to dashboards, and
 				// 7k per bucket, for ~50k per bucket in a week.
-				validBuckets = [ 'control', 'ltr-20', 'ltr-i-20', 'ltr-1024', 'ltr-i-1024', 'ltr-i-20-1024' ],
+				// NOTE: Due to a bug we had to only ship the 1024 test. See T172464
+				validBuckets = [ 'control', 'ltr-1024', 'ltr-i-1024' ],
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
 						// Provides a place to handle wiki-specific sampling,
