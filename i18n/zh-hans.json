@@ -15,5 +15,6 @@
 	"wikimediaevents-humanrel-question-d": "如果有人搜索“$1”，这个人希望阅读该条目么？",
 	"wikimediaevents-humanrel-yes": "是",
 	"wikimediaevents-humanrel-no": "否",
-	"wikimediaevents-humanrel-unsure": "我不知道"
+	"wikimediaevents-humanrel-unsure": "我不知道",
+	"wikimediaevents-humanrel-privacy-statement": "隐私声明"
 }

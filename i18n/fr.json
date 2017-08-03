@@ -22,5 +22,6 @@
 	"wikimediaevents-humanrel-question-d": "Si quelqu’un a cherché '$1', aimerait-il lire cet article ?",
 	"wikimediaevents-humanrel-yes": "Oui",
 	"wikimediaevents-humanrel-no": "Non",
-	"wikimediaevents-humanrel-unsure": "Je ne sais pas"
+	"wikimediaevents-humanrel-unsure": "Je ne sais pas",
+	"wikimediaevents-humanrel-privacy-statement": "Déclaration de confidentialité"
 }
