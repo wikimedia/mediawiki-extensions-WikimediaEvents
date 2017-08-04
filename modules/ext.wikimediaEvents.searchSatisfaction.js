@@ -119,7 +119,7 @@
 				// per day.  Those 56k sessions will be split 15k to dashboards, and
 				// 7k per bucket, for ~50k per bucket in a week.
 				// NOTE: Due to a bug we had to only ship the 1024 test. See T172464
-				validBuckets = [ 'control', 'ltr-1024', 'ltr-i-1024' ],
+				validBuckets = [], // [ 'control', 'ltr-1024', 'ltr-i-1024' ],
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
 						// Provides a place to handle wiki-specific sampling,
@@ -141,8 +141,8 @@
 								subTest: null
 							},
 							enwiki: {
-								test: 500,
-								subTest: 0.75
+								test: 2000,
+								subTest: null
 							},
 							enwiktionary: {
 								test: 40,
