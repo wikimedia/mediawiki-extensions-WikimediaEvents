@@ -306,6 +306,6 @@
 
 	// TODO: We probably want to vary this 60s for some AB tests, to see if the quality
 	// of human grades varies depending on how long we wait.
-	setTimeout( askQuestion, 60 );
+	setTimeout( askQuestion, 60000 );
 
 }( mediaWiki, jQuery ) );
