@@ -154,7 +154,7 @@
 		"schema.HumanSearchRelevance": {
 			"class": "ResourceLoaderSchemaModule",
 			"schema": "HumanSearchRelevance",
-			"revision": 17069968
+			"revision": 17073843
 		},
 		"ext.wikimediaEvents": {
 			"scripts": [
