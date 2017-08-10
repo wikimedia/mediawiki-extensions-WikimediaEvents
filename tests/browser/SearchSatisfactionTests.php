@@ -635,6 +635,8 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * @dataProvider somethingProvider
+	 * @param array $actions
+	 * @param array $expectedEvents
 	 */
 	public function testSomething( array $actions, array $expectedEvents ) {
 		$logPosition = $this->getEventLogPosition();
@@ -789,6 +791,7 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Shown when the original search query was run, but the
 	 * search engine has a suggestion for a better query
+	 * @return function
 	 */
 	protected function clickDidYouMeanSuggestion() {
 		return function ( $webDriver ) {
@@ -802,7 +805,8 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 	 * Shown when the rewritten search query was run. Gives
 	 * the user a direct link to this search, which might show
 	 * a new did you mean.
-	*/
+	 * @return function
+	 */
 	protected function clickDidYouMeanRewritten() {
 		return function ( $webDriver ) {
 			$webDriver->findElement( WebDriverBy::cssSelector(
@@ -815,7 +819,8 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 	 * Shown when the rewritten search query was run. Gives
 	 * the user a direct link to the original search without
 	 * it being rewritten.
-	*/
+	 * @return function
+	 */
 	protected function clickDidYouMeanOriginal() {
 		return function ( $webDriver ) {
 			$webDriver->findElement( WebDriverBy::cssSelector(
@@ -995,6 +1000,8 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * Helper function to perform ctrl-click (open in new tab/window)
+	 * @param WebDriver $webDriver
+	 * @param string $webDriverBy
 	 */
 	protected static function ctrlClick( $webDriver, $webDriverBy ) {
 		$webDriver->action()
@@ -1011,6 +1018,8 @@ class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Supports advanced css selector syntax that selenium can't
 	 * such as attribute selection
+	 * @param string $selector
+	 * @return string
 	 */
 	protected static function byExtendedCss( $selector ) {
 		static $conv;

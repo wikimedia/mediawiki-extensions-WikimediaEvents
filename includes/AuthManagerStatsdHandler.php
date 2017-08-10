@@ -48,7 +48,7 @@ use Monolog\Handler\AbstractHandler;
 class AuthManagerStatsdHandler extends AbstractHandler {
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritDoc
 	 */
 	public function handle( array $record ) {
 		$event = $this->getField( 'event', $record['context'] );

@@ -35,6 +35,8 @@ class WikimediaEventsHooks {
 	 * special page)
 	 *
 	 * Add a 'loggedIn' key with the value of 1 if the user is logged in
+	 * @param OutputPage $out
+	 * @param array &$headerItems
 	 */
 	public static function onXAnalyticsHeader( OutputPage $out, array &$headerItems ) {
 		$title = $out->getTitle();
@@ -70,6 +72,9 @@ class WikimediaEventsHooks {
 	 * @param bool $isWatch
 	 * @param string $section
 	 * @param int $flags
+	 * @param Revision $revision
+	 * @param Status $status
+	 * @param int $baseRevId
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
 	 * @see https://meta.wikimedia.org/wiki/Schema:PageContentSaveComplete
 	 */
@@ -205,11 +210,11 @@ class WikimediaEventsHooks {
 	 * Handler for UserSaveOptions hook.
 	 * @see http://www.mediawiki.org/wiki/Manual:Hooks/UserSaveOptions
 	 * @param User $user user whose options are being saved
-	 * @param array $options Options being saved
+	 * @param array &$options Options being saved
 	 * @return bool true in all cases
 	 */
-	// Modified version of original method from the Echo extension
 	public static function onUserSaveOptions( $user, &$options ) {
+		// Modified version of original method from the Echo extension
 		global $wgOut;
 
 		// Capture user options saved via Special:Preferences or ApiOptions
@@ -256,7 +261,8 @@ class WikimediaEventsHooks {
 	 * @param WikiPage $article The article that was deleted
 	 * @param User $user The user that deleted the article
 	 * @param string $reason The reason that the article was deleted
-	 * @param integer $id The ID of the article that was deleted
+	 * @param int $id The ID of the article that was deleted
+	 * @return true
 	 */
 	public static function onArticleDeleteComplete( WikiPage $article, User $user, $reason, $id ) {
 		$title = $article->getTitle();
@@ -277,9 +283,9 @@ class WikimediaEventsHooks {
 	 * @see http://www.mediawiki.org/wiki/Manual:Hooks/ArticleUndelete
 	 * @see https://meta.wikimedia.org/wiki/Schema:PageRestoration
 	 * @param Title $title Title of article restored
-	 * @param boolean $created whether the revision created the page (default false)
+	 * @param bool $created whether the revision created the page (default false)
 	 * @param string $comment Reason for undeleting the page
-	 * @param integer $oldPageId The ID of the article that was deleted
+	 * @param int $oldPageId The ID of the article that was deleted
 	 */
 	public static function onArticleUndelete( $title, $created, $comment, $oldPageId ) {
 		global $wgUser;
@@ -327,8 +333,8 @@ class WikimediaEventsHooks {
 	 * @param Title $oldTitle The title of the old article (moved from)
 	 * @param Title $newTitle The title of the new article (moved to)
 	 * @param User $user The user who moved the article
-	 * @param integer $pageId The page ID of the old article
-	 * @param integer $redirectId The page ID of the redirect, 0 if a redirect wasn't
+	 * @param int $pageId The page ID of the old article
+	 * @param int $redirectId The page ID of the redirect, 0 if a redirect wasn't created
 	 *   created
 	 * @param string $reason The reason that the title was moved
 	 * @return bool true in all cases
@@ -361,16 +367,17 @@ class WikimediaEventsHooks {
 	 *
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentInsertComplete
 	 * @see https://meta.wikimedia.org/wiki/Schema:PageCreation
-	 * @param WikiPage $wikipage page just created
+	 * @param WikiPage $wikiPage page just created
 	 * @param User $user user who created the page
 	 * @param Content $content content of new page
 	 * @param string $summary summary given by creating user
 	 * @param bool $isMinor whether the edit is marked as minor (not actually possible for new
 	 *   pages)
-	 * @param $isWatch not used
-	 * @param $section not used
+	 * @param bool $isWatch not used
+	 * @param string $section not used
 	 * @param int $flags bit flags about page creation
 	 * @param Revision $revision first revision of new page
+	 * @return true
 	 */
 	public static function onPageContentInsertComplete( WikiPage $wikiPage, User $user,
 		Content $content, $summary, $isMinor, $isWatch, $section, $flags, Revision $revision ) {
@@ -464,6 +471,10 @@ class WikimediaEventsHooks {
 	 * The javascript that records search metrics needs to know if it is on a
 	 * SERP or not. This ends up being non-trivial due to localization, so
 	 * make it trivial by injecting a boolean value to check.
+	 * @param string $term
+	 * @param SearchResultSet $titleMatches
+	 * @param SearchResultSet $textMatches
+	 * @return true
 	 */
 	public static function onSpecialSearchResults( $term, $titleMatches, $textMatches ) {
 		global $wgOut;
@@ -479,7 +490,7 @@ class WikimediaEventsHooks {
 	 * Add a change tag 'cross-wiki-upload' to cross-wiki uploads to Commons, to track usage of the
 	 * new feature. (Both to track adoption, and to let Commons editors review the uploads.) (T115328)
 	 *
-	 * @param $recentChange RecentChange
+	 * @param RecentChange $recentChange
 	 * @return bool
 	 */
 	public static function onRecentChangeSave( RecentChange $recentChange ) {
@@ -553,7 +564,7 @@ class WikimediaEventsHooks {
 	/**
 	 * AbuseFilter-builder hook handler
 	 *
-	 * @param array $builder
+	 * @param array &$builder
 	 * @return bool
 	 */
 	public static function onAbuseFilterBuilder( &$builder ) {
