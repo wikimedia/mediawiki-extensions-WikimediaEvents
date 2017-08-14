@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Beta16",
-			"Nemo bis"
+			"Nemo bis",
+			"Greis"
 		]
 	},
 	"wikimediaevents-desc": "Registra eventi specifici Wikimedia utilizzando EventLogging",
@@ -11,5 +12,6 @@
 	"tag-HHVM-description": "Modifiche apportate con la macchina virtuale HipHop (HHVM) abilitata invece dell'interprete PHP Zend (dovrebbe migliorare le prestazioni, sono etichettate per il debug/analisi)",
 	"abusefilter-edit-builder-vars-user-wpzero": "Se un utente sta modificando attraverso un operatore gratuito tramite Wikipedia Zero",
 	"wikimediaevents-humanrel-yes": "Sì",
-	"wikimediaevents-humanrel-no": "No"
+	"wikimediaevents-humanrel-no": "No",
+	"wikimediaevents-humanrel-unsure": "Non so"
 }

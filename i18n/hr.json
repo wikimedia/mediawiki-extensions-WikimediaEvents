@@ -2,9 +2,11 @@
 	"@metadata": {
 		"authors": [
 			"MaGa",
-			"Wumbolo"
+			"Wumbolo",
+			"Bugoslav"
 		]
 	},
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Postavljanje s drugih wikija]]",
 	"wikimediaevents-humanrel-question-a": "Biste li kliknuli ovu stranicu prilikom pretraživanja '$1'?",
 	"wikimediaevents-humanrel-question-d": "Ako netko pretražuje '$1', bi li pročitali ovaj članak?",
 	"wikimediaevents-humanrel-yes": "Da",
