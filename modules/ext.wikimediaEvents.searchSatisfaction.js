@@ -113,7 +113,12 @@
 		function initialize( session ) {
 
 			var sessionId = session.get( 'sessionId' ),
-				validBuckets = [],
+				// LTR sub test
+				// Test is running on enwiki only, which reports ~14k sessions per day
+				// at the 1:2000 sampling. Sampling increased to 1:500, so 56k sessions
+				// per day.  Those 56k sessions will be split 15k to dashboards, and
+				// 7k per bucket, for ~50k per bucket in a week.
+				validBuckets = [ 'control', 'ltr-20', 'ltr-i-20', 'ltr-1024', 'ltr-i-1024', 'ltr-i-20-1024' ],
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
 						// Provides a place to handle wiki-specific sampling,
@@ -135,8 +140,8 @@
 								subTest: null
 							},
 							enwiki: {
-								test: 2000,
-								subTest: null
+								test: 500,
+								subTest: 0.75
 							},
 							enwiktionary: {
 								test: 40,
