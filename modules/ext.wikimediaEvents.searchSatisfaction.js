@@ -140,8 +140,8 @@
 								subTest: null
 							},
 							enwiki: {
-								test: 250,
-								subTest: 0.75
+								test: 80,
+								subTest: 0.96
 							},
 							enwiktionary: {
 								test: 40,
