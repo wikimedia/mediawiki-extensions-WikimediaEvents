@@ -1,7 +1,16 @@
 {
 	"@metadata": {
 		"authors": [
-			"Ahdan"
+			"Ahdan",
+			"Rachmat04"
 		]
-	}
+	},
+	"wikimediaevents-humanrel-question-a": "Apakah Anda mengeklik halaman ini ketika mencari \"$1\"?",
+	"wikimediaevents-humanrel-question-b": "Apabila Anda mencari \"$1\", akankah artikel ini merupakan salah satu hasil yang baik?",
+	"wikimediaevents-humanrel-question-c": "Apabila Anda mencari \"$1\", akankah artikel ini merupakan salah satu hasil yang relevan?",
+	"wikimediaevents-humanrel-question-d": "Apabila Anda mencari \"$1\", akankah mereka ingin membaca artikel ini?",
+	"wikimediaevents-humanrel-yes": "Ya",
+	"wikimediaevents-humanrel-no": "Tidak",
+	"wikimediaevents-humanrel-unsure": "Saya tidak tahu",
+	"wikimediaevents-humanrel-privacy-statement": "Pernyataan privasi"
 }
