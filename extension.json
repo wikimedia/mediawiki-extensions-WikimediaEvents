@@ -167,8 +167,7 @@
 			],
 			"skinScripts": {
 				"default": [
-					"ext.wikimediaEvents.searchSatisfaction.js",
-					"ext.wikimediaEvents.humanSearchRelevance.js"
+					"ext.wikimediaEvents.searchSatisfaction.js"
 				],
 				"minerva": []
 			},
