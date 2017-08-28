@@ -644,4 +644,14 @@ class WikimediaEventsHooks {
 		);
 	}
 
+	public static function onMakeGlobalVariablesScript( array &$vars, OutputPage $out ) {
+		global $wgWMESearchRelevancePages;
+		if ( $vars['wgAction'] === 'view' ) {
+			$articleId = $out->getTitle()->getArticleID();
+			if ( isset( $wgWMESearchRelevancePages[$articleId] ) ) {
+				$vars['wgWMESearchRelevancePages'] = $wgWMESearchRelevancePages[$articleId];
+			}
+		}
+		return true;
+	}
 }
