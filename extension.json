@@ -73,6 +73,9 @@
 		],
 		"ChangesListSpecialPageStructuredFilters": [
 			"WikimediaEventsHooks::onChangesListSpecialPageStructuredFilters"
+		],
+		"MakeGlobalVariablesScript": [
+			"WikimediaEventsHooks::onMakeGlobalVariablesScript"
 		]
 	},
 	"MessagesDirs": {
@@ -167,7 +170,8 @@
 			],
 			"skinScripts": {
 				"default": [
-					"ext.wikimediaEvents.searchSatisfaction.js"
+					"ext.wikimediaEvents.searchSatisfaction.js",
+					"ext.wikimediaEvents.humanSearchRelevance.js"
 				],
 				"minerva": []
 			},
@@ -219,7 +223,10 @@
 	"config": {
 		"WMEReadingDepthSamplingRate": 0.005,
 		"WMEReadingDepthEnabled": false,
-		"WMEStatsdBaseUri": false
+		"WMEStatsdBaseUri": false,
+		"WMESearchRelevancePages": {
+			"_merge_strategy": "array_plus"
+		}
 	},
 	"manifest_version": 1
 }
