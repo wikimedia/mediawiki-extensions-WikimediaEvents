@@ -24,10 +24,13 @@
 		return;
 	}
 
-	// This value is coded into the page output and cached in varnish. That
-	// means any changes to sampling rates or pages chosen will take up to a
-	// week to propogate into the wild.
-	var config = mw.config.get( 'wgWMESearchRelevancePages' );
+	// The config value is coded into the page output and cached in varnish.
+	// That means any changes to sampling rates or pages chosen will take up to
+	// a week to propogate into the wild.
+	var timeout,
+		config = mw.config.get( 'wgWMESearchRelevancePages' ),
+		timeoutKey = 'wme-humrel-timeout',
+		now = new Date().getTime();
 
 	// bad configuration
 	if ( !config.hasOwnProperty( 'sampleRate' ) || !config.hasOwnProperty( 'queries' ) ) {
@@ -38,6 +41,14 @@
 	if ( !sample( config.sampleRate ) ) {
 		return;
 	}
+
+	timeout = mw.storage.get( timeoutKey );
+	if ( timeout && timeout > now ) {
+		// User has seen the survey recently
+		return;
+	}
+	// Don't show the survey to same browser for 2 days, to prevent annoying users
+	mw.storage.set( timeoutKey, now + 2 * 86400 );
 
 	function askQuestion() {
 		mw.loader.using( [
