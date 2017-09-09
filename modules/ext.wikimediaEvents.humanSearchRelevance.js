@@ -27,10 +27,7 @@
 	// The config value is coded into the page output and cached in varnish.
 	// That means any changes to sampling rates or pages chosen will take up to
 	// a week to propogate into the wild.
-	var timeout,
-		config = mw.config.get( 'wgWMESearchRelevancePages' ),
-		timeoutKey = 'wme-humrel-timeout',
-		now = new Date().getTime();
+	var config = mw.config.get( 'wgWMESearchRelevancePages' );
 
 	// bad configuration
 	if ( !config.hasOwnProperty( 'sampleRate' ) || !config.hasOwnProperty( 'queries' ) ) {
@@ -41,14 +38,6 @@
 	if ( !sample( config.sampleRate ) ) {
 		return;
 	}
-
-	timeout = mw.storage.get( timeoutKey );
-	if ( timeout && timeout > now ) {
-		// User has seen the survey recently
-		return;
-	}
-	// Don't show the survey to same browser for 2 days, to prevent annoying users
-	mw.storage.set( timeoutKey, now + 2 * 86400 );
 
 	function askQuestion() {
 		mw.loader.using( [
@@ -87,7 +76,26 @@
 				} ),
 				content = $( '<p/>', {
 					'class': 'mw-wme-humanrel-question'
-				} ).text( mw.message( question, query ) );
+				} ).text( mw.message( question, query ) ),
+				timeoutKey = 'wme-humrel-timeout',
+				timeout = mw.storage.get( timeoutKey ),
+				now = new Date().getTime();
+
+			// Don't show the survey to same browser for 2 days, to prevent annoying users
+			// While it makes sense to put this prior to loading dependencies
+			// and setting up, recorded events show that 1.6% of events are
+			// recorded by the same session+page id, and 2.4% of events are
+			// recorded by the same session id. Not sure why, but puting the
+			// check closer to actually showing the survey might help.
+			if ( timeout && timeout > now ) {
+				// User has seen the survey recently
+				return;
+			}
+			// If we can't record that the survey shouldn't be duplicated, just
+			// opt them out of the survey all together.
+			if ( !mw.storage.set( timeoutKey, now + 2 * 86400 ) ) {
+				return;
+			}
 
 			content.append( buttons.$element );
 			content.append( $( '<small/>' ).append( $( '<a/>', {
