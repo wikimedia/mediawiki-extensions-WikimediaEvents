@@ -118,7 +118,7 @@
 				// at the 1:2000 sampling. Sampling increased to 1:500, so 56k sessions
 				// per day.  Those 56k sessions will be split 15k to dashboards, and
 				// 7k per bucket, for ~50k per bucket in a week.
-				validBuckets = [],
+				validBuckets = [ 'explore_similar_control', 'explore_similar_test' ],
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
 						// Provides a place to handle wiki-specific sampling,
@@ -140,8 +140,8 @@
 								subTest: null
 							},
 							enwiki: {
-								test: 2000,
-								subTest: null
+								test: 1000,
+								subTest: 2
 							},
 							enwiktionary: {
 								test: 40,
@@ -701,6 +701,13 @@
 			);
 
 			/**
+			 * Loading Explore Similar module for A/B test
+			 */
+			if ( session.get( 'subTest' ) === 'explore_similar_test' ) {
+				mw.loader.load( 'ext.cirrus.explore-similar' );
+			}
+
+			/**
 			 * Explore similar event logging
 			 * Listens for custom event sent by the Explore Similar module.
 			 * These events pass along extra data that conforms to the
@@ -713,7 +720,8 @@
 					extraParams = JSON.stringify( {
 						hoverId: data.hoverId,
 						section: data.section,
-						results: data.results
+						results: data.results,
+						position: $( data.eventTarget ).parents( 'li' ).find( '.mw-search-result-heading > a' ).data( 'serp-pos' )
 					} );
 				esParams.extraParams = extraParams;
 
@@ -738,7 +746,8 @@
 					extraParams = JSON.stringify( {
 						hoverId: data.hoverId,
 						section: data.section,
-						result: data.result
+						result: data.result,
+						position: $( data.eventTarget ).parents( 'li' ).find( '.mw-search-result-heading > a' ).data( 'serp-pos' )
 					} ),
 					pos = $( data.eventTarget ).parents( 'li' ).find( '.mw-search-result-heading > a' ).data( 'serp-pos' ),
 					anchor = $( data.eventTarget ).closest( 'a' ),
