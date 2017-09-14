@@ -118,7 +118,9 @@
 				// at the 1:2000 sampling. Sampling increased to 1:500, so 56k sessions
 				// per day.  Those 56k sessions will be split 15k to dashboards, and
 				// 7k per bucket, for ~50k per bucket in a week.
-				validBuckets = [ 'explore_similar_control', 'explore_similar_test' ],
+				validBuckets = mw.config.get( 'wgDBname' ) === 'enwiki'
+					? [ 'explore_similar_control', 'explore_similar_test' ]
+					: [ 'control', 'ltr-1024', 'ltr-i-1024' ],
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
 						// Provides a place to handle wiki-specific sampling,
@@ -127,6 +129,38 @@
 						// but wikidata uses 1 in 5 sampling rate because of
 						// drastic differences in traffic and search usage.
 						subTests = {
+							fiwiki: {
+								test: 0.7152,
+								subTest: 0.8602
+							},
+							arwiki: {
+								test: 0.4162,
+								subTest: 0.7597
+							},
+							fawiki: {
+								test: 0.7812,
+								subTest: 0.872
+							},
+							viwiki: {
+								test: 0.6196,
+								subTest: 0.8386
+							},
+							svwiki: {
+								test: 0.475,
+								subTest: 0.7895
+							},
+							nowiki: {
+								test: 0.8125,
+								subTest: 0.8769
+							},
+							hewiki: {
+								test: 0.8112,
+								subTest: 0.8767
+							},
+							idwiki: {
+								test: 0.7275,
+								subTest: 0.8627
+							},
 							commonswiki: {
 								test: 30,
 								subTest: null
@@ -136,8 +170,8 @@
 								subTest: null
 							},
 							dewiki: {
-								test: 350,
-								subTest: null
+								test: 0.0297,
+								subTest: 0.9039
 							},
 							enwiki: {
 								test: 1000,
@@ -152,44 +186,44 @@
 								subTest: null
 							},
 							frwiki: {
-								test: 150,
-								subTest: null
+								test: 0.075,
+								subTest: 0.9111
 							},
 							itwiki: {
-								test: 100,
-								subTest: null
+								test: 0.1241,
+								subTest: 0.9194
 							},
 							jawiki: {
-								test: 100,
-								subTest: null
+								test: 0.0783,
+								subTest: 0.8723
 							},
 							kowiki: {
-								test: 30,
-								subTest: null
+								test: 0.2716,
+								subTest: 0.8773
 							},
 							nlwiki: {
-								test: 30,
-								subTest: null
+								test: 0.2334,
+								subTest: 0.8572
 							},
 							plwiki: {
-								test: 60,
-								subTest: null
+								test: 0.2054,
+								subTest: 0.9189
 							},
 							ptwiki: {
-								test: 60,
-								subTest: null
+								test: 0.1552,
+								subTest: 0.8926
 							},
 							ruwiki: {
-								test: 250,
-								subTest: null
+								test: 0.0656,
+								subTest: 0.939
 							},
 							wikidatawiki: {
 								test: 5,
 								subTest: null
 							},
 							zhwiki: {
-								test: 100,
-								subTest: null
+								test: 0.1051,
+								subTest: 0.9049
 							}
 						};
 					if ( subTests[ dbName ] ) {
@@ -829,6 +863,12 @@
 	 * @param {SessionState} session
 	 */
 	function setupAutocompleteTest( session ) {
+		// sub tests are only doing full text, don't collect excess
+		// autocomplete data we won't look at.
+		if ( session.get( 'subTest' ) ) {
+			return;
+		}
+
 		var logEvent = genLogEventFn( 'autocomplete', session ),
 			track = function ( topic, data ) {
 				var $wprov, params;
