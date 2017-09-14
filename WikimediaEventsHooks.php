@@ -654,4 +654,110 @@ class WikimediaEventsHooks {
 		}
 		return true;
 	}
+
+	/**
+	 * WMDE runs banner campaigns with a GuidedTour to encourage users to create an account and edit.
+	 * This could one day be factored out into its own extension.
+	 *
+	 * The series of banner campaigns can be seen on Phabricator:
+	 * https://phabricator.wikimedia.org/project/subprojects/2821/
+	 *
+	 * @author addshore on behalf of WMDE
+	 *
+	 * @param Title $title
+	 * @param mixed $unused
+	 * @param OutputPage $output
+	 * @param User $user
+	 * @param WebRequest $request
+	 * @param MediaWiki $mediaWiki
+	 */
+	public static function onBeforeInitializeWMDECampaign(
+		$title,
+		$unused,
+		$output,
+		$user,
+		$request,
+		$mediaWiki
+	) {
+		// Only run for dewiki
+		if ( wfWikiID() !== 'dewiki' ) {
+			return;
+		}
+
+		/**
+		 * Setup the prefix and cookie name for this campaign.
+		 * Everything below this block is agnostic to which tour is being run.
+		 */
+		$campaignPrefix = 'wmde_abc2017';
+		$campaignStartTimestamp = '20171004000000';
+		$guidedTourName = 'einfuhrung';
+		$guidedTourInitialStep = 'willkommen';
+		$cookieName = 'wmdecampaign-' . $campaignPrefix;
+
+		$hasCampaignGetValue = strstr( $request->getVal( 'campaign' ), $campaignPrefix ) !== false;
+		$hasCampaignCookie = $request->getCookie( $cookieName ) !== null;
+
+		// Get the campaign name from either the URL params or cookie
+		$campaign = 'NULL';
+		if ( $hasCampaignGetValue ) {
+			$campaign = $request->getVal( 'campaign' );
+		}
+		if ( $hasCampaignCookie ) {
+			$campaign = $request->getCookie( $cookieName );
+		}
+
+		// If the campaign name doesn't match our current campaign then bail.
+		if ( strstr( $request->getVal( $campaign ), $campaignPrefix ) === false ) {
+			return;
+		}
+
+		$stats = MediaWikiServices::getInstance()->getStatsdDataFactory();
+
+		/**
+		 * If an anon user clicks on the banner and doesn't yet have a session cookie then
+		 * add a session cookie and count the click.
+		 */
+		if ( $user->isAnon() && $hasCampaignGetValue && !$hasCampaignCookie ) {
+			$request->response()->setCookie( $cookieName, $campaign, null );
+			$stats->increment( "wmde.campaign.$campaign.banner.click" );
+			wfDebugLog( 'WMDE', "$campaign - 1 - Banner click by anon user without cookie" );
+		}
+
+		/**
+		 * If an anon user with the cookie, views the create account page without a campaign
+		 * value set then inject it into the WebRequest object.
+		 */
+		if (
+			$user->isAnon() &&
+			$hasCampaignCookie &&
+			$title->isSpecial( 'CreateAccount' ) &&
+			!$hasCampaignGetValue
+		) {
+			$request->setVal( 'campaign', $campaign );
+			wfDebugLog( 'WMDE', "$campaign - 2 - Inject campaign value on CreateAccount" );
+		}
+
+		/**
+		 * If a registered user appears with the campaign cookie (thus had clicked the banner)
+		 * and a main namespace page is being viewed, decide to show the tour or not based on
+		 * dumb maths and if the user has registered since the start of the campaign.
+		 */
+		if (
+			!$user->isAnon() &&
+			$hasCampaignCookie &&
+			$title->getNamespace() === NS_MAIN &&
+			$mediaWiki->getAction() === 'view'
+		) {
+			if ( $user->getRegistration() > $campaignStartTimestamp ) {
+				GuidedTourLauncher::launchTourByCookie( urlencode( $guidedTourName ), $guidedTourInitialStep );
+				$stats->increment( "wmde.campaign.$campaign.tour.trigger" );
+				wfDebugLog( 'WMDE', "$campaign - 3 - GuidedTour for user: " . $user->getId() );
+			} else {
+				$stats->increment( "wmde.campaign.$campaign.process.tooOld" );
+				wfDebugLog( 'WMDE', "$campaign - 3.e - User older than the campaign." );
+			}
+			$request->response()->clearCookie( $cookieName );
+		}
+	}
+
 }
