@@ -707,7 +707,7 @@ class WikimediaEventsHooks {
 		}
 
 		// If the campaign name doesn't match our current campaign then bail.
-		if ( strstr( $request->getVal( $campaign ), $campaignPrefix ) === false ) {
+		if ( strstr( $request->getVal( 'campaign' ), $campaignPrefix ) === false ) {
 			return;
 		}
 
