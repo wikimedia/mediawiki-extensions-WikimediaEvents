@@ -97,6 +97,11 @@
 			"schema": "DeprecatedUsage",
 			"revision": 7906187
 		},
+		"schema.Print": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "Print",
+			"revision": 17199246
+		},
 		"schema.ReadingDepth": {
 			"class": "ResourceLoaderSchemaModule",
 			"schema": "ReadingDepth",
@@ -167,6 +172,7 @@
 				"ext.wikimediaEvents.events.js",
 				"ext.wikimediaEvents.statsd.js",
 				"ext.wikimediaEvents.kartographer.js",
+				"ext.wikimediaEvents.print.js",
 				"ext.wikimediaEvents.readingDepth.js",
 				"ext.wikimediaEvents.geoFeatures.js",
 				"ext.wikimediaEvents.recentChangesClicks.js"
@@ -224,6 +230,8 @@
 		"remoteExtPath": "WikimediaEvents/modules"
 	},
 	"config": {
+		"WMEPrintSamplingRate": 0.1,
+		"WMEPrintEnabled": false,
 		"WMEReadingDepthSamplingRate": 0.005,
 		"WMEReadingDepthEnabled": false,
 		"WMEStatsdBaseUri": false,
