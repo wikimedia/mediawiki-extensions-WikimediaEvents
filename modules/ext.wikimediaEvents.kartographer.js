@@ -225,7 +225,7 @@
 					break;
 			}
 
-			if ( data.action.endsWith( 'layer' ) ) {
+			if ( data.options && data.options.extra && data.action.endsWith( 'layer' ) ) {
 				options.extra.layer = data.options.extra.layer;
 			}
 
