@@ -25,7 +25,7 @@
 		return;
 	}
 
-	var search, autoComplete, session, eventLog, initSubTest,
+	var search, autoComplete, session, eventLog, initSubTest, initDebugLogging,
 		isSearchResultPage = mw.config.get( 'wgIsSearchResultPage' ),
 		uri = new mw.Uri( location.href ),
 		checkinTimes = [ 10, 20, 30, 40, 50, 60, 90, 120, 150, 180, 210, 240, 300, 360, 420 ],
@@ -970,6 +970,23 @@
 		}
 	} );
 
+	initDebugLogging = atMostOnce( function ( session ) {
+		mw.trackSubscribe( 'global.error', function ( topic, data ) {
+			var evt = {
+				searchSessionId: session.get( 'sessionId' ),
+				visitPageId: session.get( 'pageViewId' ),
+				message: data.errorMessage,
+				error: data.errorObject.toString()
+			};
+
+			// ship the event
+			mw.loader.using( [ 'schema.SearchSatisfactionErrors' ] ).then( function () {
+				eventLog = eventLog || extendMwEventLog();
+				eventLog.logEvent( 'TestSearchSatisfaction2', evt );
+			} );
+		} );
+	} );
+
 	/**
 	 * Delay session initialization as late in the
 	 * process as possible, but only do it once.
@@ -980,6 +997,7 @@
 		session = session || new SessionState();
 
 		if ( session.isActive() ) {
+			initDebugLogging( session );
 			initSubTest( session );
 			fn( session );
 		}
