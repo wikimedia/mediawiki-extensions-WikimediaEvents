@@ -19,6 +19,17 @@
 		return options[ Math.floor( parsed / step ) ];
 	}
 
+	// See https://developer.mozilla.org/en-US/docs/Web/API/Navigator/doNotTrack
+	// Taken from https://www.npmjs.com/package/dnt-polyfill
+	if ( window.doNotTrack === '1' ||
+		window.navigator && (
+			window.navigator.doNotTrack === '1' ||
+			window.navigator.doNotTrack === 'yes' ||
+			window.navigator.msDoNotTrack === '1'
+	) ) {
+		return;
+	}
+
 	// Page is not part of this test
 	if ( !mw.config.exists( 'wgWMESearchRelevancePages' ) ) {
 		return;
@@ -93,7 +104,7 @@
 			}
 			// If we can't record that the survey shouldn't be duplicated, just
 			// opt them out of the survey all together.
-			if ( !mw.storage.set( timeoutKey, now + 2 * 86400 ) ) {
+			if ( !mw.storage.set( timeoutKey, now + 2 * 86400000 ) ) {
 				return;
 			}
 
