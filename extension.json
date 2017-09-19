@@ -26,20 +26,8 @@
 		"UserSaveOptions": [
 			"WikimediaEventsHooks::onUserSaveOptions"
 		],
-		"ArticleDeleteComplete": [
-			"WikimediaEventsHooks::onArticleDeleteComplete"
-		],
-		"ArticleUndelete": [
-			"WikimediaEventsHooks::onArticleUndelete"
-		],
 		"ArticleViewHeader": [
 			"WikimediaEventsHooks::onArticleViewHeader"
-		],
-		"TitleMoveComplete": [
-			"WikimediaEventsHooks::onTitleMoveComplete"
-		],
-		"PageContentInsertComplete": [
-			"WikimediaEventsHooks::onPageContentInsertComplete"
 		],
 		"EditPageBeforeConflictDiff": [
 			"WikimediaEventsHooks::onEditPageBeforeConflictDiff"
