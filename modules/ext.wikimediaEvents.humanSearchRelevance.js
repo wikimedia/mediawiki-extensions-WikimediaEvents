@@ -22,11 +22,10 @@
 	// See https://developer.mozilla.org/en-US/docs/Web/API/Navigator/doNotTrack
 	// Taken from https://www.npmjs.com/package/dnt-polyfill
 	if ( window.doNotTrack === '1' ||
-		window.navigator && (
-			window.navigator.doNotTrack === '1' ||
-			window.navigator.doNotTrack === 'yes' ||
-			window.navigator.msDoNotTrack === '1'
-	) ) {
+		navigator.doNotTrack === '1' ||
+		navigator.doNotTrack === 'yes' ||
+		navigator.msDoNotTrack === '1'
+	) {
 		return;
 	}
 
