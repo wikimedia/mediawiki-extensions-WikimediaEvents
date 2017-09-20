@@ -127,6 +127,11 @@
 			"schema": "TestSearchSatisfaction2",
 			"revision": 16909631
 		},
+		"schema.SearchSatisfactionErrors": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "SearchSatisfactionErrors",
+			"revision": 17181648
+		},
 		"schema.GeoFeatures": {
 			"class": "ResourceLoaderSchemaModule",
 			"schema": "GeoFeatures",
