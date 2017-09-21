@@ -637,6 +637,28 @@
 		};
 	}
 
+	function createVisitPageEvent() {
+		var referrer,
+			evt = {
+				position: search.resultPosition
+			};
+
+		// Attach helpfull information for tieing together various events in the backend
+		try {
+			referrer = new mw.Uri( document.referrer );
+			if ( referrer.query.searchToken ) {
+				evt.searchToken = referrer.query.searchToken;
+			}
+			if ( referrer.query.search ) {
+				evt.query = referrer.query.search;
+			}
+		} catch ( e ) {
+			// Happens when document.referrer is not a proper url. Probably
+			// Some sort of privacy plugin in the browser or some such.
+		}
+		return evt;
+	}
+
 	/**
 	 * Sets up the full text search test.
 	 *
@@ -786,6 +808,8 @@
 				logEvent( 'esclick', esParams );
 			} );
 
+			// From here on is generating the `searchResultPage` event
+
 			serpExtras = {
 				offset: $( '.results-info' ).data( 'mw-num-results-offset' )
 			};
@@ -835,10 +859,9 @@
 
 			logEvent( 'searchResultPage', params );
 		}
+
 		if ( search.cameFromSearch ) {
-			logEvent( 'visitPage', {
-				position: search.resultPosition
-			} );
+			logEvent( 'visitPage', createVisitPageEvent() );
 			interval( checkinTimes, function ( checkin ) {
 				logEvent( 'checkin', { checkin: checkin } );
 			} );
