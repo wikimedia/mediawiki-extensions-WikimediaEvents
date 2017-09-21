@@ -118,9 +118,7 @@
 				// at the 1:2000 sampling. Sampling increased to 1:500, so 56k sessions
 				// per day.  Those 56k sessions will be split 15k to dashboards, and
 				// 7k per bucket, for ~50k per bucket in a week.
-				validBuckets = mw.config.get( 'wgDBname' ) === 'enwiki'
-					? [ 'explore_similar_control', 'explore_similar_test' ]
-					: [ 'control', 'ltr-1024', 'ltr-i-1024' ],
+				validBuckets = [ 'control', 'ltr-1024', 'ltr-i-1024' ],
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
 						// Provides a place to handle wiki-specific sampling,
@@ -174,8 +172,8 @@
 								subTest: 0.9039
 							},
 							enwiki: {
-								test: 1000,
-								subTest: 2
+								test: 2000,
+								subTest: null
 							},
 							enwiktionary: {
 								test: 40,
@@ -733,13 +731,6 @@
 					} );
 				}
 			);
-
-			/**
-			 * Loading Explore Similar module for A/B test
-			 */
-			if ( session.get( 'subTest' ) === 'explore_similar_test' ) {
-				mw.loader.load( 'ext.cirrus.explore-similar' );
-			}
 
 			/**
 			 * Explore similar event logging
