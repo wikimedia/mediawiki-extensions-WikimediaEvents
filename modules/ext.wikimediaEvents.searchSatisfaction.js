@@ -982,7 +982,7 @@
 			// ship the event
 			mw.loader.using( [ 'schema.SearchSatisfactionErrors' ] ).then( function () {
 				eventLog = eventLog || extendMwEventLog();
-				eventLog.logEvent( 'TestSearchSatisfaction2', evt );
+				eventLog.logEvent( 'SearchSatisfactionErrors', evt );
 			} );
 		} );
 	} );
