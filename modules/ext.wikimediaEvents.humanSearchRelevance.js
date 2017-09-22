@@ -1,4 +1,4 @@
-( function ( mw, $, undefined ) {
+( function ( mw, $ ) {
 	'use strict';
 
 	function sample( acceptPercentage ) {
@@ -84,12 +84,12 @@
 						} );
 					} )
 				} ),
-				content = $( '<p/>', {
+				content = $( '<p>' ).attr( {
 					'class': 'mw-wme-humanrel-question'
 				} ).text( mw.message( question, query ) ),
 				timeoutKey = 'wme-humrel-timeout',
 				timeout = mw.storage.get( timeoutKey ),
-				now = new Date().getTime();
+				now = Date.now();
 
 			// Don't show the survey to same browser for 2 days, to prevent annoying users
 			// While it makes sense to put this prior to loading dependencies
@@ -108,7 +108,7 @@
 			}
 
 			content.append( buttons.$element );
-			content.append( $( '<small/>' ).append( $( '<a/>', {
+			content.append( $( '<small>' ).append( $( '<a>', {
 				href: '//wikimediafoundation.org/wiki/Search_Relevance_Survey_Privacy_Statement',
 				target: '_blank'
 			} ).text( mw.message( 'wikimediaevents-humanrel-privacy-statement' ) ) ) );
