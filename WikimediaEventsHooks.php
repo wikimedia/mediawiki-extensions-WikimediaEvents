@@ -711,8 +711,8 @@ class WikimediaEventsHooks {
 			$campaign = $request->getCookie( $cookieName );
 		}
 
-		// If the campaign name doesn't match our current campaign then bail.
-		if ( strstr( $request->getVal( 'campaign' ), $campaignPrefix ) === false ) {
+		// Bail if this request has nothing to do with our campaign
+		if ( $campaign === 'NULL' ) {
 			return;
 		}
 
