@@ -10,5 +10,7 @@
 	"tag-cross-wiki-upload": "بارگذاری بین ویکی",
 	"tag-cross-wiki-upload-description": "پرونده‌های بارگذاری شده از درون ویکی‌متن و ویرایشگر دیداری در سایر ویکی‌ها",
 	"tag-HHVM-description": "نسخه با ماشین مجازی هیپ‌هاپ به جای مفسر زند پی‌اچ‌پی درست شده‌اند (مستثنی‌شده برای بهبود کارایی، برای اشکال‌زدایی/تحلیل برچسپ زده شده است)",
-	"abusefilter-edit-builder-vars-user-wpzero": "آیا کاربر از یک اپراتور ردهٔ صفر استفاده می‌کند (پروژهٔ ویکی‌پدیا زیرو)"
+	"abusefilter-edit-builder-vars-user-wpzero": "آیا کاربر از یک اپراتور ردهٔ صفر استفاده می‌کند (پروژهٔ ویکی‌پدیا زیرو)",
+	"wikimediaevents-humanrel-yes": "بله",
+	"wikimediaevents-humanrel-no": "خیر"
 }
