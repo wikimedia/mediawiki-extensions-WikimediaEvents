@@ -18,14 +18,13 @@
 		batchSize = 50,
 		baseUrl = mw.config.get( 'wgWMEStatsdBaseUri' ),
 		// Based on mw.eventLog.Core#sendBeacon
-		sendBeacon = ( /1|yes/.test( navigator.doNotTrack ) )
-			? function () { /* noop */ }
-			: navigator.sendBeacon
-				? function ( url ) { try { navigator.sendBeacon( url ); } catch ( e ) {} }
-				: function ( url ) { ( new Image() ).src = url; };
+		sendBeacon = navigator.sendBeacon
+			? function ( url ) { try { navigator.sendBeacon( url ); } catch ( e ) {} }
+			: function ( url ) { ( new Image() ).src = url; };
 
-	// Not configured, do nothing
-	if ( !baseUrl ) {
+	// Statsv not configured, or DNT enabled
+	if ( !baseUrl || /1|yes/.test( navigator.doNotTrack ) ) {
+		// Do nothing
 		return;
 	}
 
