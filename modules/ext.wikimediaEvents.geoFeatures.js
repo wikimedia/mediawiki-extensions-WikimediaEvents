@@ -39,7 +39,7 @@
 		var keyName = 'wmE-GeoFeaturesUser',
 			token = mw.storage.session.get( keyName ),
 			parts = token && token.split( '|' ),
-			now = ( new Date() ).getTime(),
+			now = Date.now(),
 			cut = now - ( 10 * 60 * 1000 ); // 10 minutes ago
 
 		if ( parts && parts[ 1 ] >= cut ) {
@@ -73,7 +73,7 @@
 		if ( url ) {
 			setTimeout(
 				function () {
-					document.location = url;
+					location.href = url;
 				},
 				200
 			);

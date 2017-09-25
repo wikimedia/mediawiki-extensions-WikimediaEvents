@@ -18,7 +18,7 @@
  * @license GNU GPL v2 or later
  * @author Erik Bernhardson <ebernhardson@wikimedia.org>
  */
-( function ( mw, $, undefined ) {
+( function ( mw, $ ) {
 	'use strict';
 	// reject mobile users
 	if ( mw.config.get( 'skin' ) === 'minerva' ) {
@@ -62,7 +62,7 @@
 	 * @return {string}
 	 */
 	function randomToken() {
-		return mw.user.generateRandomSessionId() + new Date().getTime().toString( 36 );
+		return mw.user.generateRandomSessionId() + Date.now().toString( 36 );
 	}
 
 	search = initFromWprov( 'srpw1_' );
@@ -320,7 +320,7 @@
 			if ( !state.hasOwnProperty( type ) ) {
 				if ( ttl.hasOwnProperty( type ) ) {
 					var endTime = parseInt( mw.storage.get( key( type + 'EndTime' ) ), 10 ),
-						now = new Date().getTime();
+						now = Date.now();
 					if ( endTime && endTime > now ) {
 						state[ type ] = mw.storage.get( key( type ) );
 					} else {
@@ -337,7 +337,7 @@
 
 		this.set = function ( type, value ) {
 			if ( ttl.hasOwnProperty( type ) ) {
-				var now = new Date().getTime();
+				var now = Date.now();
 				if ( !mw.storage.set( key( type + 'EndTime' ), now + ttl[ type ] ) ) {
 					return false;
 				}
@@ -352,7 +352,7 @@
 
 		this.refresh = function ( type ) {
 			if ( this.isActive() && ttl.hasOwnProperty( type ) && mw.storage.get( key( type ) ) !== null ) {
-				var now = new Date().getTime();
+				var now = Date.now();
 				mw.storage.set( key( type + 'EndTime' ), now + ttl[ type ] );
 			}
 		};
@@ -412,7 +412,7 @@
 				};
 
 			handleVisibilityChange = function () {
-				var now = new Date().getTime();
+				var now = Date.now();
 
 				if ( document[ hidden ] ) {
 					// pause timeout if running
@@ -525,7 +525,7 @@
 		// @todo only doing this when a new log event initializes event logging
 		// might be reducing our deliverability. Not sure the best way to
 		// handle.
-		$( document ).ready( function () {
+		$( function () {
 			var queue, url,
 				jsonQueue = mw.storage.get( queueKey );
 
@@ -888,7 +888,7 @@
 				var $wprov, params;
 
 				if ( data.action === 'session-start' ) {
-					session.set( 'autocompleteStart', new Date().getTime() );
+					session.set( 'autocompleteStart', Date.now() );
 				} else if ( data.action === 'impression-results' ) {
 					// When a new search is performed reset the session lifetime.
 					session.refresh( 'sessionId' );
@@ -902,7 +902,7 @@
 						autocompleteType: data.resultSetType
 					};
 					if ( session.has( 'autocompleteStart' ) ) {
-						params.msToDisplayResults = Math.round( new Date().getTime() - session.get( 'autocompleteStart' ) );
+						params.msToDisplayResults = Math.round( Date.now() - session.get( 'autocompleteStart' ) );
 					}
 					logEvent( 'searchResultPage', params );
 				} else if ( data.action === 'render-one' ) {
@@ -1019,13 +1019,13 @@
 
 	// Full text search satisfaction tracking
 	if ( isSearchResultPage || search.cameFromSearch ) {
-		$( document ).ready( function () {
+		$( function () {
 			setup( setupSearchTest );
 		} );
 	}
 
 	// Autocomplete satisfaction tracking
-	$( document ).ready( function () {
+	$( function () {
 		var initialize = atMostOnce( function () {
 			setup( setupAutocompleteTest );
 		} );

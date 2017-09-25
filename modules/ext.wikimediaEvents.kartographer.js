@@ -23,7 +23,7 @@
 		var keyName = 'wmE-GeoFeaturesUser',
 			token = mw.storage.session.get( keyName ),
 			parts = token && token.split( '|' ),
-			now = ( new Date() ).getTime(),
+			now = Date.now(),
 			cut = now - ( 10 * 60 * 1000 ); // 10 minutes ago
 
 		if ( parts && parts[ 1 ] >= cut ) {
@@ -102,7 +102,7 @@
 		}
 
 		if ( options.extra ) {
-			event.extra = ( $.type( options.extra ) !== 'string' ) ? JSON.stringify( options.extra ) : options.extra;
+			event.extra = ( typeof options.extra !== 'string' ) ? JSON.stringify( options.extra ) : options.extra;
 		}
 		if ( options.duration ) {
 			event.duration = options.duration;

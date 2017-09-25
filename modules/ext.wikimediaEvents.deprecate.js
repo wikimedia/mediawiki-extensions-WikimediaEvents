@@ -1,7 +1,7 @@
 /*!
  * Track usage of deprecated JavaScript functionality
  *
- * @see https://meta.wikimedia.org/wiki/Schema:DeprecatedUsage
+ * @see https://grafana.wikimedia.org/dashboard/db/mw-js-deprecate
  */
 ( function ( mw ) {
 	function oneIn( populationSize ) {

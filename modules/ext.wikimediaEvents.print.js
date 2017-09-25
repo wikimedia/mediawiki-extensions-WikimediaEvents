@@ -1,4 +1,4 @@
-/*
+/*!
  * Track browser print events
  *
  * Each action is only logged once per page view. That is, no matter how many

@@ -82,7 +82,7 @@
 			// Because this code will only be executed by UA's that support the Beacon
 			// API, we can rely on mw.now not to be subject to system clock skew or
 			// adjustments.
-			msPaused +=  mw.now() - pausedAt;
+			msPaused += mw.now() - pausedAt;
 			pausedAt = null;
 		}
 	}
