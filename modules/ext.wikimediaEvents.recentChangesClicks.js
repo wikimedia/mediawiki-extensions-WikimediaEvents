@@ -5,6 +5,46 @@
  * @author Roan Kattouw <rkattouw@wikimedia.org>
  */
 ( function ( $, mw ) {
+	var isNewUI,
+		metricName,
+		collapsiblePromise,
+		specialPage = mw.config.get( 'wgCanonicalSpecialPageName' );
+
+	function logReady() {
+		mw.track(
+			'timing.MediaWiki.timing.' + metricName + '.ready.' + specialPage,
+			window.performance.now()
+		);
+		mw.track(
+			'timing.MediaWiki.timing.' + metricName + '.backendResponse.' + specialPage,
+			mw.config.get( 'wgBackendResponseTime' )
+		);
+	}
+
+	if ( [ 'Recentchanges', 'Recentchangeslinked', 'Watchlist' ].indexOf( specialPage ) !== -1 ) {
+		// Log performance data
+		if ( window.performance && window.performance.now ) {
+			// HACK: if the rcfilters module is in the 'registered' state, it's not going to be loaded
+			// and we're in the old UI. If it's in the 'loading', 'loaded' or 'ready' states,
+			// we're in the new UI.
+			isNewUI = mw.loader.getState( 'mediawiki.rcfilters.filters.ui' ) !== 'registered';
+			metricName = isNewUI ? 'structuredChangeFilters' : 'changesListSpecialPage';
+			if ( isNewUI ) {
+				mw.hook( 'structuredChangeFilters.ui.initialized' ).add( logReady );
+			} else {
+				// HACK: to measure 'ready' time, wait for makeCollapsible to be loaded
+				// and for $.ready
+				if ( mw.loader.getState( 'jquery.makeCollapsible' ) !== 'registered' ) {
+					collapsiblePromise = mw.loader.using( 'jquery.makeCollapsible' );
+				} else {
+					// makeCollapsible isn't going to be loaded
+					collapsiblePromise = null;
+				}
+				$.when( $.ready, collapsiblePromise ).done( logReady );
+			}
+		}
+	}
+
 	$( function () {
 		var uri = new mw.Uri(),
 			linkTypes = {
@@ -42,7 +82,7 @@
 			return 'page';
 		}
 
-		if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'Recentchanges' ) {
+		if ( specialPage === 'Recentchanges' ) {
 			$( '.mw-changeslist' ).on( 'click', 'a[href]', function ( e ) {
 				var selector, target,
 					type = 'unknown',
@@ -113,6 +153,5 @@
 			delete uri.query.fromrc;
 			history.replaceState( null, document.title, uri );
 		}
-
 	} );
 }( jQuery, mediaWiki ) );
