@@ -560,7 +560,7 @@ class WikimediaEventsHooks {
 		 * Everything below this block is agnostic to which tour is being run.
 		 */
 		$campaignPrefix = 'wmde_abc2017';
-		$campaignStartTimestamp = '20171004000000';
+		$campaignStartTimestamp = '20171005000000';
 		$guidedTourName = 'einfuhrung';
 		$guidedTourInitialStep = 'willkommen';
 		$cookieName = 'wmdecampaign-' . $campaignPrefix;
