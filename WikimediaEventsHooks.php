@@ -86,24 +86,58 @@ class WikimediaEventsHooks {
 			return;
 		}
 
+		$title = $article->getTitle();
 		$stats = MediaWikiServices::getInstance()->getStatsdDataFactory();
+
 		if ( PHP_SAPI !== 'cli' ) {
+			if ( $user->isBot() ) {
+				$accType = 'bot'; // registered bot
+			} elseif ( RequestContext::getMain()->getRequest()->getCheck( 'maxlag' ) ) {
+				$accType = 'throttled'; // probably an unregistered bot
+			} else {
+				$accType = 'normal';
+			}
+
+			if ( MWNamespace::isContent( $title->getNamespace() ) ) {
+				$nsType = 'content';
+			} elseif ( MWNamespace::isTalk( $title->getNamespace() ) ) {
+				$nsType = 'talk';
+			} else {
+				$nsType = 'meta';
+			}
+
 			$size = $content->getSize();
-			DeferredUpdates::addCallableUpdate( function () use ( $stats, $size ) {
-				$timing = RequestContext::getMain()->getTiming();
-				$measure = $timing->measure( 'editResponseTime', 'requestStart', 'requestShutdown' );
-				if ( $measure !== false ) {
-					$stats->timing( 'timing.editResponseTime', $measure['duration'] * 1000 );
+			if ( defined( 'MW_API' ) ) {
+				$entry = 'api';
+			} elseif ( defined( 'MEDIAWIKI_JOB_RUNNER' ) ) {
+				$entry = 'job';
+			} elseif ( PHP_SAPI === 'cli' ) {
+				$entry = 'cli';
+			} else {
+				$entry = 'index';
+			}
+
+			DeferredUpdates::addCallableUpdate(
+				function () use ( $stats, $size, $nsType, $accType, $entry ) {
+					$timing = RequestContext::getMain()->getTiming();
+					$measure = $timing->measure(
+						'editResponseTime', 'requestStart', 'requestShutdown' );
+					if ( $measure !== false ) {
+						$timeMs = $measure['duration'] * 1000;
+						$stats->timing( 'timing.editResponseTime', $timeMs );
+						$stats->timing( "timing.editResponseTime.page.$nsType", $timeMs );
+						$stats->timing( "timing.editResponseTime.user.$accType", $timeMs );
+						$stats->timing( "timing.editResponseTime.entry.$entry", $timeMs );
+						$stats->gauge( 'edit.newContentSize', $size );
+					}
 				}
-				$stats->gauge( 'edit.newContentSize', $size );
-			} );
+			);
 		}
 
 		$isAPI = defined( 'MW_API' );
 		$isMobile = class_exists( 'MobileContext' )
 			&& MobileContext::singleton()->shouldDisplayMobileView();
 		$revId = $revision->getId();
-		$title = $article->getTitle();
 
 		$event = [
 			'revisionId' => $revId,
