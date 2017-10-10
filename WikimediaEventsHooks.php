@@ -76,7 +76,6 @@ class WikimediaEventsHooks {
 	 * @param Status $status
 	 * @param int $baseRevId
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
-	 * @see https://meta.wikimedia.org/wiki/Schema:PageContentSaveComplete
 	 */
 	public static function onPageContentSaveComplete(
 		$article, $user, $content, $summary,
@@ -132,55 +131,6 @@ class WikimediaEventsHooks {
 					}
 				}
 			);
-		}
-
-		$isAPI = defined( 'MW_API' );
-		$isMobile = class_exists( 'MobileContext' )
-			&& MobileContext::singleton()->shouldDisplayMobileView();
-		$revId = $revision->getId();
-
-		$event = [
-			'revisionId' => $revId,
-			'isAPI'      => $isAPI,
-			'isMobile'   => $isMobile,
-		];
-
-		if ( isset( $_SERVER[ 'HTTP_USER_AGENT' ] ) ) {
-			$event[ 'userAgent' ] = $_SERVER[ 'HTTP_USER_AGENT' ];
-		}
-		EventLogging::logEvent( 'PageContentSaveComplete', 5588433, $event );
-
-		if ( $user->isAnon() ) {
-			return;
-		}
-
-		// Get the user's age, measured in seconds since registration.
-		$age = time() - wfTimestampOrNull( TS_UNIX, $user->getRegistration() );
-
-		$editCount = $user->getEditCount();
-
-		// Check if this edit brings the user's total edit count to a value
-		// that is a factor of ten. We consider these 'milestones'. The rate
-		// at which editors are hitting such milestones and the time it takes
-		// are important indicators of community health.
-		if ( $editCount === 0 || preg_match( '/^9+$/', "$editCount" ) ) {
-			$milestone = $editCount + 1;
-			$stats->increment( "editor.milestones.{$milestone}" );
-			$stats->timing( "editor.milestones.timing.{$milestone}", $age );
-		}
-
-		// If the editor signed up in the last thirty days, and if this is an
-		// NS_MAIN edit, log a NewEditorEdit event.
-		if ( $age <= 2592000 && $title->inNamespace( NS_MAIN ) ) {
-			EventLogging::logEvent( 'NewEditorEdit', 6792669, [
-					'userId'    => $user->getId(),
-					'userAge'   => $age,
-					'editCount' => $editCount,
-					'pageId'    => $article->getId(),
-					'revId'     => $revId,
-					'isAPI'     => $isAPI,
-					'isMobile'  => $isMobile,
-				] );
 		}
 	}
 
