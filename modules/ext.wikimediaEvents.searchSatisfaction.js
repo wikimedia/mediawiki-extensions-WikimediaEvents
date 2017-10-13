@@ -113,12 +113,11 @@
 		function initialize( session ) {
 
 			var sessionId = session.get( 'sessionId' ),
-				// LTR sub test
-				// Test is running on enwiki only, which reports ~14k sessions per day
-				// at the 1:2000 sampling. Sampling increased to 1:500, so 56k sessions
-				// per day.  Those 56k sessions will be split 15k to dashboards, and
-				// 7k per bucket, for ~50k per bucket in a week.
-				validBuckets = [],
+				// Recall test, relax the default AND of the retrieval query filter
+				// rec_3t_66_80 affects only 3+ terms queries
+				// rec_4t_66_80 affects only 4+ terms queries
+				// Sampling at ~18k sessions per bucket
+				validBuckets = [ 'control', 'rec_3t_80_66', 'rec_4t_80_66' ],
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
 						// Provides a place to handle wiki-specific sampling,
@@ -140,8 +139,8 @@
 								subTest: null
 							},
 							enwiki: {
-								test: 2000,
-								subTest: null
+								test: 500,
+								subTest: 0.75
 							},
 							enwiktionary: {
 								test: 40,
