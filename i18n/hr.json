@@ -7,6 +7,7 @@
 		]
 	},
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Postavljanje s drugih wikija]]",
+	"tag-HHVM-description": "Uređivanja načinjena uz omogućen HipHop Virtual Machine umjesto interpretatora Zend PHP (očekivano poboljšanje performansi, označeno radi ''debugginga''/analize)",
 	"wikimediaevents-humanrel-question-a": "Biste li kliknuli ovu stranicu prilikom pretraživanja '$1'?",
 	"wikimediaevents-humanrel-question-d": "Ako netko pretražuje '$1', bi li pročitali ovaj članak?",
 	"wikimediaevents-humanrel-yes": "Da",
