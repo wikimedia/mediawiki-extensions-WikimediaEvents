@@ -113,11 +113,7 @@
 		function initialize( session ) {
 
 			var sessionId = session.get( 'sessionId' ),
-				// Recall test, relax the default AND of the retrieval query filter
-				// rec_3t_66_80 affects only 3+ terms queries
-				// rec_4t_66_80 affects only 4+ terms queries
-				// Sampling at ~18k sessions per bucket
-				validBuckets = [ 'control', 'rec_3t_80_66', 'rec_4t_80_66' ],
+				validBuckets = [],
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
 						// Provides a place to handle wiki-specific sampling,
@@ -139,8 +135,8 @@
 								subTest: null
 							},
 							enwiki: {
-								test: 500,
-								subTest: 0.75
+								test: 2000,
+								subTest: null
 							},
 							enwiktionary: {
 								test: 40,
