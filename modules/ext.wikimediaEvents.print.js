@@ -17,12 +17,17 @@
 	*   schema Schema:Print
 	*/
 	function logEvent( action ) {
+		var skin = config.get( 'skin' );
+		if ( skin !== 'vector' && skin !== 'minerva' ) {
+			skin = 'other';
+		}
+
 		track( 'event.Print', {
 			sessionToken: user.sessionId(),
 			isAnon: user.isAnon(),
 			pageTitle: config.get( 'wgPageName' ),
 			namespaceId: config.get( 'wgNamespaceNumber' ),
-			skin: config.get( 'skin' ),
+			skin: skin,
 			action: action
 		} );
 	}
