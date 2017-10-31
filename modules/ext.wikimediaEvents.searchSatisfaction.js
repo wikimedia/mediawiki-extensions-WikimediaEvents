@@ -113,7 +113,9 @@
 		function initialize( session ) {
 
 			var sessionId = session.get( 'sessionId' ),
-				validBuckets = [],
+				validBuckets = mw.config.get( 'wgDBname' ) === 'enwiki' ?
+					[ 'control', 'dbn20', 'dbn20-i', 'dbn35', 'dbn35-i' ] :
+					[],
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
 						// Provides a place to handle wiki-specific sampling,
@@ -134,9 +136,12 @@
 								test: 350,
 								subTest: null
 							},
+							// .0005 works out to ~2.7k sessions per week.
+							// .15 increases that to 810k per week. Giving
+							// 160k sessions per bucket per week.
 							enwiki: {
-								test: 2000,
-								subTest: null
+								test: 0.15,
+								subTest: 0.996
 							},
 							enwiktionary: {
 								test: 40,
@@ -529,7 +534,11 @@
 
 	function genLogEventFn( source, session ) {
 		return function ( action, extraData ) {
-			var scrollTop = $( window ).scrollTop(),
+			// A/B testing data is verbose and blacklisted from mysql. Our dashboarding though
+			// still sources data from mysql. For that reason send AB test data to different
+			// schema.
+			var schema = session.get( 'subTest' ) ? 'SearchSatisfaction' : 'TestSearchSatisfaction2',
+				scrollTop = $( window ).scrollTop(),
 				evt = {
 					// searchResultPage, visitPage, checkin, click or iwclick
 					action: action,
@@ -583,9 +592,9 @@
 			}
 
 			// ship the event
-			mw.loader.using( [ 'schema.TestSearchSatisfaction2' ] ).then( function () {
+			mw.loader.using( [ 'schema.' + schema ] ).then( function () {
 				eventLog = eventLog || extendMwEventLog();
-				eventLog.logEvent( 'TestSearchSatisfaction2', evt );
+				eventLog.logEvent( schema, evt );
 			} );
 		};
 	}

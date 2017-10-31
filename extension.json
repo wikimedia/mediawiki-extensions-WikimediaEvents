@@ -107,6 +107,11 @@
 			"schema": "CompletionSuggestions",
 			"revision": 13630018
 		},
+		"schema.SearchSatisfaction": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "SearchSatisfaction",
+			"revision": 17374996
+		},
 		"schema.TestSearchSatisfaction2": {
 			"class": "ResourceLoaderSchemaModule",
 			"schema": "TestSearchSatisfaction2",
