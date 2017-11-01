@@ -110,7 +110,7 @@
 		"schema.SearchSatisfaction": {
 			"class": "ResourceLoaderSchemaModule",
 			"schema": "SearchSatisfaction",
-			"revision": 17374996
+			"revision": 17378115
 		},
 		"schema.TestSearchSatisfaction2": {
 			"class": "ResourceLoaderSchemaModule",
