@@ -18,6 +18,7 @@
  * @license GNU GPL v2 or later
  * @author Erik Bernhardson <ebernhardson@wikimedia.org>
  */
+/* eslint-disable vars-on-top */
 ( function ( mw, $ ) {
 	'use strict';
 	// reject mobile users
@@ -86,8 +87,8 @@
 		// currently loaded state
 		var state = {},
 			storageNamespace = 'wmE-sS-',
-		// persistent state keys that have a lifetime. unlisted
-		// keys are not persisted between page loads.
+			// persistent state keys that have a lifetime. unlisted
+			// keys are not persisted between page loads.
 			ttl = {
 				sessionId: 10 * 60 * 1000,
 				subTest: 10 * 60 * 1000,
@@ -215,8 +216,8 @@
 				 */
 				oneIn = function ( populationSize ) {
 					var rand = mw.user.generateRandomSessionId(),
-					// take the first 52 bits of the rand value to match js
-					// integer precision
+						// take the first 52 bits of the rand value to match js
+						// integer precision
 						parsed = parseInt( rand.slice( 0, 13 ), 16 );
 					if ( populationSize < 1 ) {
 						// Population size < 1 switches to percentage based
@@ -239,11 +240,11 @@
 				 */
 				chooseBucket = function ( buckets ) { // jshint ignore:line
 					var rand = mw.user.generateRandomSessionId(),
-					// take the first 52 bits of the rand value to match js
-					// integer precision
+						// take the first 52 bits of the rand value to match js
+						// integer precision
 						parsed = parseInt( rand.slice( 0, 13 ), 16 ),
-					// step size between buckets. No -1 on pow or the maximum
-					// value would be past the end.
+						// step size between buckets. No -1 on pow or the maximum
+						// value would be past the end.
 						step = Math.pow( 2, 52 ) / buckets.length;
 					return buckets[ Math.floor( parsed / step ) ];
 				};
@@ -672,10 +673,10 @@
 				'.mw-search-result-heading a, #mw-search-DYM-suggestion, #mw-search-DYM-original, #mw-search-DYM-rewritten',
 				function ( evt ) {
 					var wprov,
-					// Sometimes the click event is on a span inside the anchor
+						// Sometimes the click event is on a span inside the anchor
 						$target = $( evt.target ).closest( 'a' ),
-					// Distinguish between standard 'on-wiki' results, and interwiki results that point
-					// to another language
+						// Distinguish between standard 'on-wiki' results, and interwiki results that point
+						// to another language
 						clickType = $target.closest( '.mw-search-result-heading' ).find( 'a.extiw' ).length > 0
 							? 'iwclick'
 							: 'click',

@@ -8,16 +8,30 @@
  */
 ( function ( $, mw, config, user, mwExperiments ) {
 
+	var pausedAt,
+		msPaused = 0,
+		perf = window.performance,
+		EVENT = {
+			pageTitle: config.get( 'wgTitle' ),
+			namespaceId: config.get( 'wgNamespaceNumber' ),
+			skin: config.get( 'skin' ),
+			isAnon: user.isAnon(),
+			pageToken: user.generateRandomSessionId() +
+				Math.floor( mw.now() ).toString() +
+				user.generateRandomSessionId(),
+			sessionToken: user.sessionId()
+		};
+
 	/**
-	* If available return the time in ms till first paint
-	*
-	* @param {PerformanceTiming} perf See
-	*  https://developer.mozilla.org/en-US/docs/Web/API/PerformanceTiming.
-	* @return {number|undefined} Time, in milliseconds since the UNIX epoch, when
-	*  the document was first painted by the UA; or `undefined` if the UA doesn't
-	*  report first paint time or reports a first paint time that's before the UA
-	*  began loading the document
-	*/
+	 * If available return the time in ms till first paint
+	 *
+	 * @param {PerformanceTiming} perf See
+	 *  https://developer.mozilla.org/en-US/docs/Web/API/PerformanceTiming.
+	 * @return {number|undefined} Time, in milliseconds since the UNIX epoch, when
+	 *  the document was first painted by the UA; or `undefined` if the UA doesn't
+	 *  report first paint time or reports a first paint time that's before the UA
+	 *  began loading the document
+	 */
 	function getFirstPaintTime( perf ) {
 		var chromeLoadTimes,
 			timing = perf.timing;
@@ -33,20 +47,6 @@
 			}
 		}
 	}
-
-	var pausedAt,
-		msPaused = 0,
-		perf = window.performance,
-		EVENT = {
-			pageTitle: config.get( 'wgTitle' ),
-			namespaceId: config.get( 'wgNamespaceNumber' ),
-			skin: config.get( 'skin' ),
-			isAnon: user.isAnon(),
-			pageToken: user.generateRandomSessionId() +
-				Math.floor( mw.now() ).toString() +
-				user.generateRandomSessionId(),
-			sessionToken: user.sessionId()
-		};
 
 	/**
 	 * Pause the user's page session length timer based on information that they
@@ -88,11 +88,11 @@
 	}
 
 	/**
-	* Log an event to the Schema:ReadingDepth
-	*
-	* @param {string} action a valid value for the action property inside the
-	*	  schema Schema:ReadingDepth
-	*/
+	 * Log an event to the Schema:ReadingDepth
+	 *
+	 * @param {string} action A valid value for the action property inside the
+	 *	schema Schema:ReadingDepth
+	 */
 	function logEvent( action ) {
 		var now,
 			timing = perf.timing,
@@ -134,8 +134,8 @@
 	}
 
 	/**
-	 * @param {number} samplingRate - a float between 0 and 1 for which events
-	 * in the schema should be logged.
+	 * @param {number} samplingRate A float between 0 and 1 for which events
+	 *  in the schema should be logged.
 	 * @return {boolean}
 	 */
 	function isInSample( samplingRate ) {

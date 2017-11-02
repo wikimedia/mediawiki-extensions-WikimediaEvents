@@ -1,6 +1,8 @@
 ( function ( mw, $ ) {
 	'use strict';
 
+	var config;
+
 	function sample( acceptPercentage ) {
 		var rand = mw.user.generateRandomSessionId(),
 			// take the first 52 bits of the rand value to match js
@@ -37,7 +39,7 @@
 	// The config value is coded into the page output and cached in varnish.
 	// That means any changes to sampling rates or pages chosen will take up to
 	// a week to propogate into the wild.
-	var config = mw.config.get( 'wgWMESearchRelevancePages' );
+	config = mw.config.get( 'wgWMESearchRelevancePages' );
 
 	// bad configuration
 	if ( !config.hasOwnProperty( 'sampleRate' ) || !config.hasOwnProperty( 'queries' ) ) {
