@@ -9,7 +9,7 @@
 		// Which iframes are being tracked
 		tracked = {},
 		$geoHackLinks,
-		$document = $( document ),
+		isPrimary = {},
 		wmaSelector = 'iframe[src^=\'//wma.wmflabs.org/iframe.html\']',
 		wiwosmSelector = 'iframe#openstreetmap';
 
@@ -112,7 +112,7 @@
 					&& $( document.activeElement ).is( selector )
 				) {
 					tracked[ selector ] = true;
-					doTrack( feature, 'interaction', !!$document.data( 'isPrimary-' + feature ) );
+					doTrack( feature, 'interaction', !!isPrimary[ feature ] );
 				}
 			}, 0 );
 		} );
@@ -183,7 +183,7 @@
 						isTitle = isTitleCoordinate( $this ),
 						$container = $( wmaSelector ).parent();
 
-					$document.data( 'isPrimary-WikiMiniAtlas', isTitle );
+					isPrimary.WikiMiniAtlas = isTitle;
 					if ( $container.is( ':visible' ) ) {
 						doTrack( 'WikiMiniAtlas', 'open', isTitle );
 						$container.one( 'hide', function () {
@@ -195,7 +195,7 @@
 		}
 
 		// Track WIWOSM usage
-		$document.data( 'isPrimary-WIWOSM', true );
+		isPrimary.WIWOSM = true;
 		trackIframe( wiwosmSelector, 'WIWOSM' );
 		trackButton( '.osm-icon-coordinates',
 			function () {
