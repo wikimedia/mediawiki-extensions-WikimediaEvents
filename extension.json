@@ -72,16 +72,6 @@
 		]
 	},
 	"ResourceModules": {
-		"schema.TimingData": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "TimingData",
-			"revision": 7254808
-		},
-		"schema.DeprecatedUsage": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "DeprecatedUsage",
-			"revision": 7906187
-		},
 		"schema.Print": {
 			"class": "ResourceLoaderSchemaModule",
 			"schema": "Print",
@@ -91,11 +81,6 @@
 			"class": "ResourceLoaderSchemaModule",
 			"schema": "ReadingDepth",
 			"revision": 16325045
-		},
-		"schema.ModuleLoadFailure": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "ModuleLoadFailure",
-			"revision": 12407847
 		},
 		"schema.Edit": {
 			"class": "ResourceLoaderSchemaModule",
@@ -157,24 +142,19 @@
 			"schema": "RecentChangesTopLinks",
 			"revision": 16732249
 		},
-		"schema.HumanSearchRelevance": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "HumanSearchRelevance",
-			"revision": 17073843
-		},
 		"ext.wikimediaEvents": {
 			"scripts": [
-				"ext.wikimediaEvents.events.js",
-				"ext.wikimediaEvents.statsd.js",
-				"ext.wikimediaEvents.kartographer.js",
-				"ext.wikimediaEvents.print.js",
-				"ext.wikimediaEvents.readingDepth.js",
-				"ext.wikimediaEvents.geoFeatures.js",
-				"ext.wikimediaEvents.recentChangesClicks.js"
+				"all/ext.wikimediaEvents.events.js",
+				"all/ext.wikimediaEvents.statsd.js",
+				"all/ext.wikimediaEvents.kartographer.js",
+				"all/ext.wikimediaEvents.print.js",
+				"all/ext.wikimediaEvents.readingDepth.js",
+				"all/ext.wikimediaEvents.geoFeatures.js",
+				"all/ext.wikimediaEvents.recentChangesClicks.js"
 			],
 			"skinScripts": {
 				"default": [
-					"ext.wikimediaEvents.searchSatisfaction.js"
+					"all/ext.wikimediaEvents.searchSatisfaction.js"
 				],
 				"minerva": []
 			},
@@ -192,7 +172,7 @@
 		},
 		"ext.wikimediaEvents.loggedin": {
 			"scripts": [
-				"ext.wikimediaEvents.deprecate.js"
+				"loggedin/ext.wikimediaEvents.deprecate.js"
 			],
 			"targets": [
 				"desktop",
@@ -201,21 +181,6 @@
 			"dependencies": [
 				"mediawiki.user",
 				"mediawiki.Uri"
-			]
-		},
-		"ext.wikimediaEvents.humanSearchRel": {
-			"messages": [
-				"wikimediaevents-humanrel-question-a",
-				"wikimediaevents-humanrel-question-b",
-				"wikimediaevents-humanrel-question-c",
-				"wikimediaevents-humanrel-question-d",
-				"wikimediaevents-humanrel-yes",
-				"wikimediaevents-humanrel-no",
-				"wikimediaevents-humanrel-unsure",
-				"wikimediaevents-humanrel-privacy-statement"
-			],
-			"styles": [
-				"ext.wikimediaEvents.humanSearchRelevance.css"
 			]
 		}
 	},
