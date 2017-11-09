@@ -114,9 +114,7 @@
 		function initialize( session ) {
 
 			var sessionId = session.get( 'sessionId' ),
-				validBuckets = mw.config.get( 'wgDBname' ) === 'enwiki' ?
-					[ 'control', 'dbn20', 'dbn20-i', 'dbn35', 'dbn35-i' ] :
-					[],
+				validBuckets = [],
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
 						// Provides a place to handle wiki-specific sampling,
@@ -141,8 +139,8 @@
 							// .15 increases that to 810k per week. Giving
 							// 160k sessions per bucket per week.
 							enwiki: {
-								test: 0.15,
-								subTest: 0.996
+								test: 2000,
+								subTest: null
 							},
 							enwiktionary: {
 								test: 40,
