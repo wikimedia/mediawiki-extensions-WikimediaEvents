@@ -7,5 +7,6 @@
 	},
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Üles laaditud teisest vikist]]",
 	"tag-cross-wiki-upload-description": "Teisest vikist visuaal- või vikiteksti toimeti vahendusel üles laaditud failid",
-	"tag-HHVM-description": "Muudatused, mis tehti sisse lülitatud HipHopi virtuaalmasinaga PHP-interpretaatori Zend asemel (eeldatavalt tõstab jõudlust, märgis on lisatud silumise ja analüüsi eesmärgil)"
+	"tag-HHVM-description": "Muudatused, mis tehti sisse lülitatud HipHopi virtuaalmasinaga PHP-interpretaatori Zend asemel (eeldatavalt tõstab jõudlust, märgis on lisatud silumise ja analüüsi eesmärgil)",
+	"abusefilter-edit-builder-vars-user-wpzero": "Kas kasutaja redigeerib nullmääraga andmesideteenuse pakkuja vahendusel (Wikimedia Zero)"
 }
