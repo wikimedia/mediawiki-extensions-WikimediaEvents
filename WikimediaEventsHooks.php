@@ -64,7 +64,7 @@ class WikimediaEventsHooks {
 	 *
 	 * Imported from EventLogging extension
 	 *
-	 * @param WikiPage $article
+	 * @param WikiPage $wikiPage
 	 * @param User $user
 	 * @param Content $content
 	 * @param string $summary
@@ -75,17 +75,18 @@ class WikimediaEventsHooks {
 	 * @param Revision $revision
 	 * @param Status $status
 	 * @param int $baseRevId
+	 *
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
 	 */
 	public static function onPageContentSaveComplete(
-		$article, $user, $content, $summary,
+		WikiPage $wikiPage, $user, $content, $summary,
 		$isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId
 	) {
 		if ( !$revision ) {
 			return;
 		}
 
-		$title = $article->getTitle();
+		$title = $wikiPage->getTitle();
 		$stats = MediaWikiServices::getInstance()->getStatsdDataFactory();
 
 		if ( PHP_SAPI !== 'cli' ) {
