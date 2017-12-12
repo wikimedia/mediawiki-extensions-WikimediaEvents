@@ -114,7 +114,9 @@
 		function initialize( session ) {
 
 			var sessionId = session.get( 'sessionId' ),
-				validBuckets = [],
+				validBuckets = mw.config.get( 'wgDBname' ) === 'hewiki' ?
+					[ 'control', 'ltr-1024', 'ltr-1024-i' ] :
+					[],
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
 						// Provides a place to handle wiki-specific sampling,
@@ -135,9 +137,6 @@
 								test: 350,
 								subTest: null
 							},
-							// .0005 works out to ~2.7k sessions per week.
-							// .15 increases that to 810k per week. Giving
-							// 160k sessions per bucket per week.
 							enwiki: {
 								test: 2000,
 								subTest: null
@@ -189,6 +188,10 @@
 							zhwiki: {
 								test: 100,
 								subTest: null
+							},
+							hewiki: {
+								test: 0.8112,
+								subTest: 0.8767
 							}
 						};
 					if ( subTests[ dbName ] ) {
