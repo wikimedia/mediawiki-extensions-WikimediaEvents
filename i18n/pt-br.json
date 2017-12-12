@@ -2,12 +2,21 @@
 	"@metadata": {
 		"authors": [
 			"Jefersonmoraes",
-			"Felipe L. Ewald"
+			"Felipe L. Ewald",
+			"Eduardo Addad de Oliveira"
 		]
 	},
 	"wikimediaevents-desc": "Registra eventos específicos da Wikimedia usando EventLogging",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Cross-wiki upload]]",
 	"tag-cross-wiki-upload-description": "Arquivos carregados de dentro do texto wiki e editores visuais em outras wikis",
 	"tag-HHVM-description": "Revisões feitas com o HipHop Virtual Machine habilitado em vez de o intérprete Zend PHP (espera-se melhorar o desempenho, marcado para depuração/análise)",
-	"abusefilter-edit-builder-vars-user-wpzero": "Se um usuário está ou não editando uma operadora de classificação zero através do Wikipedia Zero"
+	"abusefilter-edit-builder-vars-user-wpzero": "Se um usuário está ou não editando uma operadora de classificação zero através do Wikipedia Zero",
+	"wikimediaevents-humanrel-question-a": "Você clicaria nessa página ao pesquisar '$1'?",
+	"wikimediaevents-humanrel-question-b": "Se estivesse à procura de '$1', este artigo seria um bom resultado?",
+	"wikimediaevents-humanrel-question-c": "Se tivesse pesquisado '$1' este artigo seria relevante?",
+	"wikimediaevents-humanrel-question-d": "Se alguém procurasse '$1' quereria ler este artigo?",
+	"wikimediaevents-humanrel-yes": "Sim",
+	"wikimediaevents-humanrel-no": "Não",
+	"wikimediaevents-humanrel-unsure": "Não sei",
+	"wikimediaevents-humanrel-privacy-statement": "Declaração de Privacidade"
 }
