@@ -85,7 +85,7 @@
 		"schema.Edit": {
 			"class": "ResourceLoaderSchemaModule",
 			"schema": "Edit",
-			"revision": 17520312
+			"revision": 17541122
 		},
 		"schema.CompletionSuggestions": {
 			"class": "ResourceLoaderSchemaModule",
