@@ -16,5 +16,6 @@
 	"abusefilter-edit-builder-vars-user-wpzero": "Sea o no un usuario está editando a través de un índice cero de portador a través de Wikipedia Zero",
 	"wikimediaevents-humanrel-yes": "Sí",
 	"wikimediaevents-humanrel-no": "No",
-	"wikimediaevents-humanrel-unsure": "No sé"
+	"wikimediaevents-humanrel-unsure": "No sé",
+	"wikimediaevents-humanrel-privacy-statement": "Declaración de privacidad"
 }
