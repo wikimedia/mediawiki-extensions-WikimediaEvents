@@ -9,7 +9,7 @@
  * @see https://phabricator.wikimedia.org/T169730
  * @see https://meta.wikimedia.org/wiki/Schema:Print
  */
-( function ( $, track, config, user, mwExperiments ) {
+( function ( $, track, trackSubscribe, config, user, mwExperiments ) {
 	/**
 	* Log an event to the Schema:Print
 	*
@@ -68,6 +68,24 @@
 	}
 
 	/**
+	 * Log actions from Minerva download icon actions
+	 */
+	function setupMinervaLogging() {
+		trackSubscribe( 'minerva.downloadAsPDF', function ( data ) {
+			switch ( data.action ) {
+				case 'fetchImages':
+					logEvent( 'clickPrintableVersion' );
+					break;
+				case 'buttonVisible':
+					logEvent( 'shownPrintButton' );
+					break;
+				default:
+					// unknown state, do nothing
+			}
+		} );
+	}
+
+	/**
 	 * Log the event of printing.
 	 * Do it only once.
 	 */
@@ -103,6 +121,7 @@
 		$( function () {
 			setupClickLogging();
 			setupPrintLogging();
+			setupMinervaLogging();
 		} );
 	}
-}( jQuery, mediaWiki.track, mediaWiki.config, mediaWiki.user, mediaWiki.experiments ) );
+}( jQuery, mediaWiki.track, mediaWiki.trackSubscribe, mediaWiki.config, mediaWiki.user, mediaWiki.experiments ) );
