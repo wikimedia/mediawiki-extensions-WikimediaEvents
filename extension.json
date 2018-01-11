@@ -145,6 +145,11 @@
 			"schema": "RecentChangesTopLinks",
 			"revision": 16732249
 		},
+		"schema.InputDeviceDynamics": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "InputDeviceDynamics",
+			"revision": 17661826
+		},
 		"ext.wikimediaEvents": {
 			"scripts": [
 				"all/ext.wikimediaEvents.events.js",
@@ -185,6 +190,25 @@
 				"mediawiki.user",
 				"mediawiki.Uri"
 			]
+		},
+		"ext.wikimediaEvents.aiCaptcha": {
+			"scripts": [
+				"aiCaptcha/ext.wikimediaEvents.aiCaptchaStats.js",
+				"aiCaptcha/ext.wikimediaEvents.aiCaptcha.js"
+			],
+			"targets": [
+				"desktop"
+			],
+			"dependencies": [
+				"mediawiki.user",
+				"mediawiki.Uri",
+				"jquery.throttle-debounce"
+			],
+			"messages": [
+				"wikimediaevents-aicaptcha-datacollection-label",
+				"wikimediaevents-aicaptcha-datacollection-description",
+				"wikimediaevents-aicaptcha-datacollection-findoutmore"
+			]
 		}
 	},
 	"ResourceFileModulePaths": {
@@ -199,7 +223,8 @@
 		"WMEStatsdBaseUri": false,
 		"WMESearchRelevancePages": {
 			"_merge_strategy": "array_plus"
-		}
+		},
+		"WMEAICaptchaEnabled": false
 	},
 	"manifest_version": 1
 }

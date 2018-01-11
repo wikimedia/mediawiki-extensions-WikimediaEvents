@@ -21,5 +21,8 @@
 	"wikimediaevents-humanrel-yes": "Yes",
 	"wikimediaevents-humanrel-no": "No",
 	"wikimediaevents-humanrel-unsure": "I don't know",
-	"wikimediaevents-humanrel-privacy-statement": "Privacy Statement"
+	"wikimediaevents-humanrel-privacy-statement": "Privacy Statement",
+	"wikimediaevents-aicaptcha-datacollection-label": "How we collect data to help us detect bots",
+	"wikimediaevents-aicaptcha-datacollection-description": "We’re always working to improve our systems. In order to get better at detecting bots, between January and March 2018, we may collect information about keyboard and mouse usage on the account creation form. This data will only be used to help us better detect automated registrations, in order to prevent spam and make registration more seamless for humans. ",
+	"wikimediaevents-aicaptcha-datacollection-findoutmore": "find out more"
 }
