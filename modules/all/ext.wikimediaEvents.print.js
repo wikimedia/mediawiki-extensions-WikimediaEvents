@@ -71,7 +71,7 @@
 	 * Log actions from Minerva download icon actions
 	 */
 	function setupMinervaLogging() {
-		trackSubscribe( 'minerva.downloadAsPDF', function ( data ) {
+		trackSubscribe( 'minerva.downloadAsPDF', function ( topic, data ) {
 			switch ( data.action ) {
 				case 'fetchImages':
 					logEvent( 'clickPrintableVersion' );

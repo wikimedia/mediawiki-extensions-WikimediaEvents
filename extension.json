@@ -78,7 +78,7 @@
 		"schema.Print": {
 			"class": "ResourceLoaderSchemaModule",
 			"schema": "Print",
-			"revision": 17199246
+			"revision": 17630514
 		},
 		"schema.ReadingDepth": {
 			"class": "ResourceLoaderSchemaModule",
