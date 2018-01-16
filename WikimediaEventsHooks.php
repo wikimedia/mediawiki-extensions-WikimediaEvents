@@ -495,7 +495,7 @@ class WikimediaEventsHooks {
 		// Log the existing filters
 		EventLogging::logEvent(
 			'ChangesListFilters',
-			16837986,
+			17629781,
 			$logData
 		);
 	}
