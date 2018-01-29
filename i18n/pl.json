@@ -11,5 +11,8 @@
 	"tag-HHVM-description": "Wprowadzono zmiany z HipHop Virtual Machine zamiast interpretatora Zend PHP (oczekuje się, że to doprowadzi do zwiększenia wydajności; przeznaczone dla naprawy/analizy)",
 	"wikimediaevents-humanrel-yes": "Tak",
 	"wikimediaevents-humanrel-no": "Nie",
-	"wikimediaevents-humanrel-unsure": "Nie wiem"
+	"wikimediaevents-humanrel-unsure": "Nie wiem",
+	"wikimediaevents-aicaptcha-datacollection-label": "Jak zbieramy dane pomagające nam wykrywać boty?",
+	"wikimediaevents-aicaptcha-datacollection-description": "Cały czas pracujemy nad udoskonalaniem naszych systemów. Aby jeszcze lepiej wykrywać boty, będziemy zbierać między styczniem a marcem 2018 informacje o użyciu klawiatury i myszy w formularzu tworzenia konta. Te dane będą wykorzystywane tylko do ulepszenia wykrywania rejestracji przez automaty, aby zapobiegać spamowi i sprawić, że rejestracja przez ludzi będzie bardziej przejrzysta.",
+	"wikimediaevents-aicaptcha-datacollection-findoutmore": "dowiedz się więcej"
 }

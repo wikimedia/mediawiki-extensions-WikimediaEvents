@@ -4,7 +4,8 @@
 			"Andriykopanytsia",
 			"DixonD",
 			"Ата",
-			"Piramidion"
+			"Piramidion",
+			"Movses"
 		]
 	},
 	"wikimediaevents-desc": "Записує у журнал події пов'язані з Вікімедіа, використовуючи EventLogging",
@@ -19,5 +20,8 @@
 	"wikimediaevents-humanrel-yes": "Так",
 	"wikimediaevents-humanrel-no": "Ні",
 	"wikimediaevents-humanrel-unsure": "Не знаю",
-	"wikimediaevents-humanrel-privacy-statement": "Заява про конфіденційність"
+	"wikimediaevents-humanrel-privacy-statement": "Заява про конфіденційність",
+	"wikimediaevents-aicaptcha-datacollection-label": "Як ми збираємо дані, щоб виявляти ботів",
+	"wikimediaevents-aicaptcha-datacollection-description": "Ми завжди працюємо над поліпшенням наших систем. Щоб краще виявляти ботів, з січня по березень 2018 року ми можемо збирати інформацію про використання клавіатури і миші під час створення облікового запису. Ці дані будуть використані лише для виявлення автоматичних реєстрацій, щоб запобігти спаму і зробити реєстрацію плавнішою для людей.",
+	"wikimediaevents-aicaptcha-datacollection-findoutmore": "дізнатися більше"
 }

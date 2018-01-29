@@ -4,7 +4,8 @@
 			"Ainali",
 			"Lokal Profil",
 			"Jopparn",
-			"WikiPhoenix"
+			"WikiPhoenix",
+			"Johan"
 		]
 	},
 	"wikimediaevents-desc": "Loggar Wikimedia-specifika händelser med hjälp av EventLogging",
@@ -18,5 +19,9 @@
 	"wikimediaevents-humanrel-question-d": "Om någon sökte efter \"$1\", skulle de vilja läsa denna artikel?",
 	"wikimediaevents-humanrel-yes": "Ja",
 	"wikimediaevents-humanrel-no": "Nej",
-	"wikimediaevents-humanrel-unsure": "Jag vet inte"
+	"wikimediaevents-humanrel-unsure": "Jag vet inte",
+	"wikimediaevents-humanrel-privacy-statement": "Integritetspolicy",
+	"wikimediaevents-aicaptcha-datacollection-label": "Hur vi samlar in data för att upptäcka botar",
+	"wikimediaevents-aicaptcha-datacollection-description": "Vi arbetar ständigt för att förbättra våra system. För att bli bättre på att upptäcka botar kan vi mellan januari och mars 2018 samla in information om tangentbords- och musanvändning i formuläret för att skapa ett konto. Den här datan kommer bara att användas för att hjälpa oss att bättre upptäcka automatisk registrering, för att förhindra spam och göra att registreringen blir bättre för människor.",
+	"wikimediaevents-aicaptcha-datacollection-findoutmore": "läs mer"
 }
