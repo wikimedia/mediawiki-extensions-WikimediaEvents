@@ -3,9 +3,24 @@
 		"authors": [
 			"Shirayuki",
 			"Miya",
-			"Sujiniku"
+			"Sujiniku",
+			"Omotecho"
 		]
 	},
 	"wikimediaevents-desc": "ウィキメディア特有のイベントを、EventLogging を使用して記録する",
-	"tag-cross-wiki-upload-description": "他ウィキでのウィキテキストの内側およびビジュアルエディターの内側から、ファイルをアップロード"
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|ウィキ間アップロード]]",
+	"tag-cross-wiki-upload-description": "他ウィキでのウィキテキストの内側およびビジュアルエディターの内側から、ファイルをアップロード",
+	"tag-HHVM-description": "Zend PHP インタプリタに替わるヒップホップ・バーチャル・マシン (HHVM) の更新が可能になりました (デバッグ/解析のタグ付き、目的はパフォーマンスの改善)。",
+	"abusefilter-edit-builder-vars-user-wpzero": "Wikipedia Zero の利用者がゼロレートのキャリア経由で編集をしているかどうか",
+	"wikimediaevents-humanrel-question-a": "「$1」を検索する場合、このページをクリックしますか？",
+	"wikimediaevents-humanrel-question-b": "もし「$1'」を検索中でしたら、この記事はお役に立ちそうですか？",
+	"wikimediaevents-humanrel-question-c": "もし「$1」を検索中でしたら、この記事は関係がありそうですか？",
+	"wikimediaevents-humanrel-question-d": "もし「$1」を検索中の人がいたら、このページを読みたいと思うでしょうか？",
+	"wikimediaevents-humanrel-yes": "はい",
+	"wikimediaevents-humanrel-no": "いいえ",
+	"wikimediaevents-humanrel-unsure": "わかりません",
+	"wikimediaevents-humanrel-privacy-statement": "個人情報について",
+	"wikimediaevents-aicaptcha-datacollection-label": "ボットではないと確認するために私たちがデータを収集する方法",
+	"wikimediaevents-aicaptcha-datacollection-description": "システムの改良を常に続ける私たちは2018年1月より同3月にかけて、ボットの検出精度を高めるため、アカウント登録フォームでキーボードとマウスの使用情報を収集する可能性があります。これらデータの目的はスパム予防と人による登録処理をより滑らかにすることであり、自動登録検出の精度向上補助のみに用いられます。",
+	"wikimediaevents-aicaptcha-datacollection-findoutmore": "詳細を見る"
 }

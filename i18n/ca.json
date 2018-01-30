@@ -6,5 +6,6 @@
 		]
 	},
 	"tag-HHVM-description": "Modificacions fetes amb la Màquina Virtual HipHop (HHVM) en comptes de l'interpretador PHP Zend (s'espera que millori el rendiment, s'etiqueta per a depuració i anàlisi)",
-	"wikimediaevents-humanrel-privacy-statement": "Declaració de privadesa"
+	"wikimediaevents-humanrel-privacy-statement": "Declaració de privadesa",
+	"wikimediaevents-aicaptcha-datacollection-findoutmore": "descobriu-ne més"
 }

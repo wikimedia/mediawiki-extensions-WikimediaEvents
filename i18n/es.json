@@ -21,5 +21,7 @@
 	"wikimediaevents-humanrel-yes": "Sí",
 	"wikimediaevents-humanrel-no": "No",
 	"wikimediaevents-humanrel-unsure": "No sé",
-	"wikimediaevents-humanrel-privacy-statement": "Declaración de privacidad"
+	"wikimediaevents-humanrel-privacy-statement": "Declaración de privacidad",
+	"wikimediaevents-aicaptcha-datacollection-label": "Cómo recopilamos datos para ayudarnos a detectar los robots",
+	"wikimediaevents-aicaptcha-datacollection-findoutmore": "descubre más"
 }
