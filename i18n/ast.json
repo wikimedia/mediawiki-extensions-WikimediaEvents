@@ -16,5 +16,8 @@
 	"wikimediaevents-humanrel-yes": "Sí",
 	"wikimediaevents-humanrel-no": "Non",
 	"wikimediaevents-humanrel-unsure": "Nun sé",
-	"wikimediaevents-humanrel-privacy-statement": "Declaración d'intimidá"
+	"wikimediaevents-humanrel-privacy-statement": "Declaración d'intimidá",
+	"wikimediaevents-aicaptcha-datacollection-label": "Cómo collechamos datos p'ayudanos a detectar los bots",
+	"wikimediaevents-aicaptcha-datacollection-description": "Siempres tamos trabayando p'ameyorar los nuesos sistemes. Col fin d'ameyorar na detección de bots, ente xineru y marzu de 2018, podemos collechar información sobro l'usu del tecláu y el mur nel formulariu de creación de cuentes. Estos datos sólo van utilizase p'ayudanos a detectar meyor los rexistros automáticos, col envís d'evitar el corréu puxarra y faer que'l rexistru sía más cenciellu pa los humanos.",
+	"wikimediaevents-aicaptcha-datacollection-findoutmore": "saber más"
 }
