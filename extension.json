@@ -148,7 +148,7 @@
 		"schema.InputDeviceDynamics": {
 			"class": "ResourceLoaderSchemaModule",
 			"schema": "InputDeviceDynamics",
-			"revision": 17661826
+			"revision": 17687647
 		},
 		"ext.wikimediaEvents": {
 			"scripts": [

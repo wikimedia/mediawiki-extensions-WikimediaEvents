@@ -100,7 +100,7 @@
 			framed: false,
 			popup: {
 				$content: $( '<p>' + popupDescription +
-					'<a href="https://meta.wikimedia.org/wiki/Research:Spambot_detection_via_registration_page_behavior">' +
+					'<a href="https://meta.wikimedia.org/wiki/Research:Spambot_detection_via_registration_page_behavior" target="_blank">' +
 					'(' + popupFindOutMore + ')</a></p>' ),
 				// position: 'after',
 				padded: true
@@ -164,7 +164,7 @@
 		}
 	} );
 
-	$( '#wpCreateaccount' ).click( function () {
+	$( '#userlogin2' ).submit( function () {
 		var mouseStats = getMouseStats(),
 			keyPressStats = getKeyPressStats(),
 			combinedStats = $.extend( {}, mouseStats, keyPressStats ),
