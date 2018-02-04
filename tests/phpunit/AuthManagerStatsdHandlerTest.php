@@ -2,6 +2,9 @@
 
 use Liuggio\StatsdClient\Factory\StatsdDataFactory;
 
+/**
+ * @covers AuthManagerStatsdHandler
+ */
 class AuthManagerStatsdHandlerTest extends MediaWikiTestCase {
 	/**
 	 * @dataProvider provideHandle
