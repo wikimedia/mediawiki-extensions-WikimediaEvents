@@ -18,7 +18,7 @@
 	"wikimediaevents-humanrel-no": "Nein",
 	"wikimediaevents-humanrel-unsure": "Ich weiß es nicht",
 	"wikimediaevents-humanrel-privacy-statement": "Datenschutzerklärung",
-	"wikimediaevents-aicaptcha-datacollection-label": "Wie wir zum Aufspüren von Bots Daten sammeln",
+	"wikimediaevents-aicaptcha-datacollection-label": "Wie sammeln wir Daten zum Aufspüren von Bots?",
 	"wikimediaevents-aicaptcha-datacollection-description": "Wir arbeiten ständig an der Verbesserung unserer Systeme. Um Bots besser aufzuspüren, sammeln wir zwischen Januar und März 2018 im Formular zur Erstellung von Benutzerkonten Informationen über die Nutzung von Tastatur und Maus. Diese Daten werden nur verwendet, um automatische Registrierungen besser aufzuspüren, um Spam zu verhindern und die Registrierung für Menschen nahtloser zu machen.",
 	"wikimediaevents-aicaptcha-datacollection-findoutmore": "Mehr erfahren"
 }
