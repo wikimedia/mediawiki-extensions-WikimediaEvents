@@ -96,21 +96,21 @@
 		popupButton = new OO.ui.PopupButtonWidget( {
 			$overlay: true,
 			label: mw.message( 'wikimediaevents-aicaptcha-datacollection-label' ).text(),
-			icon: 'info',
 			framed: false,
+			flags: [ 'progressive' ],
 			popup: {
 				$content: $( '<p>' + popupDescription +
 					'<a href="https://meta.wikimedia.org/wiki/Research:Spambot_detection_via_registration_page_behavior" target="_blank">' +
 					'(' + popupFindOutMore + ')</a></p>' ),
-				// position: 'after',
-				padded: true
+				position: 'after',
+				padded: true,
+				align: 'force-right'
 			}
 		} );
 		popupButton.$element.css( {
-			'float': 'left',
-			marginTop: 30
+			'float': 'left'
 		} );
-		$( '#wpCreateaccount' ).closest( '.mw-ui-vform-field' ).append( popupButton.$element );
+		$( '#mw-input-captchaWord' ).closest( '.mw-ui-vform-field' ).prepend( popupButton.$element );
 	} );
 
 	$.each( [ 'wpName2', 'wpEmail', 'mw-input-captchaWord' ], function ( _, field ) {
