@@ -7,5 +7,9 @@
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|ক্রস-উইকি আপলোড]]",
 	"wikimediaevents-humanrel-yes": "হ্যাঁ",
 	"wikimediaevents-humanrel-no": "না",
-	"wikimediaevents-humanrel-unsure": "আমি জানি না"
+	"wikimediaevents-humanrel-unsure": "আমি জানি না",
+	"wikimediaevents-humanrel-privacy-statement": "গোপনীয়তার বিবৃতি",
+	"wikimediaevents-aicaptcha-datacollection-label": "কিভাবে আমরা বট সনাক্ত করার জন্য তথ্য সংগ্রহ করতে পারি?",
+	"wikimediaevents-aicaptcha-datacollection-description": "আমরা সবসময় আমাদের সিস্টেম উন্নত করতে কাজ করছি। বট সনাক্তকরণ আরও ভালভাবে করতে, ২০১৮ সালের জানুয়ারী থেকে মার্চ মাসে, আমরা অ্যাকাউন্ট তৈরির ফর্মের উপর কীবোর্ড এবং মাউস ব্যবহারের তথ্য সংগ্রহ করতে পারি। স্প্যাম প্রতিরোধ করতে ও মানুষের জন্য নিবন্ধন সহজ করতে, এই উপাত্ত শুধুমাত্র স্বয়ংক্রিয় নিবন্ধন সনাক্ত করতে আমাদের সাহায্য করতে ব্যবহার করা হবে।",
+	"wikimediaevents-aicaptcha-datacollection-findoutmore": "আরো জানুন"
 }
