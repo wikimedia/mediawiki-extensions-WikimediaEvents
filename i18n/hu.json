@@ -18,7 +18,7 @@
 	"wikimediaevents-humanrel-no": "Nem",
 	"wikimediaevents-humanrel-unsure": "Nem tudom",
 	"wikimediaevents-humanrel-privacy-statement": "Adatvédelmi nyilatkozat",
-	"wikimediaevents-aicaptcha-datacollection-label": "Hogyan gyűjtünk adatokat a robotok felismerésére",
+	"wikimediaevents-aicaptcha-datacollection-label": "Hogyan gyűjtünk adatokat a robotok felismerésére?",
 	"wikimediaevents-aicaptcha-datacollection-description": "Folyamatosan dolgozunk a rendszereink jobbá tételén. 2018 januárja és márciusa között a regisztrációs űrlapon információt gyűjtünk a billentyűzet és egér használatáról. Az adatokat csak arra fogjuk felhasználni, hogy könnyebben felismerjük a robottal végzett regisztrációkat, és ezzel megakadályozzuk a spammelést és egyszerűsítsük a regisztrációt a valódi felhasználók számára.",
 	"wikimediaevents-aicaptcha-datacollection-findoutmore": "tudj meg többet"
 }
