@@ -3,23 +3,24 @@
 		"authors": [
 			"Jefersonmoraes",
 			"Felipe L. Ewald",
-			"Eduardo Addad de Oliveira"
+			"Eduardo Addad de Oliveira",
+			"TheEduGobi"
 		]
 	},
-	"wikimediaevents-desc": "Registra eventos específicos da Wikimedia usando EventLogging",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Cross-wiki upload]]",
-	"tag-cross-wiki-upload-description": "Arquivos carregados de dentro do texto wiki e editores visuais em outras wikis",
+	"wikimediaevents-desc": "Registra eventos específicos da Wikimedia usando o EventLogging",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Envio interwiki]]",
+	"tag-cross-wiki-upload-description": "Arquivos enviados de dentro do wikitexto e de editores visuais em outras wikis",
 	"tag-HHVM-description": "Revisões feitas com o HipHop Virtual Machine habilitado em vez de o intérprete Zend PHP (espera-se melhorar o desempenho, marcado para depuração/análise)",
-	"abusefilter-edit-builder-vars-user-wpzero": "Se um usuário está ou não editando uma operadora de classificação zero através do Wikipedia Zero",
-	"wikimediaevents-humanrel-question-a": "Você clicaria nessa página ao pesquisar '$1'?",
-	"wikimediaevents-humanrel-question-b": "Se estivesse à procura de '$1', este artigo seria um bom resultado?",
-	"wikimediaevents-humanrel-question-c": "Se tivesse pesquisado '$1' este artigo seria relevante?",
-	"wikimediaevents-humanrel-question-d": "Se alguém procurasse '$1' quereria ler este artigo?",
+	"abusefilter-edit-builder-vars-user-wpzero": "Se um usuário está ou não editando através de uma operadora de classificação zero pelo Wikipédia Zero",
+	"wikimediaevents-humanrel-question-a": "Você clicaria nessa página ao pesquisar por ‘$1’?",
+	"wikimediaevents-humanrel-question-b": "Se estivesse à procura de ‘$1’, este artigo seria um bom resultado?",
+	"wikimediaevents-humanrel-question-c": "Se tivesse pesquisado por ‘$1’, este artigo seria relevante?",
+	"wikimediaevents-humanrel-question-d": "Se alguém pesquisasse por ‘$1’, quereria ler este artigo?",
 	"wikimediaevents-humanrel-yes": "Sim",
 	"wikimediaevents-humanrel-no": "Não",
 	"wikimediaevents-humanrel-unsure": "Não sei",
 	"wikimediaevents-humanrel-privacy-statement": "Declaração de Privacidade",
-	"wikimediaevents-aicaptcha-datacollection-label": "Como coligimos dados para detetar robôs?",
-	"wikimediaevents-aicaptcha-datacollection-description": "Dedicamos-nos constantemente à melhoria dos nossos sistemas. De forma a melhor detetar robôs, entre janeiro e março de 2018 poderemos coligir informação sobre a utilização do teclado e do rato no formulário de criação de conta. Estes dados só serão utilizados para melhorar a detenção de criações automatizadas de contas, de forma a evitar spam e tornar a criação de conta mais intuitiva para as pessoas.",
+	"wikimediaevents-aicaptcha-datacollection-label": "Como coletamos dados para detectar robôs?",
+	"wikimediaevents-aicaptcha-datacollection-description": "Dedicamos-nos constantemente à melhoria dos nossos sistemas. De forma a melhor detectar robôs, entre janeiro e março de 2018 poderemos coletar informações sobre a utilização de teclado e ''mouse'' no formulário de criação de conta. Esses dados só serão utilizados para melhorar a detenção de criações automatizadas de contas, de forma a evitar ''spam'' e tornar a criação de contas mais intuitiva para as pessoas.",
 	"wikimediaevents-aicaptcha-datacollection-findoutmore": "saiba mais"
 }
