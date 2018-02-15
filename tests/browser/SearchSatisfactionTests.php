@@ -44,7 +44,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
  * To clear the disk cache after editing some js use:
  *   sudo rm -rf /var/cache/apache2/mod_cache_disk/*
  */
-class SearchSatisfactionTest extends PHPUnit_Framework_TestCase {
+class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	static private $mwBaseUrl;
 
 	protected $webDriver;
