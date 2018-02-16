@@ -18,5 +18,6 @@
 	"wikimediaevents-humanrel-yes": "예",
 	"wikimediaevents-humanrel-no": "아니오",
 	"wikimediaevents-humanrel-unsure": "모르겠습니다",
+	"wikimediaevents-aicaptcha-datacollection-label": "우리는 봇을 감별하기 위해 데이터를 어떻게 수집합니까?",
 	"wikimediaevents-aicaptcha-datacollection-findoutmore": "더 찾아보기"
 }
