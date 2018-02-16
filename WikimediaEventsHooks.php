@@ -249,11 +249,11 @@ class WikimediaEventsHooks {
 	 *
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/EditPageBeforeConflictDiff
 	 * @see https://meta.wikimedia.org/wiki/Schema:EditConflict
-	 * @param EditPage &$editor
+	 * @param EditPage &$editPage
 	 * @param OutputPage &$out
 	 * @return bool true in all cases
 	 */
-	public static function onEditPageBeforeConflictDiff( &$editor, &$out ) {
+	public static function onEditPageBeforeConflictDiff( &$editPage, &$out ) {
 		$user = $out->getUser();
 		$title = $out->getTitle();
 
