@@ -4,7 +4,8 @@
 			"Siebrand",
 			"Sjoerddebruin",
 			"Mainframe98",
-			"Festina90"
+			"Festina90",
+			"Romaine"
 		]
 	},
 	"wikimediaevents-desc": "Logboeken voor Wikimediaspecifieke gebeurtenissen die EventLogging gebruiken",
@@ -18,5 +19,6 @@
 	"wikimediaevents-humanrel-question-d": "Als iemand '$1' zou zoeken, zou men dit artikel wensen te lezen?",
 	"wikimediaevents-humanrel-yes": "Ja",
 	"wikimediaevents-humanrel-no": "Nee",
-	"wikimediaevents-humanrel-unsure": "Ik weet het niet"
+	"wikimediaevents-humanrel-unsure": "Ik weet het niet",
+	"wikimediaevents-aicaptcha-datacollection-label": "Hoe verzamelen we data om bots te detecteren?"
 }
