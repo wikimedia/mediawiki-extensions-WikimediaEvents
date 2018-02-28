@@ -8,7 +8,7 @@
 	],
 	"url": "https://www.mediawiki.org/wiki/Extension:WikimediaEvents",
 	"descriptionmsg": "wikimediaevents-desc",
-	"license-name": "GPL-2.0+",
+	"license-name": "GPL-2.0-or-later",
 	"AutoloadClasses": {
 		"WikimediaEventsHooks": "WikimediaEventsHooks.php",
 		"AuthManagerStatsdHandler": "includes/AuthManagerStatsdHandler.php"
