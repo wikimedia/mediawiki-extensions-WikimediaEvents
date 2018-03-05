@@ -1,9 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
-			"Stryn"
+			"Stryn",
+			"Pyscowicz"
 		]
 	},
+	"wikimediaevents-humanrel-yes": "Kyllä",
+	"wikimediaevents-humanrel-no": "Ei",
 	"wikimediaevents-aicaptcha-datacollection-label": "Kuinka keräämme dataa tunnistaaksemme botteja",
 	"wikimediaevents-aicaptcha-datacollection-description": "Työskentelemme aina parantaaksemme järjestelmiämme. Ollaksemme parempia bottien tunnistamisessa, tammikuun ja maaliskuun 2018 välillä saatamme kerätä dataa näppäimistön ja hiiren käyttämisestä tunnuksen luontilomakkeella. Tätä dataa käytetään ainoastaan auttamaan meitä tunnistamaan automaattiset rekisteröinnit, jotta voimme estää roskapostin ja tehdä rekisteröimisestä saumattomampaa ihmisille.",
 	"wikimediaevents-aicaptcha-datacollection-findoutmore": "lue lisää"
