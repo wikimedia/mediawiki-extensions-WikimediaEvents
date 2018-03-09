@@ -2,11 +2,13 @@
 	"@metadata": {
 		"authors": [
 			"Liuxinyu970226",
-			"Cwlin0416"
+			"Cwlin0416",
+			"LNDDYL"
 		]
 	},
 	"wikimediaevents-desc": "EventLogging 的維基媒體特定事件記錄",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|跨 wiki 上傳]]",
 	"tag-cross-wiki-upload-description": "檔案已在其他 wiki 由內建的 wikitext 與視覺化編輯器上傳",
-	"tag-HHVM-description": "透過使用 HipHop 虛擬機器完成修定，替代 Zend PHP 直譯器 (預期可以提高效能，標記用於除錯/分析)"
+	"tag-HHVM-description": "透過使用 HipHop 虛擬機器完成修定，替代 Zend PHP 直譯器 (預期可以提高效能，標記用於除錯/分析)",
+	"wikimediaevents-aicaptcha-datacollection-label": "我們如何收集資料以偵測殭屍程式？"
 }
