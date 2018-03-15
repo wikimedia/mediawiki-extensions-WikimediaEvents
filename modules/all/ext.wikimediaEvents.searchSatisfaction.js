@@ -114,9 +114,7 @@
 		function initialize( session ) {
 
 			var sessionId = session.get( 'sessionId' ),
-				validBuckets = mw.config.get( 'wgDBname' ) === 'enwiki'
-					? [ 'control', 'classic', 'explorer', 'control-explorer-i', 'classic-explorer-i' ]
-					: [],
+				validBuckets = [],
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
 						// Provides a place to handle wiki-specific sampling,
@@ -138,8 +136,8 @@
 								subTest: null
 							},
 							enwiki: {
-								test: 0.15,
-								subTest: 0.996
+								test: 2000,
+								subTest: null
 							},
 							enwiktionary: {
 								test: 40,
