@@ -170,20 +170,27 @@ class WikimediaEventsHooks {
 		// editor for this wiki for this month.
 		DeferredUpdates::addCallableUpdate( function () use ( $user ) {
 			$db = wfGetDB( DB_MASTER );
-
-			$since = date( 'Ym' ) . '00000000';
-			$numMainspaceEditsThisMonth = $db->selectRowCount(
-				[ 'revision', 'page' ],
-				'1',
-				[
-					'rev_user'         => $user->getId(),
-					'rev_timestamp >= ' . $db->addQuotes( $db->timestamp( $since ) ),
-					'page_namespace'   => NS_MAIN,
-				],
-				__FILE__ . ':' . __LINE__,
-				[ 'LIMIT' => 6 ],
-				[ 'page' => [ 'INNER JOIN', 'rev_page = page_id' ] ]
-			);
+			$revWhere = ActorMigration::newMigration()->getWhere( $db, 'rev_user', $user );
+			$since = $db->addQuotes( $db->timestamp( date( 'Ym' ) . '00000000' ) );
+			$numMainspaceEditsThisMonth = 0;
+			foreach ( $revWhere['orconds'] as $key => $cond ) {
+				$tsField = $key === 'actor' ? 'revactor_timestamp' : 'rev_timestamp';
+				$numMainspaceEditsThisMonth += $db->selectRowCount(
+					[ 'revision', 'page' ] + $revWhere['tables'],
+					'1',
+					[
+						$cond,
+						$tsField . ' >= ' . $since,
+						'page_namespace'   => NS_MAIN,
+					],
+					__FILE__ . ':' . __LINE__,
+					[ 'LIMIT' => 6 - $numMainspaceEditsThisMonth ],
+					[ 'page' => [ 'INNER JOIN', 'rev_page = page_id' ] ] + $revWhere['joins']
+				);
+				if ( $numMainspaceEditsThisMonth >= 6 ) {
+					break;
+				}
+			}
 
 			if ( $numMainspaceEditsThisMonth === 5 ) {
 				$month = date( 'm-Y' );
