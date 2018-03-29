@@ -114,7 +114,7 @@
 		function initialize( session ) {
 
 			var sessionId = session.get( 'sessionId' ),
-				validBuckets = [],
+				validBuckets = [ 'control', 'classic', 'explorer', 'control-explorer-i', 'classic-explorer-i' ],
 				sampleSize = ( function () {
 					var dbName = mw.config.get( 'wgDBname' ),
 						// Provides a place to handle wiki-specific sampling,
@@ -123,6 +123,38 @@
 						// but wikidata uses 1 in 5 sampling rate because of
 						// drastic differences in traffic and search usage.
 						subTests = {
+							fiwiki: {
+								test: 1,
+								subTest: 0.9167360532889259
+							},
+							arwiki: {
+								test: 1,
+								subTest: 0.9926812310169429
+							},
+							fawiki: {
+								test: 1,
+								subTest: 0.9546279491833031
+							},
+							viwiki: {
+								test: 1,
+								subTest: 0.9517607332368548
+							},
+							svwiki: {
+								test: 1,
+								subTest: 0.9421764773910026
+							},
+							nowiki: {
+								test: 1,
+								subTest: 0.9
+							},
+							hewiki: {
+								test: 1,
+								subTest: 0.9104263704765317
+							},
+							idwiki: {
+								test: 1,
+								subTest: 0.9786256278721812
+							},
 							commonswiki: {
 								test: 30,
 								subTest: null
@@ -132,12 +164,12 @@
 								subTest: null
 							},
 							dewiki: {
-								test: 350,
-								subTest: null
+								test: 0.844159239808458,
+								subTest: 0.995575221238938
 							},
 							enwiki: {
-								test: 2000,
-								subTest: null
+								test: 0.14535949461205094,
+								subTest: 0.995575221238938
 							},
 							enwiktionary: {
 								test: 40,
@@ -148,44 +180,44 @@
 								subTest: null
 							},
 							frwiki: {
-								test: 150,
-								subTest: null
+								test: 1,
+								subTest: 0.9944198608313292
 							},
 							itwiki: {
-								test: 100,
-								subTest: null
+								test: 1,
+								subTest: 0.986419870445564
 							},
 							jawiki: {
-								test: 100,
-								subTest: null
+								test: 1,
+								subTest: 0.9911276727885724
 							},
 							kowiki: {
-								test: 30,
-								subTest: null
+								test: 1,
+								subTest: 0.9773863096718753
 							},
 							nlwiki: {
-								test: 30,
-								subTest: null
+								test: 1,
+								subTest: 0.9744049142564628
 							},
 							plwiki: {
-								test: 60,
-								subTest: null
+								test: 1,
+								subTest: 0.9778442450426498
 							},
 							ptwiki: {
-								test: 60,
-								subTest: null
+								test: 1,
+								subTest: 0.9934749274085675
 							},
 							ruwiki: {
-								test: 250,
-								subTest: null
+								test: 1,
+								subTest: 0.9926603349823114
 							},
 							wikidatawiki: {
 								test: 5,
 								subTest: null
 							},
 							zhwiki: {
-								test: 100,
-								subTest: null
+								test: 1,
+								subTest: 0.9886840705661359
 							}
 						};
 					if ( subTests[ dbName ] ) {
