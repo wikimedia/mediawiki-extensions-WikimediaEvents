@@ -4,7 +4,8 @@
 			"Mormegil",
 			"Matěj Suchánek",
 			"Dvorapa",
-			"Ilimanaq29"
+			"Ilimanaq29",
+			"Patriccck"
 		]
 	},
 	"wikimediaevents-desc": "Pomocí EventLogging zaznamenává události specifické pro Wikimedia",
@@ -21,6 +22,6 @@
 	"wikimediaevents-humanrel-unsure": "Nevím",
 	"wikimediaevents-humanrel-privacy-statement": "Prohlášení o ochraně osobních údajů",
 	"wikimediaevents-aicaptcha-datacollection-label": "Jak sbíráme data k rozpoznávání robotů?",
-	"wikimediaevents-aicaptcha-datacollection-description": "Stále pracujeme na vylepšování našich systémů. Abychom se zlepšili v rozpoznávání robotů, můžeme od ledna do března 2018 sbírat informace o využívání klávesnice a myši na formuláři pro založení účtu. Tato data použijeme jen pro lepší detekci automatických registrací, abychom bránili spamu a učinili registraci jednodušší pro lidi.",
+	"wikimediaevents-aicaptcha-datacollection-description": "Stále pracujeme na vylepšování našich systémů. Abychom se zlepšili v rozpoznávání robotů, můžeme od ledna do května 2018 sbírat informace o využívání klávesnice a myši na formuláři pro založení účtu. Tato data použijeme jen pro lepší detekci automatických registrací, abychom bránili spamu a učinili registraci jednodušší pro lidi.",
 	"wikimediaevents-aicaptcha-datacollection-findoutmore": "další informace"
 }
