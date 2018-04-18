@@ -1,8 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Милан Јелисавчић"
+			"Милан Јелисавчић",
+			"BadDog"
 		]
 	},
-	"wikimediaevents-humanrel-unsure": "Не знам"
+	"wikimediaevents-humanrel-unsure": "Не знам",
+	"wikimediaevents-aicaptcha-datacollection-label": "Како прикупљамо податке за откривање ботова?"
 }
