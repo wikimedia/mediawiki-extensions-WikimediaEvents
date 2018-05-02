@@ -434,7 +434,6 @@ class WikimediaEventsHooks {
 	 * AbuseFilter-builder hook handler
 	 *
 	 * @param array &$builder
-	 * @return bool
 	 */
 	public static function onAbuseFilterBuilder( &$builder ) {
 		$builder['vars']['user_wpzero'] = 'user-wpzero';
