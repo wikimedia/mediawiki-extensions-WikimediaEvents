@@ -529,6 +529,9 @@ class WikimediaEventsHooks {
 	 * usecase as they have a wikipage landing page before the user progresses to registration.
 	 * This could one day be factored out into its own extension or part of Campaigns.
 	 *
+	 * The task for adding this functionality to the Campaigns extension can be found below:
+	 * https://phabricator.wikimedia.org/T174939
+	 *
 	 * The series of banner campaigns can be seen on Phabricator:
 	 * https://phabricator.wikimedia.org/project/subprojects/2821/
 	 *
@@ -558,7 +561,7 @@ class WikimediaEventsHooks {
 		 * Setup the campaign prefix.
 		 * Everything below this block is agnostic to which tour is being run.
 		 */
-		$campaignPrefix = 'wmde_etc2017';
+		$campaignPrefix = 'WMDE_';
 
 		$cookieName = 'wmdecampaign-' . $campaignPrefix;
 		$hasCampaignGetValue = strstr( $request->getVal( 'campaign' ), $campaignPrefix ) !== false;
