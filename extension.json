@@ -150,6 +150,11 @@
 			"schema": "InputDeviceDynamics",
 			"revision": 17687647
 		},
+		"schema.CitationUsage": {
+			"class": "ResourceLoaderSchemaModule",
+			"schema": "CitationUsage",
+			"revision": 18051472
+		},
 		"ext.wikimediaEvents": {
 			"scripts": [
 				"all/ext.wikimediaEvents.events.js",
@@ -158,7 +163,8 @@
 				"all/ext.wikimediaEvents.print.js",
 				"all/ext.wikimediaEvents.readingDepth.js",
 				"all/ext.wikimediaEvents.geoFeatures.js",
-				"all/ext.wikimediaEvents.recentChangesClicks.js"
+				"all/ext.wikimediaEvents.recentChangesClicks.js",
+				"all/ext.wikimediaEvents.citationUsage.js"
 			],
 			"skinScripts": {
 				"default": [
@@ -220,6 +226,7 @@
 		"WMEPrintEnabled": false,
 		"WMEReadingDepthSamplingRate": 0.005,
 		"WMEReadingDepthEnabled": false,
+		"WMECitationUsagePopulationSize": 0,
 		"WMEStatsdBaseUri": false,
 		"WMESearchRelevancePages": {
 			"_merge_strategy": "array_plus"
