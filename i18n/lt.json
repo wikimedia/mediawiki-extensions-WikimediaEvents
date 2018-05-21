@@ -2,13 +2,16 @@
 	"@metadata": {
 		"authors": [
 			"Albertas",
-			"Eitvys200"
+			"Eitvys200",
+			"Manvydasz"
 		]
 	},
 	"wikimediaevents-desc": "Žurnalas Wikimedia specifinių įvykių, naudojant EventLogging",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Tarp-vikinis įkėlimas]]",
 	"tag-cross-wiki-upload-description": "Failai įkelti naudojant kitų vikių vikiteksto ir vizualius redaktorius",
 	"tag-HHVM-description": "Versija sukurta su aktyvuota Zend PHP interpretatoriaus HipHop virtualia mašina (tikėtasi, kad veikimas paspartės, pažymėta derinimui/analizavimui)",
-	"wikimediaevents-aicaptcha-datacollection-label": "Kaip mes renkame informaciją, kuri mums padeda aptikti robotus",
+	"wikimediaevents-humanrel-yes": "Taip",
+	"wikimediaevents-humanrel-no": "Ne",
+	"wikimediaevents-aicaptcha-datacollection-label": "Kaip mes renkame informaciją, padedančią aptikti robotus?",
 	"wikimediaevents-aicaptcha-datacollection-findoutmore": "Sužinokite daugiau"
 }
