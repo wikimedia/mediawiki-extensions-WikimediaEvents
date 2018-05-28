@@ -7,7 +7,8 @@
 			"Kaganer",
 			"Facenapalm",
 			"Happy13241",
-			"Abiyoyo"
+			"Abiyoyo",
+			"Ole Yves"
 		]
 	},
 	"wikimediaevents-desc": "Ведёт журнал определённых Викимедиа событий с использованием EventLogging",
@@ -15,9 +16,15 @@
 	"tag-cross-wiki-upload-description": "Файлы, загруженные из текстового и визуального редакторов в других вики",
 	"tag-HHVM-description": "Правки, внесёные с включенной HipHop Virtual Machine вместо Zend PHP-интерпретатора (в результате ожидается повышение производительности; отмечено для отладки/анализа)",
 	"abusefilter-edit-builder-vars-user-wpzero": "Редактирует ли участник через бесплатного оператора связи с помощью Wikipedia Zero",
+	"wikimediaevents-humanrel-question-a": "Перейдёте ли вы на эту страницу, когда ищете «$1»?",
+	"wikimediaevents-humanrel-question-b": "Если бы вы искали «$1», была бы эта статья хорошим результатом?",
+	"wikimediaevents-humanrel-question-c": "Если бы вы искали «$1», была бы эта статья релевантной?",
+	"wikimediaevents-humanrel-question-d": "Если кто-то бы искал «$1», захотели бы они прочесть эту статью?",
 	"wikimediaevents-humanrel-yes": "Да",
 	"wikimediaevents-humanrel-no": "Нет",
 	"wikimediaevents-humanrel-unsure": "Не знаю",
+	"wikimediaevents-humanrel-privacy-statement": "Политика конфиденциальности",
+	"wikimediaevents-aicaptcha-datacollection-label": "Как мы собираем данные для определения ботов?",
 	"wikimediaevents-aicaptcha-datacollection-description": "Мы всегда работаем над улучшением наших систем. Чтобы лучше разобраться в ботах, в период с января по май 2018 года мы можем собирать информацию об использовании клавиатуры и мыши в форме создания учетной записи. Эти данные будут использоваться только для того, чтобы помочь нам лучше обнаружить автоматические регистрации, чтобы предотвратить спам и сделать процесс регистрации более плавным для людей.",
 	"wikimediaevents-aicaptcha-datacollection-findoutmore": "узнать больше"
 }
