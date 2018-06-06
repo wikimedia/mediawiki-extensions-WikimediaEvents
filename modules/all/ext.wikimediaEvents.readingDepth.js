@@ -9,6 +9,7 @@
 ( function ( $, mw, config, user, mwExperiments ) {
 
 	var pausedAt,
+		trackSubscribeOptinRequest = false,
 		msPaused = 0,
 		perf = window.performance,
 		EVENT = {
@@ -173,7 +174,9 @@
 	 * Checks whether the browser is capable and should track reading depth. A
 	 * browser is considered capable if it supports the Beacon APIs and the
 	 * Navigation Timing API. It should track if the user is in the sampling group
-	 * and the schema has been enabled by a sysadmin.
+	 * and the schema has been enabled by a sysadmin
+	 * OR if another extension has requested ReadingDepth via the
+	 * `wikimedia.event.ReadingDepthSchema.enable` hook.
 	 *
 	 * @return {boolean}
 	 */
@@ -181,7 +184,10 @@
 		return config.get( 'wgWMEReadingDepthEnabled' ) &&
 			supportsNavigationTiming() &&
 			supportsBeacon() &&
-			isInSample( config.get( 'wgWMEReadingDepthSamplingRate', 0 ) );
+			(
+				isInSample( config.get( 'wgWMEReadingDepthSamplingRate', 0 ) ) ||
+				trackSubscribeOptinRequest
+			);
 	}
 
 	/**
@@ -221,9 +227,30 @@
 		logEvent( 'pageLoaded' );
 	}
 
-	if ( isEnabled() ) {
+	/**
+	 * Enables tracking of reading behaviour via the ReadingDepthSchema.
+	 * Should only be called once on a given session.
+	 */
+	function enableTracking() {
 		$( window ).on( 'beforeunload', onBeforeUnload );
 		onLoad();
+	}
+
+	if ( isEnabled() ) {
+		enableTracking();
+	} else {
+		/**
+		 * When an A/B test is running, it can signal to the reading depth schema to turn itself on
+		 * This is important for A/B tests which want to compare buckets to reading behaviour.
+		 */
+		mw.trackSubscribe( 'wikimedia.event.ReadingDepthSchema.enable', function () {
+			// Given multiple extensions may request this schema we must be careful to only ever
+			// enableTracking once.
+			if ( !trackSubscribeOptinRequest ) {
+				trackSubscribeOptinRequest = true;
+				enableTracking();
+			}
+		} );
 	}
 
 }( jQuery, mediaWiki, mediaWiki.config, mediaWiki.user, mediaWiki.experiments ) );
