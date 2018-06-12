@@ -74,87 +74,25 @@
 			"i18n"
 		]
 	},
+	"EventLoggingSchemas": {
+		"Print": 17630514,
+		"ReadingDepth": 16325045,
+		"Edit": 17541122,
+		"CompletionSuggestions": 13630018,
+		"SearchSatisfaction": 17378115,
+		"TestSearchSatisfaction2": 16909631,
+		"SearchSatisfactionErrors": 17181648,
+		"GeoFeatures": 12914994,
+		"Search": 14361785,
+		"Kartographer": 16132745,
+		"ChangesListHighlights": 16484288,
+		"ChangesListFilterGrouping": 17008168,
+		"ChangesListClickTracking": 16484895,
+		"RecentChangesTopLinks": 16732249,
+		"InputDeviceDynamics": 17687647,
+		"CitationUsage": 18051472
+	},
 	"ResourceModules": {
-		"schema.Print": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "Print",
-			"revision": 17630514
-		},
-		"schema.ReadingDepth": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "ReadingDepth",
-			"revision": 16325045
-		},
-		"schema.Edit": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "Edit",
-			"revision": 17541122
-		},
-		"schema.CompletionSuggestions": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "CompletionSuggestions",
-			"revision": 13630018
-		},
-		"schema.SearchSatisfaction": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "SearchSatisfaction",
-			"revision": 17378115
-		},
-		"schema.TestSearchSatisfaction2": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "TestSearchSatisfaction2",
-			"revision": 16909631
-		},
-		"schema.SearchSatisfactionErrors": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "SearchSatisfactionErrors",
-			"revision": 17181648
-		},
-		"schema.GeoFeatures": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "GeoFeatures",
-			"revision": 12914994
-		},
-		"schema.Search": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "Search",
-			"revision": 14361785
-		},
-		"schema.Kartographer": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "Kartographer",
-			"revision": 16132745
-		},
-		"schema.ChangesListHighlights": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "ChangesListHighlights",
-			"revision": 16484288
-		},
-		"schema.ChangesListFilterGrouping": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "ChangesListFilterGrouping",
-			"revision": 17008168
-		},
-		"schema.ChangesListClickTracking": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "ChangesListClickTracking",
-			"revision": 16484895
-		},
-		"schema.RecentChangesTopLinks": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "RecentChangesTopLinks",
-			"revision": 16732249
-		},
-		"schema.InputDeviceDynamics": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "InputDeviceDynamics",
-			"revision": 17687647
-		},
-		"schema.CitationUsage": {
-			"class": "ResourceLoaderSchemaModule",
-			"schema": "CitationUsage",
-			"revision": 18051472
-		},
 		"ext.wikimediaEvents": {
 			"scripts": [
 				"all/ext.wikimediaEvents.events.js",
