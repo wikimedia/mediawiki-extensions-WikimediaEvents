@@ -11,10 +11,12 @@
 	var pausedAt,
 		sessionId,
 		EVENT,
-		isInTestSample,
-		trackSubscribeOptinRequest = false,
+		trackingIsEnabled,
+		sampleGroups = {},
 		msPaused = 0,
-		perf = window.performance;
+		perf = window.performance,
+		SCHEMA_NAME = 'ReadingDepth',
+		DEFAULT_SAMPLE_GROUP = 'default_sample';
 
 	/**
 	 * Checks whether the UA supports the Beacon API.
@@ -58,15 +60,17 @@
 		return;
 	}
 
+	sessionId = user.sessionId();
+
 	/**
 	 * @param {number} sessionID
 	 * @param {number} samplingRate A float between 0 and 1 for which events
 	 *  in the schema should be logged.
 	 * @return {boolean}
 	 */
-	function isInSample( sessionId, samplingRate ) {
+	function isInSample( samplingRate ) {
 		var bucket = mwExperiments.getBucket( {
-			name: 'WME.ReadingDepth',
+			name: 'WME.' + SCHEMA_NAME,
 			enabled: true,
 			buckets: {
 				control: 1 - samplingRate,
@@ -75,9 +79,6 @@
 		}, sessionId );
 		return bucket === 'A';
 	}
-
-	sessionId = user.sessionId();
-	isInTestSample = isInSample( sessionId, config.get( 'wgWMEReadingDepthSamplingRate', 0 ) );
 
 	/**
 	 * If available return the time in ms till first paint
@@ -145,7 +146,7 @@
 	}
 
 	/**
-	 * Log an event to the Schema:ReadingDepth
+	 * Log an event to the Schema:ReadingDepth (SCHEMA_NAME).
 	 *
 	 * @param {string} action A valid value for the action property inside the
 	 *	schema Schema:ReadingDepth
@@ -164,7 +165,7 @@
 				action: action,
 				domInteractiveTime: domInteractive - navigationStart,
 				firstPaintTime: firstPaint ? firstPaint - navigationStart : undefined
-			} );
+			}, sampleGroups );
 
 		if ( action === 'pageUnloaded' ) {
 			now = mw.now();
@@ -187,7 +188,7 @@
 			data.visibleLength = Math.round( data.totalLength - hiddenFor );
 		}
 
-		mw.track( 'event.ReadingDepth', data );
+		mw.track( 'event.' + SCHEMA_NAME, data );
 	}
 
 	/**
@@ -228,39 +229,97 @@
 	}
 
 	/**
-	 * Enables tracking of reading behaviour via the ReadingDepthSchema.
+	 * Enables tracking of reading behaviour via the ReadingDepthSchema
+	 * and updates the module scoped variable `trackingIsEnabled`.
 	 * Should only be called once on a given session.
 	 */
 	function enableTracking() {
-		EVENT = {
-			pageTitle: config.get( 'wgTitle' ),
-			namespaceId: config.get( 'wgNamespaceNumber' ),
-			skin: config.get( 'skin' ),
-			isAnon: user.isAnon(),
-			pageToken: user.getPageviewToken(),
-			sessionToken: sessionId
-		};
-
-		$( window ).on( 'beforeunload', onBeforeUnload );
-		onLoad();
+		if ( !trackingIsEnabled ) {
+			trackingIsEnabled = true;
+			EVENT = {
+				pageTitle: config.get( 'wgTitle' ),
+				namespaceId: config.get( 'wgNamespaceNumber' ),
+				skin: config.get( 'skin' ),
+				isAnon: user.isAnon(),
+				pageToken: user.getPageviewToken(),
+				sessionToken: sessionId
+			};
+			$( window ).on( 'beforeunload', onBeforeUnload );
+			onLoad();
+		}
 	}
 
-	if ( isInTestSample ) {
-		enableTracking();
-	} else {
-		/**
-		 * When an A/B test is running, it can signal to the reading depth schema to turn itself on
-		 * This is important for A/B tests which want to compare buckets to reading behaviour.
-		 */
-		mw.trackSubscribe( 'wikimedia.event.ReadingDepthSchema.enable', function () {
-			// Given multiple extensions may request this schema we must be careful to only ever
-			// enableTracking once.
-			if ( !trackSubscribeOptinRequest ) {
-				trackSubscribeOptinRequest = true;
-				enableTracking();
-			}
-		} );
+	/**
+	 * Assumes that a valid parameter is any one of the properties in the schema ending with the
+	 * suffix "_sample".
+	 * https://phabricator.wikimedia.org/T191532 AC#5
+	 */
+	function isValidSampleGroup( schema, bucket ) {
+		return schema.properties[ bucket ] && /_sample$/.test( bucket );
 	}
+
+	/**
+	 * Sets a boolean property on `sampleGroups` which will be attached to the event data in
+	 * `logEvent()`. This property is defined in the schema and is passed from the event hook that
+	 * enables the readingDepth schema. Group validation is only performed in isValidSampleGroup(),
+	 * which requires loading the ReadingDepth schema, not here. Any call to this function should be
+	 * accompanied with a call to enableTracking() to ensure that the group will be logged.
+	 *
+	 * @param {string} group a value from the schema ending with "_sample".
+	 */
+	function setSampleGroup( group ) {
+		sampleGroups[ group ] = true;
+	}
+
+	/**
+	 * Callback that triggers the ReadingDepth test and sets a sample bucket the indicates the
+	 * test was triggered from an external source.
+	 * @param {string} topic
+	 * @param {string} externalBucket unique boolean field in readingDepth schema that describes
+	 *                                the name and bucket of the test that triggered readingDepth,
+	 *                                ex: "page-issues-a_sample" for bucket A in page-issues test.
+	 * @param {object} schema a json schema object to validate the sample group against.
+	 */
+	function onExternalBucketEnabled( topic, externalBucket, schema ) {
+		if ( !isValidSampleGroup( schema, externalBucket ) ) {
+			// eslint-disable-next-line no-console
+			console.warn( 'Invalid ReadingDepth schema sample group, "' + externalBucket + '".' );
+			return;
+		}
+
+		setSampleGroup( externalBucket );
+	}
+
+	// This addresses the problem described in https://phabricator.wikimedia.org/T191532#4471802
+	// by allowing time for experiments to opt into ReadingDepth BEFORE it is enabled (below
+	// inside the mw.loader callback)
+	// Make sure the schema loads so that onExternalBucketEnabled can run synchronously
+	// meaning pageLoaded event when triggered will contain any sample groups that have been set
+	mw.loader.using( 'schema.' + SCHEMA_NAME ).then( function () {
+		var schema = mw.eventLog.schemas[ SCHEMA_NAME ].schema,
+			onExternalBucketEnabledWithSchema = function ( topic, bucket ) {
+				return onExternalBucketEnabled( topic, bucket, schema );
+			};
+
+		// Subscribe to other extensions' group logging requests.
+		// This handler depends on events that have been emitted before the handler is
+		// registered, so that the callback here is executed immediately, before
+		// `enableTracking()` is called below. `EnableTracking` can only be called once.
+		mw.trackSubscribe( 'wikimedia.event.ReadingDepthSchema.enable', onExternalBucketEnabledWithSchema );
+
+		// check if user has been selected for the default ReadingDepth sample group
+		if ( isInSample( config.get( 'wgWMEReadingDepthSamplingRate', 0 ) ) ) {
+			// WikimediaEvents itself wishes to report the default sample group.
+			// No need to verify. Set the known, valid, default sample group.
+			setSampleGroup( DEFAULT_SAMPLE_GROUP );
+		}
+
+		// Enable tracking if sample groups have been set, either by default or
+		// by an external AB test.
+		if ( Object.keys( sampleGroups ).length ) {
+			enableTracking();
+		}
+	} );
 
 }(
 	jQuery,
