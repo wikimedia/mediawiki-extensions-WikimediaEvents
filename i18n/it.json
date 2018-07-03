@@ -3,7 +3,8 @@
 		"authors": [
 			"Beta16",
 			"Nemo bis",
-			"Greis"
+			"Greis",
+			"Sakretsu"
 		]
 	},
 	"wikimediaevents-desc": "Registra eventi specifici Wikimedia utilizzando EventLogging",
@@ -13,5 +14,6 @@
 	"abusefilter-edit-builder-vars-user-wpzero": "Se un utente sta modificando attraverso un operatore gratuito tramite Wikipedia Zero",
 	"wikimediaevents-humanrel-yes": "Sì",
 	"wikimediaevents-humanrel-no": "No",
-	"wikimediaevents-humanrel-unsure": "Non so"
+	"wikimediaevents-humanrel-unsure": "Non so",
+	"wikimediaevents-aicaptcha-datacollection-label": "Come raccogliamo i dati per individuare i bot?"
 }
