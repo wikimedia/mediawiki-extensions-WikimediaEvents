@@ -22,7 +22,7 @@
 	"wikimediaevents-humanrel-no": "Ні",
 	"wikimediaevents-humanrel-unsure": "Не знаю",
 	"wikimediaevents-humanrel-privacy-statement": "Заява про конфіденційність",
-	"wikimediaevents-aicaptcha-datacollection-label": "Як ми збираємо дані, щоб виявляти ботів",
+	"wikimediaevents-aicaptcha-datacollection-label": "Як ми збираємо дані, щоб виявляти ботів?",
 	"wikimediaevents-aicaptcha-datacollection-description": "Ми завжди працюємо над поліпшенням наших систем. Із метою поліпшення алгоритмів виявлення ботів від січня до травня 2018 року ми можемо збирати інформацію про використання клавіатури і миші під час створення облікового запису. Ці дані будуть використані лише для виявлення автоматичних реєстрацій, запобігання спаму і поліпшення зручності реєстрації користувачу.",
 	"wikimediaevents-aicaptcha-datacollection-findoutmore": "дізнатися більше"
 }
