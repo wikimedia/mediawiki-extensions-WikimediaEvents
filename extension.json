@@ -90,7 +90,9 @@
 		"ChangesListClickTracking": 16484895,
 		"RecentChangesTopLinks": 16732249,
 		"InputDeviceDynamics": 17687647,
-		"CitationUsage": 18051472
+		"CitationUsage": 18051472,
+		"WMDEBannerEvents": 18193948,
+		"WMDEBannerSizeIssue": 18193993
 	},
 	"ResourceModules": {
 		"ext.wikimediaEvents": {
