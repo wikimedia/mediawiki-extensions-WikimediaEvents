@@ -9,19 +9,75 @@
 ( function ( $, mw, config, user, mwExperiments ) {
 
 	var pausedAt,
+		sessionId,
+		EVENT,
+		isInTestSample,
 		trackSubscribeOptinRequest = false,
 		msPaused = 0,
-		perf = window.performance,
-		EVENT = {
-			pageTitle: config.get( 'wgTitle' ),
-			namespaceId: config.get( 'wgNamespaceNumber' ),
-			skin: config.get( 'skin' ),
-			isAnon: user.isAnon(),
-			pageToken: user.generateRandomSessionId() +
-				Math.floor( mw.now() ).toString() +
-				user.generateRandomSessionId(),
-			sessionToken: user.sessionId()
-		};
+		perf = window.performance;
+
+	/**
+	 * Checks whether the UA supports the Beacon API.
+	 *
+	 * @return {boolean}
+	 */
+	function supportsBeacon() {
+		return $.isFunction( navigator.sendBeacon );
+	}
+
+	/**
+	 * Checks whether the UA supports the Navigation Timing API.
+	 *
+	 * @return {boolean}
+	 */
+	function supportsNavigationTiming() {
+		// This copies the logic in mw.now for consistency.
+		return Boolean( perf && perf.timing && perf.timing.navigationStart );
+	}
+
+	/**
+	 * Checks if the users browser is capable of logging the test.
+	 * A browser is considered capable if
+	 * 1. The schema has been enabled by a sysadmin
+	 * 2. It supports the Beacon APIs
+	 * 3. It supports Navigation Timing API.
+	 *
+	 * @return {boolean}
+	 */
+	function checkCapability() {
+		return config.get( 'wgWMEReadingDepthEnabled' ) &&
+			supportsNavigationTiming() &&
+			supportsBeacon();
+	}
+
+	/**
+	 * If the browser is not capable of logging the test
+	 * or if the schema has been disabled, exit early.
+	 */
+	if ( !checkCapability() ) {
+		return;
+	}
+
+	/**
+	 * @param {number} sessionID
+	 * @param {number} samplingRate A float between 0 and 1 for which events
+	 *  in the schema should be logged.
+	 * @return {boolean}
+	 */
+	function isInSample( sessionId, samplingRate ) {
+		var bucket = mwExperiments.getBucket( {
+			name: 'WME.ReadingDepth',
+			enabled: true,
+			buckets: {
+				control: 1 - samplingRate,
+				A: samplingRate
+			}
+		}, sessionId );
+		return bucket === 'A';
+	}
+
+	sessionId = user.sessionId();
+	isInTestSample = isInSample( sessionId, config.get( 'wgWMEReadingDepthSamplingRate', 0 ) );
 
 	/**
 	 * If available return the time in ms till first paint
@@ -135,62 +191,6 @@
 	}
 
 	/**
-	 * @param {number} samplingRate A float between 0 and 1 for which events
-	 *  in the schema should be logged.
-	 * @return {boolean}
-	 */
-	function isInSample( samplingRate ) {
-		var bucket = mwExperiments.getBucket( {
-			name: 'WME.ReadingDepth',
-			enabled: true,
-			buckets: {
-				control: 1 - samplingRate,
-				A: samplingRate
-			}
-		}, user.sessionId() );
-		return bucket === 'A';
-	}
-
-	/**
-	 * Checks whether the UA supports the Beacon API.
-	 *
-	 * @return {boolean}
-	 */
-	function supportsBeacon() {
-		return !!navigator.sendBeacon;
-	}
-
-	/**
-	 * Checks whether the UA supports the Navigation Timing API.
-	 *
-	 * @return {boolean}
-	 */
-	function supportsNavigationTiming() {
-		// This copies the logic in mw.now for consistency.
-		return !!( perf && perf.timing && perf.timing.navigationStart );
-	}
-
-	/**
-	 * Checks whether the browser is capable and should track reading depth. A
-	 * browser is considered capable if it supports the Beacon APIs and the
-	 * Navigation Timing API. It should track if the user is in the sampling group
-	 * and the schema has been enabled by a sysadmin
-	 * OR if another extension has requested ReadingDepth via the
-	 * `wikimedia.event.ReadingDepthSchema.enable` hook.
-	 *
-	 * @return {boolean}
-	 */
-	function isEnabled() {
-		return config.get( 'wgWMEReadingDepthEnabled' ) &&
-			supportsNavigationTiming() &&
-			supportsBeacon() &&
-			(
-				isInSample( config.get( 'wgWMEReadingDepthSamplingRate', 0 ) ) ||
-				trackSubscribeOptinRequest
-			);
-	}
-
-	/**
 	 * Handles the window being unloaded.
 	 *
 	 * The "pageUnloaded" ReadingDepth event is logged.
@@ -232,11 +232,20 @@
 	 * Should only be called once on a given session.
 	 */
 	function enableTracking() {
+		EVENT = {
+			pageTitle: config.get( 'wgTitle' ),
+			namespaceId: config.get( 'wgNamespaceNumber' ),
+			skin: config.get( 'skin' ),
+			isAnon: user.isAnon(),
+			pageToken: user.getPageviewToken(),
+			sessionToken: sessionId
+		};
+
 		$( window ).on( 'beforeunload', onBeforeUnload );
 		onLoad();
 	}
 
-	if ( isEnabled() ) {
+	if ( isInTestSample ) {
 		enableTracking();
 	} else {
 		/**
@@ -253,4 +262,10 @@
 		} );
 	}
 
-}( jQuery, mediaWiki, mediaWiki.config, mediaWiki.user, mediaWiki.experiments ) );
+}(
+	jQuery,
+	mediaWiki,
+	mediaWiki.config,
+	mediaWiki.user,
+	mediaWiki.experiments
+) );
