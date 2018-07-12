@@ -27,6 +27,11 @@ class WikimediaEventsHooks {
 		if ( $out->getTitle()->isSpecial( 'CreateAccount' ) && ( $wgWMEAICaptchaEnabled === true ) ) {
 			$out->addModules( 'ext.wikimediaEvents.aiCaptcha' );
 		}
+
+		if ( defined( 'WB_VERSION' ) ) {
+			// If we are in Wikibase Repo, load Wikibase module
+			$out->addModules( 'ext.wikimediaEvents.wikibase' );
+		}
 	}
 
 	/**

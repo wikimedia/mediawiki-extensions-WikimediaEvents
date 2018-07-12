@@ -92,7 +92,8 @@
 		"InputDeviceDynamics": 17687647,
 		"CitationUsage": 18051472,
 		"WMDEBannerEvents": 18193948,
-		"WMDEBannerSizeIssue": 18193993
+		"WMDEBannerSizeIssue": 18193993,
+		"WikidataCompletionSearchClicks": 18236836
 	},
 	"ResourceModules": {
 		"ext.wikimediaEvents": {
@@ -154,6 +155,15 @@
 				"wikimediaevents-aicaptcha-datacollection-label",
 				"wikimediaevents-aicaptcha-datacollection-description",
 				"wikimediaevents-aicaptcha-datacollection-findoutmore"
+			]
+		},
+		"ext.wikimediaEvents.wikibase": {
+			"scripts": [
+				"wikibase/ext.wikimediaEvents.completionClicks.js"
+			],
+			"targets": [
+				"desktop",
+				"mobile"
 			]
 		}
 	},
