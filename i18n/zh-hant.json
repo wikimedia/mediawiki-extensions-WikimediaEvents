@@ -4,13 +4,23 @@
 			"Liuxinyu970226",
 			"Cwlin0416",
 			"LNDDYL",
-			"A2093064"
+			"A2093064",
+			"Kly"
 		]
 	},
 	"wikimediaevents-desc": "EventLogging 的維基媒體特定事件記錄",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|跨 wiki 上傳]]",
 	"tag-cross-wiki-upload-description": "檔案已在其他 wiki 由內建的 wikitext 與視覺化編輯器上傳",
 	"tag-HHVM-description": "透過使用 HipHop 虛擬機器完成修定，替代 Zend PHP 直譯器 (預期可以提高效能，標記用於除錯/分析)",
+	"abusefilter-edit-builder-vars-user-wpzero": "使用者是否透過維基百科零計劃以零費率提供業者來編輯",
+	"wikimediaevents-humanrel-question-a": "當搜尋「$1」時您會想點擊此頁面嗎？",
+	"wikimediaevents-humanrel-question-b": "若您搜尋了「$1」，此條目是符合的結果嗎？",
+	"wikimediaevents-humanrel-question-c": "若您搜尋了「$1」，此條目有相關嗎？",
+	"wikimediaevents-humanrel-question-d": "若有人搜尋了「$1」，他們會想要閱讀此條目嗎？",
+	"wikimediaevents-humanrel-yes": "是",
+	"wikimediaevents-humanrel-no": "否",
+	"wikimediaevents-humanrel-unsure": "不清楚",
+	"wikimediaevents-humanrel-privacy-statement": "隱私聲明",
 	"wikimediaevents-aicaptcha-datacollection-label": "我們如何收集資料以偵測殭屍程式？",
 	"wikimediaevents-aicaptcha-datacollection-description": "我們總是致力於改進我們的系統。為了獲得更好的檢測機器人經驗，在2018年1~5月間，我們可能收集有關帳號建立表單上鍵盤和滑鼠的使用資訊。這個資料將只用於幫助我們更好地檢測自動化註冊，為了阻止濫發訊息及使每個人的註冊更加無縫。",
 	"wikimediaevents-aicaptcha-datacollection-findoutmore": "了解更多"
