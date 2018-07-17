@@ -5,7 +5,7 @@
  * @see https://meta.wikimedia.org/wiki/Schema:CitationUsage
  */
 ( function ( $, mwConfig, mwUser, mwExperiments, mwNow, mwEventLog,
-	mwLoader ) {
+	mwLoader, requestIdleCallback ) {
 	// configuration key for the population size (one in how many?)
 	var POPULATION_SIZE = mwConfig.get( 'wgWMECitationUsagePopulationSize', 0 ),
 		// number of milliseconds after which a 'fnHover' is logged
@@ -197,6 +197,15 @@
 	}
 
 	/**
+	 * Log 'pageLoad' event
+	 */
+	function logPageLoad() {
+		logEvent( {
+			action: 'pageLoad'
+		} );
+	}
+
+	/**
 	 * Setup logging of actions on external links.
 	 */
 	function setupExtLogging() {
@@ -280,6 +289,7 @@
 			mwLoader.using(
 				[ 'ext.eventLogging', 'schema.' + SCHEMA_NAME ],
 				function () {
+					requestIdleCallback( logPageLoad );
 					setupExtLogging();
 					setupUpLogging();
 					setupFnLogging();
@@ -287,4 +297,5 @@
 		}
 	} );
 }( jQuery, mediaWiki.config, mediaWiki.user, mediaWiki.experiments,
-	mediaWiki.now, mediaWiki.eventLog, mediaWiki.loader ) );
+	mediaWiki.now, mediaWiki.eventLog, mediaWiki.loader,
+	mediaWiki.requestIdleCallback ) );
