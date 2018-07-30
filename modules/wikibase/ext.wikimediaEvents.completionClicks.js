@@ -16,6 +16,11 @@
 				return item.pageid;
 			} ).join( ',' );
 
+		if ( !suggestions || suggestions.length < 2 ) {
+			// Do not track events where there was no real choice
+			return;
+		}
+
 		if ( !suggestions.some( function ( item, idx ) {
 			if ( item.id === entityId ) {
 				clickIndex = idx;
