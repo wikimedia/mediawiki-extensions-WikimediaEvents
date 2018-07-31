@@ -10,7 +10,8 @@
  * Track events of the form mw.track( 'gauge.baz', 42 ); are logged as baz=42g.
  * The value is assumed to be an integer (and rounded if not).
  *
- * $wgWMEStatsdBaseUri must point to a URL that accepts query strings like ?foo=1235ms&bar=5c&baz=42g
+ * $wgWMEStatsdBaseUri must point to a URL that accepts query strings,
+ * such as `?foo=1235ms&bar=5c&baz=42g`.
  */
 ( function ( mw ) {
 	var timer = null,

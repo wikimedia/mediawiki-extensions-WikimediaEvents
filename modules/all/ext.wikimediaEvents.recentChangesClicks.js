@@ -24,8 +24,8 @@
 	if ( [ 'Recentchanges', 'Recentchangeslinked', 'Watchlist' ].indexOf( specialPage ) !== -1 ) {
 		// Log performance data
 		if ( window.performance && window.performance.now ) {
-			// HACK: if the rcfilters module is in the 'registered' state, it's not going to be loaded
-			// and we're in the old UI. If it's in the 'loading', 'loaded' or 'ready' states,
+			// HACK: if the rcfilters module is in the 'registered' state, it's not going to be
+			// loaded and we're in the old UI. If it's in the 'loading', 'loaded' or 'ready' states,
 			// we're in the new UI.
 			isNewUI = mw.loader.getState( 'mediawiki.rcfilters.filters.ui' ) !== 'registered';
 			metricName = isNewUI ? 'structuredChangeFilters' : 'changesListSpecialPage';

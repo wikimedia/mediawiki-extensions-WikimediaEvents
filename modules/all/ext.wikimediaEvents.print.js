@@ -124,4 +124,5 @@
 			setupMinervaLogging();
 		} );
 	}
+	// eslint-disable-next-line max-len
 }( jQuery, mediaWiki.track, mediaWiki.trackSubscribe, mediaWiki.config, mediaWiki.user, mediaWiki.experiments ) );
