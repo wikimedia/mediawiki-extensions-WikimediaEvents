@@ -40,7 +40,7 @@
 		if ( timing.msFirstPaint > timing.navigationStart ) {
 			return timing.msFirstPaint;
 		/* global chrome */
-		} else if ( window.chrome && $.isFunction( chrome.loadTimes ) ) {
+		} else if ( window.chrome && chrome.loadTimes ) {
 			chromeLoadTimes = chrome.loadTimes();
 			if ( chromeLoadTimes.firstPaintTime > chromeLoadTimes.startLoadTime ) {
 				// convert from microseconds to milliseconds
@@ -157,7 +157,7 @@
 	 * @return {boolean}
 	 */
 	function supportsBeacon() {
-		return $.isFunction( navigator.sendBeacon );
+		return !!navigator.sendBeacon;
 	}
 
 	/**
@@ -167,7 +167,7 @@
 	 */
 	function supportsNavigationTiming() {
 		// This copies the logic in mw.now for consistency.
-		return Boolean( perf && perf.timing && perf.timing.navigationStart );
+		return !!( perf && perf.timing && perf.timing.navigationStart );
 	}
 
 	/**
