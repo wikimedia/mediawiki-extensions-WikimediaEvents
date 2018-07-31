@@ -18,7 +18,7 @@
  * @license GNU GPL v2 or later
  * @author Erik Bernhardson <ebernhardson@wikimedia.org>
  */
-/* eslint-disable vars-on-top */
+/* eslint-disable vars-on-top, max-len, no-prototype-builtins */
 ( function ( mw, $ ) {
 	'use strict';
 	// reject mobile users
