@@ -1,8 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"Christian List"
+			"Christian List",
+			"Saederup92"
 		]
 	},
-	"wikimediaevents-desc": "Logger Wikimedia-specifikke begivenheder ved hjælp af EventLogging"
+	"wikimediaevents-desc": "Logger Wikimedia-specifikke begivenheder ved hjælp af EventLogging",
+	"wikimediaevents-humanrel-yes": "Ja",
+	"wikimediaevents-humanrel-no": "Nej",
+	"wikimediaevents-humanrel-unsure": "Jeg ved det ikke",
+	"wikimediaevents-aicaptcha-datacollection-findoutmore": "find ud af mere"
 }
