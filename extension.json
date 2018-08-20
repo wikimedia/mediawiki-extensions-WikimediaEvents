@@ -95,6 +95,59 @@
 		"WMDEBannerSizeIssue": 18193993,
 		"WikidataCompletionSearchClicks": 18236836
 	},
+	"@ResourceModules": {
+		"@": [
+			"Please document active campaings."
+		],
+		"deprecate": {
+			"start": "March 2014",
+			"owner": "Performance Team"
+		},
+		"geoFeatures": {
+			"start": "June 2015",
+			"details": "https://phabricator.wikimedia.org/T103017",
+			"owner": "Discovery"
+		},
+		"searchSatisfaction": {
+			"start": "October 2015",
+			"owner": "Discovery"
+		},
+		"kartographer": {
+			"start": "October 2016",
+			"details": "https://phabricator.wikimedia.org/T149140",
+			"owner": "Discovery"
+		},
+		"readingDepth": {
+			"start": "February 2017",
+			"details": "http://phabricator.wikimedia.org/T155639",
+			"owner": "Reading Web"
+		},
+		"recentChangesClicks": {
+			"start": "March 2017",
+			"details": "https://phabricator.wikimedia.org/T158458",
+			"owner": "Growth Team"
+		},
+		"print": {
+			"start": "September 2017",
+			"details": "https://phabricator.wikimedia.org/T169730",
+			"owner": "Reading Web"
+		},
+		"aiCaptcha": {
+			"start": "February 2018",
+			"details": "https://phabricator.wikimedia.org/T186244",
+			"owner": "Reading Infrastructure"
+		},
+		"citationUsage": {
+			"start": "June 2018",
+			"details": "https://phabricator.wikimedia.org/T191086",
+			"owner": "Research"
+		},
+		"wikibase": {
+			"start": "July 2018",
+			"details": "https://phabricator.wikimedia.org/T196186",
+			"owner": "Search Platform"
+		}
+	},
 	"ResourceModules": {
 		"ext.wikimediaEvents": {
 			"scripts": [
