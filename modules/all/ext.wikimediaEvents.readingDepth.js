@@ -22,7 +22,7 @@
 	 * @return {boolean}
 	 */
 	function supportsBeacon() {
-		return $.isFunction( navigator.sendBeacon );
+		return !!navigator.sendBeacon;
 	}
 
 	/**
@@ -32,7 +32,7 @@
 	 */
 	function supportsNavigationTiming() {
 		// This copies the logic in mw.now for consistency.
-		return Boolean( perf && perf.timing && perf.timing.navigationStart );
+		return !!( perf && perf.timing && perf.timing.navigationStart );
 	}
 
 	/**
