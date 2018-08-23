@@ -87,7 +87,6 @@
 		"Kartographer": 16132745,
 		"ChangesListHighlights": 16484288,
 		"ChangesListFilterGrouping": 17008168,
-		"ChangesListClickTracking": 16484895,
 		"RecentChangesTopLinks": 16732249,
 		"InputDeviceDynamics": 17687647,
 		"CitationUsage": 18219861,
@@ -122,11 +121,6 @@
 			"details": "http://phabricator.wikimedia.org/T155639",
 			"owner": "Reading Web"
 		},
-		"recentChangesClicks": {
-			"start": "March 2017",
-			"details": "https://phabricator.wikimedia.org/T158458",
-			"owner": "Growth Team"
-		},
 		"print": {
 			"start": "September 2017",
 			"details": "https://phabricator.wikimedia.org/T169730",
@@ -157,7 +151,6 @@
 				"all/ext.wikimediaEvents.print.js",
 				"all/ext.wikimediaEvents.readingDepth.js",
 				"all/ext.wikimediaEvents.geoFeatures.js",
-				"all/ext.wikimediaEvents.recentChangesClicks.js",
 				"all/ext.wikimediaEvents.citationUsage.js"
 			],
 			"skinScripts": {
