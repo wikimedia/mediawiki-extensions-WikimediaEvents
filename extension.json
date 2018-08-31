@@ -84,7 +84,6 @@
 		"SearchSatisfactionErrors": 17181648,
 		"GeoFeatures": 12914994,
 		"Search": 14361785,
-		"Kartographer": 16132745,
 		"ChangesListHighlights": 16484288,
 		"ChangesListFilterGrouping": 17008168,
 		"RecentChangesTopLinks": 16732249,
@@ -109,11 +108,6 @@
 		},
 		"searchSatisfaction": {
 			"start": "October 2015",
-			"owner": "Discovery"
-		},
-		"kartographer": {
-			"start": "October 2016",
-			"details": "https://phabricator.wikimedia.org/T149140",
 			"owner": "Discovery"
 		},
 		"readingDepth": {
@@ -147,7 +141,6 @@
 			"scripts": [
 				"all/ext.wikimediaEvents.events.js",
 				"all/ext.wikimediaEvents.statsd.js",
-				"all/ext.wikimediaEvents.kartographer.js",
 				"all/ext.wikimediaEvents.print.js",
 				"all/ext.wikimediaEvents.readingDepth.js",
 				"all/ext.wikimediaEvents.geoFeatures.js",
