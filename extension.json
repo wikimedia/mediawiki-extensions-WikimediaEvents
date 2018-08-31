@@ -82,7 +82,6 @@
 		"SearchSatisfaction": 17378115,
 		"TestSearchSatisfaction2": 16909631,
 		"SearchSatisfactionErrors": 17181648,
-		"GeoFeatures": 12914994,
 		"Search": 14361785,
 		"Kartographer": 16132745,
 		"ChangesListHighlights": 16484288,
@@ -101,11 +100,6 @@
 		"deprecate": {
 			"start": "March 2014",
 			"owner": "Performance Team"
-		},
-		"geoFeatures": {
-			"start": "June 2015",
-			"details": "https://phabricator.wikimedia.org/T103017",
-			"owner": "Discovery"
 		},
 		"searchSatisfaction": {
 			"start": "October 2015",
@@ -150,7 +144,6 @@
 				"all/ext.wikimediaEvents.kartographer.js",
 				"all/ext.wikimediaEvents.print.js",
 				"all/ext.wikimediaEvents.readingDepth.js",
-				"all/ext.wikimediaEvents.geoFeatures.js",
 				"all/ext.wikimediaEvents.citationUsage.js"
 			],
 			"skinScripts": {
