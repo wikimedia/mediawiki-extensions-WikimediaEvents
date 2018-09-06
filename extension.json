@@ -87,7 +87,8 @@
 		"ChangesListFilterGrouping": 17008168,
 		"RecentChangesTopLinks": 16732249,
 		"InputDeviceDynamics": 17687647,
-		"CitationUsage": 18219861,
+		"CitationUsage": 18359729,
+		"CitationUsagePageLoad": 18359580,
 		"WMDEBannerEvents": 18193948,
 		"WMDEBannerSizeIssue": 18193993,
 		"WikidataCompletionSearchClicks": 18236836
@@ -209,6 +210,7 @@
 		"WMEReadingDepthSamplingRate": 0.005,
 		"WMEReadingDepthEnabled": false,
 		"WMECitationUsagePopulationSize": 0,
+		"WMECitationUsagePageLoadPopulationSize": 0,
 		"WMEStatsdBaseUri": false,
 		"WMESearchRelevancePages": {
 			"_merge_strategy": "array_plus"

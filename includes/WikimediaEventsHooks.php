@@ -284,7 +284,8 @@ class WikimediaEventsHooks {
 	public static function onResourceLoaderGetConfigVars( &$vars ) {
 		global $wgWMEStatsdBaseUri, $wgWMEReadingDepthSamplingRate,
 			$wgWMEReadingDepthEnabled, $wgWMEPrintSamplingRate,
-			$wgWMEPrintEnabled, $wgWMECitationUsagePopulationSize;
+			$wgWMEPrintEnabled, $wgWMECitationUsagePopulationSize,
+			$wgWMECitationUsagePageLoadPopulationSize;
 
 		$vars['wgWMEStatsdBaseUri'] = $wgWMEStatsdBaseUri;
 		$vars['wgWMEReadingDepthSamplingRate'] = $wgWMEReadingDepthSamplingRate;
@@ -292,6 +293,7 @@ class WikimediaEventsHooks {
 		$vars['wgWMEPrintSamplingRate'] = $wgWMEPrintSamplingRate;
 		$vars['wgWMEPrintEnabled'] = $wgWMEPrintEnabled;
 		$vars['wgWMECitationUsagePopulationSize'] = $wgWMECitationUsagePopulationSize;
+		$vars['wgWMECitationUsagePageLoadPopulationSize'] = $wgWMECitationUsagePageLoadPopulationSize;
 	}
 
 	/**

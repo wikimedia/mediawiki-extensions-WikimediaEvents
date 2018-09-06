@@ -3,16 +3,19 @@
  * Track citation usage events for anonymous users
  * @see https://phabricator.wikimedia.org/T191086
  * @see https://meta.wikimedia.org/wiki/Schema:CitationUsage
+ * @see https://meta.wikimedia.org/wiki/Schema:CitationUsagePageLoad
  */
 ( function ( $, mwConfig, mwUser, mwExperiments, mwNow, mwEventLog,
 	mwLoader, requestIdleCallback ) {
 	// configuration key for the population size (one in how many?)
 	var POPULATION_SIZE = mwConfig.get( 'wgWMECitationUsagePopulationSize', 0 ),
+		PL_POPULATION_SIZE = mwConfig.get( 'wgWMECitationUsagePageLoadPopulationSize', 0 ),
 		// number of milliseconds after which a 'fnHover' is logged
 		HOVER_TIMEOUT = 1000,
 		// these identifiers logged when they are followed by an external link
 		IDENTIFIER_LABELS = [ 'DOI', 'PMID', 'PMC' ],
 		SCHEMA_NAME = 'CitationUsage',
+		PL_SCHEMA_NAME = 'CitationUsagePageLoad',
 		getBaseData,
 		getLinkOccurence,
 		getExtLinkPosition;
@@ -41,14 +44,15 @@
 	}() );
 
 	/**
-	 * Log an event to the SCHEMA_NAME.
+	 * Log data to schemaName
+	 * @param {string} schemaName
 	 * @param {string} data
 	 */
-	function logEvent( data ) {
+	function logEvent( schemaName, data ) {
 		var baseData = getBaseData();
 
 		mwEventLog.logEvent(
-			SCHEMA_NAME, $.extend( {}, baseData, data, {
+			schemaName, $.extend( {}, baseData, data, {
 				event_offset_time: Math.round(
 					mwNow() - baseData.dom_interactive_time
 				)
@@ -200,7 +204,7 @@
 	 * Log 'pageLoad' event
 	 */
 	function logPageLoad() {
-		logEvent( {
+		logEvent( PL_SCHEMA_NAME, {
 			action: 'pageLoad'
 		} );
 	}
@@ -213,7 +217,7 @@
 			var data = getExtLinkStats( $( this ) );
 
 			data.action = 'extClick';
-			logEvent( data );
+			logEvent( SCHEMA_NAME, data );
 		} );
 	}
 
@@ -226,7 +230,7 @@
 				var data = getLinkStats( $( this ) );
 
 				data.action = 'upClick';
-				logEvent( data );
+				logEvent( SCHEMA_NAME, data );
 			} );
 	}
 
@@ -244,7 +248,7 @@
 			var data = getLinkStats( $( link ) );
 
 			data.action = 'fnHover';
-			logEvent( data );
+			logEvent( SCHEMA_NAME, data );
 		}
 
 		$( '#content' )
@@ -264,15 +268,16 @@
 				hoverTimeout = null;
 
 				data.action = 'fnClick';
-				logEvent( data );
+				logEvent( SCHEMA_NAME, data );
 			} );
 	}
 
 	/**
 	 * Whether the current session should be logged.
+	 * @param {number} populationSize one in how many should be logged?
 	 * @return {boolean}
 	 */
-	function shouldLog() {
+	function shouldLog( populationSize ) {
 		return (
 			window.performance && window.performance.timing &&
 				window.performance.timing.domInteractive &&
@@ -280,16 +285,23 @@
 				mwConfig.get( 'wgNamespaceNumber' ) === 0 &&
 				mwConfig.get( 'wgAction' ) === 'view' &&
 				mwUser.isAnon() &&
-				mwEventLog.randomTokenMatch( POPULATION_SIZE, mwUser.sessionId() )
+				mwEventLog.randomTokenMatch( populationSize, mwUser.sessionId() )
 		);
 	}
 
 	$( function () {
-		if ( shouldLog() ) {
+		if ( shouldLog( PL_POPULATION_SIZE ) ) {
+			mwLoader.using(
+				[ 'ext.eventLogging', 'schema.' + PL_SCHEMA_NAME ],
+				function () {
+					requestIdleCallback( logPageLoad );
+				} );
+		}
+
+		if ( shouldLog( POPULATION_SIZE ) ) {
 			mwLoader.using(
 				[ 'ext.eventLogging', 'schema.' + SCHEMA_NAME ],
 				function () {
-					requestIdleCallback( logPageLoad );
 					setupExtLogging();
 					setupUpLogging();
 					setupFnLogging();
