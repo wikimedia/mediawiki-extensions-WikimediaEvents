@@ -6,7 +6,7 @@
  *
  * @see https://meta.wikimedia.org/wiki/Schema:ReadingDepth
  */
-( function ( $, mw, config, user, mwExperiments ) {
+( function ( user, mwExperiments ) {
 
 	var pausedAt,
 		sessionId,
@@ -47,7 +47,7 @@
 	 * @return {boolean}
 	 */
 	function checkCapability() {
-		return config.get( 'wgWMEReadingDepthEnabled' ) &&
+		return mw.config.get( 'wgWMEReadingDepthEnabled' ) &&
 			supportsNavigationTiming() &&
 			supportsBeacon();
 	}
@@ -237,9 +237,9 @@
 		if ( !trackingIsEnabled ) {
 			trackingIsEnabled = true;
 			EVENT = {
-				pageTitle: config.get( 'wgTitle' ),
-				namespaceId: config.get( 'wgNamespaceNumber' ),
-				skin: config.get( 'skin' ),
+				pageTitle: mw.config.get( 'wgTitle' ),
+				namespaceId: mw.config.get( 'wgNamespaceNumber' ),
+				skin: mw.config.get( 'skin' ),
 				isAnon: user.isAnon(),
 				pageToken: user.getPageviewToken(),
 				sessionToken: sessionId
@@ -308,7 +308,7 @@
 		mw.trackSubscribe( 'wikimedia.event.ReadingDepthSchema.enable', onExternalBucketEnabledWithSchema );
 
 		// check if user has been selected for the default ReadingDepth sample group
-		if ( isInSample( config.get( 'wgWMEReadingDepthSamplingRate', 0 ) ) ) {
+		if ( isInSample( mw.config.get( 'wgWMEReadingDepthSamplingRate', 0 ) ) ) {
 			// WikimediaEvents itself wishes to report the default sample group.
 			// No need to verify. Set the known, valid, default sample group.
 			setSampleGroup( DEFAULT_SAMPLE_GROUP );
@@ -322,9 +322,6 @@
 	} );
 
 }(
-	jQuery,
-	mediaWiki,
-	mediaWiki.config,
-	mediaWiki.user,
-	mediaWiki.experiments
+	mw.user,
+	mw.experiments
 ) );

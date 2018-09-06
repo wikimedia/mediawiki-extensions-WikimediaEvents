@@ -1,5 +1,5 @@
 /* eslint-disable */
-( function ( mw ) {
+( function () {
 	//source: https://github.com/simple-statistics/simple-statistics
 	// ISC License
 	//
@@ -325,4 +325,4 @@
 				return q1 - q2;
 		}
 	}
-}( mediaWiki ) );
+}() );

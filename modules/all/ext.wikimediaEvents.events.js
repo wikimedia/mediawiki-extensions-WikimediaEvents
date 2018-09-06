@@ -5,8 +5,8 @@
  * Wikimedia infrastrucutre: if WikimediaEvents is not installed, the event
  * will be ignored.
  */
-( function ( mw ) {
+( function () {
 	mw.trackSubscribe( 'wikimedia.event.', function ( topic, event ) {
 		mw.track( topic.replace( /^wikimedia\./, '' ), event );
 	} );
-}( mediaWiki ) );
+}() );

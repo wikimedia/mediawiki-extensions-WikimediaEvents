@@ -2,7 +2,7 @@
  * JavaScript module for tracking clicks in completion search on Wikibase.
  */
 /* eslint-disable no-underscore-dangle */
-( function ( mw, $ ) {
+( function () {
 	'use strict';
 
 	var logClickEvent = function ( event, entityId ) {
@@ -52,4 +52,4 @@
 		}
 	} );
 
-}( mediaWiki, jQuery ) );
+}() );

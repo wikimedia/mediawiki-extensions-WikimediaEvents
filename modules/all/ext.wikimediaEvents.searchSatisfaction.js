@@ -19,7 +19,7 @@
  * @author Erik Bernhardson <ebernhardson@wikimedia.org>
  */
 /* eslint-disable vars-on-top, max-len, no-prototype-builtins */
-( function ( mw, $ ) {
+( function () {
 	'use strict';
 	// reject mobile users
 	if ( mw.config.get( 'skin' ) === 'minerva' ) {
@@ -1013,4 +1013,4 @@
 		}
 	} );
 
-}( mediaWiki, jQuery ) );
+}() );

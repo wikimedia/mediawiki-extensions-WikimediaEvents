@@ -3,7 +3,7 @@
  *
  * @see https://grafana.wikimedia.org/dashboard/db/mw-js-deprecate
  */
-( function ( mw ) {
+( function () {
 	function oneIn( populationSize ) {
 		return Math.floor( Math.random() * populationSize ) === 0;
 	}
@@ -20,4 +20,4 @@
 			1
 		);
 	} );
-}( mediaWiki ) );
+}() );

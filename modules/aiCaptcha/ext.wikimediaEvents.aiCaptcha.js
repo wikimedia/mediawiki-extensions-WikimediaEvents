@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-( function ( $, mw ) {
+( function () {
 
 	var dwellTimings = [],
 		flightTimings = [],
@@ -183,4 +183,4 @@
 		combinedStats.userName = username;
 		mw.track( 'event.InputDeviceDynamics', combinedStats );
 	} );
-}( jQuery, mediaWiki ) );
+}() );

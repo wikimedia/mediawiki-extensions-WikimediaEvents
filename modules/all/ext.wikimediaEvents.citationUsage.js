@@ -5,11 +5,10 @@
  * @see https://meta.wikimedia.org/wiki/Schema:CitationUsage
  * @see https://meta.wikimedia.org/wiki/Schema:CitationUsagePageLoad
  */
-( function ( $, mwConfig, mwUser, mwExperiments, mwNow, mwEventLog,
-	mwLoader, requestIdleCallback ) {
+( function ( mwUser, mwExperiments, mwEventLog ) {
 	// configuration key for the population size (one in how many?)
-	var POPULATION_SIZE = mwConfig.get( 'wgWMECitationUsagePopulationSize', 0 ),
-		PL_POPULATION_SIZE = mwConfig.get( 'wgWMECitationUsagePageLoadPopulationSize', 0 ),
+	var POPULATION_SIZE = mw.config.get( 'wgWMECitationUsagePopulationSize', 0 ),
+		PL_POPULATION_SIZE = mw.config.get( 'wgWMECitationUsagePageLoadPopulationSize', 0 ),
 		// number of milliseconds after which a 'fnHover' is logged
 		HOVER_TIMEOUT = 1000,
 		// these identifiers logged when they are followed by an external link
@@ -31,15 +30,15 @@
 			if ( !baseData ) {
 				baseData = {
 					dom_interactive_time: window.performance.timing.domInteractive,
-					revision_id: mwConfig.get( 'wgRevisionId' ),
-					page_id: mwConfig.get( 'wgArticleId' ),
-					page_title: mwConfig.get( 'wgTitle' ),
-					namespace_id: mwConfig.get( 'wgNamespaceNumber' ),
+					revision_id: mw.config.get( 'wgRevisionId' ),
+					page_id: mw.config.get( 'wgArticleId' ),
+					page_title: mw.config.get( 'wgTitle' ),
+					namespace_id: mw.config.get( 'wgNamespaceNumber' ),
 					page_token: mwUser.generateRandomSessionId(),
 					session_token: mwUser.sessionId(),
 					referrer: document.referrer.slice( 0, REFERRER_MAX_LENGTH ),
-					skin: mwConfig.get( 'skin' ),
-					mode: mwConfig.get( 'wgMFMode' ) ? 'mobile' : 'desktop'
+					skin: mw.config.get( 'skin' ),
+					mode: mw.config.get( 'wgMFMode' ) ? 'mobile' : 'desktop'
 				};
 			}
 			return baseData;
@@ -57,7 +56,7 @@
 		mwEventLog.logEvent(
 			schemaName, $.extend( {}, baseData, data, {
 				event_offset_time: Math.round(
-					mwNow() - baseData.dom_interactive_time
+					mw.now() - baseData.dom_interactive_time
 				)
 			} )
 		);
@@ -285,9 +284,9 @@
 		return (
 			window.performance && window.performance.timing &&
 				window.performance.timing.domInteractive &&
-				!mwConfig.get( 'wgIsMainPage' ) &&
-				mwConfig.get( 'wgNamespaceNumber' ) === 0 &&
-				mwConfig.get( 'wgAction' ) === 'view' &&
+				!mw.config.get( 'wgIsMainPage' ) &&
+				mw.config.get( 'wgNamespaceNumber' ) === 0 &&
+				mw.config.get( 'wgAction' ) === 'view' &&
 				mwUser.isAnon() &&
 				mwEventLog.randomTokenMatch( populationSize, mwUser.sessionId() )
 		);
@@ -295,15 +294,15 @@
 
 	$( function () {
 		if ( shouldLog( PL_POPULATION_SIZE ) ) {
-			mwLoader.using(
+			mw.loader.using(
 				[ 'ext.eventLogging', 'schema.' + PL_SCHEMA_NAME ],
 				function () {
-					requestIdleCallback( logPageLoad );
+					mw.requestIdleCallback( logPageLoad );
 				} );
 		}
 
 		if ( shouldLog( POPULATION_SIZE ) ) {
-			mwLoader.using(
+			mw.loader.using(
 				[ 'ext.eventLogging', 'schema.' + SCHEMA_NAME ],
 				function () {
 					setupExtLogging();
@@ -312,6 +311,4 @@
 				} );
 		}
 	} );
-}( jQuery, mediaWiki.config, mediaWiki.user, mediaWiki.experiments,
-	mediaWiki.now, mediaWiki.eventLog, mediaWiki.loader,
-	mediaWiki.requestIdleCallback ) );
+}( mw.user, mw.experiments, mw.eventLog ) );

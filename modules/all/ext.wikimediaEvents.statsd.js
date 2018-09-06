@@ -13,7 +13,7 @@
  * $wgWMEStatsdBaseUri must point to a URL that accepts query strings,
  * such as `?foo=1235ms&bar=5c&baz=42g`.
  */
-( function ( mw ) {
+( function () {
 	var timer = null,
 		queue = [],
 		batchSize = 50,
@@ -87,4 +87,4 @@
 		} );
 		schedule();
 	} );
-}( mediaWiki ) );
+}() );

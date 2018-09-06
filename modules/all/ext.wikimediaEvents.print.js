@@ -9,7 +9,7 @@
  * @see https://phabricator.wikimedia.org/T169730
  * @see https://meta.wikimedia.org/wiki/Schema:Print
  */
-( function ( $, track, trackSubscribe, config, user, mwExperiments ) {
+( function ( user, mwExperiments ) {
 	/**
 	* Log an event to the Schema:Print
 	*
@@ -17,16 +17,16 @@
 	*   schema Schema:Print
 	*/
 	function logEvent( action ) {
-		var skin = config.get( 'skin' );
+		var skin = mw.config.get( 'skin' );
 		if ( skin !== 'vector' && skin !== 'minerva' ) {
 			skin = 'other';
 		}
 
-		track( 'event.Print', {
+		mw.track( 'event.Print', {
 			sessionToken: user.sessionId(),
 			isAnon: user.isAnon(),
-			pageTitle: config.get( 'wgPageName' ),
-			namespaceId: config.get( 'wgNamespaceNumber' ),
+			pageTitle: mw.config.get( 'wgPageName' ),
+			namespaceId: mw.config.get( 'wgNamespaceNumber' ),
 			skin: skin,
 			action: action
 		} );
@@ -71,7 +71,7 @@
 	 * Log actions from Minerva download icon actions
 	 */
 	function setupMinervaLogging() {
-		trackSubscribe( 'minerva.downloadAsPDF', function ( topic, data ) {
+		mw.trackSubscribe( 'minerva.downloadAsPDF', function ( topic, data ) {
 			switch ( data.action ) {
 				case 'fetchImages':
 					logEvent( 'clickPrintableVersion' );
@@ -115,8 +115,8 @@
 		}
 	}
 
-	if ( config.get( 'wgWMEPrintEnabled' ) &&
-		isInSample( config.get( 'wgWMEPrintSamplingRate', 0 ) )
+	if ( mw.config.get( 'wgWMEPrintEnabled' ) &&
+		isInSample( mw.config.get( 'wgWMEPrintSamplingRate', 0 ) )
 	) {
 		$( function () {
 			setupClickLogging();
@@ -124,5 +124,4 @@
 			setupMinervaLogging();
 		} );
 	}
-	// eslint-disable-next-line max-len
-}( jQuery, mediaWiki.track, mediaWiki.trackSubscribe, mediaWiki.config, mediaWiki.user, mediaWiki.experiments ) );
+}( mw.user, mw.experiments ) );
