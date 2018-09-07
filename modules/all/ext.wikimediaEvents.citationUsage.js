@@ -34,7 +34,7 @@
 					page_id: mw.config.get( 'wgArticleId' ),
 					page_title: mw.config.get( 'wgTitle' ),
 					namespace_id: mw.config.get( 'wgNamespaceNumber' ),
-					page_token: mwUser.generateRandomSessionId(),
+					page_token: mwUser.getPageviewToken(),
 					session_token: mwUser.sessionId(),
 					referrer: document.referrer.slice( 0, REFERRER_MAX_LENGTH ),
 					skin: mw.config.get( 'skin' ),
