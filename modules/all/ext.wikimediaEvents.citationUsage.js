@@ -16,6 +16,9 @@
 		IDENTIFIER_LABELS = [ 'DOI', 'PMID', 'PMC' ],
 		SCHEMA_NAME = 'CitationUsage',
 		PL_SCHEMA_NAME = 'CitationUsagePageLoad',
+		LINK_HREF_MAX_LENGTH = 500,
+		LINK_TEXT_MAX_LENGTH = 300,
+		REFERRER_MAX_LENGTH = 300,
 		getBaseData,
 		getLinkOccurence,
 		getExtLinkPosition;
@@ -34,7 +37,7 @@
 					namespace_id: mwConfig.get( 'wgNamespaceNumber' ),
 					page_token: mwUser.generateRandomSessionId(),
 					session_token: mwUser.sessionId(),
-					referrer: document.referrer,
+					referrer: document.referrer.slice( 0, REFERRER_MAX_LENGTH ),
 					skin: mwConfig.get( 'skin' ),
 					mode: mwConfig.get( 'wgMFMode' ) ? 'mobile' : 'desktop'
 				};
@@ -154,8 +157,9 @@
 		return {
 			section_id: getSectionId( $link ),
 			in_infobox: isInInfobox( $link ),
-			link_text: normalizeSpaces( $link.text() ),
-			link_url: href,
+			link_text: normalizeSpaces( $link.text() )
+				.slice( 0, LINK_TEXT_MAX_LENGTH ),
+			link_url: href.slice( 0, LINK_HREF_MAX_LENGTH ),
 			link_occurrence: getLinkOccurence( href )
 		};
 	}
