@@ -665,20 +665,20 @@
 
 			$( '#mw-content-text' ).on(
 				'click',
-				'.mw-search-result-heading a, #mw-search-DYM-suggestion, #mw-search-DYM-original, #mw-search-DYM-rewritten',
+				'.mw-search-result a, #mw-search-DYM-suggestion, #mw-search-DYM-original, #mw-search-DYM-rewritten',
 				function ( evt ) {
 					var wprov,
 						// Sometimes the click event is on a span inside the anchor
 						$target = $( evt.target ).closest( 'a' ),
 						// Distinguish between standard 'on-wiki' results, and interwiki results that point
 						// to another language
-						clickType = $target.closest( '.mw-search-result-heading' ).find( 'a.extiw' ).length > 0
+						clickType = $target.closest( '.mw-search-result' ).find( 'a.extiw' ).length > 0
 							? 'iwclick'
 							: 'click',
 						params = {
 							// Only the primary anchor has the data-serp-pos attribute, but we
 							// might be updating a sub-link like a section.
-							position: $target.closest( '.mw-search-result-heading' )
+							position: $target.closest( '.mw-search-result' )
 								.find( '[data-serp-pos]' )
 								.data( 'serp-pos' )
 						};
