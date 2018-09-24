@@ -18,10 +18,7 @@ class WikimediaEventsHooks {
 	public static function onBeforePageDisplay( &$out, &$skin ) {
 		global $wgWMEAICaptchaEnabled;
 
-		if ( $skin->getSkinName() !== 'minerva' ) {
-			// Per T204144 Minerva is responsible for adding this itself.
-			$out->addModules( 'ext.wikimediaEvents' );
-		}
+		$out->addModules( 'ext.wikimediaEvents' );
 
 		if ( $out->getUser()->isLoggedIn() ) {
 			$out->addModules( 'ext.wikimediaEvents.loggedin' );
