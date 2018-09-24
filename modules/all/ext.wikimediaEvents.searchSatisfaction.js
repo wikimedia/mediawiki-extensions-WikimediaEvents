@@ -727,62 +727,7 @@
 				}
 			);
 
-			/**
-			 * Explore similar event logging
-			 * Listens for custom event sent by the Explore Similar module.
-			 * These events pass along extra data that conforms to the
-			 * searchSatisfaction2 schema.
-			 *
-			 */
-			mw.trackSubscribe( 'ext.CirrusSearch.exploreSimilar.open', function ( topic, data ) {
-				// `params` is cloned to avoid overriding the `extraParam` property.
-				var esParams = $.extend( true, {}, params ),
-					extraParams = JSON.stringify( {
-						hoverId: data.hoverId,
-						section: data.section,
-						results: data.results,
-						position: $( data.eventTarget ).parents( 'li' ).find( '.mw-search-result-heading > a' ).data( 'serp-pos' )
-					} );
-				esParams.extraParams = extraParams;
-
-				logEvent( 'hover-on', esParams );
-			} );
-
-			mw.trackSubscribe( 'ext.CirrusSearch.exploreSimilar.close', function ( topic, data ) {
-
-				var esParams = $.extend( true, {}, params ),
-					extraParams = JSON.stringify( {
-						hoverId: data.hoverId
-					} );
-
-				esParams.extraParams = extraParams;
-
-				logEvent( 'hover-off', esParams );
-			} );
-
-			mw.trackSubscribe( 'ext.CirrusSearch.exploreSimilar.click', function ( topic, data ) {
-
-				var esParams = $.extend( true, {}, params ),
-					extraParams = JSON.stringify( {
-						hoverId: data.hoverId,
-						section: data.section,
-						result: data.result,
-						position: $( data.eventTarget ).parents( 'li' ).find( '.mw-search-result-heading > a' ).data( 'serp-pos' )
-					} ),
-					pos = $( data.eventTarget ).parents( 'li' ).find( '.mw-search-result-heading > a' ).data( 'serp-pos' ),
-					anchor = $( data.eventTarget ).closest( 'a' ),
-					wprov = search.wprovPrefix + pos + '_es';
-
-				esParams.extraParams = extraParams;
-
-				// adding wprov to the href.
-				genAttachWprov( wprov ).apply( $( anchor ).get( 0 ) );
-
-				logEvent( 'esclick', esParams );
-			} );
-
-			// From here on is generating the `searchResultPage` event
-
+			// From here on is generating the `searchResultPage` event.
 			serpExtras = {
 				offset: $( '.results-info' ).data( 'mw-num-results-offset' )
 			};
