@@ -795,7 +795,8 @@
 	 * @param {SessionState} session
 	 */
 	function setupAutocompleteTest( session ) {
-		var logEvent = genLogEventFn( 'autocomplete', session, {} ),
+		var lastSearchId,
+			logEvent = genLogEventFn( 'autocomplete', session, {} ),
 			track = function ( topic, data ) {
 				var $wprov, params;
 
@@ -813,6 +814,12 @@
 						inputLocation: data.inputLocation,
 						autocompleteType: data.resultSetType
 					};
+					if ( data.searchId ) {
+						params.searchToken = data.searchId;
+						lastSearchId = data.searchId;
+					} else {
+						lastSearchId = null;
+					}
 					if ( session.has( 'autocompleteStart' ) ) {
 						params.msToDisplayResults = Math.round( Date.now() - session.get( 'autocompleteStart' ) );
 					}
@@ -822,28 +829,33 @@
 					// to the link so we know when the user arrives they came from autocomplete
 					// and what position they clicked.
 					data.formData.linkParams.wprov = autoComplete.wprovPrefix + data.index;
-				} else if ( data.action === 'click-result' ) {
-					logEvent( 'click', {
+				} else if ( data.action === 'submit-form' || data.action === 'click-result' ) {
+					params = {
 						position: data.index
-					} );
-				} else if ( data.action === 'submit-form' ) {
-					// Click index needs to be detected from wprov form field. Note that
-					// it might not exist if the user hasn't highlighted anything yet.
-					// @todo this should only trigger when the user is selecting a search
-					// result and not when they search for something the user typed
-					$wprov = data.$form.find( 'input[name=wprov]' );
-					if ( $wprov.length ) {
-						$wprov.val( autoComplete.wprovPrefix + data.index );
-					} else {
-						$wprov = $( '<input>' ).attr( {
-							type: 'hidden',
-							name: 'wprov',
-							value: autoComplete.wprovPrefix + data.index
-						} ).appendTo( data.$form );
+					};
+					// There isn't a strict guarantee this is correct due to
+					// races, but is hopefully close enough.
+					if ( lastSearchId ) {
+						params.searchToken = lastSearchId;
 					}
-					logEvent( 'click', {
-						position: data.index
-					} );
+					logEvent( 'click', params );
+
+					if ( data.action === 'submit-form' ) {
+						// Click index needs to be detected from wprov form field. Note that
+						// it might not exist if the user hasn't highlighted anything yet.
+						// @todo this should only trigger when the user is selecting a search
+						// result and not when they search for something the user typed
+						$wprov = data.$form.find( 'input[name=wprov]' );
+						if ( $wprov.length ) {
+							$wprov.val( autoComplete.wprovPrefix + data.index );
+						} else {
+							$wprov = $( '<input>' ).attr( {
+								type: 'hidden',
+								name: 'wprov',
+								value: autoComplete.wprovPrefix + data.index
+							} ).appendTo( data.$form );
+						}
+					}
 				}
 			};
 

@@ -691,6 +691,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			}
 			$seen[$actualEvent['uniqueId']] = true;
 
+			$this->assertValidEvent( $actualEvent );
 			foreach ( $actualEvent as $k => $v ) {
 				if ( !isset( $wantedKeys[$k] ) ) {
 					unset( $actualEvent[$k] );
@@ -735,6 +736,14 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		}
 
 		return $events;
+	}
+
+	private function assertValidEvent( array $event ) {
+		$searchTokenActions = [ 'searchResultPage', 'click' ];
+		if ( in_array( $event['action'], $searchTokenActions ) ) {
+			$this->assertArrayHasKey( 'searchToken', $event );
+			$this->assertNotNull( $event['searchToken'] );
+		}
 	}
 
 	protected function visitPage( $url ) {
