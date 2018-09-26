@@ -6,16 +6,19 @@
  *
  * @see https://meta.wikimedia.org/wiki/Schema:ReadingDepth
  */
-( function ( user, mwExperiments ) {
+( function ( user, mwExperiments, config, loader ) {
 
 	var pausedAt,
 		sessionId,
 		EVENT,
+		MINERVA_ENTRY_POINT = 'skins.minerva.scripts',
+		skin = config.get( 'skin' ),
 		trackingIsEnabled,
 		sampleGroups = {},
 		msPaused = 0,
 		perf = window.performance,
 		SCHEMA_NAME = 'ReadingDepth',
+		dependencies = [ 'schema.' + SCHEMA_NAME ],
 		DEFAULT_SAMPLE_GROUP = 'default_sample';
 
 	/**
@@ -290,12 +293,28 @@
 		setSampleGroup( externalBucket );
 	}
 
+	// Add dependencies to skin entry points
+	// See T204144
+	// Minerva occasionally runs A/B tests that needs to be able to enable ReadingDepth
+	// If enabled, they will be enabled inside their entry point or one of its dependencies
+	// The entry point for Minerva is skins.minerva.scripts.
+	if (
+		// Limit to Minerva as we shouldn't load this code in other skins.
+		skin === 'minerva' &&
+		// This check guarantees we will not break ReadingDepth
+		// if the Minerva entry point is renamed.
+		loader.getState( MINERVA_ENTRY_POINT ) !== null
+	) {
+		// This guarantees tracking will be enabled after Minerva has successfully loaded.
+		dependencies.push( MINERVA_ENTRY_POINT );
+	}
+
 	// This addresses the problem described in https://phabricator.wikimedia.org/T191532#4471802
 	// by allowing time for experiments to opt into ReadingDepth BEFORE it is enabled (below
 	// inside the mw.loader callback)
 	// Make sure the schema loads so that onExternalBucketEnabled can run synchronously
 	// meaning pageLoaded event when triggered will contain any sample groups that have been set
-	mw.loader.using( 'schema.' + SCHEMA_NAME ).then( function () {
+	loader.using( dependencies ).then( function () {
 		var schema = mw.eventLog.schemas[ SCHEMA_NAME ].schema,
 			onExternalBucketEnabledWithSchema = function ( topic, bucket ) {
 				return onExternalBucketEnabled( topic, bucket, schema );
@@ -323,5 +342,7 @@
 
 }(
 	mw.user,
-	mw.experiments
+	mw.experiments,
+	mw.config,
+	mw.loader
 ) );
