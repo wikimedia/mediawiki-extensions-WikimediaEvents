@@ -16,7 +16,7 @@
 				return item.pageid;
 			} ).join( ',' );
 
-		if ( !suggestions || suggestions.length < 2 ) {
+		if ( !suggestions || suggestions.length < 2 || !searchData._term ) {
 			// Do not track events where there was no real choice
 			return;
 		}
