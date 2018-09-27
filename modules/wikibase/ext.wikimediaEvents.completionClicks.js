@@ -41,7 +41,8 @@
 			clickIndex: clickIndex,
 			clickPage: clickPage,
 			// TODO: for now this is only for completion searches
-			context: searchData.options.type
+			context: searchData.options.type,
+			searchId: searchData._cache.searchId || null
 		} );
 	};
 
