@@ -528,7 +528,7 @@
 		return self;
 	}
 
-	function genLogEventFn( source, session ) {
+	function genLogEventFn( source, session, sourceExtraData ) {
 		return function ( action, extraData ) {
 			// A/B testing data is verbose and blacklisted from mysql. Our dashboarding though
 			// still sources data from mysql. For that reason send AB test data to different
@@ -578,11 +578,10 @@
 				evt.articleId = articleId;
 			}
 
-			if ( mw.config.get( 'wgCirrusSearchRequestSetToken' ) ) {
-				evt.searchToken = mw.config.get( 'wgCirrusSearchRequestSetToken' );
-			}
-
 			// add any action specific data
+			if ( sourceExtraData ) {
+				$.extend( evt, sourceExtraData );
+			}
 			if ( extraData ) {
 				$.extend( evt, extraData );
 			}
@@ -637,7 +636,13 @@
 	 */
 	function setupSearchTest( session ) {
 		var params,
-			logEvent = genLogEventFn( 'fulltext', session ),
+			logEvent = ( function () {
+				var params = {};
+				if ( mw.config.get( 'wgCirrusSearchRequestSetToken' ) ) {
+					params.searchToken = mw.config.get( 'wgCirrusSearchRequestSetToken' );
+				}
+				return genLogEventFn( 'fulltext', session, params );
+			}() ),
 			serpExtras, iwResultSet;
 
 		if ( isSearchResultPage ) {
@@ -845,7 +850,7 @@
 	 * @param {SessionState} session
 	 */
 	function setupAutocompleteTest( session ) {
-		var logEvent = genLogEventFn( 'autocomplete', session ),
+		var logEvent = genLogEventFn( 'autocomplete', session, {} ),
 			track = function ( topic, data ) {
 				var $wprov, params;
 
