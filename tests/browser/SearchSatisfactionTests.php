@@ -367,8 +367,10 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 					$this->typeIntoSkinAutocomplete(
 						WebDriverKeys::ARROW_DOWN .
 						str_repeat( WebDriverKeys::BACKSPACE, 4 ) .
-						"page\n"
+						"page"
 					),
+					$this->waitForSkinAutocomplete(),
+					$this->typeIntoSkinAutocomplete( "\n" ),
 				],
 				// expected events
 				[
@@ -385,7 +387,9 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 					$this->typeIntoSkinAutocomplete( "Main Page" ),
 					$this->waitForSkinAutocomplete(),
 					$this->typeIntoSkinAutocomplete( WebDriverKeys::ARROW_DOWN ),
-					$this->typeIntoSkinAutocomplete( str_repeat( WebDriverKeys::BACKSPACE, 4 ) . "\n" ),
+					$this->typeIntoSkinAutocomplete( str_repeat( WebDriverKeys::BACKSPACE, 4 ) ),
+					$this->waitForSkinAutocomplete(),
+					$this->typeIntoSkinAutocomplete( "\n" ),
 				],
 				// expected events
 				[
@@ -776,7 +780,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		return function ( $webDriver ) {
 			$webDriver->wait()->until(
 				WebDriverExpectedCondition::presenceOfElementLocated(
-					WebDriverBy::cssSelector( '#searchText a' )
+					WebDriverBy::cssSelector( '.mw-widget-searchWidget-menu a' )
 				)
 			);
 		};
@@ -835,7 +839,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		$position += 1;
 		return function ( $webDriver ) use ( $position ) {
 			$webDriver->findElement(
-				self::byExtendedCss( "#searchText a:nth-of-type($position)" )
+				self::byExtendedCss( ".mw-widget-searchWidget-menu a:nth-of-type($position)" )
 			)->click();
 		};
 	}
@@ -844,7 +848,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		$position += 1;
 		return function ( $webDriver ) use ( $position ) {
 			self::ctrlClick( $webDriver, self::byExtendedCss(
-				"#searchText a:nth-of-type($position)"
+				".mw-widget-searchWidget-menu a:nth-of-type($position)"
 			) );
 		};
 	}
