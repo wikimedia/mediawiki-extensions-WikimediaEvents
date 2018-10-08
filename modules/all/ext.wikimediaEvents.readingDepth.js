@@ -14,7 +14,7 @@
 		MINERVA_ENTRY_POINT = 'skins.minerva.scripts',
 		skin = config.get( 'skin' ),
 		trackingIsEnabled,
-		sampleGroups = {},
+		eventData = {},
 		msPaused = 0,
 		perf = window.performance,
 		SCHEMA_NAME = 'ReadingDepth',
@@ -168,7 +168,7 @@
 				action: action,
 				domInteractiveTime: domInteractive - navigationStart,
 				firstPaintTime: firstPaint ? firstPaint - navigationStart : undefined
-			}, sampleGroups );
+			}, eventData );
 
 		if ( action === 'pageUnloaded' ) {
 			now = mw.now();
@@ -253,44 +253,20 @@
 	}
 
 	/**
-	 * Assumes that a valid parameter is any one of the properties in the schema ending with the
-	 * suffix "_sample".
-	 * https://phabricator.wikimedia.org/T191532 AC#5
-	 */
-	function isValidSampleGroup( schema, bucket ) {
-		return schema.properties[ bucket ] && /_sample$/.test( bucket );
-	}
-
-	/**
-	 * Sets a boolean property on `sampleGroups` which will be attached to the event data in
-	 * `logEvent()`. This property is defined in the schema and is passed from the event hook that
-	 * enables the readingDepth schema. Group validation is only performed in isValidSampleGroup(),
-	 * which requires loading the ReadingDepth schema, not here. Any call to this function should be
-	 * accompanied with a call to enableTracking() to ensure that the group will be logged.
-	 *
-	 * @param {string} group a value from the schema ending with "_sample".
-	 */
-	function setSampleGroup( group ) {
-		sampleGroups[ group ] = true;
-	}
-
-	/**
+	 * Hook handler for wikimedia.event.ReadingDepthSchema.enable
 	 * Callback that triggers the ReadingDepth test and sets a sample bucket the indicates the
 	 * test was triggered from an external source.
 	 * @param {string} topic
-	 * @param {string} externalBucket unique boolean field in readingDepth schema that describes
+	 * @param {string} boolProperty unique boolean field in readingDepth schema that describes
 	 *                                the name and bucket of the test that triggered readingDepth,
 	 *                                ex: "page-issues-a_sample" for bucket A in page-issues test.
-	 * @param {object} schema a json schema object to validate the sample group against.
+	 *                                note: if a non-existent schema property is passed here
+	 *                                or the externalBucket is not defined as accepting a boolean value
+	 *                                this will break any events to the ReadingDepth schema so make sure you know what
+	 *                                you are doing!
 	 */
-	function onExternalBucketEnabled( topic, externalBucket, schema ) {
-		if ( !isValidSampleGroup( schema, externalBucket ) ) {
-			// eslint-disable-next-line no-console
-			console.warn( 'Invalid ReadingDepth schema sample group, "' + externalBucket + '".' );
-			return;
-		}
-
-		setSampleGroup( externalBucket );
+	function onExternalBucketEnabled( topic, boolProperty ) {
+		eventData[ boolProperty ] = true;
 	}
 
 	// Add dependencies to skin entry points
@@ -315,27 +291,22 @@
 	// Make sure the schema loads so that onExternalBucketEnabled can run synchronously
 	// meaning pageLoaded event when triggered will contain any sample groups that have been set
 	loader.using( dependencies ).then( function () {
-		var schema = mw.eventLog.schemas[ SCHEMA_NAME ].schema,
-			onExternalBucketEnabledWithSchema = function ( topic, bucket ) {
-				return onExternalBucketEnabled( topic, bucket, schema );
-			};
-
 		// Subscribe to other extensions' group logging requests.
 		// This handler depends on events that have been emitted before the handler is
 		// registered, so that the callback here is executed immediately, before
 		// `enableTracking()` is called below. `EnableTracking` can only be called once.
-		mw.trackSubscribe( 'wikimedia.event.ReadingDepthSchema.enable', onExternalBucketEnabledWithSchema );
+		mw.trackSubscribe( 'wikimedia.event.ReadingDepthSchema.enable', onExternalBucketEnabled );
 
 		// check if user has been selected for the default ReadingDepth sample group
 		if ( isInSample( mw.config.get( 'wgWMEReadingDepthSamplingRate', 0 ) ) ) {
 			// WikimediaEvents itself wishes to report the default sample group.
 			// No need to verify. Set the known, valid, default sample group.
-			setSampleGroup( DEFAULT_SAMPLE_GROUP );
+			eventData[ DEFAULT_SAMPLE_GROUP ] = true;
 		}
 
-		// Enable tracking if sample groups have been set, either by default or
-		// by an external AB test.
-		if ( Object.keys( sampleGroups ).length ) {
+		// Enable tracking if any event data has been set,
+		// either by default or by an external AB test.
+		if ( Object.keys( eventData ).length ) {
 			enableTracking();
 		}
 	} );
