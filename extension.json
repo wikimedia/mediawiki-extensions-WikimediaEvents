@@ -78,6 +78,7 @@
 		"Print": 17630514,
 		"ReadingDepth": 18201205,
 		"Edit": 17541122,
+		"VisualEditorFeatureUse": 18457512,
 		"CompletionSuggestions": 13630018,
 		"SearchSatisfaction": 17378115,
 		"TestSearchSatisfaction2": 16909631,
@@ -124,6 +125,11 @@
 			"start": "June 2018",
 			"details": "https://phabricator.wikimedia.org/T191086",
 			"owner": "Research"
+		},
+		"visualEditorFeatureUse": {
+			"start": "October 2018",
+			"details": "https://phabricator.wikimedia.org/T203136",
+			"owner": "Contributors"
 		},
 		"wikibase": {
 			"start": "July 2018",
