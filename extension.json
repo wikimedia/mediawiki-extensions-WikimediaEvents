@@ -221,7 +221,8 @@
 		"WMESearchRelevancePages": {
 			"_merge_strategy": "array_plus"
 		},
-		"WMEAICaptchaEnabled": false
+		"WMEAICaptchaEnabled": false,
+		"WMESchemaEditSamplingRate": "0.0625"
 	},
 	"manifest_version": 1
 }
