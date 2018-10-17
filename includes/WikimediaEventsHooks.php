@@ -128,18 +128,24 @@ class WikimediaEventsHooks {
 				$entry = 'index';
 			}
 
+			// Null edits are both slow (due to user name mismatch reparses) and are
+			// not the focus of this benchmark, which is about actual edits to pages
+			$edit = $status->hasMessage( 'edit-no-change' ) ? 'nullEdit' : 'edit';
+
 			DeferredUpdates::addCallableUpdate(
-				function () use ( $stats, $size, $nsType, $accType, $entry ) {
+				function () use ( $stats, $size, $nsType, $accType, $entry, $edit ) {
 					$timing = RequestContext::getMain()->getTiming();
 					$measure = $timing->measure(
 						'editResponseTime', 'requestStart', 'requestShutdown' );
 					if ( $measure !== false ) {
 						$timeMs = $measure['duration'] * 1000;
-						$stats->timing( 'timing.editResponseTime', $timeMs );
-						$stats->timing( "timing.editResponseTime.page.$nsType", $timeMs );
-						$stats->timing( "timing.editResponseTime.user.$accType", $timeMs );
-						$stats->timing( "timing.editResponseTime.entry.$entry", $timeMs );
-						$stats->gauge( 'edit.newContentSize', $size );
+						$stats->timing( "timing.{$edit}ResponseTime", $timeMs );
+						$stats->timing( "timing.{$edit}ResponseTime.page.$nsType", $timeMs );
+						$stats->timing( "timing.{$edit}ResponseTime.user.$accType", $timeMs );
+						$stats->timing( "timing.{$edit}ResponseTime.entry.$entry", $timeMs );
+						if ( $edit === 'edit' ) {
+							$stats->gauge( "edit.newContentSize", $size );
+						}
 					}
 				}
 			);
