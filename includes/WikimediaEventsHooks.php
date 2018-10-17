@@ -530,7 +530,14 @@ class WikimediaEventsHooks {
 				$vars['wgWMESearchRelevancePages'] = $wgWMESearchRelevancePages[$articleId];
 			}
 		}
+
+		$vars['wgWMESchemaEditOversample'] = static::shouldSchemaEditOversample( $out->getContext() );
 		return true;
+	}
+
+	public static function shouldSchemaEditOversample( IContextSource $context ) {
+		// Conditions under which Schema:Edit should oversample (always log, ignoring the sample rate)
+		return false;
 	}
 
 	/**
