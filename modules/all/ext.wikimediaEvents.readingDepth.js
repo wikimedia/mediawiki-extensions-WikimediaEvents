@@ -295,7 +295,7 @@
 		// This handler depends on events that have been emitted before the handler is
 		// registered, so that the callback here is executed immediately, before
 		// `enableTracking()` is called below. `EnableTracking` can only be called once.
-		mw.trackSubscribe( 'wikimedia.event.ReadingDepthSchema.enable', onExternalBucketEnabled );
+		mw.trackSubscribe( 'wikimedia.ReadingDepthSchema.enable', onExternalBucketEnabled );
 
 		// check if user has been selected for the default ReadingDepth sample group
 		if ( isInSample( mw.config.get( 'wgWMEReadingDepthSamplingRate', 0 ) ) ) {
