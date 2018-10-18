@@ -15,6 +15,7 @@
 		IDENTIFIER_LABELS = [ 'DOI', 'PMID', 'PMC' ],
 		SCHEMA_NAME = 'CitationUsage',
 		PL_SCHEMA_NAME = 'CitationUsagePageLoad',
+		REFERRER_MAX_LENGTH = 100,
 		getBaseData,
 		getLinkOccurence,
 		getExtLinkPosition;
@@ -29,11 +30,10 @@
 					dom_interactive_time: window.performance.timing.domInteractive,
 					revision_id: mw.config.get( 'wgRevisionId' ),
 					page_id: mw.config.get( 'wgArticleId' ),
-					page_title: mw.config.get( 'wgTitle' ),
 					namespace_id: mw.config.get( 'wgNamespaceNumber' ),
 					page_token: mwUser.getPageviewToken(),
 					session_token: mwUser.sessionId(),
-					referrer: document.referrer,
+					referrer: document.referrer.slice( 0, REFERRER_MAX_LENGTH ),
 					skin: mw.config.get( 'skin' ),
 					mode: mw.config.get( 'wgMFMode' ) ? 'mobile' : 'desktop'
 				};
