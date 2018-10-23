@@ -1,6 +1,7 @@
 <?php
 
 use MediaWiki\MediaWikiServices;
+use WikimediaEvents\PageViews;
 
 /**
  * Hooks used for Wikimedia-related logging
@@ -16,7 +17,14 @@ class WikimediaEventsHooks {
 	 * @param Skin &$skin
 	 */
 	public static function onBeforePageDisplay( &$out, &$skin ) {
-		global $wgWMEAICaptchaEnabled;
+		global $wgWMEAICaptchaEnabled, $wgWMEUnderstandingFirstDay;
+
+		if ( $wgWMEUnderstandingFirstDay ) {
+			DeferredUpdates::addCallableUpdate( function () {
+				$pageViews = new PageViews( RequestContext::getMain() );
+				$pageViews->log();
+			} );
+		}
 
 		$out->addModules( 'ext.wikimediaEvents' );
 
@@ -32,6 +40,26 @@ class WikimediaEventsHooks {
 			// If we are in Wikibase Repo, load Wikibase module
 			$out->addModules( 'ext.wikimediaEvents.wikibase' );
 		}
+	}
+
+	/**
+	 * BeforePageRedirect hook handler.
+	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/BeforePageRedirect
+	 *
+	 * @param OutputPage $out
+	 * @param string &$redirect URL string, modifiable
+	 * @param string &$code HTTP code, modifiable
+	 * @return bool
+	 */
+	public static function onBeforePageRedirect( $out, &$redirect, &$code ) {
+		global $wgWMEUnderstandingFirstDay;
+		if ( $wgWMEUnderstandingFirstDay ) {
+			DeferredUpdates::addCallableUpdate( function () {
+				$pageViews = new PageViews( RequestContext::getMain() );
+				$pageViews->log();
+			} );
+		}
+		return true;
 	}
 
 	/**
@@ -542,8 +570,12 @@ class WikimediaEventsHooks {
 	}
 
 	public static function shouldSchemaEditOversample( IContextSource $context ) {
+		global $wgWMEUnderstandingFirstDay;
 		// Conditions under which Schema:Edit should oversample (always log, ignoring the sample rate)
-		return false;
+
+		// Oversample when UnderstandingFirstDay is enabled and the user is in the UFD cohort
+		$pageViews = new PageViews( $context );
+		return $wgWMEUnderstandingFirstDay && $pageViews->userIsInCohort();
 	}
 
 	/**

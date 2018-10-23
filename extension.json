@@ -11,11 +11,16 @@
 	"license-name": "GPL-2.0-or-later",
 	"AutoloadClasses": {
 		"WikimediaEventsHooks": "includes/WikimediaEventsHooks.php",
+		"WikimediaEvents\\PageViews": "includes/PageViews.php",
+		"WikimediaEvents\\Tests\\PageViewsTest":  "tests/phpunit/PageViewsTest.php",
 		"AuthManagerStatsdHandler": "includes/AuthManagerStatsdHandler.php"
 	},
 	"Hooks": {
 		"BeforeInitialize": [
 			"WikimediaEventsHooks::onBeforeInitializeWMDECampaign"
+		],
+		"BeforePageRedirect": [
+			"WikimediaEventsHooks::onBeforePageRedirect"
 		],
 		"BeforePageDisplay": [
 			"WikimediaEventsHooks::onBeforePageDisplay"
@@ -76,6 +81,7 @@
 	},
 	"EventLoggingSchemas": {
 		"Print": 17630514,
+		"UnderstandingFirstDay": 0,
 		"ReadingDepth": 18201205,
 		"Edit": 18476212,
 		"VisualEditorFeatureUse": 18457512,
@@ -211,6 +217,7 @@
 		"remoteExtPath": "WikimediaEvents/modules"
 	},
 	"config": {
+		"WMEUnderstandingFirstDay": false,
 		"WMEPrintSamplingRate": 0.1,
 		"WMEPrintEnabled": false,
 		"WMEReadingDepthSamplingRate": 0.005,
