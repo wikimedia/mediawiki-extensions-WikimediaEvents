@@ -188,11 +188,13 @@ class PageViews extends ContextSource {
 	}
 
 	/**
-	 * @param string $secret
+	 * @param string $data
+	 *   The data to be hashed.
 	 * @return string
+	 *   The hashed data.
 	 */
-	public function hash( $secret ) {
-		return hash_hmac( 'md5', $this->getUser()->getToken(), (string)$secret );
+	public function hash( $data ) {
+		return hash_hmac( 'md5', (string)$data, $this->getUser()->getToken() );
 	}
 
 	/**
