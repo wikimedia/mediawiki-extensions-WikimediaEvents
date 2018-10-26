@@ -565,13 +565,14 @@ class WikimediaEventsHooks {
 			}
 		}
 
-		$vars['wgWMESchemaEditOversample'] = static::shouldSchemaEditOversample( $out->getContext() );
+		$vars['wgWMESchemaEditAttemptStepOversample'] =
+			static::shouldSchemaEditAttemptStepOversample( $out->getContext() );
 		return true;
 	}
 
-	public static function shouldSchemaEditOversample( IContextSource $context ) {
+	public static function shouldSchemaEditAttemptStepOversample( IContextSource $context ) {
 		global $wgWMEUnderstandingFirstDay;
-		// Conditions under which Schema:Edit should oversample (always log, ignoring the sample rate)
+		// Conditions under which Schema:EditAttemptStep should oversample (always log)
 
 		// Oversample when UnderstandingFirstDay is enabled and the user is in the UFD cohort
 		$pageViews = new PageViews( $context );

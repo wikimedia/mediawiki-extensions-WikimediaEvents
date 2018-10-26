@@ -83,7 +83,7 @@
 		"Print": 17630514,
 		"UnderstandingFirstDay": 0,
 		"ReadingDepth": 18201205,
-		"Edit": 18476212,
+		"EditAttemptStep": 18530416,
 		"VisualEditorFeatureUse": 18457512,
 		"CompletionSuggestions": 13630018,
 		"SearchSatisfaction": 17378115,
@@ -229,7 +229,7 @@
 			"_merge_strategy": "array_plus"
 		},
 		"WMEAICaptchaEnabled": false,
-		"WMESchemaEditSamplingRate": "0.0625"
+		"WMESchemaEditAttemptStepSamplingRate": "0.0625"
 	},
 	"manifest_version": 1
 }
