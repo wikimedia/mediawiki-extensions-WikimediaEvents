@@ -29,6 +29,8 @@ class PageViewsTest extends MediaWikiTestCase {
 	/**
 	 * @covers \WikimediaEvents\PageViews::hashSensitiveQueryParams
 	 * @dataProvider dataProviderSensitiveQueryParams
+	 * @param string $input
+	 * @param string $output
 	 */
 	public function testHashSensitiveQueryParams( $input, $output ) {
 		$event = [ PageViews::EVENT_QUERY => $input ];

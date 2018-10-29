@@ -5,7 +5,11 @@ namespace WikimediaEvents;
 use ContextSource;
 use EventLogging;
 use IContextSource;
+use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\MediaWikiServices;
 use MobileContext;
+use MWCryptHash;
+use MWCryptRand;
 use Title;
 
 class PageViews extends ContextSource {
@@ -81,9 +85,6 @@ class PageViews extends ContextSource {
 	 * @return string
 	 */
 	public function getPermissionErrors() {
-		if ( !$this->action ) {
-			return '';
-		}
 		$permissionErrors = $this->getTitle()->getUserPermissionsErrors(
 			$this->action, $this->getUser()
 		);
@@ -116,7 +117,7 @@ class PageViews extends ContextSource {
 			self::EVENT_PAGE_TITLE => $this->getOutput()->getPageTitle(),
 			self::EVENT_PAGE_ID => (string)$this->getTitle()->getArticleID(),
 			self::EVENT_REQUEST_METHOD => $this->getRequest()->getMethod(),
-			self::EVENT_ACTION => $this->action ?? '',
+			self::EVENT_ACTION => $this->action,
 			self::EVENT_PERMISSION_ERRORS => $this->getPermissionErrors(),
 			self::EVENT_HTTP_RESPONSE_CODE => http_response_code(),
 			self::EVENT_IS_MOBILE => class_exists( 'MobileContext' )
@@ -194,7 +195,68 @@ class PageViews extends ContextSource {
 	 *   The hashed data.
 	 */
 	public function hash( $data ) {
-		return hash_hmac( 'md5', (string)$data, $this->getUser()->getToken() );
+		return MWCryptHash::hmac( (string)$data, $this->getHashingSalt(), false );
+	}
+
+	/**
+	 * Get the user derived hashing salt lookup key.
+	 *
+	 * @return string
+	 *   The lookup key in a format that can be passed to $cache->get().
+	 */
+	public function getUserHashingSaltLookupKey() {
+		// Generate a lookup key for storing the salt, unique per user across all sessions.
+		$userLookupKey = MWCryptHash::hash(
+			$this->getUser()->getId() . $this->getUser()->getRegistration(),
+			false
+		);
+		$cache = MediaWikiServices::getInstance()->getMainObjectStash();
+		return $cache->makeKey( 'editor-journey', $userLookupKey );
+	}
+
+	/**
+	 * Generate a random salt for the user and place in stash, using user-derived key.
+	 *
+	 * @return string
+	 *   The hash salt generated for the user.
+	 */
+	public function setUserHashingSalt() {
+		$userSalt = MWCryptRand::generateHex( 64 );
+		$cache = MediaWikiServices::getInstance()->getMainObjectStash();
+		$cache->set(
+			$this->getUserHashingSaltLookupKey(),
+			$userSalt,
+			$cache::TTL_DAY,
+			$cache::WRITE_SYNC
+		);
+		return $userSalt;
+	}
+
+	/**
+	 * Retrieve the hash salt for the user, using a user derived lookup key.
+	 *
+	 * @return string
+	 *   The secret key to use for the HMAC.
+	 */
+	private function getHashingSalt() {
+		static $userSalt;
+		// No need to read this from cache multiple times per request.
+		if ( $userSalt ) {
+			return $userSalt;
+		}
+
+		$cache = MediaWikiServices::getInstance()->getMainObjectStash();
+		$userSalt = $cache->get( $this->getUserHashingSaltLookupKey() );
+		if ( !$userSalt ) {
+			LoggerFactory::getInstance( 'WikimediaEvents' )->error(
+				'Retrieving hash salt for user ID {user_id} failed, generating a new one.',
+				[
+					'user_id' => $this->getUser()->getId()
+				]
+			);
+			$userSalt = $this->setUserHashingSalt();
+		}
+		return $userSalt;
 	}
 
 	/**

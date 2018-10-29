@@ -63,6 +63,26 @@ class WikimediaEventsHooks {
 	}
 
 	/**
+	 * LocalUserCreated hook handler.
+	 *
+	 * @param User $user
+	 * @param bool $autocreated
+	 */
+	public static function onLocalUserCreated( User $user, $autocreated ) {
+		global $wgWMEUnderstandingFirstDay;
+		if ( $wgWMEUnderstandingFirstDay ) {
+			DeferredUpdates::addCallableUpdate( function () use ( $user ) {
+				$context = RequestContext::getMain();
+				$context->setUser( $user );
+				$pageViews = new PageViews( $context );
+				if ( $pageViews->userIsInCohort() ) {
+					$pageViews->setUserHashingSalt();
+				}
+			} );
+		}
+	}
+
+	/**
 	 * On XAnalyticsHeader
 	 *
 	 * When adding new headers here please update the docs:
