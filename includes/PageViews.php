@@ -48,7 +48,7 @@ class PageViews extends ContextSource {
 	 */
 	public function __construct( IContextSource $context ) {
 		$this->setContext( $context );
-		$this->action = $context->getRequest()->getVal( 'action' );
+		$this->action = $context->getRequest()->getVal( 'action', 'view' );
 		$this->event = [];
 	}
 
