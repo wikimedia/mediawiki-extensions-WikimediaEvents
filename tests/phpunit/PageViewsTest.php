@@ -335,7 +335,9 @@ class PageViewsTest extends MediaWikiTestCase {
 		$context = new RequestContext();
 		$request = new FauxRequest();
 		$request->setVal( PageViews::EVENT_ACTION, 'edit' );
-		$request->setRequestURL( '/w/index.php?search=Secret&title=Special%3ASearch&go=Go&fulltext=1' );
+		$request->setRequestURL(
+			'/w/index.php?search=Secret&title=Special%3ASearch&go=Go&fulltext=1&token=abcdefghijklmnop'
+		);
 		$context->setRequest( $request );
 		$output = $context->getOutput();
 		$output->setPageTitle( 'TestTitle' );
@@ -358,7 +360,7 @@ class PageViewsTest extends MediaWikiTestCase {
 			PageViews::EVENT_NAMESPACE => 1,
 			PageViews::EVENT_PATH => '/w/index.php',
 			PageViews::EVENT_QUERY => 'search=' . $pageViews->hash( 'Secret' ) .
-			  '&title=Special%3ASearch&go=Go&fulltext=1',
+			  '&title=Special%3ASearch&go=Go&fulltext=1&token=redacted',
 			PageViews::EVENT_USER_ID => 2
 		];
 		$pageViews = new PageViews( $context );

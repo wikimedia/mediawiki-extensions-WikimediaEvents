@@ -35,6 +35,7 @@ class PageViews extends ContextSource {
 	const EVENT_PATH = 'path';
 	const EVENT_QUERY = 'query';
 	const EVENT_USER_ID = 'user_id';
+	const REDACT_STRING = 'redacted';
 
 	/**
 	 * @var array
@@ -73,9 +74,10 @@ class PageViews extends ContextSource {
 	 */
 	private function getSensitiveQueryParams() {
 		return [
-			'search',
-			'return',
-			'returnto',
+			'search' => 'hash',
+			'return' => 'hash',
+			'returnto' => 'hash',
+			'token' => 'redact',
 		];
 	}
 
@@ -293,16 +295,19 @@ class PageViews extends ContextSource {
 	}
 
 	/**
-	 * Hash a query parameter if set.
+	 * Hash or redact a query parameter if set.
 	 *
 	 * @param string $queryParam
+	 * @param string $operation
+	 *   Should be one of 'hash' or 'redact'.
 	 */
-	public function hashQueryParamIfSet( $queryParam ) {
+	public function hashQueryParamIfSet( $queryParam, $operation = 'hash' ) {
 		$eventToModify = $this->getEvent();
 		if ( isset( $eventToModify[self::EVENT_QUERY] ) && $eventToModify[self::EVENT_QUERY] ) {
 			$query = wfCgiToArray( $eventToModify[self::EVENT_QUERY] );
 			if ( isset( $query[ $queryParam ] ) && $query ) {
-				$query[ $queryParam ] = $this->hash( $query[ $queryParam ] );
+				$query[ $queryParam ] = $operation === 'hash' ?
+					$this->hash( $query[ $queryParam ] ) : self::REDACT_STRING;
 				$eventToModify[self::EVENT_QUERY] = wfArrayToCgi( $query );
 			}
 		}
@@ -313,8 +318,8 @@ class PageViews extends ContextSource {
 	 * Hash sensitive query parameters.
 	 */
 	public function hashSensitiveQueryParams() {
-		foreach ( $this->getSensitiveQueryParams() as $param ) {
-			$this->hashQueryParamIfSet( $param );
+		foreach ( $this->getSensitiveQueryParams() as $param => $op ) {
+			$this->hashQueryParamIfSet( $param, $op );
 		}
 	}
 
