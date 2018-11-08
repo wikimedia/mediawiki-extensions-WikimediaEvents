@@ -2,6 +2,7 @@
 
 namespace WikimediaEvents;
 
+use CentralAuthUser;
 use ContextSource;
 use EventLogging;
 use IContextSource;
@@ -267,11 +268,24 @@ class PageViews extends ContextSource {
 	 * @return bool
 	 */
 	public function userIsInCohort() {
-		if ( $this->getUser()->isAnon() ) {
+		$user = $this->getUser();
+		if ( $user->isAnon() ) {
 			return false;
 		}
-		return ( wfTimestamp() - wfTimestamp( TS_UNIX, $this->getUser()->getRegistration() ) )
-			   < self::DAY_LIMIT_IN_SECONDS;
+
+		$accountAge = wfTimestamp() - wfTimestamp( TS_UNIX, $user->getRegistration() );
+		if ( $accountAge >= self::DAY_LIMIT_IN_SECONDS ) {
+			return false;
+		}
+
+		// Exclude autocreated accounts. We can't directly tell if an account
+		// was autocreated, but we can look at its home wiki.
+		if ( class_exists( 'CentralAuthUser' ) ) {
+			$globalUser = CentralAuthUser::getInstance( $user );
+			$homeWiki = $globalUser->getHomeWiki();
+			return $homeWiki === wfWikiId() || $homeWiki === null;
+		}
+		return true;
 	}
 
 	/**

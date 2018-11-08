@@ -70,7 +70,7 @@ class WikimediaEventsHooks {
 	 */
 	public static function onLocalUserCreated( User $user, $autocreated ) {
 		global $wgWMEUnderstandingFirstDay;
-		if ( $wgWMEUnderstandingFirstDay ) {
+		if ( $wgWMEUnderstandingFirstDay && !$autocreated ) {
 			DeferredUpdates::addCallableUpdate( function () use ( $user ) {
 				$context = RequestContext::getMain();
 				$context->setUser( $user );
