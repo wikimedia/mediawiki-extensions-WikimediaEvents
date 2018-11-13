@@ -4,6 +4,7 @@ namespace WikimediaEvents;
 
 use CentralAuthUser;
 use ContextSource;
+use DeferredUpdates;
 use EventLogging;
 use IContextSource;
 use MediaWiki\Logger\LoggerFactory;
@@ -11,7 +12,9 @@ use MediaWiki\MediaWikiServices;
 use MobileContext;
 use MWCryptHash;
 use MWCryptRand;
+use RequestContext;
 use Title;
+use User;
 
 class PageViews extends ContextSource {
 
@@ -49,13 +52,37 @@ class PageViews extends ContextSource {
 	private $action;
 
 	/**
+	 * @var Title|null
+	 */
+	private $originalTitle;
+
+	/**
+	 * @var int
+	 */
+	private $originalUserId = 0;
+
+	/**
 	 * PageViews constructor.
 	 * @param IContextSource $context
 	 */
 	public function __construct( IContextSource $context ) {
 		$this->setContext( $context );
 		$this->action = $context->getRequest()->getVal( 'action', 'view' );
+		$this->originalTitle = $context->getTitle();
+		$this->originalUserId = $context->getUser()->getId();
 		$this->event = [];
+	}
+
+	/**
+	 * Convenience function to log page views via a deferred update.
+	 * @param int $userId
+	 */
+	public static function deferredLog( $userId = 0 ) {
+		DeferredUpdates::addCallableUpdate( function () use ( $userId ) {
+			$pageViews = new PageViews( RequestContext::getMain() );
+			$pageViews->setOriginalUserId( $userId );
+			$pageViews->log();
+		} );
 	}
 
 	/**
@@ -88,6 +115,10 @@ class PageViews extends ContextSource {
 	 * @return string
 	 */
 	public function getPermissionErrors() {
+		// For now, we only care about permission errors on edit attempts.
+		if ( $this->action !== 'edit' ) {
+			return '';
+		}
 		$permissionErrors = $this->getTitle()->getUserPermissionsErrors(
 			$this->action, $this->getUser()
 		);
@@ -112,7 +143,7 @@ class PageViews extends ContextSource {
 		}
 		$parts = wfParseUrl( $this->getRequest()->getFullRequestURL() );
 
-		$this->setEvent( [
+		$event = [
 			self::EVENT_TITLE => $this->getTitle()->getText(),
 			// The context output title can differ from the above, in the event of
 			// "Permission errors" when a user visits e.g. Special:Block without the relevant
@@ -129,8 +160,18 @@ class PageViews extends ContextSource {
 			self::EVENT_PATH => $parts['path'],
 			self::EVENT_QUERY => $parts['query'] ?? '',
 			self::EVENT_USER_ID => $this->getUser()->getId()
-		] );
+		];
+		$this->setEvent( $event );
 		$this->redactSensitiveData();
+
+		// Reset namespace and page ID for cases where the original title is a Special page
+		// but the relevant one is not.
+		if ( $this->originalTitle->isSpecialPage() ) {
+			$event = $this->getEvent();
+			$event[self::EVENT_NAMESPACE] = $this->originalTitle->getNamespace();
+			$event[self::EVENT_PAGE_ID] = (string)$this->originalTitle->getArticleID();
+			$this->setEvent( $event );
+		}
 
 		return EventLogging::logEvent( 'EditorJourney', 18504997, $this->getEvent() );
 	}
@@ -150,7 +191,7 @@ class PageViews extends ContextSource {
 	}
 
 	/**
-	 * Scrub out sensitive data for various namespaces.
+	 * Scrub out sensitive data for various namespaces, excluding Main_Page.
 	 */
 	public function redactSensitiveData() {
 		// Hash sensitive query parameters.
@@ -160,6 +201,10 @@ class PageViews extends ContextSource {
 		// If not in a sensitive namespace, and if the relevant title is not in a sensitive
 		// namespace, don't do anything further.
 		if ( !in_array( $eventToModify[self::EVENT_NAMESPACE], $this->getSensitiveNamespaces() ) ) {
+			return;
+		}
+		// If Main_Page, don't obfuscate any details.
+		if ( $this->getTitle()->isMainPage() ) {
 			return;
 		}
 		// Otherwise, scrub sensitive info.
@@ -270,7 +315,16 @@ class PageViews extends ContextSource {
 	public function userIsInCohort() {
 		$user = $this->getUser();
 		if ( $user->isAnon() ) {
-			return false;
+			// Before returning false, check to see if there's a value stored for
+			// original user ID. This will be the case if the user has just logged out.
+			if ( $this->originalUserId ) {
+				$user = User::newFromId( $this->originalUserId );
+				if ( $user->isAnon() ) {
+					return false;
+				}
+			} else {
+				return false;
+			}
 		}
 
 		$accountAge = wfTimestamp() - wfTimestamp( TS_UNIX, $user->getRegistration() );
@@ -294,18 +348,8 @@ class PageViews extends ContextSource {
 	 * @return array
 	 */
 	public function getSensitiveNamespaces() {
-		return array_filter( [
-			NS_MAIN,
-			NS_TALK,
-			NS_FILE,
-			NS_FILE_TALK,
-			defined( 'NS_PORTAL' ) ? NS_PORTAL : null,
-			defined( 'NS_PORTAL_TALK' ) ? NS_PORTAL_TALK : null,
-			defined( 'NS_DRAFT' ) ? NS_DRAFT : null,
-			defined( 'NS_DRAFT_TALK' ) ? NS_DRAFT_TALK : null,
-		], function ( $value ) {
-			return $value !== null;
-		} );
+		global $wgWMEUnderstandingFirstDaySensitiveNamespaces;
+		return $wgWMEUnderstandingFirstDaySensitiveNamespaces;
 	}
 
 	/**
@@ -335,6 +379,15 @@ class PageViews extends ContextSource {
 		foreach ( $this->getSensitiveQueryParams() as $param => $op ) {
 			$this->hashQueryParamIfSet( $param, $op );
 		}
+	}
+
+	/**
+	 * Setter for originalUserId.
+	 *
+	 * @param int $userId
+	 */
+	public function setOriginalUserId( $userId ) {
+		$this->originalUserId = $userId;
 	}
 
 }

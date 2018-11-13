@@ -20,10 +20,7 @@ class WikimediaEventsHooks {
 		global $wgWMEAICaptchaEnabled, $wgWMEUnderstandingFirstDay;
 
 		if ( $wgWMEUnderstandingFirstDay ) {
-			DeferredUpdates::addCallableUpdate( function () {
-				$pageViews = new PageViews( RequestContext::getMain() );
-				$pageViews->log();
-			} );
+			PageViews::deferredLog();
 		}
 
 		$out->addModules( 'ext.wikimediaEvents' );
@@ -43,6 +40,21 @@ class WikimediaEventsHooks {
 	}
 
 	/**
+	 * UserLogout hook handler.
+	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/UserLogout
+	 *
+	 * @param User &$user
+	 * @return bool
+	 */
+	public static function onUserLogout( User &$user ) {
+		global $wgWMEUnderstandingFirstDay;
+		if ( $wgWMEUnderstandingFirstDay ) {
+			PageViews::deferredLog( $user->getId() );
+		}
+		return true;
+	}
+
+	/**
 	 * BeforePageRedirect hook handler.
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/BeforePageRedirect
 	 *
@@ -54,10 +66,7 @@ class WikimediaEventsHooks {
 	public static function onBeforePageRedirect( $out, &$redirect, &$code ) {
 		global $wgWMEUnderstandingFirstDay;
 		if ( $wgWMEUnderstandingFirstDay ) {
-			DeferredUpdates::addCallableUpdate( function () {
-				$pageViews = new PageViews( RequestContext::getMain() );
-				$pageViews->log();
-			} );
+			PageViews::deferredLog();
 		}
 		return true;
 	}
