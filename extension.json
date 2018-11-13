@@ -103,7 +103,7 @@
 		"CitationUsagePageLoad": 18502712,
 		"WMDEBannerEvents": 18437830,
 		"WMDEBannerSizeIssue": 18193993,
-		"WikidataCompletionSearchClicks": 18419582
+		"WikidataCompletionSearchClicks": 18624312
 	},
 	"@ResourceModules": {
 		"@": [
@@ -235,7 +235,8 @@
 			"_merge_strategy": "array_plus"
 		},
 		"WMEAICaptchaEnabled": false,
-		"WMESchemaEditAttemptStepSamplingRate": "0.0625"
+		"WMESchemaEditAttemptStepSamplingRate": "0.0625",
+		"WMEWikidataCompletionSearchClicks": {}
 	},
 	"manifest_version": 1
 }
