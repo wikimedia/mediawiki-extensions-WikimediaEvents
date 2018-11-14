@@ -16,6 +16,9 @@
 		"AuthManagerStatsdHandler": "includes/AuthManagerStatsdHandler.php"
 	},
 	"Hooks": {
+		"UserLogout": [
+			"WikimediaEventsHooks::onUserLogout"
+		],
 		"LocalUserCreated": [
 			"WikimediaEventsHooks::onLocalUserCreated"
 		],
@@ -84,7 +87,6 @@
 	},
 	"EventLoggingSchemas": {
 		"Print": 17630514,
-		"UnderstandingFirstDay": 0,
 		"ReadingDepth": 18201205,
 		"EditAttemptStep": 18530416,
 		"VisualEditorFeatureUse": 18457512,
@@ -221,6 +223,7 @@
 	},
 	"config": {
 		"WMEUnderstandingFirstDay": false,
+		"WMEUnderstandingFirstDaySensitiveNamespaces": [ 0, 1, 6, 7 ],
 		"WMEPrintSamplingRate": 0.1,
 		"WMEPrintEnabled": false,
 		"WMEReadingDepthSamplingRate": 0.005,

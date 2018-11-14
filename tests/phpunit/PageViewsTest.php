@@ -294,9 +294,9 @@ class PageViewsTest extends MediaWikiTestCase {
 					PageViews::EVENT_USER_ID => 2,
 				],
 				[
-					PageViews::EVENT_TITLE => $pageViews->hash( 'Main Page' ),
-					PageViews::EVENT_PAGE_TITLE => 'Move ' . $pageViews->hash( 'Main_Page' ),
-					PageViews::EVENT_PAGE_ID => $pageViews->hash( '1' ),
+					PageViews::EVENT_TITLE => 'Main Page',
+					PageViews::EVENT_PAGE_TITLE => 'Move Main Page',
+					PageViews::EVENT_PAGE_ID => '1',
 					PageViews::EVENT_REQUEST_METHOD => 'GET',
 					PageViews::EVENT_ACTION => '',
 					PageViews::EVENT_PERMISSION_ERRORS => '',
@@ -304,7 +304,7 @@ class PageViewsTest extends MediaWikiTestCase {
 					PageViews::EVENT_IS_MOBILE => false,
 					PageViews::EVENT_NAMESPACE => 0,
 					PageViews::EVENT_PATH => '/mediawiki/index.php',
-					PageViews::EVENT_QUERY => 'title=Special:MovePage/' . $pageViews->hash( 'Main_Page' ),
+					PageViews::EVENT_QUERY => 'title=Special:MovePage/Main_Page',
 					PageViews::EVENT_USER_ID => 2,
 				],
 				(
