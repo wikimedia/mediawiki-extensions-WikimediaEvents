@@ -213,13 +213,19 @@ class PageViews extends ContextSource {
 		}
 		// Replace instances of title in the path.
 		$eventToModify[self::EVENT_PATH] = str_replace(
-			$this->getTitle()->getDBkey(),
+			[
+				$this->getTitle()->getDBkey(),
+				wfUrlencode( $this->getTitle()->getDBkey() )
+			],
 			$this->hash( $this->getTitle()->getDBkey() ),
 			$eventToModify[self::EVENT_PATH]
 		);
 		// Sanitize any other matches for title in the query.
 		$eventToModify[self::EVENT_QUERY] = str_replace(
-			$this->getTitle()->getDBkey(),
+			[
+				$this->getTitle()->getDBkey(),
+				wfUrlencode( $this->getTitle()->getDBkey() )
+			],
 			$this->hash( $this->getTitle()->getDBkey() ),
 			$eventToModify[self::EVENT_QUERY]
 		);
@@ -228,9 +234,10 @@ class PageViews extends ContextSource {
 		$eventToModify[self::EVENT_PAGE_TITLE] = str_replace(
 			[
 				$this->getTitle()->getDBkey(),
-				$this->getTitle()->getText()
+				$this->getTitle()->getText(),
+				wfUrlencode( $this->getTitle()->getDBkey() )
 			],
-			$this->hash( $this->getTitle()->getDBkey() ),
+			$this->hash( $this->getTitle()->getText() ),
 			$eventToModify[self::EVENT_PAGE_TITLE]
 		);
 		$this->setEvent( $eventToModify );

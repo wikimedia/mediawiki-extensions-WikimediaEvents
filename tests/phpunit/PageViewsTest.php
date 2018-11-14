@@ -179,7 +179,7 @@ class PageViewsTest extends MediaWikiTestCase {
 		$pageViews = new PageViews( $context );
 		$pageViews->setEvent( $event );
 		$pageViews->redactSensitiveData();
-		$this->assertArrayEquals( $pageViews->getEvent(), $postRedactEvent );
+		$this->assertArrayEquals( $postRedactEvent, $pageViews->getEvent() );
 	}
 
 	/**
@@ -278,6 +278,117 @@ class PageViewsTest extends MediaWikiTestCase {
 				],
 				self::getDefaultContext()
 			],
+			[
+				[
+					PageViews::EVENT_QUERY => 'title=대구광역시에서/대구광역시에서:대구광역시에서&action=edit',
+					PageViews::EVENT_TITLE => '대구광역시에서/대구광역시에서:대구광역시에서',
+					PageViews::EVENT_PAGE_TITLE => 'Creating 대구광역시에서/대구광역시에서:대구광역시에서',
+					PageViews::EVENT_PAGE_ID => 0,
+					PageViews::EVENT_NAMESPACE => 0,
+					PageViews::EVENT_PATH => '/w/index.php',
+				],
+				[
+					PageViews::EVENT_QUERY =>
+						'title=' . $pageViews->hash( '대구광역시에서/대구광역시에서:대구광역시에서' ) . '&action=edit',
+					PageViews::EVENT_TITLE => $pageViews->hash( '대구광역시에서/대구광역시에서:대구광역시에서' ),
+					PageViews::EVENT_PAGE_TITLE => 'Creating ' . $pageViews->hash( '대구광역시에서/대구광역시에서:대구광역시에서' ),
+					PageViews::EVENT_PAGE_ID => 0,
+					PageViews::EVENT_NAMESPACE => 0,
+					PageViews::EVENT_PATH => '/w/index.php',
+				],
+				(
+				function () {
+					$context = self::getDefaultContext();
+					$skin = $context->getSkin();
+					$skin->setRelevantTitle( Title::newFromText( '대구광역시에서/대구광역시에서:대구광역시에서' ) );
+					$context->setSkin( $skin );
+					return $context;
+				} )()
+			],
+			[
+				[
+					PageViews::EVENT_QUERY => 'title=Foo/Bar_(Baz)&action=edit',
+					PageViews::EVENT_TITLE => 'Foo/Bar (Baz)',
+					PageViews::EVENT_PAGE_TITLE => 'Creating Foo/Bar (Baz)',
+					PageViews::EVENT_PAGE_ID => 2,
+					PageViews::EVENT_NAMESPACE => 0,
+					PageViews::EVENT_PATH => '/w/index.php',
+				],
+				[
+					PageViews::EVENT_QUERY =>
+						'title=' . $pageViews->hash( 'Foo/Bar_(Baz)' ) . '&action=edit',
+					PageViews::EVENT_TITLE => $pageViews->hash( 'Foo/Bar (Baz)' ),
+					PageViews::EVENT_PAGE_TITLE => 'Creating ' . $pageViews->hash( 'Foo/Bar (Baz)' ),
+					PageViews::EVENT_PAGE_ID => $pageViews->hash( 2 ),
+					PageViews::EVENT_NAMESPACE => 0,
+					PageViews::EVENT_PATH => '/w/index.php',
+				],
+				(
+				function () {
+					$context = self::getDefaultContext();
+					$skin = $context->getSkin();
+					$skin->setRelevantTitle( Title::newFromText( 'Foo/Bar (Baz)' ) );
+					$context->setSkin( $skin );
+					return $context;
+				} )()
+			],
+
+			[
+				[
+					PageViews::EVENT_QUERY => 'title=X(y)%3Dz&action=edit',
+					PageViews::EVENT_TITLE => 'X(y)=z',
+					PageViews::EVENT_PAGE_TITLE => 'Creating X(y)=z',
+					PageViews::EVENT_PAGE_ID => 3,
+					PageViews::EVENT_NAMESPACE => 0,
+					PageViews::EVENT_PATH => '/w/index.php',
+				],
+				[
+					PageViews::EVENT_QUERY =>
+						'title=' . $pageViews->hash( 'X(y)=z' ) . '&action=edit',
+					PageViews::EVENT_TITLE => $pageViews->hash( 'X(y)=z' ),
+					PageViews::EVENT_PAGE_TITLE => 'Creating ' . $pageViews->hash( 'X(y)=z' ),
+					PageViews::EVENT_PAGE_ID => $pageViews->hash( 3 ),
+					PageViews::EVENT_NAMESPACE => 0,
+					PageViews::EVENT_PATH => '/w/index.php',
+				],
+				(
+				function () {
+					$context = self::getDefaultContext();
+					$skin = $context->getSkin();
+					$skin->setRelevantTitle( Title::newFromText( 'X(y)=z' ) );
+					$context->setSkin( $skin );
+					return $context;
+				} )()
+			],
+
+			[
+				[
+					PageViews::EVENT_QUERY => 'title=Talk:Foo&action=edit',
+					PageViews::EVENT_TITLE => 'Foo',
+					PageViews::EVENT_PAGE_TITLE => 'Creating Talk:Foo',
+					PageViews::EVENT_PAGE_ID => 4,
+					PageViews::EVENT_NAMESPACE => 1,
+					PageViews::EVENT_PATH => '/w/index.php',
+				],
+				[
+					PageViews::EVENT_QUERY =>
+						'title=Talk:' . $pageViews->hash( 'Foo' ) . '&action=edit',
+					PageViews::EVENT_TITLE => $pageViews->hash( 'Foo' ),
+					PageViews::EVENT_PAGE_TITLE => 'Creating Talk:' . $pageViews->hash( 'Foo' ),
+					PageViews::EVENT_PAGE_ID => $pageViews->hash( 4 ),
+					PageViews::EVENT_NAMESPACE => 1,
+					PageViews::EVENT_PATH => '/w/index.php',
+				],
+				(
+				function () {
+					$context = self::getDefaultContext();
+					$skin = $context->getSkin();
+					$skin->setRelevantTitle( Title::newFromText( 'Talk:Foo' ) );
+					$context->setSkin( $skin );
+					return $context;
+				} )()
+			],
+
 			[
 				[
 					PageViews::EVENT_TITLE => 'Main Page',
