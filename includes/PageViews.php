@@ -334,6 +334,11 @@ class PageViews extends ContextSource {
 			}
 		}
 
+		// If registration property isn't set, assume it's an older user without this property.
+		if ( $user->getRegistration() === null ) {
+			return false;
+		}
+
 		$accountAge = wfTimestamp() - wfTimestamp( TS_UNIX, $user->getRegistration() );
 		if ( $accountAge >= self::DAY_LIMIT_IN_SECONDS ) {
 			return false;
