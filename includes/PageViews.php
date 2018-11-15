@@ -198,10 +198,47 @@ class PageViews extends ContextSource {
 		$this->hashSensitiveQueryParams();
 
 		$eventToModify = $this->getEvent();
-		// If not in a sensitive namespace, and if the relevant title is not in a sensitive
-		// namespace, don't do anything further.
+		$titleFromRequest = null;
+		$titlePropertyFromRequest = $this->getRequest()->getVal( 'title' );
+		if ( $titlePropertyFromRequest ) {
+			$titleFromRequest = Title::newFromText( $titlePropertyFromRequest );
+		}
+
+		// Check if the title namespace is in the list of sensitive namespaces.
 		if ( !in_array( $eventToModify[self::EVENT_NAMESPACE], $this->getSensitiveNamespaces() ) ) {
-			return;
+			if ( !$titleFromRequest ) {
+				// Title isn't set in request, and our event's title is not in a sensitive
+				// namespace, so return early.
+				return;
+			}
+			// Check if request title matches the context title.
+			if ( $titleFromRequest instanceof Title
+				 && !$titleFromRequest->equals( $this->getTitle() )
+				 && in_array( $titleFromRequest->getNamespace(), $this->getSensitiveNamespaces() ) ) {
+				// Scrub the path and query for the title from request, then return.
+				$eventToModify[self::EVENT_PATH] = str_replace(
+					[
+						$titlePropertyFromRequest,
+						wfUrlencode( $titleFromRequest->getDBkey() )
+					],
+					$this->hash( $titleFromRequest->getDBkey() ),
+					$eventToModify[self::EVENT_PATH]
+				);
+				$eventToModify[self::EVENT_QUERY] = str_replace(
+					[
+						$titlePropertyFromRequest,
+						wfUrlencode( $titleFromRequest->getDBkey() )
+					],
+					$this->hash( $titleFromRequest->getDBkey() ),
+					$eventToModify[self::EVENT_QUERY]
+				);
+				$this->setEvent( $eventToModify );
+				return;
+			} else {
+				// None of the checks above passed, and we're not in a sensitive namespace, so
+				// return.
+				return;
+			}
 		}
 		// If Main_Page, don't obfuscate any details.
 		if ( $this->getTitle()->isMainPage() ) {

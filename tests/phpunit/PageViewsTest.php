@@ -260,6 +260,37 @@ class PageViewsTest extends MediaWikiTestCase {
 			],
 			[
 				[
+					PageViews::EVENT_PAGE_ID => 1,
+					PageViews::EVENT_TITLE => 'Admin',
+					PageViews::EVENT_PAGE_TITLE => 'User:Admin',
+					PageViews::EVENT_PATH => '/w/index.php',
+					PageViews::EVENT_QUERY => 'title=Test',
+					PageViews::EVENT_NAMESPACE => NS_USER
+				],
+				[
+					PageViews::EVENT_PAGE_ID => 1,
+					PageViews::EVENT_TITLE => 'Admin',
+					PageViews::EVENT_PAGE_TITLE => 'User:Admin',
+					PageViews::EVENT_PATH => '/w/index.php',
+					PageViews::EVENT_NAMESPACE => NS_USER,
+					PageViews::EVENT_QUERY => 'title=' . $pageViews->hash( 'Test' ),
+				],
+				(
+				function () {
+					$context = self::getDefaultContext();
+					$title = Title::newFromText( 'Admin' );
+					$skin = $context->getSkin();
+					$skin->setRelevantTitle( $title );
+					$context->setTitle( $title );
+					$context->setSkin( $skin );
+					$request = $context->getRequest();
+					$request->setVal( 'title', 'Test' );
+					$context->setRequest( $request );
+					return $context;
+				} )()
+			],
+			[
+				[
 					PageViews::EVENT_PAGE_ID => "0",
 					PageViews::EVENT_TITLE => 'UserLogin',
 					PageViews::EVENT_PAGE_TITLE => 'Log in',
