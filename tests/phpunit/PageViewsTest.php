@@ -5,6 +5,7 @@ namespace WikimediaEvents\Tests;
 use FauxRequest;
 use MediaWikiTestCase;
 use MWException;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit_Framework_MockObject_MockObject;
 use RequestContext;
 use Title;
@@ -79,16 +80,21 @@ class PageViewsTest extends MediaWikiTestCase {
 		$context->setUser( $user );
 		$pageViews = new PageViews( $context );
 		$this->assertEquals( true, $pageViews->userIsInCohort() );
-		$user = User::createNew( 'UserTestActorId1' );
-		$id = $user->getId();
-		$db = wfGetDB( DB_MASTER );
-		$row = $db->selectRow( 'user', User::getQueryInfo()['fields'], [ 'user_id' => $id ], __METHOD__ );
-		$row->user_registration = $db->timestamp( time() - 864000 );
-		$user = User::newFromRow( $row );
 
+		/** @var User|MockObject $userMock */
+		$userMock = $this->getMockBuilder( User::class )
+			->disableOriginalConstructor()
+			->getMock();
+		$userMock->expects( $this->any() )
+			->method( 'getRegistration' )
+			->willReturn( '‌20171116174505' );
+		$userMock->expects( $this->any() )
+			->method( 'getId' )
+			->willReturn( 5 );
 		$context = self::getDefaultContext();
-		$context->setUser( $user );
+		$context->setUser( $userMock );
 		$pageViews = new PageViews( $context );
+		$pageViews->setUser( $userMock );
 		$this->assertEquals( false, $pageViews->userIsInCohort() );
 	}
 
