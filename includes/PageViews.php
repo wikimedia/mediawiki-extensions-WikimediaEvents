@@ -62,6 +62,11 @@ class PageViews extends ContextSource {
 	private $originalUserId = 0;
 
 	/**
+	 * @var User
+	 */
+	private $user;
+
+	/**
 	 * PageViews constructor.
 	 * @param IContextSource $context
 	 */
@@ -95,6 +100,30 @@ class PageViews extends ContextSource {
 	 */
 	public function getTitle() {
 		return $this->getSkin()->getRelevantTitle();
+	}
+
+	/**
+	 * @param User $user
+	 */
+	public function setUser( User $user ) {
+		$this->user = $user;
+	}
+
+	/**
+	 * @return User
+	 */
+	public function getUser() {
+		// No need to calculate this multiple times per request.
+		if ( $this->user instanceof User ) {
+			return $this->user;
+		}
+		// Use default implementation.
+		$this->user = parent::getUser();
+		// Override if originalUserId is set (in case of user logout).
+		if ( $this->originalUserId ) {
+			$this->user = User::newFromId( $this->originalUserId );
+		}
+		return $this->user;
 	}
 
 	/**
@@ -359,16 +388,7 @@ class PageViews extends ContextSource {
 	public function userIsInCohort() {
 		$user = $this->getUser();
 		if ( $user->isAnon() ) {
-			// Before returning false, check to see if there's a value stored for
-			// original user ID. This will be the case if the user has just logged out.
-			if ( $this->originalUserId ) {
-				$user = User::newFromId( $this->originalUserId );
-				if ( $user->isAnon() ) {
-					return false;
-				}
-			} else {
-				return false;
-			}
+			return false;
 		}
 
 		// If registration property isn't set, assume it's an older user without this property.
