@@ -11,7 +11,7 @@
 	},
 	"wikimediaevents-desc": "Pomocí EventLogging zaznamenává události specifické pro Wikimedia",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Nahráno z jiné wiki]]",
-	"tag-cross-wiki-upload-description": "Soubory načtené z prostředí wikitextového a vizuálního editoru na jiných wiki",
+	"tag-cross-wiki-upload-description": "Soubory načtené z prostředí wikitextového a Vizuálního editoru na jiných wiki",
 	"tag-HHVM-description": "Revize provedené se zapnutým HipHop Virtual Machine místo PHP interpretru Zend (očekáván vylepšený výkon, označeno pro ladění/analýzu)",
 	"abusefilter-edit-builder-vars-user-wpzero": "Zda uživatel edituje prostřednictvím nepočítaného připojení via Wikipedia Zero",
 	"wikimediaevents-humanrel-question-a": "Klikli byste na tuto stránku, kdybyste hledali „$1“?",
