@@ -11,7 +11,7 @@
 	"wikimediaevents-desc": "يسجل الأحداث المتعلقة بويكيميديا باستخدام EventLogging",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|رفع عبر الويكي]]",
 	"tag-cross-wiki-upload-description": "الملفات التي تم تحميلها من داخل محرر نصوص الويكي والمحرر المرئي على مواقع الويكي الأخرى",
-	"tag-HHVM-description": "تعديلات باستخدام آلة هيب هوب الافتراضية لتعويض آلية بي إتش بي زند، لتحسين الأداء والتنقيح البرمجي",
+	"tag-HHVM-description": "تعديلات باستخدام آلة هيب هوب الافتراضية بدلا من مفسر بي إتش بي زند (متوقع أن تحسن الأداء، موسومة من أجل التنقيح البرمجي/التحليل)",
 	"abusefilter-edit-builder-vars-user-wpzero": "ما إذا كان المستخدم يحرر من خلال شبكة اتصال بدون تكلفة من خلال Wikipedia Zero أم لا",
 	"wikimediaevents-humanrel-question-a": "هل ستضغط على هذه الصفحة حينما تبحث عن '$1'؟",
 	"wikimediaevents-humanrel-question-b": "لو كنت تبحث عن '$1'، فهل ستكون هذه المقالة نتيجة جيدة؟",
