@@ -80,12 +80,14 @@ class WikimediaEventsHooks {
 	public static function onLocalUserCreated( User $user, $autocreated ) {
 		global $wgWMEUnderstandingFirstDay;
 		if ( $wgWMEUnderstandingFirstDay && !$autocreated ) {
-			$context = RequestContext::getMain();
-			$context->setUser( $user );
-			$pageViews = new PageViews( $context );
-			// We don't need to check the cohort, since we know the user is not autocreated
-			// and the account was just created.
-			$pageViews->setUserHashingSalt();
+			DeferredUpdates::addCallableUpdate( function () use ( $user ) {
+				$context = RequestContext::getMain();
+				$context->setUser( $user );
+				$pageViews = new PageViews( $context );
+				if ( $pageViews->userIsInCohort() ) {
+					$pageViews->setUserHashingSalt();
+				}
+			} );
 		}
 	}
 

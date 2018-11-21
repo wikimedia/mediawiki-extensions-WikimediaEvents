@@ -83,18 +83,11 @@ class PageViews extends ContextSource {
 	 * @param int $userId
 	 */
 	public static function deferredLog( $userId = 0 ) {
-		// The purpose of logging POST events in presend stage is to ensure correct chronological
-		// order of events in the eventlogging database.
-		// The timestamp on the eventlogging capsule is set when the deferred update executes,
-		// and it's important that the POST event is logged before the BeforePageDisplay hook
-		// fires for the subsequent GET request.
-		$stage = RequestContext::getMain()->getRequest()->wasPosted() ? DeferredUpdates::PRESEND :
-			DeferredUpdates::POSTSEND;
 		DeferredUpdates::addCallableUpdate( function () use ( $userId ) {
 			$pageViews = new PageViews( RequestContext::getMain() );
 			$pageViews->setOriginalUserId( $userId );
 			$pageViews->log();
-		}, $stage );
+		} );
 	}
 
 	/**
