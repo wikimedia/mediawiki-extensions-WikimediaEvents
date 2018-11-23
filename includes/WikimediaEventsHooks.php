@@ -272,7 +272,7 @@ class WikimediaEventsHooks {
 
 	/**
 	 * Handler for UserSaveOptions hook.
-	 * @see http://www.mediawiki.org/wiki/Manual:Hooks/UserSaveOptions
+	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/UserSaveOptions
 	 * @param User $user user whose options are being saved
 	 * @param array &$options Options being saved
 	 * @return bool true in all cases
