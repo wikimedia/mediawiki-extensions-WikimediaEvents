@@ -10,7 +10,7 @@
 	"wikimediaevents-desc": "ウィキメディア特有のイベントを、EventLogging を使用して記録する",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|ウィキ間アップロード]]",
 	"tag-cross-wiki-upload-description": "他ウィキでのウィキテキストの内側およびビジュアルエディターの内側から、ファイルをアップロード",
-	"tag-HHVM-description": "Zend PHP インタプリタに替わるヒップホップ・バーチャル・マシン (HHVM) の更新が可能になりました (デバッグ/解析のタグ付き、目的はパフォーマンスの改善)。",
+	"tag-HHVM-description": "Zend PHP インタプリターに代わる HipHop Virtual Machine (HHVM) が有効な状態でなされた編集 (パフォーマンスの改善が期待される機能、デバッグ/分析のためのタグ付け)。",
 	"abusefilter-edit-builder-vars-user-wpzero": "Wikipedia Zero の利用者がゼロレートのキャリア経由で編集をしているかどうか",
 	"wikimediaevents-humanrel-question-a": "「$1」を検索する場合、このページをクリックしますか？",
 	"wikimediaevents-humanrel-question-b": "もし「$1'」を検索中でしたら、この記事はお役に立ちそうですか？",
