@@ -100,17 +100,21 @@
 			framed: false,
 			flags: [ 'progressive' ],
 			popup: {
-				$content: $( '<p>' + popupDescription +
-					'<a href="https://meta.wikimedia.org/wiki/Research:Spambot_detection_via_registration_page_behavior" target="_blank">' +
-					'(' + popupFindOutMore + ')</a></p>' ),
+				$content: $( '<p>' ).append(
+					document.createTextNode( popupDescription ),
+					$( '<a>' )
+						.attr( {
+							href: 'https://meta.wikimedia.org/wiki/Research:Spambot_detection_via_registration_page_behavior',
+							target: '_blank'
+						} )
+						.text( '(' + popupFindOutMore + ')' )
+				),
 				position: 'after',
 				padded: true,
 				align: 'force-right'
 			}
 		} );
-		popupButton.$element.css( {
-			'float': 'left'
-		} );
+		popupButton.$element.css( 'float', 'left' );
 		$( '#mw-input-captchaWord' ).closest( '.mw-ui-vform-field' ).prepend( popupButton.$element );
 	} );
 
