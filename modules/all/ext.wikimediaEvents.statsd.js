@@ -19,13 +19,13 @@
 		batchSize = 50,
 		baseUrl = mw.config.get( 'wgWMEStatsdBaseUri' ),
 		// Based on mw.eventLog.Core#sendBeacon
-		sendBeacon = navigator.sendBeacon
-			? function ( url ) {
+		sendBeacon = navigator.sendBeacon ?
+			function ( url ) {
 				try {
 					navigator.sendBeacon( url );
 				} catch ( e ) {}
-			}
-			: function ( url ) {
+			} :
+			function ( url ) {
 				( new Image() ).src = url;
 			};
 

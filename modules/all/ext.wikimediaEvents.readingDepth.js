@@ -66,7 +66,6 @@
 	sessionId = user.sessionId();
 
 	/**
-	 * @param {number} sessionID
 	 * @param {number} samplingRate A float between 0 and 1 for which events
 	 *  in the schema should be logged.
 	 * @return {boolean}

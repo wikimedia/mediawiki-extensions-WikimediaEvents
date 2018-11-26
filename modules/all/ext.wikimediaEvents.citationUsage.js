@@ -122,6 +122,7 @@
 
 	/**
 	 * Return the ID of the section to which the link belongs.
+	 * @param {jQuery} $link
 	 * @return {string|undefined}
 	 */
 	function getSectionId( $link ) {
@@ -137,6 +138,7 @@
 
 	/**
 	 * Is the link in infobox?
+	 * @param {jQuery} $link
 	 * @return {boolean}
 	 */
 	function isInInfobox( $link ) {
@@ -145,7 +147,8 @@
 
 	/**
 	 * Return data specific to link
-	 * @return {boolean}
+	 * @param {jQuery} $link
+	 * @return {Object}
 	 */
 	function getLinkStats( $link ) {
 		var href = $link.prop( 'href' );
@@ -161,7 +164,8 @@
 
 	/**
 	 * Return external link statistics.
-	 * @param {jQuery.object} $link external link
+	 * @param {jQuery} $link external link
+	 * @return {Object}
 	 */
 	function getExtLinkStats( $link ) {
 		var $refText = $link.closest( '.reference-text' ),
@@ -241,7 +245,7 @@
 
 		/**
 		 * Log 'fnHover' event.
-		 * @param {HTMLElement} node
+		 * @param {HTMLElement} link
 		 */
 		function logHover( link ) {
 			var data = getLinkStats( $( link ) );

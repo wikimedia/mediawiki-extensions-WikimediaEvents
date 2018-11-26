@@ -9,9 +9,5 @@
 	"globals": {
 		"mw": false,
 		"OO": false
-	},
-	"rules": {
-		"valid-jsdoc": 0,
-		"operator-linebreak" : 0
 	}
 }

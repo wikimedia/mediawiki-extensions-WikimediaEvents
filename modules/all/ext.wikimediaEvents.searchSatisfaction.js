@@ -594,8 +594,6 @@
 		};
 	}
 
-	/**
-	 */
 	function genAttachWprov( value ) {
 		return function () {
 			var uri = new mw.Uri( this.href );
@@ -677,9 +675,9 @@
 						$target = $( evt.target ).closest( 'a' ),
 						// Distinguish between standard 'on-wiki' results, and interwiki results that point
 						// to another language
-						clickType = $target.closest( '.mw-search-result' ).find( 'a.extiw' ).length > 0
-							? 'iwclick'
-							: 'click',
+						clickType = $target.closest( '.mw-search-result' ).find( 'a.extiw' ).length > 0 ?
+							'iwclick' :
+							'click',
 						params = {
 							// Only the primary anchor has the data-serp-pos attribute, but we
 							// might be updating a sub-link like a section.
