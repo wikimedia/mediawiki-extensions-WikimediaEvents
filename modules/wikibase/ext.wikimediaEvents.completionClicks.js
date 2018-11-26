@@ -12,6 +12,7 @@
 			suggestions = searchData._cache.suggestions,
 			clickIndex = null,
 			clickPage = null,
+			// eslint-disable-next-line jquery/no-map-util
 			resultIds = $.map( suggestions, function ( item ) {
 				return item.pageid;
 			} ).join( ',' );

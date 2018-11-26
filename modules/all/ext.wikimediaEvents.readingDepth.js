@@ -152,7 +152,7 @@
 	 * Log an event to the Schema:ReadingDepth (SCHEMA_NAME).
 	 *
 	 * @param {string} action A valid value for the action property inside the
-	 *	schema Schema:ReadingDepth
+	 *  schema Schema:ReadingDepth
 	 */
 	function logEvent( action ) {
 		var now,
@@ -261,9 +261,9 @@
 	 *                                the name and bucket of the test that triggered readingDepth,
 	 *                                ex: "page-issues-a_sample" for bucket A in page-issues test.
 	 *                                note: if a non-existent schema property is passed here
-	 *                                or the externalBucket is not defined as accepting a boolean value
-	 *                                this will break any events to the ReadingDepth schema so make sure you know what
-	 *                                you are doing!
+	 *                                or the externalBucket is not defined as accepting a boolean
+	 *                                value this will break any events to the ReadingDepth schema
+	 *                                so make sure you know what you are doing!
 	 */
 	function onExternalBucketEnabled( topic, boolProperty ) {
 		eventData[ boolProperty ] = true;

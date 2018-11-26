@@ -114,7 +114,7 @@
 		$( '#mw-input-captchaWord' ).closest( '.mw-ui-vform-field' ).prepend( popupButton.$element );
 	} );
 
-	$.each( [ 'wpName2', 'wpEmail', 'mw-input-captchaWord' ], function ( _, field ) {
+	[ 'wpName2', 'wpEmail', 'mw-input-captchaWord' ].forEach( function ( field ) {
 		var now, elapsed;
 		$( '#' + field ).keyup( function () {
 			if ( dwellTimings.length > arrayLimiter ) {
@@ -139,7 +139,7 @@
 		} );
 	} );
 
-	$.each( [ 'wpPassword2', 'wpRetype' ], function ( _, field ) {
+	[ 'wpPassword2', 'wpRetype' ].forEach( function ( field ) {
 		$( '#' + field ).focus( function () {
 			passwordInFocus = true;
 		} );

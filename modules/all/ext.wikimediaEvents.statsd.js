@@ -20,8 +20,14 @@
 		baseUrl = mw.config.get( 'wgWMEStatsdBaseUri' ),
 		// Based on mw.eventLog.Core#sendBeacon
 		sendBeacon = navigator.sendBeacon
-			? function ( url ) { try { navigator.sendBeacon( url ); } catch ( e ) {} }
-			: function ( url ) { ( new Image() ).src = url; };
+			? function ( url ) {
+				try {
+					navigator.sendBeacon( url );
+				} catch ( e ) {}
+			}
+			: function ( url ) {
+				( new Image() ).src = url;
+			};
 
 	// Statsv not configured, or DNT enabled
 	if ( !baseUrl || /1|yes/.test( navigator.doNotTrack ) ) {

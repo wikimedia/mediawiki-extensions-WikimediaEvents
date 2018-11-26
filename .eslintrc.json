@@ -1,10 +1,12 @@
 {
-	"extends": "wikimedia",
+	"extends": [
+		"wikimedia/client",
+		"wikimedia/jquery"
+	],
 	"env": {
 		"browser": true
 	},
 	"globals": {
-		"$": false,
 		"mw": false,
 		"OO": false
 	},

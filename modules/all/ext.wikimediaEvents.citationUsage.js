@@ -104,7 +104,7 @@
 
 				links = {};
 				$links.each( function ( i, link ) {
-					links[	link.href ] = i + 1;
+					links[ link.href ] = i + 1;
 				} );
 			}
 			return links[ href ];
