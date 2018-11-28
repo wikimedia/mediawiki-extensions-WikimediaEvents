@@ -126,7 +126,7 @@
 			// TODO: for now this is only for completion searches
 			context: searchData.options.type,
 			searchId: searchData._cache.searchId || null,
-			bucket: testBucket.name === 'control' ? null : testBucket.name
+			bucket: testBucket.name
 		} );
 	}
 
