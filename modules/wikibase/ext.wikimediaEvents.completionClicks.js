@@ -24,7 +24,9 @@
 /* eslint-disable no-underscore-dangle */
 ( function () {
 	'use strict';
-	var testBuckets = {};
+	var pageToken,
+		testBuckets = {},
+		searchSessionStarted = false;
 
 	function makeSamplingRate( context, language, config ) {
 		var bucket, name, rate, rates = {}, valid = false;
@@ -54,6 +56,8 @@
 		 *   bucket will receive a proportion equal to its value
 		 *   wrt the sum.
 		 *  searchApiParameters: wbsearchentities api parameter overrides
+		 *  context: context name to limit bucket to
+		 *  language: language code to limit bucket to
 		 */
 		var bucketOverride = ( new mw.Uri( document.location.href )
 				.query.wikidataCompletionSearchClicksBucket ),
@@ -63,7 +67,7 @@
 				name: 'WikidataCompletionSearchClicks',
 				enabled: config.enabled === true,
 				buckets: makeSamplingRate( context, language, buckets )
-			}, mw.user.sessionId() ),
+			}, pageToken ),
 			bucket = buckets[ bucketName ] || {};
 		return {
 			name: bucketName,
@@ -75,15 +79,37 @@
 	function getTestBucket( context, language ) {
 		var key = context + '-' + language;
 		if ( !testBuckets[ key ] ) {
+			if ( !pageToken ) {
+				pageToken = mw.user.generateRandomSessionId();
+			}
 			testBuckets[ key ] = initAB( context, language );
 		}
 		return testBuckets[ key ];
 	}
 
+	function logEvent( action, context, language, data ) {
+		var testBucket = getTestBucket( context, language );
+		// TODO: Not logging isn't ideal as it skips the eventlogging debug
+		// reporting. Not sure how to let someone force themselves into a bucket
+		// for testing, but ensure they don't end up in the reported stats.
+		if ( !testBucket.logEvents ) {
+			return;
+		}
+
+		data = $.extend( {
+			action: action,
+			context: context,
+			language: language,
+			bucket: testBucket.name,
+			pageToken: pageToken
+		}, data );
+
+		mw.track( 'event.WikidataCompletionSearchClicks', data );
+	}
+
 	function logClickEvent( event, entityId ) {
 		var $selector = $( event.target ),
 			searchData = $selector.data( 'entityselector' ),
-			testBucket = getTestBucket( searchData.options.type, searchData.options.language ),
 			suggestions = searchData._cache.suggestions,
 			clickIndex = null,
 			clickPage = null,
@@ -91,13 +117,6 @@
 			resultIds = $.map( suggestions, function ( item ) {
 				return item.pageid;
 			} ).join( ',' );
-
-		// TODO: Not logging isn't ideal as it skips the eventlogging debug
-		// reporting. Not sure how to let someone force themselves into a bucket
-		// for testing, but ensure they don't end up in the reported stats.
-		if ( !testBucket.logEvents ) {
-			return;
-		}
 
 		if ( !suggestions || suggestions.length < 2 || !searchData._term ) {
 			// Do not track events where there was no real choice
@@ -117,30 +136,50 @@
 			return;
 		}
 
-		mw.track( 'event.WikidataCompletionSearchClicks', {
+		logEvent( 'click', searchData.options.type, searchData.options.language, {
 			searchTerm: searchData._term,
-			language: searchData.options.language,
 			searchResults: resultIds,
 			clickIndex: clickIndex,
 			clickPage: clickPage,
-			// TODO: for now this is only for completion searches
-			context: searchData.options.type,
-			searchId: searchData._cache.searchId || null,
-			bucket: testBucket.name
+			searchId: searchData._cache.searchId || ''
+		} );
+	}
+
+	function logSessionStartEvent( context, language, searchTerm ) {
+		// Logs an event indicating the user has started a search session. After
+		// a user selects an item the session is considered complete, and another
+		// can start. This will allow to roughly measure abandonment.
+		logEvent( 'session-start', context, language, {
+			searchTerm: searchTerm,
+			searchResults: ''
 		} );
 	}
 
 	mw.hook( 'wikibase.entityselector.search.api-parameters' ).add( function ( data ) {
-		var testBucket = getTestBucket( data.type, data.language );
+		var $entityview, testBucket = getTestBucket( data.type, data.language );
 		if ( testBucket.searchApiParameters ) {
 			$.extend( data, testBucket.searchApiParameters );
+		}
+		if ( !searchSessionStarted ) {
+			// We have to filter to the same set of pages click events are filtered
+			// to, otherwise the abandonment metrics would be unreliable.
+			$entityview = $( '.wikibase-entityview' );
+			if ( $entityview.length ) {
+				searchSessionStarted = true;
+				logSessionStartEvent( data.type, data.language, data.search );
+			}
 		}
 	} );
 
 	mw.hook( 'wikibase.entityPage.entityView.rendered' ).add( function () {
+		// TODO: .wikibase-entityview doesn't exist on non-entity pages, such
+		// as Main Page, so no events are logged there.
 		var $entityview = $( '.wikibase-entityview' );
-		if ( $entityview ) {
-			$entityview.on( 'entityselectorselected.entitysearch', logClickEvent );
+		if ( $entityview.length ) {
+			$entityview.on( 'entityselectorselected.entitysearch', function ( event, entityId ) {
+				searchSessionStarted = false;
+				return logClickEvent( event, entityId );
+			} );
 		}
 	} );
 
