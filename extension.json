@@ -73,9 +73,6 @@
 		"AbuseFilter-builder": [
 			"WikimediaEventsHooks::onAbuseFilterBuilder"
 		],
-		"ChangesListSpecialPageStructuredFilters": [
-			"WikimediaEventsHooks::onChangesListSpecialPageStructuredFilters"
-		],
 		"MakeGlobalVariablesScript": [
 			"WikimediaEventsHooks::onMakeGlobalVariablesScript"
 		]
