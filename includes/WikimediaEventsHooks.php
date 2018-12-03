@@ -546,7 +546,7 @@ class WikimediaEventsHooks {
 			'hidelog' => 'bool',
 			'invert' => 'bool',
 			'associated' => 'bool',
-			'namespace' => 'integer',
+			'namespace' => 'string',
 			'tagfilter' => 'string',
 			'userExpLevel' => 'string',
 
