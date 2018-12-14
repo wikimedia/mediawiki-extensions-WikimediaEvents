@@ -3,7 +3,9 @@
 namespace WikimediaEvents\Tests;
 
 use FauxRequest;
+use HashConfig;
 use MediaWikiTestCase;
+use MultiConfig;
 use MWException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit_Framework_MockObject_MockObject;
@@ -514,6 +516,81 @@ class PageViewsTest extends MediaWikiTestCase {
 		$pageViews = new PageViews( $context );
 		$pageViews->log();
 		$this->assertArrayEquals( $expectedEvent, $pageViews->getEvent() );
+	}
+
+	/**
+	 * @throws \ConfigException
+	 * @throws MWException
+	 */
+	public function testGetAccountAgeLimit() {
+		$pageViews = new PageViews( self::getDefaultContext() );
+		$this->assertEquals( PageViews::DAY_LIMIT_IN_SECONDS, $pageViews->getAccountAgeLimit() );
+
+		if ( \ExtensionRegistry::getInstance()->isLoaded( 'GrowthExperiments' ) ) {
+			// Page view matches help desk, but panel isn't enabled.
+			// Expect 24 hour limit.
+			$context = self::getDefaultContext();
+			$context->setConfig( new MultiConfig( [
+				new HashConfig( [
+					'GEHelpPanelHelpDeskTitle' => 'Test',
+					'GEHelpPanelEnabled' => false
+				] ),
+				$context->getConfig()
+			] ) );
+			$pageViews = new PageViews( $context );
+			$this->assertEquals(
+				PageViews::DAY_LIMIT_IN_SECONDS,
+				$pageViews->getAccountAgeLimit()
+			);
+
+			// Page view matches subpage of help desk, and panel is enabled.
+			// Expect 14 day limit.
+			$context = self::getDefaultContext();
+			$context->setTitle( Title::newFromText( 'Test/Foo' ) );
+			$context->setConfig( new MultiConfig( [
+				new HashConfig( [
+					'GEHelpPanelHelpDeskTitle' => 'Test',
+					'GEHelpPanelEnabled' => true
+				] ),
+				$context->getConfig()
+			] ) );
+			$pageViews = new PageViews( $context );
+			$this->assertEquals(
+				PageViews::HELP_DESK_DAY_LIMIT_IN_SECONDS,
+				$pageViews->getAccountAgeLimit()
+			);
+
+			// Page view matches help desk, and panel is enabled.
+			// Expect 14 day limit.
+			$context = self::getDefaultContext();
+			$context->setConfig( new MultiConfig( [
+				new HashConfig( [
+					'GEHelpPanelHelpDeskTitle' => 'Test',
+					'GEHelpPanelEnabled' => true
+				] ),
+				$context->getConfig()
+			] ) );
+			$pageViews = new PageViews( $context );
+			$this->assertEquals(
+				PageViews::HELP_DESK_DAY_LIMIT_IN_SECONDS,
+				$pageViews->getAccountAgeLimit()
+			);
+
+			// Page visit is not to help desk. Expect 24 hour limit.
+			$context = self::getDefaultContext();
+			$context->setConfig( new MultiConfig( [
+				new HashConfig( [
+					'GEHelpPanelHelpDeskTitle' => 'SomeOtherPage',
+					'GEHelpPanelEnabled' => true
+				] ),
+				$context->getConfig()
+			] ) );
+			$pageViews = new PageViews( $context );
+			$this->assertEquals(
+				PageViews::DAY_LIMIT_IN_SECONDS,
+				$pageViews->getAccountAgeLimit()
+			);
+		}
 	}
 
 }

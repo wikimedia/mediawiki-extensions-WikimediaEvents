@@ -6,6 +6,7 @@ use CentralAuthUser;
 use ContextSource;
 use DeferredUpdates;
 use EventLogging;
+use ExtensionRegistry;
 use IContextSource;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
@@ -23,6 +24,12 @@ class PageViews extends ContextSource {
 	 * for.
 	 */
 	const DAY_LIMIT_IN_SECONDS = 86400;
+
+	/**
+	 * Used to define the maximum age of the user accounts for which we want to log visits to
+	 * to the help desk.
+	 */
+	const HELP_DESK_DAY_LIMIT_IN_SECONDS = 1209600;
 
 	/**
 	 * Constants mapping to the keys in the PageViews schema.
@@ -172,6 +179,7 @@ class PageViews extends ContextSource {
 	 * Log page views data.
 	 *
 	 * @return bool
+	 * @throws \ConfigException
 	 */
 	public function log() {
 		if ( !$this->userIsInCohort() ) {
@@ -391,6 +399,7 @@ class PageViews extends ContextSource {
 	 * Check if user is in cohort.
 	 *
 	 * @return bool
+	 * @throws \ConfigException
 	 */
 	public function userIsInCohort() {
 		$user = $this->getUser();
@@ -404,7 +413,7 @@ class PageViews extends ContextSource {
 		}
 
 		$accountAge = wfTimestamp() - wfTimestamp( TS_UNIX, $user->getRegistration() );
-		if ( $accountAge >= self::DAY_LIMIT_IN_SECONDS ) {
+		if ( $accountAge >= $this->getAccountAgeLimit() ) {
 			return false;
 		}
 
@@ -416,6 +425,51 @@ class PageViews extends ContextSource {
 			return $homeWiki === wfWikiId() || $homeWiki === null;
 		}
 		return true;
+	}
+
+	/**
+	 * @return bool
+	 * @throws \ConfigException
+	 */
+	private function isHelpPanelAndHelpDeskConfigured() {
+		$config = $this->getConfig();
+		return ExtensionRegistry::getInstance()->isLoaded( 'GrowthExperiments' ) &&
+			   $config->get( 'GEHelpPanelEnabled' ) &&
+			   $config->get( 'GEHelpPanelHelpDeskTitle' ) &&
+			   Title::newFromText( $config->get( 'GEHelpPanelHelpDeskTitle' ) )->isValid();
+	}
+
+	/**
+	 * @return bool
+	 * @throws \ConfigException
+	 */
+	private function isHelpDeskVisit() {
+		$helpDeskTitle = Title::newFromText(
+			$this->getConfig()->get( 'GEHelpPanelHelpDeskTitle' )
+		);
+		// Check both original title and relevant title.
+		return $this->originalTitle->equals( $helpDeskTitle ) ||
+			   $this->getTitle()->equals( $helpDeskTitle ) ||
+			   $this->originalTitle->isSubpageOf( $helpDeskTitle ) ||
+			   $this->getTitle()->isSubpageOf( $helpDeskTitle );
+	}
+
+	/**
+	 * Get the limit, in seconds, to compare against the account age.
+	 *
+	 * If GrowthExperiments isn't present, the help panel isn't enabled, or the help desk isn't
+	 * defined in configuration, then just track 24 hours of visits.
+	 *
+	 * If it's a help desk or subpage of help desk visit, modify the account age limit to 14 days.
+	 *
+	 * @return int
+	 * @throws \ConfigException
+	 */
+	public function getAccountAgeLimit() {
+		return ( $this->isHelpPanelAndHelpDeskConfigured() &&
+			$this->isHelpDeskVisit() ) ?
+			self::HELP_DESK_DAY_LIMIT_IN_SECONDS :
+			self::DAY_LIMIT_IN_SECONDS;
 	}
 
 	/**
