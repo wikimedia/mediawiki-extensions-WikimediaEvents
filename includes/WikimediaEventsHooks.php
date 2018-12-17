@@ -435,7 +435,7 @@ class WikimediaEventsHooks {
 	 * @param RecentChange $recentChange
 	 * @return bool
 	 */
-	public static function onRecentChangeSave( RecentChange $recentChange ) {
+	public static function onRecentChangeSaveCrossWikiUpload( RecentChange $recentChange ) {
 		if ( !defined( 'MW_API' ) ) {
 			return true;
 		}
@@ -466,6 +466,48 @@ class WikimediaEventsHooks {
 		$recentChange->addTags( $tags );
 
 		return true;
+	}
+
+	/**
+	 * Add a change tag 'campaign-...' to edits made via edit campaigns (identified by an URL
+	 * parameter passed to the API via VisualEditor). (T209132)
+	 *
+	 * @param RecentChange $recentChange
+	 * @return bool
+	 */
+	public static function onRecentChangeSaveEditCampaign( RecentChange $recentChange ) {
+		global $wgWMEEditCampaigns;
+
+		if ( !defined( 'MW_API' ) ) {
+			return true;
+		}
+
+		$request = RequestContext::getMain()->getRequest();
+		$campaign = $request->getVal( 'campaign' );
+		if ( !in_array( $campaign, $wgWMEEditCampaigns ) ) {
+			return true;
+		}
+
+		$tags = [ "campaign-$campaign" ];
+		$recentChange->addTags( $tags );
+
+		return true;
+	}
+
+	public static function onResourceLoaderRegisterModules( ResourceLoader $resourceLoader ) {
+		if ( !class_exists( 'VisualEditorHooks' ) ) {
+			return;
+		}
+
+		$dir = dirname( __DIR__ ) . DIRECTORY_SEPARATOR;
+
+		$resourceLoader->register( "ext.wikimediaEvents.visualEditor", [
+			'localBasePath' => $dir . 'modules',
+			'remoteExtPath' => 'WikimediaEvents/modules',
+			"scripts" => "ve-wme/campaigns.js",
+			"dependencies" => "ext.visualEditor.targetLoader",
+			"targets" => [ "desktop", "mobile" ],
+		] );
 	}
 
 	public static function onArticleViewHeader() {
