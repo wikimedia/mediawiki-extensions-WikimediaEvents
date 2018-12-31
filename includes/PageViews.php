@@ -478,8 +478,7 @@ class PageViews extends ContextSource {
 	 * @return array
 	 */
 	public function getSensitiveNamespaces() {
-		global $wgWMEUnderstandingFirstDaySensitiveNamespaces;
-		return $wgWMEUnderstandingFirstDaySensitiveNamespaces;
+		return $this->getConfig()->get( 'WMEUnderstandingFirstDaySensitiveNamespaces' );
 	}
 
 	/**
