@@ -128,11 +128,6 @@
 			"details": "https://phabricator.wikimedia.org/T169730",
 			"owner": "Reading Web"
 		},
-		"aiCaptcha": {
-			"start": "February 2018",
-			"details": "https://phabricator.wikimedia.org/T186244",
-			"owner": "Reading Infrastructure"
-		},
 		"citationUsage": {
 			"start": "June 2018",
 			"details": "https://phabricator.wikimedia.org/T191086",
@@ -189,25 +184,6 @@
 				"mediawiki.Uri"
 			]
 		},
-		"ext.wikimediaEvents.aiCaptcha": {
-			"scripts": [
-				"aiCaptcha/ext.wikimediaEvents.aiCaptchaStats.js",
-				"aiCaptcha/ext.wikimediaEvents.aiCaptcha.js"
-			],
-			"targets": [
-				"desktop"
-			],
-			"dependencies": [
-				"mediawiki.user",
-				"mediawiki.Uri",
-				"jquery.throttle-debounce"
-			],
-			"messages": [
-				"wikimediaevents-aicaptcha-datacollection-label",
-				"wikimediaevents-aicaptcha-datacollection-description",
-				"wikimediaevents-aicaptcha-datacollection-findoutmore"
-			]
-		},
 		"ext.wikimediaEvents.wikibase": {
 			"scripts": [
 				"wikibase/ext.wikimediaEvents.completionClicks.js"
@@ -238,7 +214,6 @@
 		"WMESearchRelevancePages": {
 			"_merge_strategy": "array_plus"
 		},
-		"WMEAICaptchaEnabled": false,
 		"WMEEditCampaigns": [],
 		"WMESchemaEditAttemptStepSamplingRate": "0.0625",
 		"WMEWikidataCompletionSearchClicks": {}

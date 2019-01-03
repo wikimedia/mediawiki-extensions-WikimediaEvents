@@ -17,7 +17,7 @@ class WikimediaEventsHooks {
 	 * @param Skin &$skin
 	 */
 	public static function onBeforePageDisplay( &$out, &$skin ) {
-		global $wgWMEAICaptchaEnabled, $wgWMEUnderstandingFirstDay;
+		global $wgWMEUnderstandingFirstDay;
 
 		if ( $wgWMEUnderstandingFirstDay ) {
 			PageViews::deferredLog();
@@ -27,10 +27,6 @@ class WikimediaEventsHooks {
 
 		if ( $out->getUser()->isLoggedIn() ) {
 			$out->addModules( 'ext.wikimediaEvents.loggedin' );
-		}
-
-		if ( $out->getTitle()->isSpecial( 'CreateAccount' ) && ( $wgWMEAICaptchaEnabled === true ) ) {
-			$out->addModules( 'ext.wikimediaEvents.aiCaptcha' );
 		}
 
 		if ( defined( 'WB_VERSION' ) ) {
