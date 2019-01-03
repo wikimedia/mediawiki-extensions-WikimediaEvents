@@ -18,8 +18,5 @@
 	"wikimediaevents-humanrel-yes": "예",
 	"wikimediaevents-humanrel-no": "아니오",
 	"wikimediaevents-humanrel-unsure": "모르겠습니다",
-	"wikimediaevents-humanrel-privacy-statement": "개인정보 보호 고지",
-	"wikimediaevents-aicaptcha-datacollection-label": "우리는 봇을 감별하기 위해 데이터를 어떻게 수집합니까?",
-	"wikimediaevents-aicaptcha-datacollection-description": "저희는 늘 시스템을 개선하고 있습니다. 봇을 더 잘 찾아낼 수 있도록 2018년 1월부터 5월까지 계정 생성 양식에 대한 키보드, 마우스 사용에 관한 정보를 수집할 것입니다. 이 데이터는 저희가 자동화된 등록을 더 잘 찾아낼 수 있게 하기 위해서만 사용되며 이는 스팸을 방지하고 인간에게 등록을 더 자연스럽게 만들기 위함입니다.",
-	"wikimediaevents-aicaptcha-datacollection-findoutmore": "더 찾아보기"
+	"wikimediaevents-humanrel-privacy-statement": "개인정보 보호 고지"
 }

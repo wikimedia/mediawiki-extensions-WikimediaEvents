@@ -24,8 +24,5 @@
 	"wikimediaevents-humanrel-yes": "Oui",
 	"wikimediaevents-humanrel-no": "Non",
 	"wikimediaevents-humanrel-unsure": "Je ne sais pas",
-	"wikimediaevents-humanrel-privacy-statement": "Déclaration de confidentialité",
-	"wikimediaevents-aicaptcha-datacollection-label": "Comment collectons-nous les données pour détecter les robots ?",
-	"wikimediaevents-aicaptcha-datacollection-description": "Nous travaillons toujours à améliorer nos systèmes. Afin d’obtenir une meilleure détection des robots, entre janvier et mai 2018, nous pouvons collecter des informations sur l’utilisation du clavier et de la souris dans le formulaire de création de compte. Ces données ne seront utilisées que pour nous aider à mieux détecter les inscriptions automatisées, afin de prévenir le pourriel et rendre l’inscription plus homogène pour les humains.",
-	"wikimediaevents-aicaptcha-datacollection-findoutmore": "en savoir plus"
+	"wikimediaevents-humanrel-privacy-statement": "Déclaration de confidentialité"
 }

@@ -24,8 +24,5 @@
 	"wikimediaevents-humanrel-yes": "Да",
 	"wikimediaevents-humanrel-no": "Нет",
 	"wikimediaevents-humanrel-unsure": "Не знаю",
-	"wikimediaevents-humanrel-privacy-statement": "Политика конфиденциальности",
-	"wikimediaevents-aicaptcha-datacollection-label": "Как мы собираем данные для определения ботов?",
-	"wikimediaevents-aicaptcha-datacollection-description": "Мы всегда работаем над улучшением наших систем. Чтобы лучше разобраться в ботах, в период с января по май 2018 года мы можем собирать информацию об использовании клавиатуры и мыши в форме создания учетной записи. Эти данные будут использоваться только для того, чтобы помочь нам лучше обнаружить автоматические регистрации, чтобы предотвратить спам и сделать процесс регистрации более плавным для людей.",
-	"wikimediaevents-aicaptcha-datacollection-findoutmore": "узнать больше"
+	"wikimediaevents-humanrel-privacy-statement": "Политика конфиденциальности"
 }

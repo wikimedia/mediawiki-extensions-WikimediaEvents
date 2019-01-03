@@ -16,8 +16,5 @@
 	"wikimediaevents-humanrel-yes": "Có",
 	"wikimediaevents-humanrel-no": "Không",
 	"wikimediaevents-humanrel-unsure": "Không biết",
-	"wikimediaevents-humanrel-privacy-statement": "Lời tuyên bố về quyền riêng từ",
-	"wikimediaevents-aicaptcha-datacollection-label": "Chúng tôi tập hợp dữ liệu để nhận ra bot như thế nào?",
-	"wikimediaevents-aicaptcha-datacollection-description": "Chúng tôi luôn cố gắng cải thiện hệ thống của chúng tôi. Với mục đích học tập cách nhận ra bot một cách tốt hơn, từ tháng 1 đến tháng 5 năm 2018, chúng tôi có thể tập hợp thông tin về cách sử dụng bàn phím và con chuột trong biểu mẫu mở tài khoản. Dữ liệu này chỉ được sử dụng để giúp chúng tôi nhận ra tác vụ mở tài khoản tự động một cách chính xác hơn, nhằm mục đích chống lại nội dung rác (spam) và cho phép con người mở tài khoản một cách tiện lợi hơn.",
-	"wikimediaevents-aicaptcha-datacollection-findoutmore": "Tìm hiểu thêm"
+	"wikimediaevents-humanrel-privacy-statement": "Lời tuyên bố về quyền riêng từ"
 }
