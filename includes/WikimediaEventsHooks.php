@@ -267,6 +267,24 @@ class WikimediaEventsHooks {
 	}
 
 	/**
+	 * Helper method to verify that hook is triggered on special page
+	 * @param OutputPage $out Output page
+	 * @return bool Returns true, if request is sent to one of $allowedPages special page
+	 */
+	private static function isKnownSettingsPage( OutputPage $out ) {
+		$allowedPages = [ 'Preferences', 'MobileOptions' ];
+		$title = $out->getTitle();
+		if ( $title === null ) {
+			return false;
+		}
+		foreach ( $allowedPages as $page ) {
+			if ( $title->isSpecial( $page ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
 	 * Handler for UserSaveOptions hook.
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/UserSaveOptions
 	 * @param User $user user whose options are being saved
@@ -275,15 +293,14 @@ class WikimediaEventsHooks {
 	 */
 	public static function onUserSaveOptions( $user, &$options ) {
 		// Modified version of original method from the Echo extension
-		global $wgOut;
-
-		// Capture user options saved via Special:Preferences or ApiOptions
+		$out = RequestContext::getMain()->getOutput();
+		// Capture user options saved via Special:Preferences, Special:MobileOptions or ApiOptions
 
 		// TODO (mattflaschen, 2013-06-13): Ideally this would be done more cleanly without
 		// looking explicitly at page names and URL parameters.
 		// Maybe a userInitiated flag passed to saveSettings would work.
-		if ( ( $wgOut && $wgOut->getTitle() && $wgOut->getTitle()->isSpecial( 'Preferences' ) )
-			|| ( defined( 'MW_API' ) && $wgOut->getRequest()->getVal( 'action' ) === 'options' )
+		if ( self::isKnownSettingsPage( $out )
+			|| ( defined( 'MW_API' ) && $out->getRequest()->getVal( 'action' ) === 'options' )
 		) {
 			// $clone is the current user object before the new option values are set
 			$clone = User::newFromId( $user->getId() );
