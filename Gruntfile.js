@@ -20,7 +20,11 @@ module.exports = function ( grunt ) {
 			]
 		},
 		banana: {
-			all: 'i18n/'
+			all: 'i18n/',
+			options: {
+				// T213539
+				requireLowerCase: false
+			}
 		},
 		stylelint: {
 			all: [

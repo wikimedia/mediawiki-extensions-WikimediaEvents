@@ -18,7 +18,7 @@
  * @license GNU GPL v2 or later
  * @author Erik Bernhardson <ebernhardson@wikimedia.org>
  */
-/* eslint-disable vars-on-top, max-len, no-prototype-builtins */
+/* eslint-disable vars-on-top, max-len, no-prototype-builtins, jquery/no-global-selector */
 ( function () {
 	'use strict';
 	// reject mobile users
@@ -433,6 +433,8 @@
 			queueKey = 'wmE-Ss-queue';
 
 		// if we have send beacon or do not track is enabled do nothing
+		// FIXME: Don't use === $.noop, use a null/undefined value instead
+		// eslint-disable-next-line jquery/no-noop
 		if ( navigator.sendBeacon || mw.eventLog.sendBeacon === $.noop ) {
 			return mw.eventLog;
 		}
