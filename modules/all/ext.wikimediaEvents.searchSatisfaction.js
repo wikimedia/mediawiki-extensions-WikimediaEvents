@@ -18,13 +18,9 @@
  * @license GNU GPL v2 or later
  * @author Erik Bernhardson <ebernhardson@wikimedia.org>
  */
-/* eslint-disable vars-on-top, max-len, jquery/no-global-selector */
+/* eslint-disable max-len, jquery/no-global-selector */
 ( function () {
 	'use strict';
-	// reject mobile users
-	if ( mw.config.get( 'skin' ) === 'minerva' ) {
-		return;
-	}
 
 	var search, autoComplete, session, eventLog, initSubTest, initDebugLogging,
 		isSearchResultPage = mw.config.get( 'wgIsSearchResultPage' ),
@@ -40,6 +36,11 @@
 		},
 		// some browsers can't do Object.keys properly, so manually maintain the list
 		didYouMeanList = [ 'dym1', 'dymr1', 'dymo1' ];
+
+	// reject mobile users
+	if ( mw.config.get( 'skin' ) === 'minerva' ) {
+		return;
+	}
 
 	function extractResultPosition( uri, wprovPrefix ) {
 		return parseInt( uri.query.wprov &&
@@ -281,10 +282,11 @@
 		};
 
 		this.get = function ( type ) {
+			var endTime, now;
 			if ( !Object.prototype.hasOwnProperty.call( state, type ) ) {
 				if ( Object.prototype.hasOwnProperty.call( ttl, type ) ) {
-					var endTime = parseInt( mw.storage.get( key( type + 'EndTime' ) ), 10 ),
-						now = Date.now();
+					endTime = +mw.storage.get( key( type + 'EndTime' ) );
+					now = Date.now();
 					if ( endTime && endTime > now ) {
 						state[ type ] = mw.storage.get( key( type ) );
 					} else {
@@ -300,8 +302,9 @@
 		};
 
 		this.set = function ( type, value ) {
+			var now;
 			if ( Object.prototype.hasOwnProperty.call( ttl, type ) ) {
-				var now = Date.now();
+				now = Date.now();
 				if ( !mw.storage.set( key( type + 'EndTime' ), now + ttl[ type ] ) ) {
 					return false;
 				}
@@ -315,8 +318,9 @@
 		};
 
 		this.refresh = function ( type ) {
+			var now;
 			if ( this.isActive() && Object.prototype.hasOwnProperty.call( ttl, type ) && mw.storage.get( key( type ) ) !== null ) {
-				var now = Date.now();
+				now = Date.now();
 				mw.storage.set( key( type + 'EndTime' ), now + ttl[ type ] );
 			}
 		};
