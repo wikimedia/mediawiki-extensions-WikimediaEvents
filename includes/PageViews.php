@@ -7,6 +7,7 @@ use ContextSource;
 use DeferredUpdates;
 use EventLogging;
 use ExtensionRegistry;
+use GrowthExperiments\HelpPanel;
 use IContextSource;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
@@ -436,7 +437,7 @@ class PageViews extends ContextSource {
 		return ExtensionRegistry::getInstance()->isLoaded( 'GrowthExperiments' ) &&
 			   $config->get( 'GEHelpPanelEnabled' ) &&
 			   $config->get( 'GEHelpPanelHelpDeskTitle' ) &&
-			   Title::newFromText( $config->get( 'GEHelpPanelHelpDeskTitle' ) )->isValid();
+			   HelpPanel::getHelpDeskTitle( $config )->isValid();
 	}
 
 	/**
@@ -444,9 +445,9 @@ class PageViews extends ContextSource {
 	 * @throws \ConfigException
 	 */
 	private function isHelpDeskVisit() {
-		$helpDeskTitle = Title::newFromText(
-			$this->getConfig()->get( 'GEHelpPanelHelpDeskTitle' )
-		);
+		// TODO: This needs to be revised to account for the fact that the help desk title
+		// is configured to be the subpage of the main help desk on kowiki.
+		$helpDeskTitle = HelpPanel::getHelpDeskTitle( $this->getConfig() );
 		// Check both original title and relevant title.
 		return $this->originalTitle->equals( $helpDeskTitle ) ||
 			   $this->getTitle()->equals( $helpDeskTitle ) ||
