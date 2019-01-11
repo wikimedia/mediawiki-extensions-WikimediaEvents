@@ -18,7 +18,7 @@
  * @license GNU GPL v2 or later
  * @author Erik Bernhardson <ebernhardson@wikimedia.org>
  */
-/* eslint-disable vars-on-top, max-len, no-prototype-builtins, jquery/no-global-selector */
+/* eslint-disable vars-on-top, max-len, jquery/no-global-selector */
 ( function () {
 	'use strict';
 	// reject mobile users
@@ -281,8 +281,8 @@
 		};
 
 		this.get = function ( type ) {
-			if ( !state.hasOwnProperty( type ) ) {
-				if ( ttl.hasOwnProperty( type ) ) {
+			if ( !Object.prototype.hasOwnProperty.call( state, type ) ) {
+				if ( Object.prototype.hasOwnProperty.call( ttl, type ) ) {
 					var endTime = parseInt( mw.storage.get( key( type + 'EndTime' ) ), 10 ),
 						now = Date.now();
 					if ( endTime && endTime > now ) {
@@ -300,7 +300,7 @@
 		};
 
 		this.set = function ( type, value ) {
-			if ( ttl.hasOwnProperty( type ) ) {
+			if ( Object.prototype.hasOwnProperty.call( ttl, type ) ) {
 				var now = Date.now();
 				if ( !mw.storage.set( key( type + 'EndTime' ), now + ttl[ type ] ) ) {
 					return false;
@@ -315,7 +315,7 @@
 		};
 
 		this.refresh = function ( type ) {
-			if ( this.isActive() && ttl.hasOwnProperty( type ) && mw.storage.get( key( type ) ) !== null ) {
+			if ( this.isActive() && Object.prototype.hasOwnProperty.call( ttl, type ) && mw.storage.get( key( type ) ) !== null ) {
 				var now = Date.now();
 				mw.storage.set( key( type + 'EndTime' ), now + ttl[ type ] );
 			}
@@ -499,7 +499,7 @@
 				mw.storage.remove( queueKey );
 				queue = JSON.parse( jsonQueue );
 				for ( url in queue ) {
-					if ( queue.hasOwnProperty( url ) ) {
+					if ( Object.prototype.hasOwnProperty.call( queue, url ) ) {
 						self.sendBeacon( url );
 					}
 				}
@@ -512,7 +512,7 @@
 			// IE8 can't do Object.keys( x ).length, so
 			// we get this monstrosity
 			for ( key in localQueue ) {
-				if ( localQueue.hasOwnProperty( key ) ) {
+				if ( Object.prototype.hasOwnProperty.call( localQueue, key ) ) {
 					queueIsEmpty = false;
 					break;
 				}
