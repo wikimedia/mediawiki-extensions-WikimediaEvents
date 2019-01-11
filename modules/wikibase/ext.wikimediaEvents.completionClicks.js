@@ -21,7 +21,7 @@
  *     ],
  * ];
  */
-/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-underscore-dangle, jquery/no-global-selector */
 ( function () {
 	'use strict';
 	var pageToken,

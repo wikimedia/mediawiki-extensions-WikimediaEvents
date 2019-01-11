@@ -4,9 +4,6 @@
 		"wikimedia/client",
 		"wikimedia/jquery"
 	],
-	"env": {
-		"browser": true
-	},
 	"globals": {
 		"mw": false,
 		"OO": false

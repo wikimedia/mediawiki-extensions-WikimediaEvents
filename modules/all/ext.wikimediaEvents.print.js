@@ -57,6 +57,7 @@
 	 */
 	function setupClickLogging() {
 		var EVENT_NAME = 'clickPrintableVersion',
+			// eslint-disable-next-line jquery/no-global-selector
 			$link = $( 'a', '#t-print' );
 
 		function log() {
