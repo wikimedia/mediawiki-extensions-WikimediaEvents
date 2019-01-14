@@ -441,18 +441,22 @@ class PageViews extends ContextSource {
 	}
 
 	/**
+	 * Check if the user is visiting the wiki's configured help desk.
+	 *
+	 * Note that, on kowiki, the help desk title is configured as a template that expands to a
+	 * monthly archive format, e.g. "Help_Desk/January_2019". This method returns true
+	 * if the user is visiting "Help_Desk/January_2019" and also when the user visits "Help_Desk".
+	 *
 	 * @return bool
-	 * @throws \ConfigException
 	 */
 	private function isHelpDeskVisit() {
-		// TODO: This needs to be revised to account for the fact that the help desk title
-		// is configured to be the subpage of the main help desk on kowiki.
 		$helpDeskTitle = HelpPanel::getHelpDeskTitle( $this->getConfig() );
-		// Check both original title and relevant title.
 		return $this->originalTitle->equals( $helpDeskTitle ) ||
-			   $this->getTitle()->equals( $helpDeskTitle ) ||
-			   $this->originalTitle->isSubpageOf( $helpDeskTitle ) ||
-			   $this->getTitle()->isSubpageOf( $helpDeskTitle );
+			$this->getTitle()->equals( $helpDeskTitle ) ||
+			$this->originalTitle->isSubpageOf( $helpDeskTitle ) ||
+			$this->getTitle()->isSubpageOf( $helpDeskTitle ) ||
+			$helpDeskTitle->isSubpageOf( $this->originalTitle ) ||
+			$helpDeskTitle->isSubpageOf( $this->getTitle() );
 	}
 
 	/**

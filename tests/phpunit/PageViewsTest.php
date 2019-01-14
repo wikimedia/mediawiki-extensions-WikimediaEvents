@@ -576,6 +576,23 @@ class PageViewsTest extends MediaWikiTestCase {
 				$pageViews->getAccountAgeLimit()
 			);
 
+			// Page view matches parent page of help desk, and panel is enabled.
+			// Expect 14 day limit.
+			$context = self::getDefaultContext();
+			$context->setTitle( Title::newFromText( 'Help_Desk' ) );
+			$context->setConfig( new MultiConfig( [
+				new HashConfig( [
+					'GEHelpPanelHelpDeskTitle' => 'Help_Desk/{{SITENAME}}',
+					'GEHelpPanelEnabled' => true
+				] ),
+				$context->getConfig()
+			] ) );
+			$pageViews = new PageViews( $context );
+			$this->assertEquals(
+				PageViews::HELP_DESK_DAY_LIMIT_IN_SECONDS,
+				$pageViews->getAccountAgeLimit()
+			);
+
 			// Page visit is not to help desk. Expect 24 hour limit.
 			$context = self::getDefaultContext();
 			$context->setConfig( new MultiConfig( [
