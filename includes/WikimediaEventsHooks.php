@@ -12,6 +12,20 @@ use WikimediaEvents\PageViews;
  */
 class WikimediaEventsHooks {
 
+	/* @var int UNIX timestamp representing the start of the PHP7 editor productivity study. */
+	const PHP7_START = 1548028800;  // Mon, 21 Jan 2019 00:00:00 UTC
+
+	/**
+	 * Check if a user is in the PHP7 study
+	 *
+	 * @param User $user
+	 * @return bool
+	 */
+	public static function isUserInPHP7Study( User $user ) {
+		$ts = $user->getRegistration();
+		return ( $ts > 0 ) && ( wfTimestampOrNull( TS_UNIX, $ts ) >= self::PHP7_START );
+	}
+
 	/**
 	 * @param OutputPage &$out
 	 * @param Skin &$skin
@@ -32,6 +46,27 @@ class WikimediaEventsHooks {
 		if ( defined( 'WB_VERSION' ) ) {
 			// If we are in Wikibase Repo, load Wikibase module
 			$out->addModules( 'ext.wikimediaEvents.wikibase' );
+		}
+
+		$user = $out->getUser();
+		if ( $user->isAnon() ) {
+			return;
+		}
+
+		$req = $out->getRequest();
+		$currentCookieValue = $req->getCookie( 'php7', '' );
+		if (
+			( self::isUserInPHP7Study( $user ) && $user->getId() % 2 === 0 ) ||
+			ExtensionRegistry::getInstance()->isLoaded( 'BetaFeatures' ) &&
+			BetaFeatures::isFeatureEnabled( $user, 'php7' )
+		) {
+			if ( $currentCookieValue !== 'true' ) {
+				// Set the cookie.
+				$req->response()->setCookie( 'php7', 'true', null, [ 'prefix' => '' ] );
+			}
+		} elseif ( $currentCookieValue !== null ) {
+			// Clear the cookie.
+			$req->response()->setCookie( 'php7', '', - 86400, [ 'prefix' => '' ] );
 		}
 	}
 
@@ -382,6 +417,7 @@ class WikimediaEventsHooks {
 	 */
 	public static function onListDefinedTags( &$tags ) {
 		$tags[] = 'HHVM';
+		$tags[] = 'php7';
 		if ( wfWikiID() === 'commonswiki' ) {
 			$tags[] = 'cross-wiki-upload';
 			// For A/B test
@@ -675,4 +711,38 @@ class WikimediaEventsHooks {
 		}
 	}
 
+	/**
+	 * Tag changes made via PHP7
+	 *
+	 * @param RecentChange $rc
+	 */
+	public static function onRecentChangeSavePHP7( RecentChange $rc ) {
+		if ( PHP_VERSION_ID > 70000 && !wfIsHHVM() ) {
+			$rc->addTags( 'php7' );
+		}
+	}
+
+	/**
+	 * Register PHP7 as a toggleable beta feature.
+	 *
+	 * @param User $user
+	 * @param array &$prefs
+	 */
+	public static function onGetBetaFeaturePreferences( User $user, array &$prefs ) {
+		if ( !self::isUserInPHP7Study( $user ) ) {
+			$iconpath = MediaWikiServices::getInstance()->getMainConfig()->get( 'ExtensionAssetsPath' )
+				. '/WikimediaEvents/resources';
+
+			$prefs['php7'] = [
+				'label-message'   => 'php7-label',
+				'desc-message'    => 'php7-desc',
+				'screenshot'      => [
+					'ltr' => "$iconpath/betafeatures-php7-ltr.svg",
+					'rtl' => "$iconpath/betafeatures-php7-rtl.svg",
+				],
+				'info-link'       => '//www.mediawiki.org/wiki/Special:MyLanguage/Beta_Features/PHP7',
+				'discussion-link' => '//www.mediawiki.org/wiki/Talk:Beta_Features/PHP7',
+			];
+		}
+	}
 }

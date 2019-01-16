@@ -63,7 +63,8 @@
 		],
 		"RecentChange_save": [
 			"WikimediaEventsHooks::onRecentChangeSaveCrossWikiUpload",
-			"WikimediaEventsHooks::onRecentChangeSaveEditCampaign"
+			"WikimediaEventsHooks::onRecentChangeSaveEditCampaign",
+			"WikimediaEventsHooks::onRecentChangeSavePHP7"
 		],
 		"ResourceLoaderRegisterModules": [
 			"WikimediaEventsHooks::onResourceLoaderRegisterModules"
@@ -79,6 +80,9 @@
 		],
 		"MakeGlobalVariablesScript": [
 			"WikimediaEventsHooks::onMakeGlobalVariablesScript"
+		],
+		"GetBetaFeaturePreferences": [
+			"WikimediaEventsHooks::onGetBetaFeaturePreferences"
 		]
 	},
 	"MessagesDirs": {
