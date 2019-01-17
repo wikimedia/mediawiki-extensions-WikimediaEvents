@@ -57,8 +57,8 @@ class WikimediaEventsHooks {
 		$currentCookieValue = $req->getCookie( 'php7', '' );
 		if (
 			( self::isUserInPHP7Study( $user ) && $user->getId() % 2 === 0 ) ||
-			ExtensionRegistry::getInstance()->isLoaded( 'BetaFeatures' ) &&
-			BetaFeatures::isFeatureEnabled( $user, 'php7' )
+			( ExtensionRegistry::getInstance()->isLoaded( 'BetaFeatures' ) &&
+			BetaFeatures::isFeatureEnabled( $user, 'php7' ) )
 		) {
 			if ( $currentCookieValue !== 'true' ) {
 				// Set the cookie.
