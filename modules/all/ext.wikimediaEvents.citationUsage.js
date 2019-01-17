@@ -199,8 +199,7 @@
 		data.ext_position = getExtLinkPosition( $link.prop( 'href' ) );
 
 		data.freely_accessible = $link
-			.next( 'img[alt="Freely accessible"]' )
-			.length === 1;
+			.parent().hasClass( 'cs1-lock-free' );
 
 		if ( $linkLi.length ) {
 			data.footnote_number = $linkLi.index() + 1;
