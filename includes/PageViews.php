@@ -200,7 +200,7 @@ class PageViews extends ContextSource {
 			self::EVENT_PERMISSION_ERRORS => $this->getPermissionErrors(),
 			self::EVENT_HTTP_RESPONSE_CODE => http_response_code(),
 			self::EVENT_IS_MOBILE => class_exists( 'MobileContext' )
-				  && MobileContext::singleton()->shouldDisplayMobileView(),
+				&& MobileContext::singleton()->shouldDisplayMobileView(),
 			self::EVENT_NAMESPACE => $this->getTitle()->getNamespace(),
 			self::EVENT_PATH => $parts['path'],
 			self::EVENT_QUERY => $parts['query'] ?? '',
@@ -256,6 +256,7 @@ class PageViews extends ContextSource {
 				// namespace, so return early.
 				return;
 			}
+
 			// Check if request title matches the context title.
 			if ( $titleFromRequest instanceof Title
 				 && !$titleFromRequest->equals( $this->getTitle() )
@@ -279,20 +280,23 @@ class PageViews extends ContextSource {
 				);
 				$this->setEvent( $eventToModify );
 				return;
-			} else {
-				// None of the checks above passed, and we're not in a sensitive namespace, so
-				// return.
-				return;
 			}
+
+			// None of the checks above passed, and we're not in a sensitive namespace, so
+			// return.
+			return;
 		}
+
 		// If Main_Page, don't obfuscate any details.
 		if ( $this->getTitle()->isMainPage() ) {
 			return;
 		}
+
 		// Otherwise, scrub sensitive info.
 		if ( (int)$eventToModify[self::EVENT_PAGE_ID] !== 0 ) {
 			$eventToModify[self::EVENT_PAGE_ID] = $this->hash( $eventToModify[self::EVENT_PAGE_ID] );
 		}
+
 		// Replace instances of title in the path.
 		$eventToModify[self::EVENT_PATH] = str_replace(
 			[
@@ -404,12 +408,9 @@ class PageViews extends ContextSource {
 	 */
 	public function userIsInCohort() {
 		$user = $this->getUser();
-		if ( $user->isAnon() ) {
-			return false;
-		}
 
 		// If registration property isn't set, assume it's an older user without this property.
-		if ( $user->getRegistration() === null ) {
+		if ( $user->isAnon() || $user->getRegistration() === null ) {
 			return false;
 		}
 
@@ -423,7 +424,7 @@ class PageViews extends ContextSource {
 		if ( class_exists( 'CentralAuthUser' ) ) {
 			$globalUser = CentralAuthUser::getInstance( $user );
 			$homeWiki = $globalUser->getHomeWiki();
-			return $homeWiki === wfWikiId() || $homeWiki === null;
+			return $homeWiki === wfWikiID() || $homeWiki === null;
 		}
 		return true;
 	}
@@ -435,9 +436,9 @@ class PageViews extends ContextSource {
 	private function isHelpPanelAndHelpDeskConfigured() {
 		$config = $this->getConfig();
 		return ExtensionRegistry::getInstance()->isLoaded( 'GrowthExperiments' ) &&
-			   $config->get( 'GEHelpPanelEnabled' ) &&
-			   $config->get( 'GEHelpPanelHelpDeskTitle' ) &&
-			   HelpPanel::getHelpDeskTitle( $config )->isValid();
+			$config->get( 'GEHelpPanelEnabled' ) &&
+			$config->get( 'GEHelpPanelHelpDeskTitle' ) &&
+			HelpPanel::getHelpDeskTitle( $config )->isValid();
 	}
 
 	/**
