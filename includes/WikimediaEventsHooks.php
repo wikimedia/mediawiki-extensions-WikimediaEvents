@@ -144,7 +144,9 @@ class WikimediaEventsHooks {
 				$headerItems['page_id'] = $pageId;
 			}
 			if ( $title->isSpecialPage() ) {
-				list( $name, /* $subpage */ ) = SpecialPageFactory::resolveAlias( $title->getDBkey() );
+				list( $name, /* $subpage */ ) = MediaWikiServices::getInstance()->getSpecialPageFactory()
+					->resolveAlias( $title->getDBkey() );
+
 				if ( $name !== null ) {
 					$headerItems['special'] = $name;
 				}
@@ -270,6 +272,7 @@ class WikimediaEventsHooks {
 			$revWhere = ActorMigration::newMigration()->getWhere( $db, 'rev_user', $user );
 			$since = $db->addQuotes( $db->timestamp( date( 'Ym' ) . '00000000' ) );
 			$numMainspaceEditsThisMonth = 0;
+
 			foreach ( $revWhere['orconds'] as $key => $cond ) {
 				$tsField = $key === 'actor' ? 'revactor_timestamp' : 'rev_timestamp';
 				$numMainspaceEditsThisMonth += $db->selectRowCount(
@@ -319,6 +322,7 @@ class WikimediaEventsHooks {
 		}
 		return false;
 	}
+
 	/**
 	 * Handler for UserSaveOptions hook.
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/UserSaveOptions
@@ -485,16 +489,14 @@ class WikimediaEventsHooks {
 	 * @return bool
 	 */
 	public static function onRecentChangeSaveCrossWikiUpload( RecentChange $recentChange ) {
-		if ( !defined( 'MW_API' ) ) {
+		if ( !defined( 'MW_API' ) || wfWikiID() !== 'commonswiki' ) {
 			return true;
 		}
-		if ( wfWikiID() !== 'commonswiki' ) {
-			return true;
-		}
-		if ( !(
-			$recentChange->getAttribute( 'rc_log_type' ) === 'upload' &&
-			$recentChange->getAttribute( 'rc_log_action' ) === 'upload'
-		) ) {
+
+		if (
+			$recentChange->getAttribute( 'rc_log_type' ) !== 'upload' ||
+			$recentChange->getAttribute( 'rc_log_action' ) !== 'upload'
+		) {
 			return true;
 		}
 		$request = RequestContext::getMain()->getRequest();
@@ -563,7 +565,7 @@ class WikimediaEventsHooks {
 		DeferredUpdates::addCallableUpdate( function () {
 			$context = RequestContext::getMain();
 			$timing = $context->getTiming();
-			if ( class_exists( 'MobileContext' )
+			if ( ExtensionRegistry::getInstance()->isLoaded( 'MobileFrontend' )
 				&& MobileContext::singleton()->shouldDisplayMobileView()
 			) {
 				$platform = 'mobile';
@@ -690,7 +692,7 @@ class WikimediaEventsHooks {
 		 * If an anon user clicks on the banner and doesn't yet have a session cookie then
 		 * add a session cookie and count the click.
 		 */
-		if ( $user->isAnon() && $hasCampaignGetValue && !$hasCampaignCookie ) {
+		if ( $hasCampaignGetValue && !$hasCampaignCookie && $user->isAnon() ) {
 			$request->response()->setCookie( $cookieName, $campaign, null );
 			$stats->increment( "wmde.campaign.$campaign.banner.click" );
 			wfDebugLog( 'WMDE', "$campaign - 1 - Banner click by anon user without cookie" );
@@ -701,10 +703,10 @@ class WikimediaEventsHooks {
 		 * value set then inject it into the WebRequest object.
 		 */
 		if (
-			$user->isAnon() &&
 			$hasCampaignCookie &&
-			$title->isSpecial( 'CreateAccount' ) &&
-			!$hasCampaignGetValue
+			!$hasCampaignGetValue &&
+			$user->isAnon() &&
+			$title->isSpecial( 'CreateAccount' )
 		) {
 			$request->setVal( 'campaign', $campaign );
 			wfDebugLog( 'WMDE', "$campaign - 2 - Inject campaign value on CreateAccount" );

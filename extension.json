@@ -1,6 +1,6 @@
 {
 	"name": "WikimediaEvents",
-	"version": "1.1.1",
+	"version": "1.2.0",
 	"author": [
 		"Matthew Flaschen",
 		"Ori Livneh",
@@ -9,6 +9,9 @@
 	"url": "https://www.mediawiki.org/wiki/Extension:WikimediaEvents",
 	"descriptionmsg": "wikimediaevents-desc",
 	"license-name": "GPL-2.0-or-later",
+	"requires": {
+		"MediaWiki": ">= 1.32.0"
+	},
 	"AutoloadClasses": {
 		"WikimediaEventsHooks": "includes/WikimediaEventsHooks.php",
 		"WikimediaEvents\\PageViews": "includes/PageViews.php",

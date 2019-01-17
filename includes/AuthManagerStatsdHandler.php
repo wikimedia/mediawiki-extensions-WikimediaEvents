@@ -57,7 +57,7 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 		$status = $this->getField( 'status', $record['context'] );
 		$successful = $this->getField( 'successful', $record['context'] );
 		$error = null;
-		if ( $status instanceof Status || $status instanceof StatusValue ) {
+		if ( $status instanceof StatusValue ) {
 			$status = Status::wrap( $status );
 			$successful = $status->isGood();
 			if ( !$successful ) {
@@ -75,7 +75,7 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 		// sanity check in case this was invoked from some non-metrics-related
 		// code by accident
 		if (
-			$record['channel'] !== 'authmanager' && $record['channel'] !== 'authevents'
+			( $record['channel'] !== 'authmanager' && $record['channel'] !== 'authevents' )
 			|| !$event || !is_string( $event )
 			|| ( $type && !is_string( $type ) )
 			|| ( $error && !is_string( $error ) )
