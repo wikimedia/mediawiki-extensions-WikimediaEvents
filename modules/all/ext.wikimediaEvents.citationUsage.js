@@ -127,13 +127,18 @@
 	 * @return {string|undefined}
 	 */
 	function getSectionId( $link ) {
-		var $heading = $link.parents()
-			.prev( 'h2, h3, h4, h5, h6' )
-			.find( '.mw-headline' );
+		var $headings = $link
+				.parents()
+				.prevAll( 'h2:first, h3:first, h4:first, h5:first, h6:first' ),
+			$headline;
 
-		if ( $heading.length ) {
-			return $heading.attr( 'id' );
+		if ( $headings.length ) {
+			$headline = $headings.eq( 0 ).find( '.mw-headline' );
+			if ( $headline.length ) {
+				return $headline.attr( 'id' );
+			}
 		}
+
 		return undefined;
 	}
 
