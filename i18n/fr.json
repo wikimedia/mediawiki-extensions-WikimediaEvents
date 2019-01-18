@@ -24,5 +24,7 @@
 	"wikimediaevents-humanrel-yes": "Oui",
 	"wikimediaevents-humanrel-no": "Non",
 	"wikimediaevents-humanrel-unsure": "Je ne sais pas",
-	"wikimediaevents-humanrel-privacy-statement": "Déclaration de confidentialité"
+	"wikimediaevents-humanrel-privacy-statement": "Déclaration de confidentialité",
+	"tag-php7-description": "Révisions faites avec PHP7 activé au lieu de HHVM (sensé améliorer les performances, dédié au débogage et à l'analyse)",
+	"php7-desc": "Essayez d'utiliser PHP7, sensé améliorer la navigation générale et les performances des modifications."
 }

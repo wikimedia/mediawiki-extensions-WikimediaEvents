@@ -5,5 +5,6 @@
 			"BadDog"
 		]
 	},
-	"wikimediaevents-humanrel-unsure": "Не знам"
+	"wikimediaevents-humanrel-unsure": "Не знам",
+	"tag-php7-description": "Измене направљене помоћу PHP-а 7 уместо HHVM-а (очекује се побољшање перформанси, означено за отклањање грешака/анализу)"
 }
