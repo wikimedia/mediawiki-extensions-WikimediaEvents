@@ -58,19 +58,19 @@ class WikimediaEventsHooks {
 		}
 
 		$req = $out->getRequest();
-		$currentCookieValue = $req->getCookie( 'php7', '' );
+		$currentCookieValue = $req->getCookie( 'PHP_ENGINE', '' );
 		if (
 			( self::isUserInPHP7Study( $user ) && $user->getId() % 2 === 0 ) ||
 			( ExtensionRegistry::getInstance()->isLoaded( 'BetaFeatures' ) &&
 			BetaFeatures::isFeatureEnabled( $user, 'php7' ) )
 		) {
-			if ( $currentCookieValue !== 'true' ) {
+			if ( $currentCookieValue !== 'php7' ) {
 				// Set the cookie.
-				$req->response()->setCookie( 'php7', 'true', null, [ 'prefix' => '' ] );
+				$req->response()->setCookie( 'PHP_ENGINE', 'php7', null, [ 'prefix' => '' ] );
 			}
 		} elseif ( $currentCookieValue !== null ) {
 			// Clear the cookie.
-			$req->response()->setCookie( 'php7', '', - 86400, [ 'prefix' => '' ] );
+			$req->response()->setCookie( 'PHP_ENGINE', '', - 86400, [ 'prefix' => '' ] );
 		}
 	}
 
