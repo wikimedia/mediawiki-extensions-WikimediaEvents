@@ -12,8 +12,12 @@ use WikimediaEvents\PageViews;
  */
 class WikimediaEventsHooks {
 
-	/* @var int UNIX timestamp representing the start of the PHP7 editor productivity study. */
-	const PHP7_START = 1548028800;  // Mon, 21 Jan 2019 00:00:00 UTC
+	/*
+	 * @var int UNIX timestamp representing the start of the PHP7 editor productivity study. Half of
+	 *  all new accounts registered after this timestamp will be given PHP7 (rather than HHVM),
+	 *  regardless of their opt-in status with the Beta Feature.
+	 */
+	const PHP7_START = 1848028800;  // A time that's really far away so we don't trigger it early
 
 	/**
 	 * Check if a user is in the PHP7 study
