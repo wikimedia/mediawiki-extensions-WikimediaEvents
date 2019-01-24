@@ -12,8 +12,6 @@
 		PL_POPULATION_SIZE = mw.config.get( 'wgWMECitationUsagePageLoadPopulationSize', 0 ),
 		// number of milliseconds after which a 'fnHover' is logged
 		HOVER_TIMEOUT = 1000,
-		// these identifiers logged when they are followed by an external link
-		IDENTIFIER_LABELS = [ 'DOI', 'PMID', 'PMC' ],
 		SCHEMA_NAME = 'CitationUsage',
 		PL_SCHEMA_NAME = 'CitationUsagePageLoad',
 		REFERRER_MAX_LENGTH = 100,
@@ -175,10 +173,8 @@
 	 */
 	function getExtLinkStats( $link ) {
 		var $refText = $link.closest( '.reference-text' ),
-			$prevLink = $link.prev( 'a' ),
 			$linkLi = $link.parents( '.references li' ),
-			data = getLinkStats( $link ),
-			prevLinkText;
+			data = getLinkStats( $link );
 
 		if ( $refText.length ) {
 			// get count of backlinks
@@ -186,14 +182,6 @@
 				.prevAll( '.mw-cite-backlink' )
 				.find( 'a' )
 				.length;
-		}
-
-		// get citation identifier label
-		if ( $prevLink.length ) {
-			prevLinkText = $prevLink.text().toUpperCase();
-			if ( IDENTIFIER_LABELS.indexOf( prevLinkText ) > -1 ) {
-				data.citation_identifier_label = prevLinkText;
-			}
 		}
 
 		data.ext_position = getExtLinkPosition( $link.prop( 'href' ) );
