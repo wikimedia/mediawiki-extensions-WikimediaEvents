@@ -21,5 +21,7 @@
 	"wikimediaevents-humanrel-yes": "Так",
 	"wikimediaevents-humanrel-no": "Ні",
 	"wikimediaevents-humanrel-unsure": "Не знаю",
-	"wikimediaevents-humanrel-privacy-statement": "Заява про конфіденційність"
+	"wikimediaevents-humanrel-privacy-statement": "Заява про конфіденційність",
+	"tag-php7-description": "Редагуваня, здійснені з увімкненим PHP7 замість HHVM (за задумом має покращити продуктивність, позначено для налагодження/аналізу)",
+	"php7-desc": "Спробуйте покористуватись PHP7, призначеним покращити загальну продуктивність перегляду й редагувань."
 }
