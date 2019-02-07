@@ -19,5 +19,6 @@
 	"wikimediaevents-humanrel-question-d": "Als iemand '$1' zou zoeken, zou men dit artikel wensen te lezen?",
 	"wikimediaevents-humanrel-yes": "Ja",
 	"wikimediaevents-humanrel-no": "Nee",
-	"wikimediaevents-humanrel-unsure": "Ik weet het niet"
+	"wikimediaevents-humanrel-unsure": "Ik weet het niet",
+	"tag-php7-description": "Versies gemaakt met de Zend PHP 7 interpreter ingeschakeld in plaats van de HipHop Virtuele Machine (hiervan wordt verwacht dat de prestaties verbeteren, gelabeld voor debuggen/analyse)"
 }
