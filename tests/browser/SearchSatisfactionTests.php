@@ -47,7 +47,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
  * @coversNothing
  */
 class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
-	static private $mwBaseUrl;
+	private static $mwBaseUrl;
 
 	protected $webDriver;
 
