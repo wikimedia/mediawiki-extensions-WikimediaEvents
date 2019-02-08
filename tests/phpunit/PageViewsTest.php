@@ -40,7 +40,8 @@ class PageViewsTest extends MediaWikiTestCase {
 		$pageViews = new PageViews( self::getDefaultContext() );
 		$pageViews->setEvent( $event );
 		$pageViews->hashSensitiveQueryParams();
-		$this->assertArrayEquals( $pageViews->getEvent(), [ PageViews::EVENT_QUERY => $output ] );
+		$this->assertArrayEquals( $pageViews->getEvent(), [ PageViews::EVENT_QUERY => $output ],
+			false, true );
 	}
 
 	/**
@@ -187,7 +188,8 @@ class PageViewsTest extends MediaWikiTestCase {
 		$pageViews = new PageViews( $context );
 		$pageViews->setEvent( $event );
 		$pageViews->redactSensitiveData();
-		$this->assertArrayEquals( $postRedactEvent, $pageViews->getEvent() );
+		$this->assertArrayEquals( $postRedactEvent, $pageViews->getEvent(),
+			false, true );
 	}
 
 	/**
@@ -515,7 +517,8 @@ class PageViewsTest extends MediaWikiTestCase {
 		];
 		$pageViews = new PageViews( $context );
 		$pageViews->log();
-		$this->assertArrayEquals( $expectedEvent, $pageViews->getEvent() );
+		$this->assertArrayEquals( $expectedEvent, $pageViews->getEvent(),
+			false, true );
 	}
 
 	/**
