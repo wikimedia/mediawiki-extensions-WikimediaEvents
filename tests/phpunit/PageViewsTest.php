@@ -513,12 +513,16 @@ class PageViewsTest extends MediaWikiTestCase {
 			PageViews::EVENT_PATH => '/w/index.php',
 			PageViews::EVENT_QUERY => 'search=' . $pageViews->hash( 'Secret' ) .
 			  '&title=Special%3ASearch&go=Go&fulltext=1&token=redacted',
-			PageViews::EVENT_USER_ID => 2
 		];
 		$pageViews = new PageViews( $context );
 		$pageViews->log();
-		$this->assertArrayEquals( $expectedEvent, $pageViews->getEvent(),
-			false, true );
+		$actualEvent = $pageViews->getEvent();
+		// The user ID is often incremented by previous tests that don't
+		// correctly set $this->tablesUsed, so just check that it is an
+		// integer, don't worry about the exact value.
+		$this->assertTrue( is_int( $actualEvent[PageViews::EVENT_USER_ID] ) );
+		unset( $actualEvent[PageViews::EVENT_USER_ID] );
+		$this->assertArrayEquals( $expectedEvent, $actualEvent, false, true );
 	}
 
 	/**
