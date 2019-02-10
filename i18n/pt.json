@@ -18,5 +18,7 @@
 	"wikimediaevents-humanrel-yes": "Sim",
 	"wikimediaevents-humanrel-no": "Não",
 	"wikimediaevents-humanrel-unsure": "Não sei",
-	"wikimediaevents-humanrel-privacy-statement": "Declaração de Privacidade"
+	"wikimediaevents-humanrel-privacy-statement": "Declaração de Privacidade",
+	"tag-php7-description": "Revisões feitas com o PHP7 ativado em vez do HHVM (esperado que melhorassem desempenho, etiquetadas para despiste de defeitos/análise)",
+	"php7-desc": "Tente usar o PHP7, que se pretende que melhore o desempenho geral na navegação e edição."
 }
