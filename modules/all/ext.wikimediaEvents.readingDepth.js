@@ -18,7 +18,7 @@
 		msPaused = 0,
 		perf = window.performance,
 		SCHEMA_NAME = 'ReadingDepth',
-		dependencies = [ 'schema.' + SCHEMA_NAME ],
+		dependencies = [],
 		DEFAULT_SAMPLE_GROUP = 'default_sample';
 
 	/**
