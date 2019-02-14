@@ -15,7 +15,7 @@
 	"wikimediaevents-desc": "Ведёт журнал определённых Викимедиа событий с использованием EventLogging",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Загрузка через другой вики-проект («кросс-вики»)]]",
 	"tag-cross-wiki-upload-description": "Файлы, загруженные из текстового и визуального редакторов в других вики",
-	"tag-HHVM-description": "Правки, внесёные с включенной HipHop Virtual Machine вместо Zend PHP-интерпретатора (в результате ожидается повышение производительности; отмечено для отладки/анализа)",
+	"tag-HHVM-description": "Правки, внесёные с включенной HipHop Virtual Machine вместо интерпретатора Zend PHP(ожидается повышение производительности, метка нужна для отладки и анализа)",
 	"abusefilter-edit-builder-vars-user-wpzero": "Редактирует ли участник через бесплатного оператора связи с помощью Wikipedia Zero",
 	"wikimediaevents-humanrel-question-a": "Перейдёте ли вы на эту страницу, когда ищете «$1»?",
 	"wikimediaevents-humanrel-question-b": "Если бы вы искали «$1», была бы эта статья хорошим результатом?",
