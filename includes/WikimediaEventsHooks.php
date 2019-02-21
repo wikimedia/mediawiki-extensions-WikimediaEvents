@@ -66,11 +66,21 @@ class WikimediaEventsHooks {
 		) {
 			if ( $currentCookieValue !== 'php7' ) {
 				// Set the cookie.
-				$req->response()->setCookie( 'PHP_ENGINE', 'php7', null, [ 'prefix' => '' ] );
+				$req->response()->setCookie(
+					'PHP_ENGINE',
+					'php7',
+					null,
+					[ 'prefix' => '', 'httpOnly' => false ]
+				);
 			}
 		} elseif ( $currentCookieValue !== null ) {
 			// Clear the cookie.
-			$req->response()->setCookie( 'PHP_ENGINE', '', - 86400, [ 'prefix' => '' ] );
+			$req->response()->setCookie(
+				'PHP_ENGINE',
+				'',
+				- 86400,
+				[ 'prefix' => '', 'httpOnly' => false ]
+			);
 		}
 	}
 
