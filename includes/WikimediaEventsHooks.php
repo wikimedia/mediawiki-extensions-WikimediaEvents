@@ -414,7 +414,7 @@ class WikimediaEventsHooks {
 			$wgWMEPrintEnabled, $wgWMECitationUsagePopulationSize,
 			$wgWMECitationUsagePageLoadPopulationSize,
 			$wgWMESchemaEditAttemptStepSamplingRate,
-			$wgWMEWikidataCompletionSearchClicks;
+			$wgWMEWikidataCompletionSearchClicks, $wgWMEPhp7SamplingRate;
 
 		$vars['wgWMEStatsdBaseUri'] = $wgWMEStatsdBaseUri;
 		$vars['wgWMEReadingDepthSamplingRate'] = $wgWMEReadingDepthSamplingRate;
@@ -425,6 +425,7 @@ class WikimediaEventsHooks {
 		$vars['wgWMECitationUsagePageLoadPopulationSize'] = $wgWMECitationUsagePageLoadPopulationSize;
 		$vars['wgWMESchemaEditAttemptStepSamplingRate'] = $wgWMESchemaEditAttemptStepSamplingRate;
 		$vars['wgWMEWikidataCompletionSearchClicks'] = $wgWMEWikidataCompletionSearchClicks;
+		$vars['wgWMEPhp7SamplingRate'] = $wgWMEPhp7SamplingRate;
 	}
 
 	/**
