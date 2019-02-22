@@ -287,21 +287,17 @@
 
 	$( function () {
 		if ( shouldLog( PL_POPULATION_SIZE ) ) {
-			mw.loader.using(
-				[ 'ext.eventLogging', 'schema.' + PL_SCHEMA_NAME ],
-				function () {
-					mw.requestIdleCallback( logPageLoad );
-				} );
+			mw.loader.using( 'ext.eventLogging', function () {
+				mw.requestIdleCallback( logPageLoad );
+			} );
 		}
 
 		if ( shouldLog( POPULATION_SIZE ) ) {
-			mw.loader.using(
-				[ 'ext.eventLogging', 'schema.' + SCHEMA_NAME ],
-				function () {
-					setupExtLogging();
-					setupUpLogging();
-					setupFnLogging();
-				} );
+			mw.loader.using( 'ext.eventLogging', function () {
+				setupExtLogging();
+				setupUpLogging();
+				setupFnLogging();
+			} );
 		}
 	} );
 }( mw.user, mw.experiments, mw.eventLog ) );
