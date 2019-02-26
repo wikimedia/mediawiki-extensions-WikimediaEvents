@@ -193,7 +193,9 @@ class PageViews extends ContextSource {
 			// The context output title can differ from the above, in the event of
 			// "Permission errors" when a user visits e.g. Special:Block without the relevant
 			// privileges.
-			self::EVENT_PAGE_TITLE => $this->getOutput()->getPageTitle(),
+			// Remove HTML tags from page title so that obfuscation, which searches for instances
+			// of mTextform and mDbkeyform, will replace correctly.
+			self::EVENT_PAGE_TITLE => strip_tags( $this->getOutput()->getPageTitle() ),
 			self::EVENT_PAGE_ID => (string)$this->getTitle()->getArticleID(),
 			self::EVENT_REQUEST_METHOD => $this->getRequest()->getMethod(),
 			self::EVENT_ACTION => $this->action,

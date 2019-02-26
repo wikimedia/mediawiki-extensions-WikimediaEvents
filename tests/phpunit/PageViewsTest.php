@@ -491,18 +491,18 @@ class PageViewsTest extends MediaWikiTestCase {
 			'/w/index.php?search=Secret&title=Special%3ASearch&go=Go&fulltext=1&token=abcdefghijklmnop'
 		);
 		$context->setRequest( $request );
-		$title = Title::newFromText( 'TestTitle', NS_TALK );
+		$title = Title::newFromText( 'TestTitle (Bar)', NS_TALK );
 		$context->setTitle( $title );
 		$output = $context->getOutput();
-		$output->setPageTitle( 'TestTitle' );
+		$output->setPageTitle( '<i>TestTitle</i> (Bar)' );
 		$context->setOutput( $output );
 		$user = static::getTestUser()->getUser();
 		$user->setToken( 'salty' );
 		$context->setUser( $user );
 		$pageViews = new PageViews( $context );
 		$expectedEvent = [
-			PageViews::EVENT_PAGE_TITLE => $pageViews->hash( 'TestTitle' ),
-			PageViews::EVENT_TITLE => $pageViews->hash( 'TestTitle' ),
+			PageViews::EVENT_PAGE_TITLE => $pageViews->hash( 'TestTitle (Bar)' ),
+			PageViews::EVENT_TITLE => $pageViews->hash( 'TestTitle (Bar)' ),
 			PageViews::EVENT_PAGE_ID => "0",
 			PageViews::EVENT_REQUEST_METHOD => 'GET',
 			PageViews::EVENT_ACTION => 'edit',
