@@ -15,6 +15,7 @@ use MobileContext;
 use MWCryptHash;
 use MWCryptRand;
 use RequestContext;
+use Sanitizer;
 use Title;
 use User;
 
@@ -193,9 +194,13 @@ class PageViews extends ContextSource {
 			// The context output title can differ from the above, in the event of
 			// "Permission errors" when a user visits e.g. Special:Block without the relevant
 			// privileges.
-			// Remove HTML tags from page title so that obfuscation, which searches for instances
-			// of mTextform and mDbkeyform, will replace correctly.
-			self::EVENT_PAGE_TITLE => strip_tags( $this->getOutput()->getPageTitle() ),
+			// Remove HTML tags, decode char references & normalize, and convert to lower case
+			// so that obfuscation, which searches for instances of mTextform and mDbkeyform,
+			// will replace correctly.
+			self::EVENT_PAGE_TITLE => strtolower( Sanitizer::decodeCharReferencesAndNormalize(
+				strip_tags(
+					$this->getOutput()->getPageTitle() )
+			) ),
 			self::EVENT_PAGE_ID => (string)$this->getTitle()->getArticleID(),
 			self::EVENT_REQUEST_METHOD => $this->getRequest()->getMethod(),
 			self::EVENT_ACTION => $this->action,
@@ -321,9 +326,9 @@ class PageViews extends ContextSource {
 		$eventToModify[self::EVENT_TITLE] = $this->hash( $eventToModify[self::EVENT_TITLE] );
 		$eventToModify[self::EVENT_PAGE_TITLE] = str_replace(
 			[
-				$this->getTitle()->getDBkey(),
-				$this->getTitle()->getText(),
-				wfUrlencode( $this->getTitle()->getDBkey() )
+				strtolower( $this->getTitle()->getDBkey() ),
+				strtolower( $this->getTitle()->getText() ),
+				strtolower( wfUrlencode( $this->getTitle()->getDBkey() ) )
 			],
 			$this->hash( $this->getTitle()->getText() ),
 			$eventToModify[self::EVENT_PAGE_TITLE]
