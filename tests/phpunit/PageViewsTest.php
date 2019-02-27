@@ -213,7 +213,7 @@ class PageViewsTest extends MediaWikiTestCase {
 				[
 					PageViews::EVENT_PAGE_ID => 1,
 					PageViews::EVENT_TITLE => 'Test',
-					PageViews::EVENT_PAGE_TITLE => 'Test',
+					PageViews::EVENT_PAGE_TITLE => 'test',
 					PageViews::EVENT_PATH => '/wiki/Test',
 					PageViews::EVENT_NAMESPACE => NS_MAIN,
 					PageViews::EVENT_QUERY => 'search=Secret&title=Special%3ASearch&go=Go',
@@ -233,7 +233,7 @@ class PageViewsTest extends MediaWikiTestCase {
 				[
 					PageViews::EVENT_PAGE_ID => 1,
 					PageViews::EVENT_TITLE => 'Test',
-					PageViews::EVENT_PAGE_TITLE => 'Test',
+					PageViews::EVENT_PAGE_TITLE => 'test',
 					PageViews::EVENT_PATH => '/wiki/Test',
 					PageViews::EVENT_NAMESPACE => NS_HELP,
 					PageViews::EVENT_QUERY => 'search=Secret&title=Special%3ASearch&go=Go',
@@ -241,7 +241,7 @@ class PageViewsTest extends MediaWikiTestCase {
 				[
 					PageViews::EVENT_PAGE_ID => 1,
 					PageViews::EVENT_TITLE => 'Test',
-					PageViews::EVENT_PAGE_TITLE => 'Test',
+					PageViews::EVENT_PAGE_TITLE => 'test',
 					PageViews::EVENT_PATH => '/wiki/Test',
 					PageViews::EVENT_NAMESPACE => NS_HELP,
 					PageViews::EVENT_QUERY => 'search=' . $pageViews->hash( 'Secret' ) .
@@ -253,7 +253,7 @@ class PageViewsTest extends MediaWikiTestCase {
 				[
 					PageViews::EVENT_PAGE_ID => 1,
 					PageViews::EVENT_TITLE => 'Admin',
-					PageViews::EVENT_PAGE_TITLE => 'User:Admin',
+					PageViews::EVENT_PAGE_TITLE => 'user:admin',
 					PageViews::EVENT_PATH => '/w/index.php',
 					PageViews::EVENT_QUERY => 'title=User:Admin',
 					PageViews::EVENT_NAMESPACE => NS_USER
@@ -261,7 +261,7 @@ class PageViewsTest extends MediaWikiTestCase {
 				[
 					PageViews::EVENT_PAGE_ID => 1,
 					PageViews::EVENT_TITLE => 'Admin',
-					PageViews::EVENT_PAGE_TITLE => 'User:Admin',
+					PageViews::EVENT_PAGE_TITLE => 'user:admin',
 					PageViews::EVENT_PATH => '/w/index.php',
 					PageViews::EVENT_NAMESPACE => NS_USER,
 					PageViews::EVENT_QUERY => 'title=User:Admin',
@@ -272,7 +272,7 @@ class PageViewsTest extends MediaWikiTestCase {
 				[
 					PageViews::EVENT_PAGE_ID => 1,
 					PageViews::EVENT_TITLE => 'Admin',
-					PageViews::EVENT_PAGE_TITLE => 'User:Admin',
+					PageViews::EVENT_PAGE_TITLE => 'user:admin',
 					PageViews::EVENT_PATH => '/w/index.php',
 					PageViews::EVENT_QUERY => 'title=Test',
 					PageViews::EVENT_NAMESPACE => NS_USER
@@ -280,7 +280,7 @@ class PageViewsTest extends MediaWikiTestCase {
 				[
 					PageViews::EVENT_PAGE_ID => 1,
 					PageViews::EVENT_TITLE => 'Admin',
-					PageViews::EVENT_PAGE_TITLE => 'User:Admin',
+					PageViews::EVENT_PAGE_TITLE => 'user:admin',
 					PageViews::EVENT_PATH => '/w/index.php',
 					PageViews::EVENT_NAMESPACE => NS_USER,
 					PageViews::EVENT_QUERY => 'title=' . $pageViews->hash( 'Test' ),
@@ -350,7 +350,7 @@ class PageViewsTest extends MediaWikiTestCase {
 				[
 					PageViews::EVENT_QUERY => 'title=Foo/Bar_(Baz)&action=edit',
 					PageViews::EVENT_TITLE => 'Foo/Bar (Baz)',
-					PageViews::EVENT_PAGE_TITLE => 'Creating Foo/Bar (Baz)',
+					PageViews::EVENT_PAGE_TITLE => 'creating foo/bar (baz)',
 					PageViews::EVENT_PAGE_ID => 2,
 					PageViews::EVENT_NAMESPACE => 0,
 					PageViews::EVENT_PATH => '/w/index.php',
@@ -359,7 +359,7 @@ class PageViewsTest extends MediaWikiTestCase {
 					PageViews::EVENT_QUERY =>
 						'title=' . $pageViews->hash( 'Foo/Bar_(Baz)' ) . '&action=edit',
 					PageViews::EVENT_TITLE => $pageViews->hash( 'Foo/Bar (Baz)' ),
-					PageViews::EVENT_PAGE_TITLE => 'Creating ' . $pageViews->hash( 'Foo/Bar (Baz)' ),
+					PageViews::EVENT_PAGE_TITLE => 'creating ' . $pageViews->hash( 'Foo/Bar (Baz)' ),
 					PageViews::EVENT_PAGE_ID => $pageViews->hash( 2 ),
 					PageViews::EVENT_NAMESPACE => 0,
 					PageViews::EVENT_PATH => '/w/index.php',
@@ -378,7 +378,7 @@ class PageViewsTest extends MediaWikiTestCase {
 				[
 					PageViews::EVENT_QUERY => 'title=X(y)%3Dz&action=edit',
 					PageViews::EVENT_TITLE => 'X(y)=z',
-					PageViews::EVENT_PAGE_TITLE => 'Creating X(y)=z',
+					PageViews::EVENT_PAGE_TITLE => 'creating x(y)=z',
 					PageViews::EVENT_PAGE_ID => 3,
 					PageViews::EVENT_NAMESPACE => 0,
 					PageViews::EVENT_PATH => '/w/index.php',
@@ -387,7 +387,7 @@ class PageViewsTest extends MediaWikiTestCase {
 					PageViews::EVENT_QUERY =>
 						'title=' . $pageViews->hash( 'X(y)=z' ) . '&action=edit',
 					PageViews::EVENT_TITLE => $pageViews->hash( 'X(y)=z' ),
-					PageViews::EVENT_PAGE_TITLE => 'Creating ' . $pageViews->hash( 'X(y)=z' ),
+					PageViews::EVENT_PAGE_TITLE => 'creating ' . $pageViews->hash( 'X(y)=z' ),
 					PageViews::EVENT_PAGE_ID => $pageViews->hash( 3 ),
 					PageViews::EVENT_NAMESPACE => 0,
 					PageViews::EVENT_PATH => '/w/index.php',
@@ -406,7 +406,7 @@ class PageViewsTest extends MediaWikiTestCase {
 				[
 					PageViews::EVENT_QUERY => 'title=Talk:Foo&action=edit',
 					PageViews::EVENT_TITLE => 'Foo',
-					PageViews::EVENT_PAGE_TITLE => 'Creating Talk:Foo',
+					PageViews::EVENT_PAGE_TITLE => 'creating talk:foo',
 					PageViews::EVENT_PAGE_ID => 4,
 					PageViews::EVENT_NAMESPACE => 1,
 					PageViews::EVENT_PATH => '/w/index.php',
@@ -415,7 +415,7 @@ class PageViewsTest extends MediaWikiTestCase {
 					PageViews::EVENT_QUERY =>
 						'title=Talk:' . $pageViews->hash( 'Foo' ) . '&action=edit',
 					PageViews::EVENT_TITLE => $pageViews->hash( 'Foo' ),
-					PageViews::EVENT_PAGE_TITLE => 'Creating Talk:' . $pageViews->hash( 'Foo' ),
+					PageViews::EVENT_PAGE_TITLE => 'creating talk:' . $pageViews->hash( 'Foo' ),
 					PageViews::EVENT_PAGE_ID => $pageViews->hash( 4 ),
 					PageViews::EVENT_NAMESPACE => 1,
 					PageViews::EVENT_PATH => '/w/index.php',
