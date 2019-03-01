@@ -36,7 +36,6 @@ class PageViews extends ContextSource {
 	 * Constants mapping to the keys in the PageViews schema.
 	 */
 	const EVENT_TITLE = 'title';
-	const EVENT_PAGE_TITLE = 'page_title';
 	const EVENT_PAGE_ID = 'page_id';
 	const EVENT_REQUEST_METHOD = 'request_method';
 	const EVENT_ACTION = 'action';
@@ -149,6 +148,8 @@ class PageViews extends ContextSource {
 			'search' => 'hash',
 			'return' => 'hash',
 			'returnto' => 'hash',
+			'title' => 'redact',
+			'create' => 'redact',
 			'token' => 'redact',
 		];
 	}
@@ -159,8 +160,13 @@ class PageViews extends ContextSource {
 	 * @return string
 	 */
 	public function getPermissionErrors() {
-		// For now, we only care about permission errors on edit attempts.
-		if ( $this->action !== 'edit' ) {
+		// For now, we only care about permission errors on edit attempts unless the output page
+		// title is an exact match for the permissionserrors string.
+		if ( $this->action !== 'edit' &&
+			 // This is intended to match the logic from OutputPage::setPageTitle(), as called
+			 // via ErrorPageError::report()
+			 $this->getOutput()->getPageTitle() !== $this->getOutput()->msg( 'permissionserrors' )->text()
+		) {
 			return '';
 		}
 		$permissionErrors = $this->getTitle()->getUserPermissionsErrors(
@@ -190,10 +196,6 @@ class PageViews extends ContextSource {
 
 		$event = [
 			self::EVENT_TITLE => $this->getTitle()->getText(),
-			// The context output title can differ from the above, in the event of
-			// "Permission errors" when a user visits e.g. Special:Block without the relevant
-			// privileges.
-			self::EVENT_PAGE_TITLE => $this->getOutput()->getPageTitle(),
 			self::EVENT_PAGE_ID => (string)$this->getTitle()->getArticleID(),
 			self::EVENT_REQUEST_METHOD => $this->getRequest()->getMethod(),
 			self::EVENT_ACTION => $this->action,
@@ -218,7 +220,7 @@ class PageViews extends ContextSource {
 			$this->setEvent( $event );
 		}
 
-		return EventLogging::logEvent( 'EditorJourney', 18504997, $this->getEvent() );
+		return EventLogging::logEvent( 'EditorJourney', 18910134, $this->getEvent() );
 	}
 
 	/**
@@ -317,15 +319,6 @@ class PageViews extends ContextSource {
 		);
 
 		$eventToModify[self::EVENT_TITLE] = $this->hash( $eventToModify[self::EVENT_TITLE] );
-		$eventToModify[self::EVENT_PAGE_TITLE] = str_replace(
-			[
-				$this->getTitle()->getDBkey(),
-				$this->getTitle()->getText(),
-				wfUrlencode( $this->getTitle()->getDBkey() )
-			],
-			$this->hash( $this->getTitle()->getText() ),
-			$eventToModify[self::EVENT_PAGE_TITLE]
-		);
 		$this->setEvent( $eventToModify );
 	}
 
