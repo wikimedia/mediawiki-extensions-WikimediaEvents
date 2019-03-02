@@ -206,7 +206,7 @@ class PageViews extends ContextSource {
 			self::EVENT_ACTION => $this->action,
 			self::EVENT_PERMISSION_ERRORS => $this->getPermissionErrors(),
 			self::EVENT_HTTP_RESPONSE_CODE => http_response_code(),
-			self::EVENT_IS_MOBILE => class_exists( MobileContext::class )
+			self::EVENT_IS_MOBILE => ExtensionRegistry::getInstance()->isLoaded( 'MobileFrontend' )
 				&& MobileContext::singleton()->shouldDisplayMobileView(),
 			self::EVENT_NAMESPACE => $this->getTitle()->getNamespace(),
 			self::EVENT_PATH => $parts['path'],

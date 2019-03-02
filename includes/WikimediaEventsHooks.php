@@ -561,7 +561,7 @@ class WikimediaEventsHooks {
 	}
 
 	public static function onResourceLoaderRegisterModules( ResourceLoader $resourceLoader ) {
-		if ( !class_exists( VisualEditorHooks::class ) ) {
+		if ( !ExtensionRegistry::getInstance()->isLoaded( 'VisualEditor' ) ) {
 			return;
 		}
 
