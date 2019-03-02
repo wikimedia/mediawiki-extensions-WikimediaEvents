@@ -206,7 +206,7 @@ class PageViews extends ContextSource {
 			self::EVENT_ACTION => $this->action,
 			self::EVENT_PERMISSION_ERRORS => $this->getPermissionErrors(),
 			self::EVENT_HTTP_RESPONSE_CODE => http_response_code(),
-			self::EVENT_IS_MOBILE => class_exists( 'MobileContext' )
+			self::EVENT_IS_MOBILE => class_exists( MobileContext::class )
 				&& MobileContext::singleton()->shouldDisplayMobileView(),
 			self::EVENT_NAMESPACE => $this->getTitle()->getNamespace(),
 			self::EVENT_PATH => $parts['path'],
@@ -428,7 +428,7 @@ class PageViews extends ContextSource {
 
 		// Exclude autocreated accounts. We can't directly tell if an account
 		// was autocreated, but we can look at its home wiki.
-		if ( class_exists( 'CentralAuthUser' ) ) {
+		if ( class_exists( CentralAuthUser::class ) ) {
 			$globalUser = CentralAuthUser::getInstance( $user );
 			$homeWiki = $globalUser->getHomeWiki();
 			return $homeWiki === wfWikiID() || $homeWiki === null;
