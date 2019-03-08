@@ -267,7 +267,7 @@
 				}
 			}
 
-			// Unique token per page load to know which events occured
+			// Unique token per page load to know which events occurred
 			// within the exact same page.
 			session.set( 'pageViewId', randomToken() );
 		}
