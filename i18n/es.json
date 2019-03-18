@@ -6,7 +6,8 @@
 			"Macofe",
 			"AlvaroMolina",
 			"Lemondoge",
-			"Dgstranz"
+			"Dgstranz",
+			"MarcoAurelio"
 		]
 	},
 	"wikimediaevents-desc": "Registra eventos específicos de Wikimedia mediante EventLogging",
@@ -21,5 +22,7 @@
 	"wikimediaevents-humanrel-yes": "Sí",
 	"wikimediaevents-humanrel-no": "No",
 	"wikimediaevents-humanrel-unsure": "No sé",
-	"wikimediaevents-humanrel-privacy-statement": "Declaración de privacidad"
+	"wikimediaevents-humanrel-privacy-statement": "Declaración de privacidad",
+	"tag-php7-description": "Ediciones realizadas con PHP7 en lugar de HHVM (se espera que PHP7 mejore el rendimiento, se marcan para depuración y análisis)",
+	"php7-desc": "Prueba a usar PHP7, pensado para mejorar el rendimiento en la edición y la navegación en general."
 }
