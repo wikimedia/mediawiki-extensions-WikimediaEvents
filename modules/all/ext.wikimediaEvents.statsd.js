@@ -27,10 +27,15 @@
 			} :
 			function ( url ) {
 				( new Image() ).src = url;
-			};
+			},
+		isDntEnabled =
+			// Support: Firefox < 32 (yes/no)
+			/1|yes/.test( navigator.doNotTrack ) ||
+			// Support: IE 11, Safari 7.1.3+ (window.doNotTrack)
+			window.doNotTrack === '1';
 
 	// Statsv not configured, or DNT enabled
-	if ( !baseUrl || /1|yes/.test( navigator.doNotTrack ) ) {
+	if ( !baseUrl || isDntEnabled ) {
 		// Do nothing
 		return;
 	}
