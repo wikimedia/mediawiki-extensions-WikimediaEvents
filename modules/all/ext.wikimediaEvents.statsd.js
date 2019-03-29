@@ -67,6 +67,26 @@
 		}
 	}
 
+	function unscheduleAndDispatch() {
+		if ( timer ) {
+			clearTimeout( timer );
+		}
+
+		dispatch();
+	}
+
+	// If the user navigates to another page or closes the tab/window/application, then send any
+	// queued events.
+	//
+	// Listen to the pagehide and visibilitychange events as Safari 12 and Mobile Safari 11 don't
+	// appear to support the Page Visbility API.
+	window.addEventListener( 'pagehide', unscheduleAndDispatch );
+	document.addEventListener( 'visibilitychange', function () {
+		if ( document.hidden ) {
+			unscheduleAndDispatch();
+		}
+	} );
+
 	mw.trackSubscribe( 'timing.', function ( topic, time ) {
 		queue.push( {
 			key: topic.substring( 'timing.'.length ),
