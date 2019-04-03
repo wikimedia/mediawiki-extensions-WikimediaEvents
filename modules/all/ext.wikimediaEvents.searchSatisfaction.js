@@ -18,7 +18,7 @@
  * @license GNU GPL v2 or later
  * @author Erik Bernhardson <ebernhardson@wikimedia.org>
  */
-/* eslint-disable max-len, jquery/no-global-selector */
+/* eslint-disable max-len, no-jquery/no-global-selector */
 ( function () {
 	'use strict';
 
@@ -438,7 +438,7 @@
 
 		// if we have send beacon or do not track is enabled do nothing
 		// FIXME: Don't use === $.noop, use a null/undefined value instead
-		// eslint-disable-next-line jquery/no-noop
+		// eslint-disable-next-line no-jquery/no-noop
 		if ( navigator.sendBeacon || mw.eventLog.sendBeacon === $.noop ) {
 			return mw.eventLog;
 		}

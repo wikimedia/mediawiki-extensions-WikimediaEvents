@@ -1,5 +1,5 @@
 /* eslint camelcase: ["error", {properties: "never"}] */
-/* eslint-disable jquery/no-global-selector */
+/* eslint-disable no-jquery/no-global-selector */
 /*!
  * Track citation usage events for anonymous users
  * @see https://phabricator.wikimedia.org/T191086

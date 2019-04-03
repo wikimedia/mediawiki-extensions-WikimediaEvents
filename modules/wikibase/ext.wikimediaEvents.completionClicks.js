@@ -21,7 +21,7 @@
  *     ],
  * ];
  */
-/* eslint-disable no-underscore-dangle, jquery/no-global-selector */
+/* eslint-disable no-underscore-dangle, no-jquery/no-global-selector */
 ( function () {
 	'use strict';
 	var pageToken,
@@ -113,7 +113,7 @@
 			suggestions = searchData._cache.suggestions,
 			clickIndex = null,
 			clickPage = null,
-			// eslint-disable-next-line jquery/no-map-util
+			// eslint-disable-next-line no-jquery/no-map-util
 			resultIds = $.map( suggestions, function ( item ) {
 				return item.pageid;
 			} ).join( ',' );
