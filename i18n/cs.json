@@ -22,6 +22,6 @@
 	"wikimediaevents-humanrel-no": "Ne",
 	"wikimediaevents-humanrel-unsure": "Nevím",
 	"wikimediaevents-humanrel-privacy-statement": "Prohlášení o ochraně osobních údajů",
-	"tag-php7-description": "Revize provedené se zapnutým PHP7 namísto HHVM (očekáváno vylepšení výkonu, označeno pro ladění/analýzu)",
-	"php7-desc": "Zkuste používat PHP7, které by mělo všeobecně vylepšit výkon pro prohlížení a editaci."
+	"tag-php7-description": "Revize provedené se zapnutým PHP 7 namísto HHVM (očekáváno vylepšení výkonu, označeno pro ladění/analýzu)",
+	"php7-desc": "Zkuste používat PHP 7, které by mělo všeobecně vylepšit výkon pro prohlížení a editaci."
 }
