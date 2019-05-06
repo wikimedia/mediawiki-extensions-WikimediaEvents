@@ -26,7 +26,5 @@
 	"wikimediaevents-humanrel-unsure": "Indecisive answer to articles relevance to a search query.\n\nSee also: {{msg-mw|wikimediaevents-humanrel-question-a}}, {{msg-mw|wikimediaevents-humanrel-yes}}, {{msg-mw|wikimediaevents-humanrel-no}}",
 	"wikimediaevents-humanrel-privacy-statement": "Text for link to the survey privacy statement.",
 	"tag-php7": "{{notranslate}} Tag on edits made via PHP7",
-	"tag-php7-description": "Description for the PHP7 tag",
-	"php7-label": "{{notranslate}} Name for the PHP7 beta feature",
-	"php7-desc": "Description of the PHP7 beta feature"
+	"tag-php7-description": "Description for the PHP7 tag"
 }
