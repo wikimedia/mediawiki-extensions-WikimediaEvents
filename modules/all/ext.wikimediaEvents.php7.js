@@ -6,7 +6,7 @@
 ( function () {
 	// Auto opt-in for logged-in users should only happen
 	// once the beta is closed.
-	var enableLoggedIn = false;
+	var enableLoggedIn = true;
 
 	if ( !enableLoggedIn && !mw.user.isAnon() ) {
 		return;
