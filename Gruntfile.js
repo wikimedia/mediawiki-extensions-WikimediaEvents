@@ -2,7 +2,6 @@
 module.exports = function ( grunt ) {
 	grunt.loadNpmTasks( 'grunt-banana-checker' );
 	grunt.loadNpmTasks( 'grunt-eslint' );
-	grunt.loadNpmTasks( 'grunt-stylelint' );
 
 	grunt.initConfig( {
 		eslint: {
@@ -22,16 +21,9 @@ module.exports = function ( grunt ) {
 				// T213539
 				requireLowerCase: false
 			}
-		},
-		stylelint: {
-			all: [
-				'**/*.css',
-				'!node_modules/**',
-				'!vendor/**'
-			]
 		}
 	} );
 
-	grunt.registerTask( 'test', [ 'eslint', 'banana' /* , 'stylelint' */ ] );
+	grunt.registerTask( 'test', [ 'eslint', 'banana' ] );
 	grunt.registerTask( 'default', 'test' );
 };
