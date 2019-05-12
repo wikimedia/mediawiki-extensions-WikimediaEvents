@@ -8,5 +8,6 @@
 	},
 	"wikimediaevents-humanrel-yes": "Kyllä",
 	"wikimediaevents-humanrel-no": "Ei",
-	"wikimediaevents-humanrel-unsure": "En tiedä"
+	"wikimediaevents-humanrel-unsure": "En tiedä",
+	"php7-desc": "Kokeile PHP7:n käyttämistä, tarkoituksena parantaa yleistä selailua ja muokkaussuorituskykyä."
 }
