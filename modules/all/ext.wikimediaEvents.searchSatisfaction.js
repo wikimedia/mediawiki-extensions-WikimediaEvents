@@ -547,7 +547,7 @@
 			}
 
 			// ship the event
-			mw.loader.using( [ 'schema.' + schema ] ).then( function () {
+			mw.loader.using( [ 'ext.eventLogging' ] ).then( function () {
 				eventLog = eventLog || extendMwEventLog();
 				eventLog.logEvent( schema, evt );
 			} );
@@ -876,7 +876,7 @@
 			};
 
 			// ship the event
-			mw.loader.using( [ 'schema.SearchSatisfactionErrors' ] ).then( function () {
+			mw.loader.using( [ 'ext.eventLogging' ] ).then( function () {
 				eventLog = eventLog || extendMwEventLog();
 				eventLog.logEvent( 'SearchSatisfactionErrors', evt );
 			} );
