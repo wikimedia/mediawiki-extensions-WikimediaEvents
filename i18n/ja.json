@@ -20,6 +20,5 @@
 	"wikimediaevents-humanrel-no": "いいえ",
 	"wikimediaevents-humanrel-unsure": "わかりません",
 	"wikimediaevents-humanrel-privacy-statement": "個人情報について",
-	"tag-php7-description": "HHVM に代わる PHP7 が有効な状態でなされた編集 (パフォーマンスの改善が期待される機能、デバッグ/分析のためのタグ付け)",
-	"php7-desc": "PHP7 を試用します。これは閲覧/編集全般のパフォーマンスの改善を目的としています。"
+	"tag-php7-description": "HHVM に代わる PHP7 が有効な状態でなされた編集 (パフォーマンスの改善が期待される機能、デバッグ/分析のためのタグ付け)"
 }

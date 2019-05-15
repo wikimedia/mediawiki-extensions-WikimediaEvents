@@ -7,6 +7,5 @@
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Загрузка з іншага вікі-праекта («крос-вікі»)]]",
 	"tag-cross-wiki-upload-description": "Файлы, загружаныя з тэкставага і візуальнага рэдактараў іншых вікі-праектаў",
 	"tag-HHVM-description": "Праўкі, зробленыя з уключанай HipHop Virtual Machine замест Zend PHP-інтэрпрэтатара (у выніку чакаецца павышэнне прадукцыйнасці; пазначана для адладкі/аналізу)",
-	"abusefilter-edit-builder-vars-user-wpzero": "Ці рэдагуе ўдзельнік праз бясплатнага аператара сувязі с дапамогай Wikipedia Zero",
-	"php7-desc": "Паспрабуйце выкарыстаць PHP7 — гэта павінна павялічыць прадукцыйнасць прагляду і рэдагавання."
+	"abusefilter-edit-builder-vars-user-wpzero": "Ці рэдагуе ўдзельнік праз бясплатнага аператара сувязі с дапамогай Wikipedia Zero"
 }

@@ -14,6 +14,5 @@
 	"wikimediaevents-humanrel-no": "Ne",
 	"wikimediaevents-humanrel-unsure": "Ne znam",
 	"wikimediaevents-humanrel-privacy-statement": "Izjava o privatnosti",
-	"tag-php7-description": "Uređivanja s omogućenim PHP7 umjesto HHVM (očekivane poboljšane performanse, označeno kao otklanjanje pogrješaka / analiza)",
-	"php7-desc": "Isprobajte PHP7 namijenjen poboljšanju pregledavanja i uređivanja."
+	"tag-php7-description": "Uređivanja s omogućenim PHP7 umjesto HHVM (očekivane poboljšane performanse, označeno kao otklanjanje pogrješaka / analiza)"
 }

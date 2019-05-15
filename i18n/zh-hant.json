@@ -21,6 +21,5 @@
 	"wikimediaevents-humanrel-no": "否",
 	"wikimediaevents-humanrel-unsure": "不清楚",
 	"wikimediaevents-humanrel-privacy-statement": "隱私聲明",
-	"tag-php7-description": "透過啟用 PHP7 替代 HipHop 虛擬機器做出的修訂（預期可以提高效能，標記用於除錯/分析）",
-	"php7-desc": "嘗試使用 PHP7 來改善一般瀏覽或編輯效能。"
+	"tag-php7-description": "透過啟用 PHP7 替代 HipHop 虛擬機器做出的修訂（預期可以提高效能，標記用於除錯/分析）"
 }

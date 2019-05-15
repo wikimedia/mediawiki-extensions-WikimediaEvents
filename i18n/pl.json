@@ -19,6 +19,5 @@
 	"wikimediaevents-humanrel-no": "Nie",
 	"wikimediaevents-humanrel-unsure": "Nie wiem",
 	"wikimediaevents-humanrel-privacy-statement": "Oświadczenie o prywatności",
-	"tag-php7-description": "Zmiany wykonane przy włączonym PHP7 zamiast HHVM (pozwoli zwiększyć wydajność, oznaczenie w celu debugowania i analizy)",
-	"php7-desc": "Wypróbuj PHP7. Powinno zwiększyć wydajność przeglądania i edycji."
+	"tag-php7-description": "Zmiany wykonane przy włączonym PHP7 zamiast HHVM (pozwoli zwiększyć wydajność, oznaczenie w celu debugowania i analizy)"
 }

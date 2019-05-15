@@ -21,6 +21,5 @@
 	"wikimediaevents-humanrel-no": "لا",
 	"wikimediaevents-humanrel-unsure": "لا أعلم",
 	"wikimediaevents-humanrel-privacy-statement": "بيان الخصوصية",
-	"tag-php7-description": "المراجعات التي تم إجراؤها مع تفعيل PHP7 بدلا من HHVM (متوقع أن تحسن الأداء، موسومة من أجل التصحيح/التحليل)",
-	"php7-desc": "جرب استخدام PHP7; بهدف تحسين أداء التصفح العام وأداء التحرير."
+	"tag-php7-description": "المراجعات التي تم إجراؤها مع تفعيل PHP7 بدلا من HHVM (متوقع أن تحسن الأداء، موسومة من أجل التصحيح/التحليل)"
 }

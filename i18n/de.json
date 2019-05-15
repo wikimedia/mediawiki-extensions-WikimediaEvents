@@ -18,6 +18,5 @@
 	"wikimediaevents-humanrel-no": "Nein",
 	"wikimediaevents-humanrel-unsure": "Ich weiß es nicht",
 	"wikimediaevents-humanrel-privacy-statement": "Datenschutzerklärung",
-	"tag-php7-description": "Mit aktiviertem PHP7 anstelle von HHVM durchgeführte Versionen (erwartet eine Verbesserung der Leistung, markiert zur Fehlerbehebung/Analyse)",
-	"php7-desc": "Teste die Verwendung von PHP7 aus, was die allgemeine Durchstöber- und Bearbeitungsleistung verbessern soll."
+	"tag-php7-description": "Mit aktiviertem PHP7 anstelle von HHVM durchgeführte Versionen (erwartet eine Verbesserung der Leistung, markiert zur Fehlerbehebung/Analyse)"
 }
