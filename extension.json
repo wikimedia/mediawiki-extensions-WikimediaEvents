@@ -166,7 +166,7 @@
 				"minerva": []
 			},
 			"dependencies": [
-				"ext.eventLogging.subscriber",
+				"ext.eventLogging",
 				"mediawiki.user",
 				"mediawiki.Uri",
 				"mediawiki.experiments",
