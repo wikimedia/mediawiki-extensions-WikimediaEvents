@@ -124,24 +124,8 @@
 						// but wikidata uses 1 in 5 sampling rate because of
 						// drastic differences in traffic and search usage.
 						subTests = {
-							dewiki: {
-								test: 35,
-								subTest: null
-							},
 							enwiki: {
-								test: 200,
-								subTest: null
-							},
-							eswiki: {
-								test: 20,
-								subTest: null
-							},
-							frwiki: {
-								test: 15,
-								subTest: null
-							},
-							ruwiki: {
-								test: 25,
+								test: 40,
 								subTest: null
 							}
 						};
