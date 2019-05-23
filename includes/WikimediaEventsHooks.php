@@ -162,7 +162,9 @@ class WikimediaEventsHooks {
 				$accType = 'normal';
 			}
 
-			if ( MWNamespace::isContent( $title->getNamespace() ) ) {
+			if ( in_array( $content->getModel(), [ 'wikibase-item', 'wikibase-property' ] ) ) {
+				$nsType = 'entity';
+			} elseif ( MWNamespace::isContent( $title->getNamespace() ) ) {
 				$nsType = 'content';
 			} elseif ( MWNamespace::isTalk( $title->getNamespace() ) ) {
 				$nsType = 'talk';
@@ -190,15 +192,20 @@ class WikimediaEventsHooks {
 					$timing = RequestContext::getMain()->getTiming();
 					$measure = $timing->measure(
 						'editResponseTime', 'requestStart', 'requestShutdown' );
-					if ( $measure !== false ) {
-						$timeMs = $measure['duration'] * 1000;
-						$stats->timing( "timing.{$edit}ResponseTime", $timeMs );
-						$stats->timing( "timing.{$edit}ResponseTime.page.$nsType", $timeMs );
-						$stats->timing( "timing.{$edit}ResponseTime.user.$accType", $timeMs );
-						$stats->timing( "timing.{$edit}ResponseTime.entry.$entry", $timeMs );
-						if ( $edit === 'edit' ) {
-							$stats->gauge( "edit.newContentSize", $size );
-						}
+					if ( $measure === false ) {
+						return;
+					}
+
+					$timeMs = $measure['duration'] * 1000;
+					$stats->timing( "timing.{$edit}ResponseTime", $timeMs );
+					$stats->timing( "timing.{$edit}ResponseTime.page.$nsType", $timeMs );
+					$stats->timing( "timing.{$edit}ResponseTime.user.$accType", $timeMs );
+					$stats->timing( "timing.{$edit}ResponseTime.entry.$entry", $timeMs );
+					if ( $edit === 'edit' ) {
+						$msPerKb = $timeMs / ( $size / 1e3 );
+						$stats->timing( "timing.editResponseTimePerKB.page.$nsType", $msPerKb );
+						$stats->timing( "timing.editResponseTimePerKB.user.$accType", $msPerKb );
+						$stats->timing( "timing.editResponseTimePerKB.entry.$entry", $msPerKb );
 					}
 				}
 			);
