@@ -202,7 +202,7 @@ class WikimediaEventsHooks {
 					$stats->timing( "timing.{$edit}ResponseTime.user.$accType", $timeMs );
 					$stats->timing( "timing.{$edit}ResponseTime.entry.$entry", $timeMs );
 					if ( $edit === 'edit' ) {
-						$msPerKb = $timeMs / ( $size / 1e3 );
+						$msPerKb = $timeMs / ( max( $size, 1 ) / 1e3 ); // T224686
 						$stats->timing( "timing.editResponseTimePerKB.page.$nsType", $msPerKb );
 						$stats->timing( "timing.editResponseTimePerKB.user.$accType", $msPerKb );
 						$stats->timing( "timing.editResponseTimePerKB.entry.$entry", $msPerKb );
