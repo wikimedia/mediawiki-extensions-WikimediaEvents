@@ -2,10 +2,11 @@
 	"@metadata": {
 		"authors": [
 			"StanProg",
-			"Vlad5250"
+			"Vlad5250",
+			"Ted Masters"
 		]
 	},
 	"wikimediaevents-humanrel-yes": "Да",
 	"wikimediaevents-humanrel-no": "Не",
-	"tag-php7-description": "Преработки, направени с позволен PHP7 вместо с HHVM (се очаква да подобри продуктивността, отбелязано за коригиране гршеки/анализ)"
+	"tag-php7-description": "Версии, извършени с PHP7 вместо с HHVM (очаквано подобрение на действията, маркиране за анализ/отстраняване на грешки)"
 }
