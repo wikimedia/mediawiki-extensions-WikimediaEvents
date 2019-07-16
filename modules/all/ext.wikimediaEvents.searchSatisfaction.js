@@ -116,53 +116,29 @@
 
 			var sessionId = session.get( 'sessionId' ),
 				validBuckets = [],
-				sampleSize = ( function () {
-					var dbName = mw.config.get( 'wgDBname' ),
-						// Provides a place to handle wiki-specific sampling,
-						// overriding the default (1 in 10, see below) rate.
-						// For example: enwiki uses 1 in 2000 sampling rate,
-						// but wikidata uses 1 in 5 sampling rate because of
-						// drastic differences in traffic and search usage.
-						subTests = {
-							enwiki: {
-								test: 40,
-								subTest: null
-							}
-						};
-					if ( subTests[ dbName ] ) {
-						return subTests[ dbName ];
-					} else {
-						// By default, all wikis (except those specified above)
-						// use a 1 in 10 sampling rate when randomly picking a
-						// visitor for this particular event logging.
-						return {
-							test: 10,
-							subTest: null
-						};
-					}
-				}() ),
+				sampleSize = {
+					// % of sessions to sample
+					test: 0.125,
+					// % of sampled sessions to divide between `validBuckets`
+					subTest: {
+						// Provides a place to handle wiki-specific sub-test
+						// handling. Must be a map from wiki dbname to % of
+						// requests that should be split between validBuckets.
+					}[ mw.config.get( 'wgDBname' ) ] || null
+				},
 				/**
-				 * Determines whether the user is part of the population size.
+				 * Return true for `percentAccept` percentage of calls
 				 *
-				 * @param {number} populationSize
+				 * @param {number} percentAccept
 				 * @return {boolean}
 				 * @private
 				 */
-				oneIn = function ( populationSize ) {
+				takeSample = function ( percentAccept ) {
 					var rand = mw.user.generateRandomSessionId(),
 						// take the first 52 bits of the rand value to match js
 						// integer precision
 						parsed = parseInt( rand.slice( 0, 13 ), 16 );
-					if ( populationSize < 1 ) {
-						// Population size < 1 switches to percentage based
-						// sampling. .75 will accept 75% of the population.
-						// This is necessary if you want sampling > 50%. It
-						// does make the name of the function misleading
-						// though.
-						return parsed / Math.pow( 2, 52 ) < populationSize;
-					} else {
-						return parsed % populationSize === 0;
-					}
+					return parsed / Math.pow( 2, 52 ) < percentAccept;
 				},
 				/**
 				 * Choose a single bucket from a list of buckets with even
@@ -189,7 +165,7 @@
 			}
 			// If a sessionId exists the user was previously accepted into the test
 			if ( !sessionId ) {
-				if ( !oneIn( sampleSize.test ) ) {
+				if ( !takeSample( sampleSize.test ) ) {
 					// user was not chosen in a sampling of search results
 					session.set( 'sessionId', 'rejected' );
 					return;
@@ -200,7 +176,7 @@
 					return;
 				}
 
-				if ( sampleSize.subTest !== null && oneIn( sampleSize.subTest ) ) {
+				if ( sampleSize.subTest !== null && takeSample( sampleSize.subTest ) ) {
 					session.set( 'subTest', chooseBucket( validBuckets ) );
 				}
 			}
