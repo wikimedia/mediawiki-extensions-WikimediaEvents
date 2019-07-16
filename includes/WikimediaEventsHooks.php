@@ -366,12 +366,19 @@ class WikimediaEventsHooks {
 		return true;
 	}
 
-	public static function onResourceLoaderGetConfigVars( &$vars ) {
+	/**
+	 * Set static (not request-specific) JS configuration variables
+	 *
+	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/ResourceLoaderGetConfigVars
+	 * @param array &$vars Array of variables to be added into the output of the startup module
+	 * @param string $skinName Current skin name to restrict config variables to a certain skin
+	 */
+	public static function onResourceLoaderGetConfigVars( &$vars, $skinName ) {
 		global $wgWMEStatsdBaseUri, $wgWMEReadingDepthSamplingRate,
 			$wgWMEReadingDepthEnabled, $wgWMEPrintSamplingRate,
 			$wgWMEPrintEnabled, $wgWMECitationUsagePopulationSize,
 			$wgWMECitationUsagePageLoadPopulationSize,
-			$wgWMESchemaEditAttemptStepSamplingRate,
+			$wgWMESchemaEditAttemptStepSamplingRate, $wgWMEMobileWebUIActionsTracking,
 			$wgWMEWikidataCompletionSearchClicks, $wgWMEPhp7SamplingRate;
 
 		$vars['wgWMEStatsdBaseUri'] = $wgWMEStatsdBaseUri;
@@ -384,6 +391,10 @@ class WikimediaEventsHooks {
 		$vars['wgWMESchemaEditAttemptStepSamplingRate'] = $wgWMESchemaEditAttemptStepSamplingRate;
 		$vars['wgWMEWikidataCompletionSearchClicks'] = $wgWMEWikidataCompletionSearchClicks;
 		$vars['wgWMEPhp7SamplingRate'] = $wgWMEPhp7SamplingRate;
+
+		if ( $skinName === 'minerva' ) {
+			$vars['wgWMEMobileWebUIActionsTracking'] = $wgWMEMobileWebUIActionsTracking;
+		}
 	}
 
 	/**

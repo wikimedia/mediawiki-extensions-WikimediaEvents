@@ -104,6 +104,7 @@
 		"ChangesListFilterGrouping": 17008168,
 		"RecentChangesTopLinks": 16732249,
 		"InputDeviceDynamics": 17687647,
+		"MobileWebUIActionsTracking": 19207217,
 		"CitationUsage": 18810892,
 		"CitationUsagePageLoad": 18502712,
 		"WMDEBannerEvents": 18437830,
@@ -147,6 +148,11 @@
 			"start": "July 2018",
 			"details": "https://phabricator.wikimedia.org/T196186",
 			"owner": "Search Platform"
+		},
+		"mobileWebUIActions": {
+			"start": "July 2019",
+			"details": "https://phabricator.wikimedia.org/T220016",
+			"owner": "Readers Web"
 		}
 	},
 	"ResourceModules": {
@@ -163,7 +169,9 @@
 				"default": [
 					"all/ext.wikimediaEvents.searchSatisfaction.js"
 				],
-				"minerva": []
+				"minerva": [
+					"all/ext.wikimediaEvents.mobileWebUIActions.js"
+				]
 			},
 			"dependencies": [
 				"ext.eventLogging",
@@ -214,6 +222,7 @@
 		"WMEPrintEnabled": false,
 		"WMEReadingDepthSamplingRate": 0.005,
 		"WMEReadingDepthEnabled": false,
+		"WMEMobileWebUIActionsTracking": 0,
 		"WMECitationUsagePopulationSize": 0,
 		"WMECitationUsagePageLoadPopulationSize": 0,
 		"WMEStatsdBaseUri": false,
