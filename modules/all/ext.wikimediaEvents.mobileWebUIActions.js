@@ -58,7 +58,7 @@
 			schemaMobileWebUIActionsTracking.log( {
 				action: 'click',
 				name: name,
-				sessionToken: user.sessionId(),
+				token: user.sessionId(),
 				destination: element.getAttribute( 'href' )
 			} );
 		}
