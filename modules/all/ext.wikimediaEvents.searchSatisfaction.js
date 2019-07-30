@@ -91,6 +91,7 @@
 			// persistent state keys that have a lifetime. unlisted
 			// keys are not persisted between page loads.
 			ttl = {
+				sampleMultiplier: 10 * 60 * 1000,
 				sessionId: 10 * 60 * 1000,
 				subTest: 10 * 60 * 1000,
 				token: 24 * 60 * 60 * 1000
@@ -175,6 +176,8 @@
 				if ( !session.set( 'sessionId', randomToken() ) ) {
 					return;
 				}
+
+				session.set( 'sampleMultiplier', 1 / sampleSize.test );
 
 				if ( sampleSize.subTest !== null && takeSample( sampleSize.subTest ) ) {
 					session.set( 'subTest', chooseBucket( validBuckets ) );
@@ -492,6 +495,10 @@
 
 			if ( session.get( 'subTest' ) ) {
 				evt.subTest = session.get( 'subTest' );
+			}
+
+			if ( session.get( 'sampleMultiplier' ) ) {
+				evt.sampleMultiplier = session.get( 'sampleMultiplier' );
 			}
 
 			if ( articleId > 0 ) {
