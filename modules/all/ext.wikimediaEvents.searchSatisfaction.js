@@ -453,10 +453,9 @@
 
 	function genLogEventFn( source, session, sourceExtraData ) {
 		return function ( action, extraData ) {
-			// A/B testing data is verbose and blacklisted from mysql. Our dashboarding though
-			// still sources data from mysql. For that reason send AB test data to different
-			// schema.
-			var schema = session.get( 'subTest' ) ? 'SearchSatisfaction' : 'TestSearchSatisfaction2',
+			// Temporarily log to both schemas while transitioning
+			// TestSearchSatisfaction2 -> SearchSatisfaction
+			var schemas = [ 'SearchSatisfaction', 'TestSearchSatisfaction2' ],
 				scrollTop = $( window ).scrollTop(),
 				evt = {
 					// searchResultPage, visitPage, checkin, click or iwclick
@@ -516,7 +515,9 @@
 			// ship the event
 			mw.loader.using( [ 'ext.eventLogging' ] ).then( function () {
 				eventLog = eventLog || extendMwEventLog();
-				eventLog.logEvent( schema, evt );
+				schemas.forEach( function ( schema ) {
+					eventLog.logEvent( schema, evt );
+				} );
 			} );
 		};
 	}
