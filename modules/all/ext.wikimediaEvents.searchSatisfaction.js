@@ -498,7 +498,7 @@
 			}
 
 			if ( session.get( 'sampleMultiplier' ) ) {
-				evt.sampleMultiplier = session.get( 'sampleMultiplier' );
+				evt.sampleMultiplier = parseFloat( session.get( 'sampleMultiplier' ) );
 			}
 
 			if ( articleId > 0 ) {
