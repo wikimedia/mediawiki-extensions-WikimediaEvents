@@ -83,6 +83,9 @@
 		],
 		"MakeGlobalVariablesScript": [
 			"WikimediaEventsHooks::onMakeGlobalVariablesScript"
+		],
+		"SpecialMuteSubmit": [
+			"WikimediaEventsHooks::onSpecialMuteSubmit"
 		]
 	},
 	"MessagesDirs": {
