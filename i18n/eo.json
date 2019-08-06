@@ -6,5 +6,7 @@
 	},
 	"wikimediaevents-humanrel-yes": "Jes",
 	"wikimediaevents-humanrel-no": "Ne",
-	"wikimediaevents-humanrel-unsure": "Mi ne scias"
+	"wikimediaevents-humanrel-unsure": "Mi ne scias",
+	"wikimediaevents-humanrel-privacy-statement": "Deklaro pri Privateco",
+	"tag-php7-description": "Revizioj faritaj per PHP7 anstataŭ HHVM (oni supozas ke tio plirapidigas funkciojn; markitaj for sencimigo/analizo)"
 }
