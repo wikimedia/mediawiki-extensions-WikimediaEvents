@@ -424,6 +424,7 @@ class WikimediaEventsHooks {
 	 * @return bool
 	 */
 	public static function onChangeTagsListActive( &$tags ) {
+		$tags[] = 'php7';
 		if ( wfWikiID() === 'commonswiki' ) {
 			$tags[] = 'cross-wiki-upload';
 			// For A/B test
