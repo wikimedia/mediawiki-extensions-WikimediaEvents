@@ -710,4 +710,28 @@ class WikimediaEventsHooks {
 			$rc->addTags( 'php7' );
 		}
 	}
+
+	/**
+	 * Log user's selection on SpecialMute form via EventLogging
+	 *
+	 * @param array $data
+	 */
+	public static function onSpecialMuteSubmit( $data ) {
+		$event = [];
+		if ( isset( $data['email-blacklist'] ) ) {
+			$event['emailsBefore'] = $data['email-blacklist']['before'];
+			$event['emailsAfter'] = $data['email-blacklist']['after'];
+		}
+
+		if ( isset( $data['echo-notifications-blacklist'] ) ) {
+			$event['notificationsBefore'] = $data['echo-notifications-blacklist']['before'];
+			$event['notificationsAfter'] = $data['echo-notifications-blacklist']['after'];
+		}
+
+		DeferredUpdates::addCallableUpdate(
+			function () use ( $event ) {
+				EventLogging::logEvent( 'SpecialMuteSubmit', 19265572, $event );
+			}
+		);
+	}
 }
