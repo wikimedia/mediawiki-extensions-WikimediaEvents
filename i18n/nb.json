@@ -16,5 +16,6 @@
 	"wikimediaevents-humanrel-yes": "Ja",
 	"wikimediaevents-humanrel-no": "Nei",
 	"wikimediaevents-humanrel-unsure": "Jeg vet ikke",
-	"wikimediaevents-humanrel-privacy-statement": "Personvernserklæring"
+	"wikimediaevents-humanrel-privacy-statement": "Personvernserklæring",
+	"tag-php7-description": "Revisjoner gjort med PHP7 slått på i stedet for HHVM (forventes å forbedre ytelse, tagget for debugging/analyse)"
 }
