@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Joao Xavier"
+		]
+	},
+	"tag-HHVM-description": "Revizi facita uzante ''HipHop Virtual Machine'' (HHVM), vice l'informatiko-interpretanto por PHP (plubonigo dil efikiveso bezonata)",
+	"tag-php7-description": "Revizi kreita kun PHP7, qua remplasis HHVM (PHP7 posible esos plu efikiva kam HHVM)"
+}
