@@ -75,12 +75,6 @@
 		"RevisionInsertComplete": [
 			"WikimediaEventsHooks::onRevisionInsertComplete"
 		],
-		"AbuseFilter-generateUserVars": [
-			"WikimediaEventsHooks::onAbuseFilterGenerateUserVars"
-		],
-		"AbuseFilter-builder": [
-			"WikimediaEventsHooks::onAbuseFilterBuilder"
-		],
 		"MakeGlobalVariablesScript": [
 			"WikimediaEventsHooks::onMakeGlobalVariablesScript"
 		],
