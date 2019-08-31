@@ -11,7 +11,6 @@
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Envio interwiki]]",
 	"tag-cross-wiki-upload-description": "Arquivos enviados de dentro do wikitexto e de editores visuais em outras wikis",
 	"tag-HHVM-description": "Revisões feitas com o HipHop Virtual Machine habilitado em vez de o intérprete Zend PHP (espera-se melhorar o desempenho, marcado para depuração/análise)",
-	"abusefilter-edit-builder-vars-user-wpzero": "Se um usuário está ou não editando através de uma operadora de classificação zero pelo Wikipédia Zero",
 	"wikimediaevents-humanrel-question-a": "Você clicaria nessa página ao pesquisar por ‘$1’?",
 	"wikimediaevents-humanrel-question-b": "Se estivesse à procura de ‘$1’, este artigo seria um bom resultado?",
 	"wikimediaevents-humanrel-question-c": "Se tivesse pesquisado por ‘$1’, este artigo seria relevante?",

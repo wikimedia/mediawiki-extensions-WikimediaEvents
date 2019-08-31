@@ -12,7 +12,6 @@
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Upload vanaf een andere wiki]]",
 	"tag-cross-wiki-upload-description": "Bestanden geüpload vanuit de visuele tekstverwerker in andere wiki's",
 	"tag-HHVM-description": "Versies gemaakt met de HipHop Virtuele Machine ingeschakeld in plaats van de Zend PHP interpreter (hiervan wordt verwacht dat de prestaties verbeteren, gelabeld voor debuggen/analyse)",
-	"abusefilter-edit-builder-vars-user-wpzero": "Of een gebruiker bewerkt via een nultarief provider via Wikipedia Zero",
 	"wikimediaevents-humanrel-question-a": "Zou u op deze pagina klikken als u op zoek was naar '$1'?",
 	"wikimediaevents-humanrel-question-b": "Als u '$1' zou zoeken, zou dit artikel een goed resultaat zijn?",
 	"wikimediaevents-humanrel-question-c": "Als u '$1' zou zoeken, zou dit artikel relevant zijn?",

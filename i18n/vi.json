@@ -8,7 +8,6 @@
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Tải lên liên wiki]]",
 	"tag-cross-wiki-upload-description": "Các tập tin được tải lên từ bên trong trang sửa đổi văn bản hoặc trình soạn thảo trực quan trên các wiki khác",
 	"tag-HHVM-description": "Các thay đổi được thực hiện qua máy ảo HipHop Virtual Machine (HHVM) thay vì trình thông dịch PHP Zend (dự kiến sẽ cải thiện hiệu suất; được gắn thẻ để gỡ lỗi và phân tích)",
-	"abusefilter-edit-builder-vars-user-wpzero": "Người dùng có sửa đổi qua một nhà cung cấp miễn phí nhờ Wikipedia Miễn phí hay không",
 	"wikimediaevents-humanrel-question-a": "Bạn có muốn đi vào trang này khi tìm kiếm cho “$1” không?",
 	"wikimediaevents-humanrel-question-b": "Nếu bạn tìm kiếm cho “$1”, bạn có cảm thấy bài này là kết quả tốt không?",
 	"wikimediaevents-humanrel-question-c": "Nếu bạn tìm kiếm cho “$1”, bạn có cảm thấy bài này có liên quan không?",

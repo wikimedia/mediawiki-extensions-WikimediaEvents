@@ -12,7 +12,6 @@
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Uppladdning över flera wikis]]",
 	"tag-cross-wiki-upload-description": "Filer som laddades upp från wikitext-redigeraren och den visuella redigeraren på andra wikis",
 	"tag-HHVM-description": "Ändringar gjorda med HipHop Virtual Machine aktiverat istället för Zend PHP-tolken (förväntas förbättra prestandan, taggade för felsökning/analys)",
-	"abusefilter-edit-builder-vars-user-wpzero": "Om en användare redigerar med en gratisleverantör via Wikipedia Zero",
 	"wikimediaevents-humanrel-question-a": "Skulle du vilja klicka på denna sida när du söker efter \"$1\"?",
 	"wikimediaevents-humanrel-question-b": "Om du sökte efter \"$1\", skulle denna artikel vara ett bra resultat?",
 	"wikimediaevents-humanrel-question-c": "Om du sökte efter \"$1\", skulle denna artikel vara relevant?",

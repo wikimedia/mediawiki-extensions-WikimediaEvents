@@ -8,7 +8,6 @@
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Krysswikiopplasting]]",
 	"tag-cross-wiki-upload-description": "Filer som lastes opp fra wikiteksteditoren og den visuelle editoren på andre wikier",
 	"tag-HHVM-description": "Revisjoner gjort med HipHop Virtual Machine slått på i stedet for Zend-PHP-tolkeren (forventes å forbedre ytelse, tagges for debugging og analyse)",
-	"abusefilter-edit-builder-vars-user-wpzero": "Hvorvidt en bruker redigerer fra en gratisleverandør via Wikipedia Zero",
 	"wikimediaevents-humanrel-question-a": "Ville du klikke på denne siden om du søkte på «$1»?",
 	"wikimediaevents-humanrel-question-b": "Om du søkte på «$1», ville denne artikkelen være et bra resultat?",
 	"wikimediaevents-humanrel-question-c": "Om du søkte på «$1», ville denne artikkelen være relevant?",

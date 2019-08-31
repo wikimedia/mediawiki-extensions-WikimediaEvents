@@ -13,7 +13,6 @@
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Міжпроектне завантаження]]",
 	"tag-cross-wiki-upload-description": "Файли, завантажені всередині редактора вікірозмітки та візуального редактора в інших вікі",
 	"tag-HHVM-description": "Версії, створені увімкненою HipHop Virtual Machine замість інтерпретатора Zend PHP (очікується покращення результативності; помічено для налагодження/аналізу)",
-	"abusefilter-edit-builder-vars-user-wpzero": "Чи користувач редагує через оператора мобільного зв'язку з нульовим тарифом через Wikipedia Zero",
 	"wikimediaevents-humanrel-question-a": "Чи клацнули б Ви на цю сторінку, шукаючи «$1»?",
 	"wikimediaevents-humanrel-question-b": "Якби Ви шукали «$1», чи була б ця стаття добрим результатом?",
 	"wikimediaevents-humanrel-question-c": "Якби Ви шукали «$1», чи була б ця стаття релевантною?",

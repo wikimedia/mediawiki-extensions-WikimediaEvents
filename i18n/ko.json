@@ -12,7 +12,6 @@
 	},
 	"wikimediaevents-desc": "EventLogging을 사용하여 위키미디어 관련 이벤트를 기록합니다",
 	"tag-cross-wiki-upload-description": "다른 위키의 위키텍스트와 비주얼에디터의 내부에서 파일을 업로드",
-	"abusefilter-edit-builder-vars-user-wpzero": "사용자가 위키백과 제로를 경유하여 부가가치세가 없는 통신사를 통해 편집하고 있는지의 여부",
 	"wikimediaevents-humanrel-question-a": "'$1'을(를) 검색할 때 이 문서에 클릭하시겠습니까?",
 	"wikimediaevents-humanrel-question-d": "누군가가 '$1'을(를) 검색하면 이 문서를 읽으시겠습니까?",
 	"wikimediaevents-humanrel-yes": "예",

@@ -12,7 +12,6 @@
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|跨 wiki 上傳]]",
 	"tag-cross-wiki-upload-description": "檔案已在其他 wiki 由內建的 wikitext 與視覺化編輯器上傳",
 	"tag-HHVM-description": "透過啟用 HipHop 虛擬機器替代 Zend PHP 直譯器做出的修訂（預期可以提高效能，標記用於除錯/分析）",
-	"abusefilter-edit-builder-vars-user-wpzero": "使用者是否透過維基百科零計劃以零費率提供業者來編輯",
 	"wikimediaevents-humanrel-question-a": "當搜尋「$1」時您會想點擊此頁面嗎？",
 	"wikimediaevents-humanrel-question-b": "若您搜尋了「$1」，此條目是符合的結果嗎？",
 	"wikimediaevents-humanrel-question-c": "若您搜尋了「$1」，此條目有相關嗎？",
