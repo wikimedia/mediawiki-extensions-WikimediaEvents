@@ -424,7 +424,6 @@ class WikimediaEventsHooks {
 	 * @return bool
 	 */
 	public static function onChangeTagsListActive( &$tags ) {
-		$tags[] = 'php7';
 		if ( wfWikiID() === 'commonswiki' ) {
 			$tags[] = 'cross-wiki-upload';
 			// For A/B test
@@ -673,17 +672,6 @@ class WikimediaEventsHooks {
 		) {
 			$request->setVal( 'campaign', $campaign );
 			wfDebugLog( 'WMDE', "$campaign - 2 - Inject campaign value on CreateAccount" );
-		}
-	}
-
-	/**
-	 * Tag changes made via PHP7
-	 *
-	 * @param RecentChange $rc
-	 */
-	public static function onRecentChangeSavePHP7( RecentChange $rc ) {
-		if ( PHP_VERSION_ID > 70000 && !wfIsHHVM() ) {
-			$rc->addTags( 'php7' );
 		}
 	}
 

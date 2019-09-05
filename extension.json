@@ -66,8 +66,7 @@
 		],
 		"RecentChange_save": [
 			"WikimediaEventsHooks::onRecentChangeSaveCrossWikiUpload",
-			"WikimediaEventsHooks::onRecentChangeSaveEditCampaign",
-			"WikimediaEventsHooks::onRecentChangeSavePHP7"
+			"WikimediaEventsHooks::onRecentChangeSaveEditCampaign"
 		],
 		"ResourceLoaderRegisterModules": [
 			"WikimediaEventsHooks::onResourceLoaderRegisterModules"
