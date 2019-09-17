@@ -53,14 +53,20 @@
 	// eslint-disable-next-line no-jquery/no-global-selector
 	$( 'body' ).on( 'click', function ( event ) {
 		var element = event.target,
-			name = element.getAttribute( 'data-event-name' );
+			name = element.getAttribute( 'data-event-name' ),
+			analyticsEvent, destination;
+
 		if ( name ) {
-			schemaMobileWebUIActionsTracking.log( {
+			destination = element.getAttribute( 'href' );
+			analyticsEvent = {
 				action: 'click',
 				name: name,
-				token: user.sessionId(),
-				destination: element.getAttribute( 'href' )
-			} );
+				token: user.sessionId()
+			};
+			if ( destination ) {
+				analyticsEvent.destination = destination;
+			}
+			schemaMobileWebUIActionsTracking.log( analyticsEvent );
 		}
 	} );
 }( mw.config, mw.user, mw.experiments, mw.eventLog.Schema ) );
