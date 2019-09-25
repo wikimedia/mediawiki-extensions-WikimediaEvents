@@ -158,8 +158,7 @@
 				"all/ext.wikimediaEvents.statsd.js",
 				"all/ext.wikimediaEvents.print.js",
 				"all/ext.wikimediaEvents.readingDepth.js",
-				"all/ext.wikimediaEvents.citationUsage.js",
-				"all/ext.wikimediaEvents.php7.js"
+				"all/ext.wikimediaEvents.citationUsage.js"
 			],
 			"skinScripts": {
 				"default": [
@@ -227,8 +226,7 @@
 		},
 		"WMEEditCampaigns": [],
 		"WMESchemaEditAttemptStepSamplingRate": "0.0625",
-		"WMEWikidataCompletionSearchClicks": {},
-		"WMEPhp7SamplingRate": 0
+		"WMEWikidataCompletionSearchClicks": {}
 	},
 	"manifest_version": 1
 }

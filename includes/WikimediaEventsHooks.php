@@ -379,7 +379,7 @@ class WikimediaEventsHooks {
 			$wgWMEPrintEnabled, $wgWMECitationUsagePopulationSize,
 			$wgWMECitationUsagePageLoadPopulationSize,
 			$wgWMESchemaEditAttemptStepSamplingRate, $wgWMEMobileWebUIActionsTracking,
-			$wgWMEWikidataCompletionSearchClicks, $wgWMEPhp7SamplingRate;
+			$wgWMEWikidataCompletionSearchClicks;
 
 		$vars['wgWMEStatsdBaseUri'] = $wgWMEStatsdBaseUri;
 		$vars['wgWMEReadingDepthSamplingRate'] = $wgWMEReadingDepthSamplingRate;
@@ -390,7 +390,6 @@ class WikimediaEventsHooks {
 		$vars['wgWMECitationUsagePageLoadPopulationSize'] = $wgWMECitationUsagePageLoadPopulationSize;
 		$vars['wgWMESchemaEditAttemptStepSamplingRate'] = $wgWMESchemaEditAttemptStepSamplingRate;
 		$vars['wgWMEWikidataCompletionSearchClicks'] = $wgWMEWikidataCompletionSearchClicks;
-		$vars['wgWMEPhp7SamplingRate'] = $wgWMEPhp7SamplingRate;
 
 		if ( $skinName === 'minerva' ) {
 			$vars['wgWMEMobileWebUIActionsTracking'] = $wgWMEMobileWebUIActionsTracking;
