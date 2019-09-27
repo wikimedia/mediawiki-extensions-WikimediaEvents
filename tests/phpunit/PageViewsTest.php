@@ -250,7 +250,7 @@ class PageViewsTest extends MediaWikiTestCase {
 					PageViews::EVENT_PAGE_ID => 1,
 					PageViews::EVENT_TITLE => 'Admin',
 					PageViews::EVENT_PATH => '/w/index.php',
-					PageViews::EVENT_QUERY => 'title=User:Admin',
+					PageViews::EVENT_QUERY => 'title=User:Admin&type=revision&diff=542&oldid=119',
 					PageViews::EVENT_NAMESPACE => NS_USER
 				],
 				[
@@ -258,7 +258,7 @@ class PageViewsTest extends MediaWikiTestCase {
 					PageViews::EVENT_TITLE => 'Admin',
 					PageViews::EVENT_PATH => '/w/index.php',
 					PageViews::EVENT_NAMESPACE => NS_USER,
-					PageViews::EVENT_QUERY => 'title=redacted',
+					PageViews::EVENT_QUERY => 'title=redacted&type=revision&diff=redacted&oldid=redacted',
 				],
 				self::getDefaultContext()
 			],

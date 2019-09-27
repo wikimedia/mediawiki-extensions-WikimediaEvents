@@ -148,6 +148,8 @@ class PageViews extends ContextSource {
 			'search' => 'hash',
 			'return' => 'hash',
 			'returnto' => 'hash',
+			'diff' => 'redact',
+			'oldid' => 'redact',
 			'title' => 'redact',
 			'create' => 'redact',
 			'token' => 'redact',
