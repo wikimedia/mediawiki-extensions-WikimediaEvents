@@ -576,8 +576,6 @@ class WikimediaEventsHooks {
 
 		$vars['wgWMESchemaEditAttemptStepOversample'] =
 			static::shouldSchemaEditAttemptStepOversample( $out->getContext() );
-		// Inject a config var indicating if the page is rendered with HHVM.
-		$vars['wgPoweredByHHVM'] = wfIsHHVM();
 		return true;
 	}
 
