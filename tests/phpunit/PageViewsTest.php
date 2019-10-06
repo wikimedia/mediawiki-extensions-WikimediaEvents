@@ -8,7 +8,6 @@ use MediaWikiTestCase;
 use MultiConfig;
 use MWException;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit_Framework_MockObject_MockObject;
 use RequestContext;
 use Title;
 use User;
@@ -133,7 +132,7 @@ class PageViewsTest extends MediaWikiTestCase {
 		$context->setRequest( $request );
 		$pageViews = new PageViews( $context );
 		$this->assertEquals( '', $pageViews->getPermissionErrors() );
-		/** @var Title|PHPUnit_Framework_MockObject_MockObject $titleMock */
+		/** @var Title|MockObject $titleMock */
 		$titleMock = $this->getMockBuilder( Title::class )
 			->disableOriginalConstructor()
 			->getMock();
@@ -151,7 +150,7 @@ class PageViewsTest extends MediaWikiTestCase {
 			'protectedpagetext,editprotected,edit',
 			$pageViews->getPermissionErrors()
 		);
-		/** @var Title|PHPUnit_Framework_MockObject_MockObject $titleMock */
+		/** @var Title|MockObject $titleMock */
 		$titleMock = $this->getMockBuilder( Title::class )
 			->disableOriginalConstructor()
 			->getMock();
@@ -165,7 +164,7 @@ class PageViewsTest extends MediaWikiTestCase {
 		$pageViews = new PageViews( $context );
 		$this->assertEquals( 'badaccess-group0', $pageViews->getPermissionErrors() );
 
-		/** @var Title|PHPUnit_Framework_MockObject_MockObject $titleMock */
+		/** @var Title|MockObject $titleMock */
 		$titleMock = $this->getMockBuilder( Title::class )
 			->disableOriginalConstructor()
 			->getMock();
