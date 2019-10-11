@@ -6,7 +6,7 @@ use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\WebDriverKeys;
 // Used to get arround lack of support for advanced css selectors in selenium
-use \Symfony\Component\CssSelector\CssSelectorConverter;
+use Symfony\Component\CssSelector\CssSelectorConverter;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
@@ -51,7 +51,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 
 	protected $webDriver;
 
-	public function setUp() {
+	public function setUp() : void {
 		$browser = getenv( 'SELENIUM_BROWSER' );
 		switch ( strtolower( $browser ) ) {
 		case 'chrome':
