@@ -119,7 +119,7 @@
 				validBuckets = [],
 				sampleSize = {
 					// % of sessions to sample
-					test: 0.125,
+					test: 1,
 					// % of sampled sessions to divide between `validBuckets`
 					subTest: {
 						// Provides a place to handle wiki-specific sub-test
