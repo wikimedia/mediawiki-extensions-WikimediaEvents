@@ -582,7 +582,18 @@ class WikimediaEventsHooks {
 
 		// Oversample when UnderstandingFirstDay is enabled and the user is in the UFD cohort
 		$pageViews = new PageViews( $context );
-		return $wgWMEUnderstandingFirstDay && $pageViews->userIsInCohort();
+		$userInCohort = $wgWMEUnderstandingFirstDay && $pageViews->userIsInCohort();
+
+		// The editingStatsOversample request parameter can trigger oversampling
+		$fromRequest = $context->getRequest()->getBool( 'editingStatsOversample' );
+
+		$shouldOversample = $userInCohort || $fromRequest;
+		Hooks::run(
+			'WikimediaEventsShouldSchemaEditAttemptStepOversample',
+			[ $context, &$shouldOversample ]
+		);
+
+		return $shouldOversample;
 	}
 
 	/**
