@@ -14,8 +14,6 @@
 	"tag-cross-wiki-upload-2": "{{notranslate}} Tag on cross-wiki uploads submitted using interface option 2.",
 	"tag-cross-wiki-upload-3": "{{notranslate}} Tag on cross-wiki uploads submitted using interface option 3.",
 	"tag-cross-wiki-upload-4": "{{notranslate}} Tag on cross-wiki uploads submitted using interface option 4.",
-	"tag-HHVM": "{{notranslate}} Tag on edits made via HHVM",
-	"tag-HHVM-description": "Description for the HHVM tag.",
 	"wikimediaevents-humanrel-question-a": "Question posed to readers of article pages about the relevance of a search query to the article they are reading.",
 	"wikimediaevents-humanrel-question-b": "Question posed to readers of article pages about the relevance of a search query to the article they are reading.",
 	"wikimediaevents-humanrel-question-c": "Question posed to readers of article pages about the relevance of a search query to the article they are reading.",
@@ -23,7 +21,5 @@
 	"wikimediaevents-humanrel-yes": "Positive answer to articles relevance to a search query.\n\nAppears with the question: {{msg-mw|wikimediaevents-humanrel-question-a}}\n\n{{Identical|Yes}}",
 	"wikimediaevents-humanrel-no": "Negative answer to articles relevance to a search query.\n\nAppears with the question: {{msg-mw|wikimediaevents-humanrel-question-a}}\n\n{{Identical|No}}",
 	"wikimediaevents-humanrel-unsure": "Indecisive answer to articles relevance to a search query.\n\nSee also: {{msg-mw|wikimediaevents-humanrel-question-a}}, {{msg-mw|wikimediaevents-humanrel-yes}}, {{msg-mw|wikimediaevents-humanrel-no}}",
-	"wikimediaevents-humanrel-privacy-statement": "Text for link to the survey privacy statement.",
-	"tag-php7": "{{notranslate}} Tag on edits made via PHP7",
-	"tag-php7-description": "Description for the PHP7 tag"
+	"wikimediaevents-humanrel-privacy-statement": "Text for link to the survey privacy statement."
 }

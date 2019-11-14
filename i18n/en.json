@@ -11,8 +11,6 @@
 	"tag-cross-wiki-upload-2": "-",
 	"tag-cross-wiki-upload-3": "-",
 	"tag-cross-wiki-upload-4": "-",
-	"tag-HHVM": "[[mw:Special:MyLanguage/HHVM/About|HHVM]]",
-	"tag-HHVM-description": "Revisions made with the HipHop Virtual Machine enabled instead of the Zend PHP interpreter (expected to improve performance, tagged for debugging/analysis)",
 	"wikimediaevents-humanrel-question-a": "Would you click on this page when searching for '$1'?",
 	"wikimediaevents-humanrel-question-b": "If you searched for '$1', would this article be a good result?",
 	"wikimediaevents-humanrel-question-c": "If you searched for '$1', would this article be relevant?",
@@ -20,7 +18,5 @@
 	"wikimediaevents-humanrel-yes": "Yes",
 	"wikimediaevents-humanrel-no": "No",
 	"wikimediaevents-humanrel-unsure": "I don't know",
-	"wikimediaevents-humanrel-privacy-statement": "Privacy Statement",
-	"tag-php7": "[[mw:PHP7|PHP7]]",
-	"tag-php7-description": "Revisions made with PHP7 enabled instead of HHVM (expected to improve performance, tagged for debugging/analysis)"
+	"wikimediaevents-humanrel-privacy-statement": "Privacy Statement"
 }
