@@ -13,10 +13,10 @@ use WikimediaEvents\PageViews;
 class WikimediaEventsHooks {
 
 	/**
-	 * @param OutputPage &$out
-	 * @param Skin &$skin
+	 * @param OutputPage $out
+	 * @param Skin $skin
 	 */
-	public static function onBeforePageDisplay( &$out, &$skin ) {
+	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) {
 		global $wgWMEUnderstandingFirstDay;
 
 		if ( $wgWMEUnderstandingFirstDay ) {
@@ -39,10 +39,10 @@ class WikimediaEventsHooks {
 	 * UserLogout hook handler.
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/UserLogout
 	 *
-	 * @param User &$user
+	 * @param User $user
 	 * @return bool
 	 */
-	public static function onUserLogout( User &$user ) {
+	public static function onUserLogout( User $user ) {
 		global $wgWMEUnderstandingFirstDay;
 		if ( $wgWMEUnderstandingFirstDay ) {
 			PageViews::deferredLog( $user->getId() );
@@ -219,11 +219,11 @@ class WikimediaEventsHooks {
 	 * @see https://meta.wikimedia.org/wiki/Schema:EditorActivation
 	 * @see https://www.mediawiki.org/wiki/Analytics/Metric_definitions#Active_editor
 	 *
-	 * @param Revision &$revision
+	 * @param Revision $revision
 	 * @param string $data
 	 * @param array $flags
 	 */
-	public static function onRevisionInsertComplete( &$revision, $data, $flags ) {
+	public static function onRevisionInsertComplete( $revision, $data, $flags ) {
 		$user = User::newFromId( $revision->getUser( Revision::RAW ) );
 
 		// Anonymous users and bots don't count (sorry!)
@@ -346,11 +346,11 @@ class WikimediaEventsHooks {
 	 *
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/EditPageBeforeConflictDiff
 	 * @see https://meta.wikimedia.org/wiki/Schema:EditConflict
-	 * @param EditPage &$editPage
+	 * @param EditPage $editPage
 	 * @param OutputPage &$out
 	 * @return bool true in all cases
 	 */
-	public static function onEditPageBeforeConflictDiff( &$editPage, &$out ) {
+	public static function onEditPageBeforeConflictDiff( EditPage $editPage, &$out ) {
 		$user = $out->getUser();
 		$title = $out->getTitle();
 
