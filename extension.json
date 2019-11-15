@@ -91,6 +91,7 @@
 	"EventLoggingSchemas": {
 		"Print": 17630514,
 		"ReadingDepth": 18201205,
+		"InukaPageView": 19715048,
 		"EditAttemptStep": 19365920,
 		"VisualEditorFeatureUse": 18457512,
 		"CompletionSuggestions": 13630018,
@@ -147,6 +148,11 @@
 			"details": "https://phabricator.wikimedia.org/T196186",
 			"owner": "Search Platform"
 		},
+		"InukaPageViews": {
+			"start": "February 2020",
+			"details": "https://phabricator.wikimedia.org/T238029",
+			"owner": "Inuka"
+		},
 		"mobileWebUIActions": {
 			"start": "July 2019",
 			"details": "https://phabricator.wikimedia.org/T220016",
@@ -167,7 +173,8 @@
 					"all/ext.wikimediaEvents.searchSatisfaction.js"
 				],
 				"minerva": [
-					"all/ext.wikimediaEvents.mobileWebUIActions.js"
+					"all/ext.wikimediaEvents.mobileWebUIActions.js",
+					"all/ext.wikimediaEvents.InukaPageView.js"
 				]
 			},
 			"dependencies": [
@@ -227,6 +234,14 @@
 			"_merge_strategy": "array_plus"
 		},
 		"WMEEditCampaigns": [],
+		"WMEInukaPageViewEnabled": false,
+		"WMEInukaPageViewCookiesDomain": "wikipedia.org",
+		"WMEInukaPageViewSamplingRatePerOs": {
+			"kaios": 1,
+			"android": 0.04,
+			"ios": 0.5,
+			"unknown": 0
+		},
 		"WMESchemaEditAttemptStepSamplingRate": "0.0625",
 		"WMEWikidataCompletionSearchClicks": {}
 	},
