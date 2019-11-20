@@ -1,7 +1,5 @@
 <?php
 
-use Liuggio\StatsdClient\Factory\StatsdDataFactory;
-
 /**
  * @covers AuthManagerStatsdHandler
  */
@@ -10,7 +8,7 @@ class AuthManagerStatsdHandlerTest extends MediaWikiTestCase {
 	 * @dataProvider provideHandle
 	 */
 	public function testHandle( $record, $expectedKey ) {
-		$stats = $this->createMock( StatsdDataFactory::class );
+		$stats = $this->createMock( IBufferingStatsdDataFactory::class );
 		$this->setService( 'StatsdDataFactory', $stats );
 		$handler = $this->getMockBuilder( AuthManagerStatsdHandler::class )
 			->setMethods( [ 'getEntryPoint' ] )->getMock();
