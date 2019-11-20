@@ -453,10 +453,7 @@
 
 	function genLogEventFn( source, session, sourceExtraData ) {
 		return function ( action, extraData ) {
-			// Temporarily log to both schemas while transitioning
-			// TestSearchSatisfaction2 -> SearchSatisfaction
-			var schemas = [ 'SearchSatisfaction', 'TestSearchSatisfaction2' ],
-				scrollTop = $( window ).scrollTop(),
+			var scrollTop = $( window ).scrollTop(),
 				evt = {
 					// searchResultPage, visitPage, checkin, click or iwclick
 					action: action,
@@ -515,9 +512,7 @@
 			// ship the event
 			mw.loader.using( [ 'ext.eventLogging' ] ).then( function () {
 				eventLog = eventLog || extendMwEventLog();
-				schemas.forEach( function ( schema ) {
-					eventLog.logEvent( schema, evt );
-				} );
+				eventLog.logEvent( 'SearchSatisfaction', evt );
 			} );
 		};
 	}
