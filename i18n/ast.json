@@ -15,5 +15,6 @@
 	"wikimediaevents-humanrel-yes": "Sí",
 	"wikimediaevents-humanrel-no": "Non",
 	"wikimediaevents-humanrel-unsure": "Nun sé",
-	"wikimediaevents-humanrel-privacy-statement": "Declaración d'intimidá"
+	"wikimediaevents-humanrel-privacy-statement": "Declaración d'intimidá",
+	"tag-php7-description": "Revisiones feches con PHP7 activáu en llugar de HHVM (espérase qu'ameyore'l rindimientu, márquense pa depuración y analís)"
 }
