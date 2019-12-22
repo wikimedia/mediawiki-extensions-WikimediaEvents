@@ -409,7 +409,7 @@ class PageViews extends ContextSource {
 			return false;
 		}
 
-		$accountAge = wfTimestamp() - wfTimestamp( TS_UNIX, $user->getRegistration() );
+		$accountAge = (int)wfTimestamp() - (int)wfTimestamp( TS_UNIX, $user->getRegistration() );
 		if ( $accountAge >= $this->getAccountAgeLimit() ) {
 			return false;
 		}
