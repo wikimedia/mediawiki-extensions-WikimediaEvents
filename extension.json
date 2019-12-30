@@ -15,8 +15,10 @@
 	"AutoloadClasses": {
 		"WikimediaEventsHooks": "includes/WikimediaEventsHooks.php",
 		"WikimediaEvents\\PageViews": "includes/PageViews.php",
-		"WikimediaEvents\\Tests\\PageViewsTest":  "tests/phpunit/PageViewsTest.php",
 		"AuthManagerStatsdHandler": "includes/AuthManagerStatsdHandler.php"
+	},
+	"TestAutoloadClasses": {
+		"WikimediaEvents\\Tests\\PageViewsTest":  "tests/phpunit/PageViewsTest.php"
 	},
 	"Hooks": {
 		"UserLogout": [
