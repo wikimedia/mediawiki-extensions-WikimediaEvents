@@ -7,5 +7,9 @@
 	"globals": {
 		"mw": false,
 		"OO": false
+	},
+	"rules": {
+		"no-jquery/no-class-state": "warn",
+		"no-jquery/no-sizzle": "warn"
 	}
 }
