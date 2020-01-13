@@ -13,6 +13,5 @@
 	"wikimediaevents-humanrel-yes": "Да",
 	"wikimediaevents-humanrel-no": "Не",
 	"wikimediaevents-humanrel-unsure": "Не знам",
-	"wikimediaevents-humanrel-privacy-statement": "Декларация за поверителност",
-	"tag-php7-description": "Редакции направени с PHP7 вместо с HHVM (очаква се по-голяма производителност, маркирано за отстраняване на грешки/анализ)"
+	"wikimediaevents-humanrel-privacy-statement": "Декларация за поверителност"
 }

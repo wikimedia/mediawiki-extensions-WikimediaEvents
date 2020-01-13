@@ -7,6 +7,5 @@
 	},
 	"wikimediaevents-humanrel-yes": "Да",
 	"wikimediaevents-humanrel-no": "Не",
-	"wikimediaevents-humanrel-unsure": "Не знам",
-	"tag-php7-description": "Измене направљене помоћу PHP-а 7 уместо HHVM-а (очекује се побољшање перформанси, означено за отклањање грешака/анализу)"
+	"wikimediaevents-humanrel-unsure": "Не знам"
 }

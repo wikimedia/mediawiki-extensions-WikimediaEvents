@@ -11,7 +11,6 @@
 	"wikimediaevents-desc": "يسجل الأحداث المتعلقة بويكيميديا باستخدام EventLogging",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|رفع عبر الويكي]]",
 	"tag-cross-wiki-upload-description": "الملفات التي تم تحميلها من داخل محرر نصوص الويكي والمحرر المرئي على مواقع الويكي الأخرى",
-	"tag-HHVM-description": "تعديلات باستخدام آلة هيب هوب الافتراضية بدلا من مفسر بي إتش بي زند (متوقع أن تحسن الأداء، موسومة من أجل التنقيح البرمجي/التحليل)",
 	"wikimediaevents-humanrel-question-a": "هل ستضغط على هذه الصفحة حينما تبحث عن '$1'؟",
 	"wikimediaevents-humanrel-question-b": "لو كنت تبحث عن '$1'، فهل ستكون هذه المقالة نتيجة جيدة؟",
 	"wikimediaevents-humanrel-question-c": "لو كنت تبحث عن '$1'، فهل ستكون هذه المقالة ذات علاقة؟",
@@ -19,6 +18,5 @@
 	"wikimediaevents-humanrel-yes": "نعم",
 	"wikimediaevents-humanrel-no": "لا",
 	"wikimediaevents-humanrel-unsure": "لا أعلم",
-	"wikimediaevents-humanrel-privacy-statement": "بيان الخصوصية",
-	"tag-php7-description": "المراجعات التي تم إجراؤها مع تفعيل PHP7 بدلا من HHVM (متوقع أن تحسن الأداء، موسومة من أجل التصحيح/التحليل)"
+	"wikimediaevents-humanrel-privacy-statement": "بيان الخصوصية"
 }

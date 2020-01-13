@@ -9,7 +9,6 @@
 	"wikimediaevents-desc": "Regista eventos específicos da Wikimedia usando EventLogging",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Importações interwikis]]",
 	"tag-cross-wiki-upload-description": "Ficheiros importados a partir dos editores visuais e de texto wiki de outras wikis",
-	"tag-HHVM-description": "Revisões executadas com a Máquina Virtual HipHop (HHVM) ativada em vez do interpretador PHP Zend (melhorias de desempenho esperadas, etiquetadas para análise e despiste de erros)",
 	"wikimediaevents-humanrel-question-a": "Visitaria esta página se procurasse '$1'?",
 	"wikimediaevents-humanrel-question-b": "Se estivesse à procura de '$1', este artigo seria um bom resultado?",
 	"wikimediaevents-humanrel-question-c": "Se tivesse pesquisado '$1' este artigo seria relevante?",
@@ -17,6 +16,5 @@
 	"wikimediaevents-humanrel-yes": "Sim",
 	"wikimediaevents-humanrel-no": "Não",
 	"wikimediaevents-humanrel-unsure": "Não sei",
-	"wikimediaevents-humanrel-privacy-statement": "Declaração de Privacidade",
-	"tag-php7-description": "Revisões feitas com o PHP7 ativado em vez do HHVM (esperado que melhorassem desempenho, etiquetadas para despiste de defeitos/análise)"
+	"wikimediaevents-humanrel-privacy-statement": "Declaração de Privacidade"
 }

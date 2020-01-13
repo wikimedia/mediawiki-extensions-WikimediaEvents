@@ -18,7 +18,6 @@
 	"wikimediaevents-desc": "Trace les événements spécifiques à Wikimédia en utilisant EventLogging",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Téléversement inter-wiki]]",
 	"tag-cross-wiki-upload-description": "Fichiers téléversés directement depuis l’éditeur de wikicode ou l’éditeur visuel sur d’autres wikis",
-	"tag-HHVM-description": "Contributions faites avec la machine virtuelle HipHop (HHVM) au lieu de l’interpréteur PHP Zend (cela devrait améliorer les performances, la balise sert à l’analyse et au débogage)",
 	"wikimediaevents-humanrel-question-a": "Cliqueriez-vous sur cette page si vous recherchiez « $1 » ?",
 	"wikimediaevents-humanrel-question-b": "Si vous recherchiez « $1 », cet article serait-il un bon résultat ?",
 	"wikimediaevents-humanrel-question-c": "Si vous recherchiez « $1 », cet article serait-il pertinent ?",
@@ -26,6 +25,5 @@
 	"wikimediaevents-humanrel-yes": "Oui",
 	"wikimediaevents-humanrel-no": "Non",
 	"wikimediaevents-humanrel-unsure": "Je ne sais pas",
-	"wikimediaevents-humanrel-privacy-statement": "Déclaration de confidentialité",
-	"tag-php7-description": "Révisions faites avec PHP7 activé au lieu de HHVM (censé améliorer les performances, balisé pour le débogage et l’analyse)"
+	"wikimediaevents-humanrel-privacy-statement": "Déclaration de confidentialité"
 }

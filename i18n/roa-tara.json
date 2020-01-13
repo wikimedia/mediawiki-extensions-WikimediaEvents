@@ -7,7 +7,6 @@
 	"wikimediaevents-desc": "Archivije avveneminde specifice de Uicchimedie ausanne 'u EventLogging",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Carecamende cross-uicchi]]",
 	"tag-cross-wiki-upload-description": "File carecate da le cangiature de uicchiteste e visuale sus a otre uicchi",
-	"tag-HHVM-description": "Revisiune fatte cu 'a maghene virtuale HipHop abbilitate invece de l'inderprete Zend PHP (tranne ca pe migliorà 'a valocità, signate pe debugging/analise)",
 	"wikimediaevents-humanrel-question-a": "Vue ccù cazze sus a sta pàgene quanne ste cirche pe '$1'?",
 	"wikimediaevents-humanrel-question-b": "Ce tu è cercate pe '$1', vue ca sta vôsce jè 'nu belle resultate?",
 	"wikimediaevents-humanrel-question-c": "Ce tu è cercate pe '$1', vue ca sta vôsce jè rilevande?",
@@ -15,6 +14,5 @@
 	"wikimediaevents-humanrel-yes": "Sìne",
 	"wikimediaevents-humanrel-no": "None",
 	"wikimediaevents-humanrel-unsure": "Non g'u sacce",
-	"wikimediaevents-humanrel-privacy-statement": "Asserzione d'a privacy",
-	"tag-php7-description": "Ravisiune fatte cu PHP7 abbilitate invede de HHVM ('n'aspettame ca le prestaziune vonne megghie, taggate pe debug/analisi)"
+	"wikimediaevents-humanrel-privacy-statement": "Asserzione d'a privacy"
 }

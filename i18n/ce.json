@@ -4,7 +4,5 @@
 			"Умар"
 		]
 	},
-	"wikimediaevents-desc": "EventLogging лелаеш билгалйина Викимедиашкахь хилларг гойту",
-	"tag-HHVM-description": "HipHop Virtual Machine латтина йолуш дина нисдарш Zend PHP-интерпретаторан метта (болх дика бан)",
-	"tag-php7-description": "HHVM меттанна PHP7 гӀоьнца дина нисдарш (дика тойира йолуш ю)"
+	"wikimediaevents-desc": "EventLogging лелаеш билгалйина Викимедиашкахь хилларг гойту"
 }

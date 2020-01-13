@@ -12,7 +12,6 @@
 	"wikimediaevents-desc": "EventLogging 的維基媒體特定事件記錄",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|跨 wiki 上傳]]",
 	"tag-cross-wiki-upload-description": "檔案已在其他 wiki 由內建的 wikitext 與視覺化編輯器上傳",
-	"tag-HHVM-description": "透過啟用 HipHop 虛擬機器替代 Zend PHP 直譯器做出的修訂（預期可以提高效能，標記用於除錯/分析）",
 	"wikimediaevents-humanrel-question-a": "當搜尋「$1」時您會想點擊此頁面嗎？",
 	"wikimediaevents-humanrel-question-b": "若您搜尋了「$1」，此條目是符合的結果嗎？",
 	"wikimediaevents-humanrel-question-c": "若您搜尋了「$1」，此條目有相關嗎？",
@@ -20,6 +19,5 @@
 	"wikimediaevents-humanrel-yes": "是",
 	"wikimediaevents-humanrel-no": "否",
 	"wikimediaevents-humanrel-unsure": "不清楚",
-	"wikimediaevents-humanrel-privacy-statement": "隱私聲明",
-	"tag-php7-description": "透過啟用 PHP7 替代 HipHop 虛擬機器做出的修訂（預期可以提高效能，標記用於除錯/分析）"
+	"wikimediaevents-humanrel-privacy-statement": "隱私聲明"
 }

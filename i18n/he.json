@@ -9,7 +9,6 @@
 	"wikimediaevents-desc": "רישום ביומן של אירועים ייחודיים לוויקימדיה באמצעות EventLogging",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|העלאה מאתר ויקי אחר]]",
 	"tag-cross-wiki-upload-description": "קבצים שהועלו מתוך העורך החזותי ועורך קוד המקור באתרי ויקי אחרים",
-	"tag-HHVM-description": "שינויים שנעשו עם HipHop Virtual Machine ולא עם מפענח Zend PHP (זה צפוי לשפר ביצועים, התיוג נעשה לשם ניפוי שגיאות וניתוח)",
 	"wikimediaevents-humanrel-question-a": "האם היית לוחץ על הדף הזה בזמן חיפוש \"$1\"?",
 	"wikimediaevents-humanrel-question-b": "אם היית מחפש \"$1\", האם הערך הזה היה תוצאה טובה?",
 	"wikimediaevents-humanrel-question-c": "אם היית מחפש \"$1\", האם הערך הזה היה רלוונטי?",
@@ -17,6 +16,5 @@
 	"wikimediaevents-humanrel-yes": "כן",
 	"wikimediaevents-humanrel-no": "לא",
 	"wikimediaevents-humanrel-unsure": "לא יודע",
-	"wikimediaevents-humanrel-privacy-statement": "הצהרת פרטיות",
-	"tag-php7-description": "גרסאות שנעשו באמצעות PHP7 ולא באמצעות HHVM (זה צפוי לשפר ביצועים, מתויג לצורך ניפוי שגיאות וניתוח)"
+	"wikimediaevents-humanrel-privacy-statement": "הצהרת פרטיות"
 }

@@ -12,7 +12,6 @@
 	"wikimediaevents-desc": "Записує у журнал події пов'язані з Вікімедіа, використовуючи EventLogging",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Міжпроектне завантаження]]",
 	"tag-cross-wiki-upload-description": "Файли, завантажені всередині редактора вікірозмітки та візуального редактора в інших вікі",
-	"tag-HHVM-description": "Версії, створені увімкненою HipHop Virtual Machine замість інтерпретатора Zend PHP (очікується покращення результативності; помічено для налагодження/аналізу)",
 	"wikimediaevents-humanrel-question-a": "Чи клацнули б Ви на цю сторінку, шукаючи «$1»?",
 	"wikimediaevents-humanrel-question-b": "Якби Ви шукали «$1», чи була б ця стаття добрим результатом?",
 	"wikimediaevents-humanrel-question-c": "Якби Ви шукали «$1», чи була б ця стаття релевантною?",
@@ -20,6 +19,5 @@
 	"wikimediaevents-humanrel-yes": "Так",
 	"wikimediaevents-humanrel-no": "Ні",
 	"wikimediaevents-humanrel-unsure": "Не знаю",
-	"wikimediaevents-humanrel-privacy-statement": "Заява про конфіденційність",
-	"tag-php7-description": "Редагуваня, здійснені з увімкненим PHP7 замість HHVM (за задумом має покращити продуктивність, позначено для налагодження/аналізу)"
+	"wikimediaevents-humanrel-privacy-statement": "Заява про конфіденційність"
 }

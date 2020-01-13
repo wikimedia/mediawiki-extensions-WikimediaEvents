@@ -10,7 +10,6 @@
 	"wikimediaevents-desc": "واردکردن رویدادهای به‌خصوص ویکی‌مدیا با استفاده از EventLogging",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|بارگذاری بین ویکی]]",
 	"tag-cross-wiki-upload-description": "پرونده‌های بارگذاری شده از درون ویکی‌متن و ویرایشگر دیداری در سایر ویکی‌ها",
-	"tag-HHVM-description": "نسخه با ماشین مجازی هیپ‌هاپ به جای مفسر زند پی‌اچ‌پی درست شده‌اند (مستثنی‌شده برای بهبود کارایی، برای اشکال‌زدایی/تحلیل برچسپ زده شده است)",
 	"wikimediaevents-humanrel-question-a": "آیا شما در هنگام جستجوی «$1» به این صفحه کلیک می‌کنید",
 	"wikimediaevents-humanrel-question-b": "اگر برای «$1» جستجو کرده‌اید، آیا این یک نتیجه معقول است؟",
 	"wikimediaevents-humanrel-question-c": "اگر برای «$1» کرده بودید، آیا این مقاله مرتبط بود؟",

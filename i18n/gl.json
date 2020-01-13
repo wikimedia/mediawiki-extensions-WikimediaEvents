@@ -9,7 +9,6 @@
 	"wikimediaevents-desc": "Rexistra os eventos específicos da Wikimedia mediante EventLogging",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Subida inter-wiki]]",
 	"tag-cross-wiki-upload-description": "Ficheiros subidos dende o texto wiki e editores visuais noutras wikis",
-	"tag-HHVM-description": "Modificacións feitas coa Máquina Virtual HipHop (HHVM) no canto do interpretador PHP Zend (espérase mellorar o rendemento, marcado para depuración/análise)",
 	"wikimediaevents-humanrel-question-a": "Visitaría esta páxina se procurase '$1'?",
 	"wikimediaevents-humanrel-question-b": "Se procurase '$1', este artigo sería un bo resultado?",
 	"wikimediaevents-humanrel-question-c": "Se procurase '$1', este artigo sería relevante?",

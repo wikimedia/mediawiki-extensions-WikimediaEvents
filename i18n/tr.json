@@ -10,7 +10,6 @@
 	"wikimediaevents-desc": "EventLogging kullanarak Wikimedia'ya özel olayları günlüğe kaydeder",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Wiki arası yükleme]]",
 	"tag-cross-wiki-upload-description": "Wiki metninin içinden yüklenen dosyalar ve diğer wikilerdeki görsel editörler",
-	"tag-HHVM-description": "Zend PHP yorumlayıcısı yerine HipHop Virtual Machine kullanılarak yapılan denetimler (performans geliştirme, hata ayıklama/analiz etiketi bekleniyor)",
 	"wikimediaevents-humanrel-question-a": "'$1' ararken bu sayfaya tıklar mısın?",
 	"wikimediaevents-humanrel-question-b": "'$1' kelimesini aradıysanız, bu makale iyi bir sonuç olur mu?",
 	"wikimediaevents-humanrel-question-c": "'$1' kelimesini aradıysanız, bu makale alakalı olur mu?",
@@ -18,6 +17,5 @@
 	"wikimediaevents-humanrel-yes": "Evet",
 	"wikimediaevents-humanrel-no": "Hayır",
 	"wikimediaevents-humanrel-unsure": "Bilmiyorum",
-	"wikimediaevents-humanrel-privacy-statement": "Gizlilik Beyanı",
-	"tag-php7-description": "PHP7 ile yapılan revizyonlar HHVM yerine etkin (performans artışı bekleniyor, hata ayıklama/analiz için etiketlendi)"
+	"wikimediaevents-humanrel-privacy-statement": "Gizlilik Beyanı"
 }

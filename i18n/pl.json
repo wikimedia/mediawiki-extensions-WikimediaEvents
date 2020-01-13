@@ -11,7 +11,6 @@
 	"wikimediaevents-desc": "Rejestruje operacje specyficzne dla Fundacji Wikimedii przy użyciu rozszerzenia EventLogging",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Przesłanie z innej wiki]]",
 	"tag-cross-wiki-upload-description": "Pliki przesłane z poziomu edytora wikikodu lub wizualnego na innej wiki",
-	"tag-HHVM-description": "Wprowadzono zmiany z HipHop Virtual Machine zamiast interpretatora Zend PHP (oczekuje się, że to doprowadzi do zwiększenia wydajności; przeznaczone dla naprawy/analizy)",
 	"wikimediaevents-humanrel-question-a": "Czy kliknąłbyś na tę stronę w wynikach wyszukiwania, gdybyś szukał frazy '$1'?",
 	"wikimediaevents-humanrel-question-b": "Jeśli szukałeś '$1', czy ten artykuł byłby dobrym wynikiem?",
 	"wikimediaevents-humanrel-question-c": "Jeśli szukałeś '$1', czy ten artykuł byłby trafny?",
@@ -19,6 +18,5 @@
 	"wikimediaevents-humanrel-yes": "Tak",
 	"wikimediaevents-humanrel-no": "Nie",
 	"wikimediaevents-humanrel-unsure": "Nie wiem",
-	"wikimediaevents-humanrel-privacy-statement": "Oświadczenie o prywatności",
-	"tag-php7-description": "Zmiany wykonane przy włączonym PHP7 zamiast HHVM (pozwoli zwiększyć wydajność, oznaczenie w celu debugowania i analizy)"
+	"wikimediaevents-humanrel-privacy-statement": "Oświadczenie o prywatności"
 }
