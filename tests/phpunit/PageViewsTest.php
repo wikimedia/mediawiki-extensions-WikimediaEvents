@@ -76,12 +76,12 @@ class PageViewsTest extends MediaWikiTestCase {
 		$context = self::getDefaultContext();
 		$context->setUser( $user );
 		$pageViews = new PageViews( $context );
-		$this->assertEquals( false, $pageViews->userIsInCohort() );
+		$this->assertFalse( $pageViews->userIsInCohort() );
 
 		$user = static::getTestUser()->getUser();
 		$context->setUser( $user );
 		$pageViews = new PageViews( $context );
-		$this->assertEquals( true, $pageViews->userIsInCohort() );
+		$this->assertTrue( $pageViews->userIsInCohort() );
 
 		/** @var User|MockObject $userMock */
 		$userMock = $this->getMockBuilder( User::class )
@@ -97,7 +97,7 @@ class PageViewsTest extends MediaWikiTestCase {
 		$context->setUser( $userMock );
 		$pageViews = new PageViews( $context );
 		$pageViews->setUser( $userMock );
-		$this->assertEquals( false, $pageViews->userIsInCohort() );
+		$this->assertFalse( $pageViews->userIsInCohort() );
 	}
 
 	/**
@@ -131,7 +131,7 @@ class PageViewsTest extends MediaWikiTestCase {
 		$request->setVal( 'action', 'edit' );
 		$context->setRequest( $request );
 		$pageViews = new PageViews( $context );
-		$this->assertEquals( '', $pageViews->getPermissionErrors() );
+		$this->assertSame( '', $pageViews->getPermissionErrors() );
 		/** @var Title|MockObject $titleMock */
 		$titleMock = $this->getMockBuilder( Title::class )
 			->disableOriginalConstructor()
@@ -173,7 +173,7 @@ class PageViewsTest extends MediaWikiTestCase {
 			->willReturn( [] );
 		$context->setTitle( $titleMock );
 		$pageViews = new PageViews( $context );
-		$this->assertEquals( '', $pageViews->getPermissionErrors() );
+		$this->assertSame( '', $pageViews->getPermissionErrors() );
 	}
 
 	/**
