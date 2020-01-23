@@ -565,6 +565,11 @@
 			serpExtras.iw = iwResultSet;
 		}
 
+		// Track the profile that provided the search results and dym query
+		if ( mw.config.exists( 'wgCirrusSearchFallbackStatus' ) ) {
+			serpExtras.fallback = mw.config.get( 'wgCirrusSearchFallbackStatus' );
+		}
+
 		// Interleaved AB testing. This records the page id's that belong
 		// to each team, which can be matched up to the articleId property
 		// of click/visitPage events.
