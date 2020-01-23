@@ -547,6 +547,58 @@
 		return evt;
 	}
 
+	function createSerpEvent() {
+		var params, iwResultSet,
+			serpExtras = {
+				offset: $( '.results-info' ).data( 'mw-num-results-offset' )
+			};
+
+		// Track which sister wiki results were shown in the sidebar and in what order
+		if ( $( '#mw-interwiki-results > .iw-results' ).length ) {
+			iwResultSet = [];
+			$( 'li.iw-resultset' ).each( function () {
+				iwResultSet.push( {
+					source: $( this ).data( 'iw-resultset-source' ),
+					position: $( this ).data( 'iw-resultset-pos' )
+				} );
+			} );
+			serpExtras.iw = iwResultSet;
+		}
+
+		// Interleaved AB testing. This records the page id's that belong
+		// to each team, which can be matched up to the articleId property
+		// of click/visitPage events.
+		if ( mw.config.exists( 'wgCirrusSearchTeamDraft' ) ) {
+			serpExtras.teamDraft = mw.config.get( 'wgCirrusSearchTeamDraft' );
+		}
+
+		params = {
+			query: mw.config.get( 'searchTerm' ),
+			hitsReturned: $( '.results-info' ).data( 'mw-num-results-total' ),
+			extraParams: JSON.stringify( serpExtras )
+		};
+
+		// Track what did you mean suggestions were displayed on the page
+		if ( $( '#mw-search-DYM-suggestion' ).length ) {
+			params.didYouMeanVisible = 'yes';
+		} else if ( $( '#mw-search-DYM-rewritten' ).length ) {
+			params.didYouMeanVisible = 'autorewrite';
+		} else {
+			params.didYouMeanVisible = 'no';
+		}
+
+		// This method is called from jQuery.ready which runs on DOMContentLoaded. Use domInteractive since that
+		// is immediately before DOMContentLoaded per spec.
+		if ( window.performance && window.performance.timing ) {
+			params.msToDisplayResults = window.performance.timing.domInteractive - window.performance.timing.navigationStart;
+		}
+		if ( search.didYouMean ) {
+			params.inputLocation = didYouMeanMap[ search.didYouMean ];
+		}
+
+		return params;
+	}
+
 	/**
 	 * Sets up the full text search test.
 	 *
@@ -556,15 +608,13 @@
 	 * @param {SessionState} session
 	 */
 	function setupSearchTest( session ) {
-		var params,
-			logEvent = ( function () {
-				var params = {};
-				if ( mw.config.get( 'wgCirrusSearchRequestSetToken' ) ) {
-					params.searchToken = mw.config.get( 'wgCirrusSearchRequestSetToken' );
-				}
-				return genLogEventFn( 'fulltext', session, params );
-			}() ),
-			serpExtras, iwResultSet;
+		var logEvent = ( function () {
+			var params = {};
+			if ( mw.config.get( 'wgCirrusSearchRequestSetToken' ) ) {
+				params.searchToken = mw.config.get( 'wgCirrusSearchRequestSetToken' );
+			}
+			return genLogEventFn( 'fulltext', session, params );
+		}() );
 
 		if ( isSearchResultPage ) {
 			// When a new search is performed reset the session lifetime.
@@ -648,55 +698,7 @@
 				}
 			);
 
-			// From here on is generating the `searchResultPage` event.
-			serpExtras = {
-				offset: $( '.results-info' ).data( 'mw-num-results-offset' )
-			};
-
-			// Track which sister wiki results were shown in the sidebar and in what order
-			if ( $( '#mw-interwiki-results > .iw-results' ).length ) {
-				iwResultSet = [];
-				$( 'li.iw-resultset' ).each( function () {
-					iwResultSet.push( {
-						source: $( this ).data( 'iw-resultset-source' ),
-						position: $( this ).data( 'iw-resultset-pos' )
-					} );
-				} );
-				serpExtras.iw = iwResultSet;
-			}
-
-			// Interleaved AB testing. This records the page id's that belong
-			// to each team, which can be matched up to the articleId property
-			// of click/visitPage events.
-			if ( mw.config.exists( 'wgCirrusSearchTeamDraft' ) ) {
-				serpExtras.teamDraft = mw.config.get( 'wgCirrusSearchTeamDraft' );
-			}
-
-			params = {
-				query: mw.config.get( 'searchTerm' ),
-				hitsReturned: $( '.results-info' ).data( 'mw-num-results-total' ),
-				extraParams: JSON.stringify( serpExtras )
-			};
-
-			// Track what did you mean suggestions were displayed on the page
-			if ( $( '#mw-search-DYM-suggestion' ).length ) {
-				params.didYouMeanVisible = 'yes';
-			} else if ( $( '#mw-search-DYM-rewritten' ).length ) {
-				params.didYouMeanVisible = 'autorewrite';
-			} else {
-				params.didYouMeanVisible = 'no';
-			}
-
-			// This method is called from jQuery.ready which runs on DOMContentLoaded. Use domInteractive since that
-			// is immediately before DOMContentLoaded per spec.
-			if ( window.performance && window.performance.timing ) {
-				params.msToDisplayResults = window.performance.timing.domInteractive - window.performance.timing.navigationStart;
-			}
-			if ( search.didYouMean ) {
-				params.inputLocation = didYouMeanMap[ search.didYouMean ];
-			}
-
-			logEvent( 'searchResultPage', params );
+			logEvent( 'searchResultPage', createSerpEvent() );
 		}
 
 		if ( search.cameFromSearch ) {
