@@ -144,72 +144,71 @@ class WikimediaEventsHooks {
 	 */
 	public static function onPageContentSaveComplete(
 		WikiPage $wikiPage, $user, $content, $summary,
-		$isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId
+		$isMinor, $isWatch, $section, $flags, Revision $revision, $status, $baseRevId
 	) {
-		if ( !$revision ) {
-			return;
+		if ( PHP_SAPI === 'cli' ) {
+			return; // ignore maintenance scripts
 		}
 
 		$title = $wikiPage->getTitle();
+		$request = RequestContext::getMain()->getRequest();
+		$nsInfo = MediaWikiServices::getInstance()->getNamespaceInfo();
 		$stats = MediaWikiServices::getInstance()->getStatsdDataFactory();
 
-		if ( PHP_SAPI !== 'cli' ) {
-			if ( $user->isBot() ) {
-				$accType = 'bot'; // registered bot
-			} elseif ( RequestContext::getMain()->getRequest()->getCheck( 'maxlag' ) ) {
-				$accType = 'throttled'; // probably an unregistered bot
-			} else {
-				$accType = 'normal';
-			}
-
-			if ( in_array( $content->getModel(), [ 'wikibase-item', 'wikibase-property' ] ) ) {
-				$nsType = 'entity';
-			} elseif ( MWNamespace::isContent( $title->getNamespace() ) ) {
-				$nsType = 'content';
-			} elseif ( MWNamespace::isTalk( $title->getNamespace() ) ) {
-				$nsType = 'talk';
-			} else {
-				$nsType = 'meta';
-			}
-
-			$size = $content->getSize();
-			if ( defined( 'MW_API' ) ) {
-				$entry = 'api';
-			} elseif ( defined( 'MEDIAWIKI_JOB_RUNNER' ) ) {
-				$entry = 'job';
-			} elseif ( PHP_SAPI === 'cli' ) {
-				$entry = 'cli';
-			} else {
-				$entry = 'index';
-			}
-
-			// Null edits are both slow (due to user name mismatch reparses) and are
-			// not the focus of this benchmark, which is about actual edits to pages
-			$edit = $status->hasMessage( 'edit-no-change' ) ? 'nullEdit' : 'edit';
-
-			DeferredUpdates::addCallableUpdate(
-				function () use ( $stats, $size, $nsType, $accType, $entry, $edit ) {
-					$timing = RequestContext::getMain()->getTiming();
-					$measure = $timing->measure(
-						'editResponseTime', 'requestStart', 'requestShutdown' );
-					if ( $measure === false ) {
-						return;
-					}
-
-					$timeMs = $measure['duration'] * 1000;
-					$stats->timing( "timing.{$edit}ResponseTime", $timeMs );
-					$stats->timing( "timing.{$edit}ResponseTime.page.$nsType", $timeMs );
-					$stats->timing( "timing.{$edit}ResponseTime.user.$accType", $timeMs );
-					$stats->timing( "timing.{$edit}ResponseTime.entry.$entry", $timeMs );
-					if ( $edit === 'edit' ) {
-						$msPerKb = $timeMs / ( max( $size, 1 ) / 1e3 ); // T224686
-						$stats->timing( "timing.editResponseTimePerKB.page.$nsType", $msPerKb );
-						$stats->timing( "timing.editResponseTimePerKB.user.$accType", $msPerKb );
-						$stats->timing( "timing.editResponseTimePerKB.entry.$entry", $msPerKb );
-					}
-				}
-			);
+		if ( $user->isBot() ) {
+			$accType = 'bot'; // registered bot
+		} elseif ( $request->getCheck( 'maxlag' ) ) {
+			$accType = 'throttled'; // probably an unregistered bot
+		} else {
+			$accType = 'normal';
 		}
+
+		if ( in_array( $content->getModel(), [ 'wikibase-item', 'wikibase-property' ] ) ) {
+			$nsType = 'entity';
+		} elseif ( $nsInfo->isContent( $title->getNamespace() ) ) {
+			$nsType = 'content';
+		} elseif ( $nsInfo->isTalk( $title->getNamespace() ) ) {
+			$nsType = 'talk';
+		} else {
+			$nsType = 'meta';
+		}
+
+		if ( defined( 'MW_API' ) ) {
+			$entry = 'api';
+		} elseif ( defined( 'MEDIAWIKI_JOB_RUNNER' ) ) {
+			$entry = 'job';
+		} else {
+			$entry = 'index';
+		}
+
+		// Null edits are both slow (due to user name mismatch reparses) and are
+		// not the focus of this benchmark, which is about actual edits to pages
+		$edit = $status->hasMessage( 'edit-no-change' ) ? 'nullEdit' : 'edit';
+
+		$size = $content->getSize();
+
+		DeferredUpdates::addCallableUpdate(
+			function () use ( $stats, $size, $nsType, $accType, $entry, $edit ) {
+				$timing = RequestContext::getMain()->getTiming();
+				$measure = $timing->measure(
+					'editResponseTime', 'requestStart', 'requestShutdown' );
+				if ( $measure === false ) {
+					return;
+				}
+
+				$timeMs = $measure['duration'] * 1000;
+				$stats->timing( "timing.{$edit}ResponseTime", $timeMs );
+				$stats->timing( "timing.{$edit}ResponseTime.page.$nsType", $timeMs );
+				$stats->timing( "timing.{$edit}ResponseTime.user.$accType", $timeMs );
+				$stats->timing( "timing.{$edit}ResponseTime.entry.$entry", $timeMs );
+				if ( $edit === 'edit' ) {
+					$msPerKb = $timeMs / ( max( $size, 1 ) / 1e3 ); // T224686
+					$stats->timing( "timing.editResponseTimePerKB.page.$nsType", $msPerKb );
+					$stats->timing( "timing.editResponseTimePerKB.user.$accType", $msPerKb );
+					$stats->timing( "timing.editResponseTimePerKB.entry.$entry", $msPerKb );
+				}
+			}
+		);
 	}
 
 	/**
