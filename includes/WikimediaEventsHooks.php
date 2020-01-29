@@ -151,12 +151,18 @@ class WikimediaEventsHooks {
 		}
 
 		$title = $wikiPage->getTitle();
-		$request = RequestContext::getMain()->getRequest();
-		$nsInfo = MediaWikiServices::getInstance()->getNamespaceInfo();
-		$stats = MediaWikiServices::getInstance()->getStatsdDataFactory();
 
-		if ( $user->isBot() ) {
-			$accType = 'bot'; // registered bot
+		$request = RequestContext::getMain()->getRequest();
+		$services = MediaWikiServices::getInstance();
+		$nsInfo = $services->getNamespaceInfo();
+		$stats = $services->getStatsdDataFactory();
+		$permMgr = $services->getPermissionManager();
+
+		if (
+			$user->isBot() ||
+			( $request->getCheck( 'bot' ) && $permMgr->userHasRight( $user, 'bot' ) )
+		) {
+			$accType = 'bot'; // registered bot or script acting on behalf of a user
 		} elseif ( $request->getCheck( 'maxlag' ) ) {
 			$accType = 'throttled'; // probably an unregistered bot
 		} else {
