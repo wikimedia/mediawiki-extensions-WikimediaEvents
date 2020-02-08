@@ -110,49 +110,6 @@
 		"WikidataCompletionSearchClicks": 18665070,
 		"UserFeedback": 18903446
 	},
-	"@ResourceModules": {
-		"@": [
-			"Please document active campaigns."
-		],
-		"deprecate": {
-			"start": "March 2014",
-			"owner": "Performance Team"
-		},
-		"searchSatisfaction": {
-			"start": "October 2015",
-			"owner": "Discovery"
-		},
-		"readingDepth": {
-			"start": "February 2017",
-			"details": "http://phabricator.wikimedia.org/T155639",
-			"owner": "Reading Web"
-		},
-		"citationUsage": {
-			"start": "June 2018",
-			"details": "https://phabricator.wikimedia.org/T191086",
-			"owner": "Research"
-		},
-		"visualEditorFeatureUse": {
-			"start": "October 2018",
-			"details": "https://phabricator.wikimedia.org/T203136",
-			"owner": "Contributors"
-		},
-		"wikibase": {
-			"start": "July 2018",
-			"details": "https://phabricator.wikimedia.org/T196186",
-			"owner": "Search Platform"
-		},
-		"InukaPageViews": {
-			"start": "February 2020",
-			"details": "https://phabricator.wikimedia.org/T238029",
-			"owner": "Inuka"
-		},
-		"mobileWebUIActions": {
-			"start": "July 2019",
-			"details": "https://phabricator.wikimedia.org/T220016",
-			"owner": "Readers Web"
-		}
-	},
 	"ResourceModules": {
 		"ext.wikimediaEvents": {
 			"scripts": [
