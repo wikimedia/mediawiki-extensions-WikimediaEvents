@@ -543,7 +543,7 @@ class WikimediaEventsHooks {
 		$resourceLoader->register( "ext.wikimediaEvents.visualEditor", [
 			'localBasePath' => $dir . 'modules',
 			'remoteExtPath' => 'WikimediaEvents/modules',
-			"scripts" => "ve-wme/campaigns.js",
+			"scripts" => "ext.wikimediaEvents.visualEditor/campaigns.js",
 			"dependencies" => "ext.visualEditor.targetLoader",
 			"targets" => [ "desktop", "mobile" ],
 		] );

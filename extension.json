@@ -156,18 +156,18 @@
 	"ResourceModules": {
 		"ext.wikimediaEvents": {
 			"scripts": [
-				"all/ext.wikimediaEvents.events.js",
-				"all/ext.wikimediaEvents.statsd.js",
-				"all/ext.wikimediaEvents.readingDepth.js",
-				"all/ext.wikimediaEvents.citationUsage.js"
+				"ext.wikimediaEvents/events.js",
+				"ext.wikimediaEvents/statsd.js",
+				"ext.wikimediaEvents/readingDepth.js",
+				"ext.wikimediaEvents/citationUsage.js"
 			],
 			"skinScripts": {
 				"default": [
-					"all/ext.wikimediaEvents.searchSatisfaction.js"
+					"ext.wikimediaEvents/searchSatisfaction.js"
 				],
 				"minerva": [
-					"all/ext.wikimediaEvents.mobileWebUIActions.js",
-					"all/ext.wikimediaEvents.InukaPageView.js"
+					"ext.wikimediaEvents/mobileWebUIActions.js",
+					"ext.wikimediaEvents/InukaPageView.js"
 				]
 			},
 			"dependencies": [
@@ -184,7 +184,7 @@
 		},
 		"ext.wikimediaEvents.loggedin": {
 			"scripts": [
-				"loggedin/ext.wikimediaEvents.deprecate.js"
+				"ext.wikimediaEvents.loggedin/deprecate.js"
 			],
 			"targets": [
 				"desktop",
@@ -197,7 +197,7 @@
 		},
 		"ext.wikimediaEvents.wikibase": {
 			"scripts": [
-				"wikibase/ext.wikimediaEvents.completionClicks.js"
+				"ext.wikimediaEvents.wikibase/completionClicks.js"
 			],
 			"targets": [
 				"desktop",
