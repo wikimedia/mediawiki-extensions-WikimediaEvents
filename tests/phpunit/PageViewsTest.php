@@ -4,6 +4,7 @@ namespace WikimediaEvents\Tests;
 
 use FauxRequest;
 use HashConfig;
+use MediaWiki\Permissions\PermissionManager;
 use MediaWikiTestCase;
 use MultiConfig;
 use MWException;
@@ -132,47 +133,43 @@ class PageViewsTest extends MediaWikiTestCase {
 		$context->setRequest( $request );
 		$pageViews = new PageViews( $context );
 		$this->assertSame( '', $pageViews->getPermissionErrors() );
-		/** @var Title|MockObject $titleMock */
-		$titleMock = $this->getMockBuilder( Title::class )
+
+		$permMock = $this->getMockBuilder( PermissionManager::class )
 			->disableOriginalConstructor()
 			->getMock();
-		$titleMock->expects( $this->once() )
-			->method( 'getUserPermissionsErrors' )
+		$permMock->expects( $this->once() )
+			->method( 'getPermissionErrors' )
 			->willReturn( [ [
 					'protectedpagetext',
 					'editprotected',
 					'edit',
 				] ]
 			);
-		$context->setTitle( $titleMock );
-		$pageViews = new PageViews( $context );
+		$this->setService( 'PermissionManager', $permMock );
 		$this->assertEquals(
 			'protectedpagetext,editprotected,edit',
 			$pageViews->getPermissionErrors()
 		);
-		/** @var Title|MockObject $titleMock */
-		$titleMock = $this->getMockBuilder( Title::class )
+
+		$permMock = $this->getMockBuilder( PermissionManager::class )
 			->disableOriginalConstructor()
 			->getMock();
-		$titleMock->expects( $this->once() )
-			->method( 'getUserPermissionsErrors' )
+		$permMock->expects( $this->once() )
+			->method( 'getPermissionErrors' )
 			->willReturn( [ [
 					'badaccess-group0'
 				] ]
 			);
-		$context->setTitle( $titleMock );
-		$pageViews = new PageViews( $context );
+		$this->setService( 'PermissionManager', $permMock );
 		$this->assertEquals( 'badaccess-group0', $pageViews->getPermissionErrors() );
 
-		/** @var Title|MockObject $titleMock */
-		$titleMock = $this->getMockBuilder( Title::class )
+		$permMock = $this->getMockBuilder( PermissionManager::class )
 			->disableOriginalConstructor()
 			->getMock();
-		$titleMock->expects( $this->once() )
-			->method( 'getUserPermissionsErrors' )
+		$permMock->expects( $this->once() )
+			->method( 'getPermissionErrors' )
 			->willReturn( [] );
-		$context->setTitle( $titleMock );
-		$pageViews = new PageViews( $context );
+		$this->setService( 'PermissionManager', $permMock );
 		$this->assertSame( '', $pageViews->getPermissionErrors() );
 	}
 

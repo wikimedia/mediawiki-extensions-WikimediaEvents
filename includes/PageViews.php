@@ -171,9 +171,12 @@ class PageViews extends ContextSource {
 		) {
 			return '';
 		}
-		$permissionErrors = $this->getTitle()->getUserPermissionsErrors(
-			$this->action, $this->getUser()
+
+		$permissionManager = MediaWikiServices::getInstance()->getPermissionManager();
+		$permissionErrors = $permissionManager->getPermissionErrors(
+			$this->action, $this->getUser(), $this->getTitle()
 		);
+
 		if ( !$permissionErrors ) {
 			return '';
 		}
