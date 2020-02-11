@@ -15,7 +15,8 @@
 	"AutoloadClasses": {
 		"WikimediaEventsHooks": "includes/WikimediaEventsHooks.php",
 		"WikimediaEvents\\PageViews": "includes/PageViews.php",
-		"AuthManagerStatsdHandler": "includes/AuthManagerStatsdHandler.php"
+		"AuthManagerStatsdHandler": "includes/AuthManagerStatsdHandler.php",
+		"WikimediaEvents\\PrefUpdateInstrumentation": "includes/PrefUpdateInstrumentation.php"
 	},
 	"TestAutoloadClasses": {
 		"WikimediaEvents\\Tests\\PageViewsTest":  "tests/phpunit/PageViewsTest.php"
@@ -40,7 +41,7 @@
 			"WikimediaEventsHooks::onPageContentSaveComplete"
 		],
 		"UserSaveOptions": [
-			"WikimediaEventsHooks::onUserSaveOptions"
+			"WikimediaEvents\\PrefUpdateInstrumentation::onUserSaveOptions"
 		],
 		"ArticleViewHeader": [
 			"WikimediaEventsHooks::onArticleViewHeader"
