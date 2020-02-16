@@ -30,7 +30,7 @@ class AuthManagerStatsdHandlerTest extends MediaWikiTestCase {
 
 		return [
 			'no event' => [ [
-				'channel' => 'authmanager',
+				'channel' => 'authevents',
 				'context' => [ 'foo' => 'bar' ],
 			], null ],
 			'wrong type' => [ [
@@ -42,8 +42,8 @@ class AuthManagerStatsdHandlerTest extends MediaWikiTestCase {
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate' ],
 			], 'authmanager.autocreate' ],
-			'old channel' => [ [
-				'channel' => 'authmanager',
+			'other channel' => [ [
+				'channel' => 'captcha',
 				'context' => [ 'event' => 'autocreate' ],
 			], 'authmanager.autocreate' ],
 			'wrong channel' => [ [
