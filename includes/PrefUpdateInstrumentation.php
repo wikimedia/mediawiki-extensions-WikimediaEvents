@@ -22,7 +22,7 @@ class PrefUpdateInstrumentation {
 	/**
 	 * @const int REV_ID The revision ID of the PrefUpdate schema that we're using.
 	 */
-	const REV_ID = 5563398;
+	const REV_ID = 19799589;
 
 	/**
 	 * Logs a <a href="https://meta.wikimedia.org/wiki/Schema:PrefUpdate">PrefUpdate</a> event for
@@ -68,11 +68,43 @@ class PrefUpdateInstrumentation {
 						// This is parseable and allows a consistent type for validation.
 						'value' => FormatJson::encode( $optValue ),
 						'isDefault' => User::getDefaultOption( $optName ) == $optValue,
+						'bucketedUserEditCount' => self::getBucketedUserEditCount( $user ),
 					] + $commonData;
 					EventLogging::logEvent( 'PrefUpdate', self::REV_ID, $event );
 				}
 			}
 		}
+	}
+
+	/**
+	 * Buckets a user's edit count, e.g. "5-99 edits".
+	 *
+	 * See https://phabricator.wikimedia.org/T169672 for discussion about why you would want to do
+	 * this.
+	 *
+	 * @param User $user
+	 * @return string
+	 */
+	private static function getBucketedUserEditCount( User $user ) : string {
+		$editCount = $user->getEditCount();
+
+		if ( $editCount >= 1000 ) {
+			return '1000+ edits';
+		}
+
+		if ( $editCount >= 100 ) {
+			return '100-999 edits';
+		}
+
+		if ( $editCount >= 5 ) {
+			return '5-99 edits';
+		}
+
+		if ( $editCount >= 1 ) {
+			return '1-4 edits';
+		}
+
+		return '0 edits';
 	}
 
 	/**
