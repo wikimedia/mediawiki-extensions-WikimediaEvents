@@ -79,3 +79,11 @@ Details at <https://phabricator.wikimedia.org/T220016>.
 * Contact: Inuka team
 
 Details at <https://phabricator.wikimedia.org/T238029>.
+
+## Client Error Logging
+
+* Since: February 2020
+* Files: clientError.js
+* Contact: Product Infrastructure
+
+Details at <https://phabricator.wikimedia.org/T235189>.
