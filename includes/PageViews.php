@@ -142,6 +142,7 @@ class PageViews extends ContextSource {
 
 	/**
 	 * Query parameters with potentially sensitive information.
+	 * @return string[]
 	 */
 	private function getSensitiveQueryParams() {
 		return [
