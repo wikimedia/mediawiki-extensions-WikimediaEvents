@@ -322,6 +322,13 @@ class WikimediaEventsHooks {
 			$wgWMEInukaPageViewEnabled, $wgWMEInukaPageViewCookiesDomain,
 			$wgWMEInukaPageViewSamplingRatePerOs;
 
+		// WARNING: Do not add new entries here.
+		//
+		// This legacy mechanism is suboptimial for performance and code quality.
+		//
+		// For new variables you need to access in a JS module, use a virtual 'config.json' file.
+		// See <https://www.mediawiki.org/wiki/ResourceLoader/Package_modules>
+		//
 		$vars['wgWMEClientErrorIntakeURL'] = $wgWMEClientErrorIntakeURL;
 		$vars['wgWMEStatsdBaseUri'] = $wgWMEStatsdBaseUri;
 		$vars['wgWMEReadingDepthSamplingRate'] = $wgWMEReadingDepthSamplingRate;
@@ -330,7 +337,6 @@ class WikimediaEventsHooks {
 		$vars['wgWMECitationUsagePageLoadPopulationSize'] = $wgWMECitationUsagePageLoadPopulationSize;
 		$vars['wgWMESchemaEditAttemptStepSamplingRate'] = $wgWMESchemaEditAttemptStepSamplingRate;
 		$vars['wgWMEWikidataCompletionSearchClicks'] = $wgWMEWikidataCompletionSearchClicks;
-
 		if ( $skinName === 'minerva' ) {
 			$vars['wgWMEMobileWebUIActionsTracking'] = $wgWMEMobileWebUIActionsTracking;
 			$vars['wgWMEInukaPageViewEnabled'] = $wgWMEInukaPageViewEnabled;
