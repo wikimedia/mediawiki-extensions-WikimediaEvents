@@ -314,7 +314,7 @@ class WikimediaEventsHooks {
 	 * @param string $skinName Current skin name to restrict config variables to a certain skin
 	 */
 	public static function onResourceLoaderGetConfigVars( &$vars, $skinName ) {
-		global $wgWMEStatsdBaseUri, $wgWMEReadingDepthSamplingRate,
+		global $wgWMEClientErrorIntakeURL, $wgWMEStatsdBaseUri, $wgWMEReadingDepthSamplingRate,
 			$wgWMEReadingDepthEnabled, $wgWMECitationUsagePopulationSize,
 			$wgWMECitationUsagePageLoadPopulationSize,
 			$wgWMESchemaEditAttemptStepSamplingRate, $wgWMEMobileWebUIActionsTracking,
@@ -322,6 +322,7 @@ class WikimediaEventsHooks {
 			$wgWMEInukaPageViewEnabled, $wgWMEInukaPageViewCookiesDomain,
 			$wgWMEInukaPageViewSamplingRatePerOs;
 
+		$vars['wgWMEClientErrorIntakeURL'] = $wgWMEClientErrorIntakeURL;
 		$vars['wgWMEStatsdBaseUri'] = $wgWMEStatsdBaseUri;
 		$vars['wgWMEReadingDepthSamplingRate'] = $wgWMEReadingDepthSamplingRate;
 		$vars['wgWMEReadingDepthEnabled'] = $wgWMEReadingDepthEnabled;
