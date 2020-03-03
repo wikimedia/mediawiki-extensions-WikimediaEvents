@@ -566,8 +566,8 @@
 		}
 
 		// Track the profile that provided the search results and dym query
-		if ( mw.config.exists( 'wgCirrusSearchFallbackStatus' ) ) {
-			serpExtras.fallback = mw.config.get( 'wgCirrusSearchFallbackStatus' );
+		if ( mw.config.exists( 'wgCirrusSearchFallback' ) ) {
+			serpExtras.fallback = mw.config.get( 'wgCirrusSearchFallback' );
 		}
 
 		// Interleaved AB testing. This records the page id's that belong
