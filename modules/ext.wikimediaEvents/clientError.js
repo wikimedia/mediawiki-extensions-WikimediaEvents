@@ -25,7 +25,7 @@
 		// events and producing equivalent messages
 		// to the 'global.error' topic.
 		//
-		mw.trackSubscribe( 'global.error', function ( obj ) {
+		mw.trackSubscribe( 'global.error', function ( _, obj ) {
 
 			if ( !obj || !obj.errorObject ) {
 				//
