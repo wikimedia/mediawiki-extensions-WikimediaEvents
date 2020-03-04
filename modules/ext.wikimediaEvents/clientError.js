@@ -43,7 +43,7 @@
 				},
 				// (Required) Schema used to validate events
 				$schema: '/mediawiki/client/error/1.0.0',
-				// (Optional) Type of the error
+				// (Required) Type of the error
 				//
 				// Error.toString has its own behavior that is
 				// not what we want (it gives some combo of the
@@ -54,8 +54,10 @@
 				// name of the constructor. Useful for defining
 				// custom errors or exceptions.
 				type: Object.prototype.toString.call( obj.errorObject ),
-				// (Optional) Message included with the Error object
+				// (Required) Message included with the Error object
 				message: obj.errorMessage,
+				// (Required) URL of the page causing this error
+				url: window.location.href,
 				// (Optional) Normalized stack trace string
 				// eslint-disable-next-line camelcase
 				stack_trace: obj.stackTrace
