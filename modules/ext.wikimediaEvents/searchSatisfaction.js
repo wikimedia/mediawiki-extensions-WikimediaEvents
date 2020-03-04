@@ -116,7 +116,8 @@
 		function initialize( session ) {
 
 			var sessionId = session.get( 'sessionId' ),
-				validBuckets = [],
+				// T246947
+				validBuckets = [ 'control', 'glent_m0' ],
 				sampleSize = {
 					// % of sessions to sample
 					test: 1,
@@ -125,6 +126,9 @@
 						// Provides a place to handle wiki-specific sub-test
 						// handling. Must be a map from wiki dbname to % of
 						// requests that should be split between validBuckets.
+						dewiki: 1,
+						enwiki: 1,
+						frwiki: 1
 					}[ mw.config.get( 'wgDBname' ) ] || null
 				},
 				/**
