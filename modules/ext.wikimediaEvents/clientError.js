@@ -57,7 +57,7 @@
 				// (Required) Message included with the Error object
 				message: obj.errorMessage,
 				// (Required) URL of the page causing this error
-				url: window.location.href,
+				url: obj.url,
 				// (Optional) Normalized stack trace string
 				// eslint-disable-next-line camelcase
 				stack_trace: obj.stackTrace
