@@ -27,41 +27,33 @@
 		//
 		mw.trackSubscribe( 'global.error', function ( _, obj ) {
 
-			if ( !obj || !obj.errorObject ) {
-				//
-				// Don't emit anything if the
-				// runtime error doesn't come
-				// with an Error object.
-				//
+			if ( !obj ) {
 				return;
 			}
 
 			navigator.sendBeacon( intakeURL, JSON.stringify( {
 				meta: {
-					// (Required) Name of the stream
-					stream: 'mediawiki.client.error'
+					// Name of the stream
+					stream: 'mediawiki.client.error',
+					// Domain of the web page
+					domain: location.hostname
 				},
-				// (Required) Schema used to validate events
+				// Schema used to validate events
 				$schema: '/mediawiki/client/error/1.0.0',
-				// (Required) Type of the error
-				//
-				// Error.toString has its own behavior that is
-				// not what we want (it gives some combo of the
-				// name and message fields).
-				//
-				// Object.prototype.toString will return a
-				// string [object type] where type is the
-				// name of the constructor. Useful for defining
-				// custom errors or exceptions.
-				type: Object.prototype.toString.call( obj.errorObject ),
-				// (Required) Message included with the Error object
+				// Name of the error constructor
+				// eslint-disable-next-line camelcase
+				error_class: ( obj.errorObject && obj.errorObject.constructor.name ) || '',
+				// Message included with the Error object
 				message: obj.errorMessage,
-				// (Required) URL of the page causing this error
-				url: obj.url,
-				// (Optional) Normalized stack trace string
+				// URL of the file causing the error
+				// eslint-disable-next-line camelcase
+				file_url: obj.url,
+				// URL of the web page.
+				url: location.href,
+				// Normalized stack trace string
 				// eslint-disable-next-line camelcase
 				stack_trace: obj.stackTrace
-				// (Optional) Tags that can be specified as-needed
+				// Tags that can be specified as-needed
 				// tags: {}
 			} ) );
 		} );
