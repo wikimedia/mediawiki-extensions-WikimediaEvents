@@ -153,7 +153,7 @@
 				 * @return {string}
 				 * @private
 				 */
-				chooseBucket = function ( buckets ) { // jshint ignore:line
+				chooseBucket = function ( buckets ) {
 					var rand = mw.user.generateRandomSessionId(),
 						// take the first 52 bits of the rand value to match js
 						// integer precision
