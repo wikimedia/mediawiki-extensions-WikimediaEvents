@@ -26,20 +26,16 @@
 
 		function getOS() {
 			var userAgent = navigator.userAgent;
+			if ( /KaiOS/i.test( userAgent ) ) {
+				return 'kaios';
+			}
 			if ( /android/i.test( userAgent ) ) {
 				return 'android';
 			}
 			if ( /iPhone/.test( userAgent ) ) {
 				return 'ios';
 			}
-			if ( /KaiOS/i.test( userAgent ) ) {
-				return 'kaios';
-			}
 			return 'unknown';
-		}
-
-		function getDeviceWidth() {
-			return window.innerWidth;
 		}
 
 		function getAndRenewCookie( name, valueFn, expires ) {
@@ -121,16 +117,16 @@
 			return;
 		}
 
+		if ( /1|yes/.test( navigator.doNotTrack ) || window.doNotTrack === '1' ) {
+			return;
+		}
+
 		if ( [ 'IN', 'NG', 'ZA' ].indexOf( getCountry() ) === -1 ) {
 			return;
 		}
 
 		os = getOS();
 		if ( [ 'android', 'ios', 'kaios' ].indexOf( os ) === -1 ) {
-			return;
-		}
-
-		if ( getDeviceWidth() > 500 ) {
 			return;
 		}
 

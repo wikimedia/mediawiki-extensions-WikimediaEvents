@@ -188,7 +188,7 @@
 		"WMEInukaPageViewCookiesDomain": "wikipedia.org",
 		"WMEInukaPageViewSamplingRatePerOs": {
 			"kaios": 1,
-			"android": 0.04,
+			"android": 0.1,
 			"ios": 0.5,
 			"unknown": 0
 		},
