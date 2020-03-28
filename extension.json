@@ -74,8 +74,8 @@
 		"ResourceLoaderRegisterModules": [
 			"WikimediaEventsHooks::onResourceLoaderRegisterModules"
 		],
-		"RevisionInsertComplete": [
-			"WikimediaEventsHooks::onRevisionInsertComplete"
+		"RevisionRecordInserted": [
+			"WikimediaEventsHooks::onRevisionRecordInserted"
 		],
 		"MakeGlobalVariablesScript": [
 			"WikimediaEventsHooks::onMakeGlobalVariablesScript"

@@ -1,6 +1,7 @@
 <?php
 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Revision\RevisionRecord;
 use WikimediaEvents\PageViews;
 
 /**
@@ -224,20 +225,19 @@ class WikimediaEventsHooks {
 	 * @see https://meta.wikimedia.org/wiki/Schema:EditorActivation
 	 * @see https://www.mediawiki.org/wiki/Analytics/Metric_definitions#Active_editor
 	 *
-	 * @param Revision $revision
-	 * @param string $data
-	 * @param array $flags
+	 * @param RevisionRecord $revRecord
 	 */
-	public static function onRevisionInsertComplete( $revision, $data, $flags ) {
-		$user = User::newFromId( $revision->getUser( Revision::RAW ) );
-
-		// Anonymous users and bots don't count (sorry!)
-		if ( $user->isAnon() || $user->isAllowed( 'bot' ) ) {
+	public static function onRevisionRecordInserted( RevisionRecord $revRecord ) {
+		// Only mainspace edits qualify
+		if ( !$revRecord->getPageAsLinkTarget()->inNamespace( NS_MAIN ) ) {
 			return;
 		}
 
-		// Only mainspace edits qualify
-		if ( !$revision->getTitle()->inNamespace( NS_MAIN ) ) {
+		$userIdentity = $revRecord->getUser( RevisionRecord::RAW );
+		$user = User::newFromIdentity( $userIdentity );
+
+		// Anonymous users and bots don't count (sorry!)
+		if ( $user->isAnon() || $user->isAllowed( 'bot' ) ) {
 			return;
 		}
 
