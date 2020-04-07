@@ -1,13 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"Hym411",
 			"Bluemersen",
-			"Revi",
-			"아라",
-			"Yearning",
+			"Hym411",
 			"Priviet",
-			"Ykhwong"
+			"Revi",
+			"Yearning",
+			"Ykhwong",
+			"아라"
 		]
 	},
 	"wikimediaevents-desc": "EventLogging을 사용하여 위키미디어 관련 이벤트를 기록합니다",

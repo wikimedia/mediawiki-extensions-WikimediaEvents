@@ -2,10 +2,10 @@
 	"@metadata": {
 		"authors": [
 			"Ainali",
-			"Lokal Profil",
+			"Johan",
 			"Jopparn",
-			"WikiPhoenix",
-			"Johan"
+			"Lokal Profil",
+			"WikiPhoenix"
 		]
 	},
 	"wikimediaevents-desc": "Loggar Wikimedia-specifika händelser med hjälp av EventLogging",

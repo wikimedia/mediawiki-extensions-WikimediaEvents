@@ -1,10 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
+			"BaRaN6161 TURK",
 			"Joseph",
-			"Violetanka",
 			"Sayginer",
-			"BaRaN6161 TURK"
+			"Violetanka"
 		]
 	},
 	"wikimediaevents-desc": "EventLogging kullanarak Wikimedia'ya özel olayları günlüğe kaydeder",

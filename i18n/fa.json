@@ -2,9 +2,9 @@
 	"@metadata": {
 		"authors": [
 			"Ebraminio",
-			"Reza1615",
 			"Huji",
-			"Ladsgroup"
+			"Ladsgroup",
+			"Reza1615"
 		]
 	},
 	"wikimediaevents-desc": "واردکردن رویدادهای به‌خصوص ویکی‌مدیا با استفاده از EventLogging",

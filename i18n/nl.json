@@ -1,11 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"Siebrand",
-			"Sjoerddebruin",
-			"Mainframe98",
 			"Festina90",
-			"Romaine"
+			"Mainframe98",
+			"Romaine",
+			"Siebrand",
+			"Sjoerddebruin"
 		]
 	},
 	"wikimediaevents-desc": "Logboeken voor Wikimediaspecifieke gebeurtenissen die EventLogging gebruiken",

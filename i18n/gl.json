@@ -1,9 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Toliño",
+			"Banjo",
 			"Elisardojm",
-			"Banjo"
+			"Toliño"
 		]
 	},
 	"wikimediaevents-desc": "Rexistra os eventos específicos da Wikimedia mediante EventLogging",

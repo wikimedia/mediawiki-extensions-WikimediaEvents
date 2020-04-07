@@ -1,10 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Raimond Spekking",
 			"Amire80",
-			"Robby",
-			"Raymond"
+			"Raimond Spekking",
+			"Raymond",
+			"Robby"
 		]
 	},
 	"wikimediaevents-desc": "{{desc|name=Wikimedia Events|url=https://www.mediawiki.org/wiki/Extension:WikimediaEvents}}",

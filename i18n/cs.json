@@ -1,12 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
-			"Mormegil",
-			"Matěj Suchánek",
 			"Dvorapa",
 			"Ilimanaq29",
-			"Patriccck",
-			"Jan Růžička"
+			"Jan Růžička",
+			"Matěj Suchánek",
+			"Mormegil",
+			"Patriccck"
 		]
 	},
 	"wikimediaevents-desc": "Pomocí EventLogging zaznamenává události specifické pro Wikimedia",

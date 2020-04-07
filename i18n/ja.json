@@ -1,10 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Shirayuki",
 			"Miya",
-			"Sujiniku",
-			"Omotecho"
+			"Omotecho",
+			"Shirayuki",
+			"Sujiniku"
 		]
 	},
 	"wikimediaevents-desc": "ウィキメディア特有のイベントを、EventLogging を使用して記録する",

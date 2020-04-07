@@ -2,17 +2,17 @@
 	"@metadata": {
 		"authors": [
 			"Gomoko",
-			"Seb35",
+			"Jules78120",
 			"Ltrlg",
-			"Sherbrooke",
-			"Urhixidur",
 			"Orlodrim",
-			"Verdy p",
-			"Wladek92",
 			"Pols12",
-			"Thibaut120094",
+			"Seb35",
+			"Sherbrooke",
 			"The RedBurn",
-			"Jules78120"
+			"Thibaut120094",
+			"Urhixidur",
+			"Verdy p",
+			"Wladek92"
 		]
 	},
 	"wikimediaevents-desc": "Trace les événements spécifiques à Wikimédia en utilisant EventLogging",

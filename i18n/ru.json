@@ -1,16 +1,16 @@
 {
 	"@metadata": {
 		"authors": [
-			"Okras",
-			"Meshkov.a",
-			"Striking Blue",
-			"Kaganer",
+			"Abiyoyo",
 			"Facenapalm",
 			"Happy13241",
-			"Abiyoyo",
+			"Kaganer",
+			"Meshkov.a",
+			"Movses",
+			"Okras",
 			"Ole Yves",
 			"Stjn",
-			"Movses"
+			"Striking Blue"
 		]
 	},
 	"wikimediaevents-desc": "Ведёт журнал определённых Викимедиа событий с использованием EventLogging",

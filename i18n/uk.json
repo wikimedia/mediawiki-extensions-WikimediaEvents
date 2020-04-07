@@ -2,11 +2,11 @@
 	"@metadata": {
 		"authors": [
 			"Andriykopanytsia",
+			"Avatar6",
 			"DixonD",
-			"Ата",
-			"Piramidion",
 			"Movses",
-			"Avatar6"
+			"Piramidion",
+			"Ата"
 		]
 	},
 	"wikimediaevents-desc": "Записує у журнал події пов'язані з Вікімедіа, використовуючи EventLogging",
