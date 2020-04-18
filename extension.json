@@ -10,13 +10,14 @@
 	"descriptionmsg": "wikimediaevents-desc",
 	"license-name": "GPL-2.0-or-later",
 	"requires": {
-		"MediaWiki": ">= 1.32.0"
+		"MediaWiki": ">= 1.35.0"
 	},
 	"AutoloadClasses": {
 		"WikimediaEventsHooks": "includes/WikimediaEventsHooks.php",
-		"WikimediaEvents\\PageViews": "includes/PageViews.php",
-		"AuthManagerStatsdHandler": "includes/AuthManagerStatsdHandler.php",
-		"WikimediaEvents\\PrefUpdateInstrumentation": "includes/PrefUpdateInstrumentation.php"
+		"AuthManagerStatsdHandler": "includes/AuthManagerStatsdHandler.php"
+	},
+	"AutoloadNamespaces": {
+		"WikimediaEvents\\": "includes/"
 	},
 	"TestAutoloadClasses": {
 		"WikimediaEvents\\Tests\\PageViewsTest":  "tests/phpunit/PageViewsTest.php"
