@@ -1,8 +1,32 @@
 <?php
 
+namespace WikimediaEvents;
+
+use ActorMigration;
+use Content;
+use DeferredUpdates;
+use DerivativeContext;
+use EditPage;
+use EventLogging;
+use ExtensionRegistry;
+use Hooks;
+use IContextSource;
+use MediaWiki;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
-use WikimediaEvents\PageViews;
+use MobileContext;
+use OutputPage;
+use RecentChange;
+use RequestContext;
+use ResourceLoader;
+use Revision;
+use SearchResultSet;
+use Skin;
+use Status;
+use Title;
+use User;
+use WebRequest;
+use WikiPage;
 
 /**
  * Hooks used for Wikimedia-related logging

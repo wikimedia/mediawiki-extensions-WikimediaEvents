@@ -13,77 +13,39 @@
 		"MediaWiki": ">= 1.35.0"
 	},
 	"AutoloadClasses": {
-		"WikimediaEventsHooks": "includes/WikimediaEventsHooks.php",
-		"AuthManagerStatsdHandler": "includes/AuthManagerStatsdHandler.php"
+		"AuthManagerStatsdHandler": "includes/AuthManagerStatsdHandler.php",
+		"WikimediaEvents\\AuthManagerStatsdHandler": "includes/AuthManagerStatsdHandler.php"
 	},
 	"AutoloadNamespaces": {
 		"WikimediaEvents\\": "includes/"
 	},
-	"TestAutoloadClasses": {
-		"WikimediaEvents\\Tests\\PageViewsTest":  "tests/phpunit/PageViewsTest.php"
+	"TestAutoloadNamespaces": {
+		"WikimediaEvents\\Tests\\":  "tests/phpunit/"
 	},
 	"Hooks": {
-		"UserLogout": [
-			"WikimediaEventsHooks::onUserLogout"
-		],
-		"LocalUserCreated": [
-			"WikimediaEventsHooks::onLocalUserCreated"
-		],
-		"BeforeInitialize": [
-			"WikimediaEventsHooks::onBeforeInitializeWMDECampaign"
-		],
-		"BeforePageRedirect": [
-			"WikimediaEventsHooks::onBeforePageRedirect"
-		],
-		"BeforePageDisplay": [
-			"WikimediaEventsHooks::onBeforePageDisplay"
-		],
-		"PageContentSaveComplete": [
-			"WikimediaEventsHooks::onPageContentSaveComplete"
-		],
-		"UserSaveOptions": [
-			"WikimediaEvents\\PrefUpdateInstrumentation::onUserSaveOptions"
-		],
-		"ArticleViewHeader": [
-			"WikimediaEventsHooks::onArticleViewHeader"
-		],
-		"EditPageBeforeConflictDiff": [
-			"WikimediaEventsHooks::onEditPageBeforeConflictDiff"
-		],
-		"ResourceLoaderGetConfigVars": [
-			"WikimediaEventsHooks::onResourceLoaderGetConfigVars"
-		],
-		"ListDefinedTags": [
-			"WikimediaEventsHooks::onListDefinedTags"
-		],
-		"ChangeTagsListActive": [
-			"WikimediaEventsHooks::onChangeTagsListActive"
-		],
-		"XAnalyticsSetHeader": [
-			"WikimediaEventsHooks::onXAnalyticsHeader"
-		],
-		"SpecialSearchGoResult": [
-			"WikimediaEventsHooks::onSpecialSearchGoResult"
-		],
-		"SpecialSearchResults": [
-			"WikimediaEventsHooks::onSpecialSearchResults"
-		],
+		"UserLogout": "WikimediaEvents\\WikimediaEventsHooks::onUserLogout",
+		"LocalUserCreated": "WikimediaEvents\\WikimediaEventsHooks::onLocalUserCreated",
+		"BeforeInitialize": "WikimediaEvents\\WikimediaEventsHooks::onBeforeInitializeWMDECampaign",
+		"BeforePageRedirect": "WikimediaEvents\\WikimediaEventsHooks::onBeforePageRedirect",
+		"BeforePageDisplay": "WikimediaEvents\\WikimediaEventsHooks::onBeforePageDisplay",
+		"PageContentSaveComplete": "WikimediaEvents\\WikimediaEventsHooks::onPageContentSaveComplete",
+		"UserSaveOptions": "WikimediaEvents\\PrefUpdateInstrumentation::onUserSaveOptions",
+		"ArticleViewHeader": "WikimediaEvents\\WikimediaEventsHooks::onArticleViewHeader",
+		"EditPageBeforeConflictDiff": "WikimediaEvents\\WikimediaEventsHooks::onEditPageBeforeConflictDiff",
+		"ResourceLoaderGetConfigVars": "WikimediaEvents\\WikimediaEventsHooks::onResourceLoaderGetConfigVars",
+		"ListDefinedTags": "WikimediaEvents\\WikimediaEventsHooks::onListDefinedTags",
+		"ChangeTagsListActive": "WikimediaEvents\\WikimediaEventsHooks::onChangeTagsListActive",
+		"XAnalyticsSetHeader": "WikimediaEvents\\WikimediaEventsHooks::onXAnalyticsHeader",
+		"SpecialSearchGoResult": "WikimediaEvents\\WikimediaEventsHooks::onSpecialSearchGoResult",
+		"SpecialSearchResults": "WikimediaEvents\\WikimediaEventsHooks::onSpecialSearchResults",
 		"RecentChange_save": [
-			"WikimediaEventsHooks::onRecentChangeSaveCrossWikiUpload",
-			"WikimediaEventsHooks::onRecentChangeSaveEditCampaign"
+			"WikimediaEvents\\WikimediaEventsHooks::onRecentChangeSaveCrossWikiUpload",
+			"WikimediaEvents\\WikimediaEventsHooks::onRecentChangeSaveEditCampaign"
 		],
-		"ResourceLoaderRegisterModules": [
-			"WikimediaEventsHooks::onResourceLoaderRegisterModules"
-		],
-		"RevisionRecordInserted": [
-			"WikimediaEventsHooks::onRevisionRecordInserted"
-		],
-		"MakeGlobalVariablesScript": [
-			"WikimediaEventsHooks::onMakeGlobalVariablesScript"
-		],
-		"SpecialMuteSubmit": [
-			"WikimediaEventsHooks::onSpecialMuteSubmit"
-		]
+		"ResourceLoaderRegisterModules": "WikimediaEvents\\WikimediaEventsHooks::onResourceLoaderRegisterModules",
+		"RevisionRecordInserted": "WikimediaEvents\\WikimediaEventsHooks::onRevisionRecordInserted",
+		"MakeGlobalVariablesScript": "WikimediaEvents\\WikimediaEventsHooks::onMakeGlobalVariablesScript",
+		"SpecialMuteSubmit": "WikimediaEvents\\WikimediaEventsHooks::onSpecialMuteSubmit"
 	},
 	"MessagesDirs": {
 		"WikimediaEvents": [

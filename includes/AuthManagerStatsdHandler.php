@@ -22,8 +22,12 @@
  * @file
  */
 
+namespace WikimediaEvents;
+
 use MediaWiki\MediaWikiServices;
 use Monolog\Handler\AbstractHandler;
+use Status;
+use StatusValue;
 
 /**
  * Counts authentication-related log events (those sent to the 'authevents'
@@ -124,3 +128,5 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 		return null;
 	}
 }
+
+class_alias( AuthManagerStatsdHandler::class, 'AuthManagerStatsdHandler' );

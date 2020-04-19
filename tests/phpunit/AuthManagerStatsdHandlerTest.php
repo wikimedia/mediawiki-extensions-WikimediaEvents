@@ -1,7 +1,15 @@
 <?php
 
+namespace WikimediaEvents\Tests;
+
+use IBufferingStatsdDataFactory;
+use MediaWikiTestCase;
+use Status;
+use StatusValue;
+use WikimediaEvents\AuthManagerStatsdHandler;
+
 /**
- * @covers AuthManagerStatsdHandler
+ * @covers \WikimediaEvents\AuthManagerStatsdHandler
  */
 class AuthManagerStatsdHandlerTest extends MediaWikiTestCase {
 	/**
