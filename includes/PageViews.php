@@ -420,7 +420,7 @@ class PageViews extends ContextSource {
 
 		// Exclude autocreated accounts. We can't directly tell if an account
 		// was autocreated, but we can look at its home wiki.
-		if ( class_exists( CentralAuthUser::class ) ) {
+		if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
 			$globalUser = CentralAuthUser::getInstance( $user );
 			$homeWiki = $globalUser->getHomeWiki();
 			return $homeWiki === wfWikiID() || $homeWiki === null;
