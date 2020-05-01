@@ -12,10 +12,6 @@
 	"requires": {
 		"MediaWiki": ">= 1.35.0"
 	},
-	"AutoloadClasses": {
-		"AuthManagerStatsdHandler": "includes/AuthManagerStatsdHandler.php",
-		"WikimediaEvents\\AuthManagerStatsdHandler": "includes/AuthManagerStatsdHandler.php"
-	},
 	"AutoloadNamespaces": {
 		"WikimediaEvents\\": "includes/"
 	},

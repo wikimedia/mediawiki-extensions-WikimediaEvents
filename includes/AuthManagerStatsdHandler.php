@@ -128,5 +128,3 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 		return null;
 	}
 }
-
-class_alias( AuthManagerStatsdHandler::class, 'AuthManagerStatsdHandler' );
