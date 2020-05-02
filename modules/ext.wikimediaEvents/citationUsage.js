@@ -127,7 +127,7 @@
 	function getSectionId( $link ) {
 		var $headings = $link
 				.parents()
-				.prevAll( 'h2:first, h3:first, h4:first, h5:first, h6:first' ),
+				.prevAll( 'h2, h3, h4, h5, h6' ),
 			$headline;
 
 		if ( $headings.length ) {
@@ -186,6 +186,7 @@
 
 		data.ext_position = getExtLinkPosition( $link.prop( 'href' ) );
 
+		// eslint-disable-next-line no-jquery/no-class-state
 		data.freely_accessible = $link
 			.parent().hasClass( 'cs1-lock-free' );
 
