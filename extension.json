@@ -68,7 +68,8 @@
 		"WMDEBannerInteractions": 20027935,
 		"WMDEBannerSizeIssue": 18193993,
 		"WikidataCompletionSearchClicks": 18665070,
-		"UserFeedback": 18903446
+		"UserFeedback": 18903446,
+		"Test": "/analytics/legacy/test/1.0.0"
 	},
 	"ResourceModules": {
 		"ext.wikimediaEvents": {
