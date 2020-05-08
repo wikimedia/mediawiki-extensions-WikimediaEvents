@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"Giromin Cangiaxo"
+		]
+	},
+	"wikimediaevents-desc": "Registra di eventi speciffichi Wikimedia dœuviando EventLogging",
+	"wikimediaevents-humanrel-question-b": "Se t'hæ sercou $1, sta voxe chie a l'aniæ ben comme rezultou?",
+	"wikimediaevents-humanrel-question-c": "Se t'hæ sercou $1, sta voxe chie a-o saiæ pertinente?",
+	"wikimediaevents-humanrel-question-d": "Se quarchedun serchesse $1, ghe l'avieivan coæ de leze sta voxe chie?",
+	"wikimediaevents-humanrel-yes": "Sci",
+	"wikimediaevents-humanrel-no": "No",
+	"wikimediaevents-humanrel-unsure": "No-o so",
+	"wikimediaevents-humanrel-privacy-statement": "Deciarassion in sciâ Risservatessa"
+}
