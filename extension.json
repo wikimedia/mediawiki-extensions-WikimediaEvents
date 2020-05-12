@@ -169,7 +169,6 @@
 		},
 		"WMESearchRelevancePages": {
 			"value": {
-				"_merge_strategy": "array_plus"
 			},
 			"merge_strategy": "array_plus"
 		},
