@@ -16,7 +16,7 @@
 		"WikimediaEvents\\": "includes/"
 	},
 	"TestAutoloadNamespaces": {
-		"WikimediaEvents\\Tests\\":  "tests/phpunit/"
+		"WikimediaEvents\\Tests\\": "tests/phpunit/"
 	},
 	"Hooks": {
 		"UserLogout": "WikimediaEvents\\WikimediaEventsHooks::onUserLogout",
@@ -48,28 +48,37 @@
 			"i18n"
 		]
 	},
-	"EventLoggingSchemas": {
-		"ReadingDepth": 18201205,
-		"InukaPageView": 19739286,
-		"EditAttemptStep": 19802113,
-		"VisualEditorFeatureUse": 18457512,
-		"CompletionSuggestions": 13630018,
-		"SearchSatisfaction": 19240639,
-		"SearchSatisfactionErrors": 17181648,
-		"Search": 14361785,
-		"ChangesListHighlights": 16484288,
-		"ChangesListFilterGrouping": 17008168,
-		"RecentChangesTopLinks": 16732249,
-		"InputDeviceDynamics": 17687647,
-		"MobileWebUIActionsTracking": 19230467,
-		"CitationUsage": 18810892,
-		"CitationUsagePageLoad": 18502712,
-		"WMDEBannerEvents": 19608660,
-		"WMDEBannerInteractions": 20027935,
-		"WMDEBannerSizeIssue": 18193993,
-		"WikidataCompletionSearchClicks": 18665070,
-		"UserFeedback": 18903446,
-		"Test": "/analytics/legacy/test/1.0.0"
+	"attributes": {
+		"EventLogging": {
+			"Schemas": {
+				"ReadingDepth": 18201205,
+				"InukaPageView": 19739286,
+				"EditAttemptStep": 19802113,
+				"VisualEditorFeatureUse": 18457512,
+				"CompletionSuggestions": 13630018,
+				"SearchSatisfaction": 19240639,
+				"SearchSatisfactionErrors": 17181648,
+				"Search": 14361785,
+				"ChangesListHighlights": 16484288,
+				"ChangesListFilterGrouping": 17008168,
+				"RecentChangesTopLinks": 16732249,
+				"InputDeviceDynamics": 17687647,
+				"MobileWebUIActionsTracking": 19230467,
+				"CitationUsage": 18810892,
+				"CitationUsagePageLoad": 18502712,
+				"WMDEBannerEvents": 19608660,
+				"WMDEBannerInteractions": 20027935,
+				"WMDEBannerSizeIssue": 18193993,
+				"WikidataCompletionSearchClicks": 18665070,
+				"UserFeedback": 18903446,
+				"Test": "/analytics/legacy/test/1.0.0"
+			}
+		},
+		"VisualEditor": {
+			"PluginModules": [
+				"ext.wikimediaEvents.visualEditor"
+			]
+		}
 	},
 	"ResourceModules": {
 		"ext.wikimediaEvents": {
@@ -128,33 +137,68 @@
 		"localBasePath": "modules/",
 		"remoteExtPath": "WikimediaEvents/modules"
 	},
-	"VisualEditorPluginModules": [
-		"ext.wikimediaEvents.visualEditor"
-	],
 	"config": {
-		"WMEUnderstandingFirstDay": false,
-		"WMEUnderstandingFirstDaySensitiveNamespaces": [ 0, 1, 6, 7 ],
-		"WMEReadingDepthSamplingRate": 0.005,
-		"WMEReadingDepthEnabled": false,
-		"WMEMobileWebUIActionsTracking": 0,
-		"WMECitationUsagePopulationSize": 0,
-		"WMECitationUsagePageLoadPopulationSize": 0,
-		"WMEStatsdBaseUri": false,
+		"WMEUnderstandingFirstDay": {
+			"value": false
+		},
+		"WMEUnderstandingFirstDaySensitiveNamespaces": {
+			"value": [
+				0,
+				1,
+				6,
+				7
+			]
+		},
+		"WMEReadingDepthSamplingRate": {
+			"value": 0.005
+		},
+		"WMEReadingDepthEnabled": {
+			"value": false
+		},
+		"WMEMobileWebUIActionsTracking": {
+			"value": 0
+		},
+		"WMECitationUsagePopulationSize": {
+			"value": 0
+		},
+		"WMECitationUsagePageLoadPopulationSize": {
+			"value": 0
+		},
+		"WMEStatsdBaseUri": {
+			"value": false
+		},
 		"WMESearchRelevancePages": {
-			"_merge_strategy": "array_plus"
+			"value": {
+				"_merge_strategy": "array_plus"
+			},
+			"merge_strategy": "array_plus"
 		},
-		"WMEEditCampaigns": [],
-		"WMEInukaPageViewEnabled": false,
-		"WMEInukaPageViewCookiesDomain": "wikipedia.org",
+		"WMEEditCampaigns": {
+			"value": []
+		},
+		"WMEInukaPageViewEnabled": {
+			"value": false
+		},
+		"WMEInukaPageViewCookiesDomain": {
+			"value": "wikipedia.org"
+		},
 		"WMEInukaPageViewSamplingRatePerOs": {
-			"kaios": 1,
-			"android": 0.1,
-			"ios": 0.5,
-			"unknown": 0
+			"value": {
+				"kaios": 1,
+				"android": 0.1,
+				"ios": 0.5,
+				"unknown": 0
+			}
 		},
-		"WMESchemaEditAttemptStepSamplingRate": "0.0625",
-		"WMEWikidataCompletionSearchClicks": {},
-		"WMEClientErrorIntakeURL": false
+		"WMESchemaEditAttemptStepSamplingRate": {
+			"value": "0.0625"
+		},
+		"WMEWikidataCompletionSearchClicks": {
+			"value": []
+		},
+		"WMEClientErrorIntakeURL": {
+			"value": false
+		}
 	},
-	"manifest_version": 1
+	"manifest_version": 2
 }
