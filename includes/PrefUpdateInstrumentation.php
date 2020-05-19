@@ -22,7 +22,7 @@ class PrefUpdateInstrumentation {
 	/**
 	 * @const int REV_ID The revision ID of the PrefUpdate schema that we're using.
 	 */
-	const REV_ID = 19799589;
+	private const REV_ID = 19799589;
 
 	/**
 	 * Logs a <a href="https://meta.wikimedia.org/wiki/Schema:PrefUpdate">PrefUpdate</a> event for

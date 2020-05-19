@@ -24,29 +24,29 @@ class PageViews extends ContextSource {
 	 * Used to define the maximum age of the user accounts we are interested in logging
 	 * for.
 	 */
-	const DAY_LIMIT_IN_SECONDS = 86400;
+	public const DAY_LIMIT_IN_SECONDS = 86400;
 
 	/**
 	 * Used to define the maximum age of the user accounts for which we want to log visits to
 	 * to the help desk.
 	 */
-	const HELP_DESK_DAY_LIMIT_IN_SECONDS = 1209600;
+	public const HELP_DESK_DAY_LIMIT_IN_SECONDS = 1209600;
 
 	/**
 	 * Constants mapping to the keys in the PageViews schema.
 	 */
-	const EVENT_TITLE = 'title';
-	const EVENT_PAGE_ID = 'page_id';
-	const EVENT_REQUEST_METHOD = 'request_method';
-	const EVENT_ACTION = 'action';
-	const EVENT_PERMISSION_ERRORS = 'permission_errors';
-	const EVENT_HTTP_RESPONSE_CODE = 'http_response_code';
-	const EVENT_IS_MOBILE = 'is_mobile';
-	const EVENT_NAMESPACE = 'namespace';
-	const EVENT_PATH = 'path';
-	const EVENT_QUERY = 'query';
-	const EVENT_USER_ID = 'user_id';
-	const REDACT_STRING = 'redacted';
+	public const EVENT_TITLE = 'title';
+	public const EVENT_PAGE_ID = 'page_id';
+	public const EVENT_REQUEST_METHOD = 'request_method';
+	public const EVENT_ACTION = 'action';
+	public const EVENT_PERMISSION_ERRORS = 'permission_errors';
+	public const EVENT_HTTP_RESPONSE_CODE = 'http_response_code';
+	public const EVENT_IS_MOBILE = 'is_mobile';
+	public const EVENT_NAMESPACE = 'namespace';
+	public const EVENT_PATH = 'path';
+	public const EVENT_QUERY = 'query';
+	public const EVENT_USER_ID = 'user_id';
+	public const REDACT_STRING = 'redacted';
 
 	/**
 	 * @var array
