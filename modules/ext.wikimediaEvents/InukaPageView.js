@@ -117,10 +117,6 @@
 			return;
 		}
 
-		if ( /1|yes/.test( navigator.doNotTrack ) || window.doNotTrack === '1' ) {
-			return;
-		}
-
 		if ( [ 'IN', 'NG', 'ZA' ].indexOf( getCountry() ) === -1 ) {
 			return;
 		}
