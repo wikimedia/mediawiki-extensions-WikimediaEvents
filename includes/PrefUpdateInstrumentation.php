@@ -37,8 +37,13 @@ class PrefUpdateInstrumentation {
 	 *
 	 * @param User $user The user whose options are being saved
 	 * @param array &$options The options being saved
+	 * @param array $originalOptions The original options being replaced
 	 */
-	public static function onUserSaveOptions( User $user, array &$options ) : void {
+	public static function onUserSaveOptions(
+		User $user,
+		array &$options,
+		array $originalOptions
+	) : void {
 		// Modified version of original method from the Echo extension
 		$out = RequestContext::getMain()->getOutput();
 		// Capture user options saved via Special:Preferences, Special:MobileOptions or ApiOptions
@@ -49,9 +54,6 @@ class PrefUpdateInstrumentation {
 		if ( self::isKnownSettingsPage( $out->getTitle() )
 			|| ( defined( 'MW_API' ) && $out->getRequest()->getVal( 'action' ) === 'options' )
 		) {
-			// $clone is the current user object before the new option values are set
-			$clone = User::newFromId( $user->getId() );
-
 			$commonData = [
 				'version' => '1',
 				'userId' => $user->getId(),
@@ -61,7 +63,8 @@ class PrefUpdateInstrumentation {
 			foreach ( $options as $optName => $optValue ) {
 				// loose comparision is required since some of the values
 				// are not consistent in the two variables, eg, '' vs false
-				if ( $clone->getOption( $optName ) != $optValue ) {
+				$originalOptionValue = $originalOptions[$optName] ?? null;
+				if ( $originalOptionValue != $optValue ) {
 					$event = [
 						'property' => $optName,
 						// Encode value as JSON.
