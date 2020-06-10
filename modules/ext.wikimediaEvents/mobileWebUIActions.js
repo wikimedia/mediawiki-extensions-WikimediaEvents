@@ -5,7 +5,8 @@
  * @see https://meta.wikimedia.org/wiki/Schema:MobileWebUIActionsTracking
  */
 ( function ( config, user, mwExperiments, Schema ) {
-	var schemaMobileWebUIActionsTracking;
+	var schemaMobileWebUIActionsTracking,
+		getEditCountBucket = mw.wikimediaEvents.editCountBucket;
 
 	/**
 	 * Helper function to build comma-separated list of all enabled mobile modes
@@ -18,27 +19,6 @@
 			modes.push( 'amc' );
 		}
 		return modes;
-	}
-
-	/**
-	 * Helper function to build the editCountBucket value
-	 * @param {number} editCount
-	 * @return {string}
-	 */
-	function getEditCountBucket( editCount ) {
-		if ( editCount >= 1000 ) {
-			return '1000+ edits';
-		}
-		if ( editCount >= 100 ) {
-			return '100-999 edits';
-		}
-		if ( editCount >= 5 ) {
-			return '5-99 edits';
-		}
-		if ( editCount >= 1 ) {
-			return '1-4 edits';
-		}
-		return '0 edits';
 	}
 
 	schemaMobileWebUIActionsTracking = new Schema( 'MobileWebUIActionsTracking',
