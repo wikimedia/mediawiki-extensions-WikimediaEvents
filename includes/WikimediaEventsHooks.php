@@ -341,6 +341,7 @@ class WikimediaEventsHooks {
 		global $wgWMEClientErrorIntakeURL, $wgWMEStatsdBaseUri, $wgWMEReadingDepthSamplingRate,
 			$wgWMEReadingDepthEnabled, $wgWMECitationUsagePopulationSize,
 			$wgWMECitationUsagePageLoadPopulationSize,
+			$wgWMEDesktopWebUIActionsTracking,
 			$wgWMESchemaEditAttemptStepSamplingRate, $wgWMEMobileWebUIActionsTracking,
 			$wgWMEWikidataCompletionSearchClicks,
 			$wgWMEInukaPageViewEnabled, $wgWMEInukaPageViewCookiesDomain,
@@ -366,6 +367,8 @@ class WikimediaEventsHooks {
 			$vars['wgWMEInukaPageViewEnabled'] = $wgWMEInukaPageViewEnabled;
 			$vars['wgWMEInukaPageViewCookiesDomain'] = $wgWMEInukaPageViewCookiesDomain;
 			$vars['wgWMEInukaPageViewSamplingRatePerOs'] = $wgWMEInukaPageViewSamplingRatePerOs;
+		} else {
+			$vars['wgWMEDesktopWebUIActionsTracking'] = $wgWMEDesktopWebUIActionsTracking;
 		}
 	}
 

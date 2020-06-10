@@ -64,10 +64,10 @@ Details at <https://phabricator.wikimedia.org/T191086>
 
 Details at <https://phabricator.wikimedia.org/T196186>.
 
-## Click-tracking for MobileFrontend
+## Click-tracking for Vector and Minerva
 
 * Since: July 2019
-* Files: mobileWebUIActions.js
+* Files: mobileWebUIActions.js, desktopWebUIActions.js
 * Contact: Readers Web"
 
 Details at <https://phabricator.wikimedia.org/T220016>.

@@ -51,6 +51,7 @@
 	"attributes": {
 		"EventLogging": {
 			"Schemas": {
+				"DesktopWebUIActionsTracking": 20184974,
 				"ReadingDepth": 18201205,
 				"InukaPageView": 19739286,
 				"EditAttemptStep": 19802113,
@@ -91,7 +92,8 @@
 			],
 			"skinScripts": {
 				"default": [
-					"ext.wikimediaEvents/searchSatisfaction.js"
+					"ext.wikimediaEvents/searchSatisfaction.js",
+					"ext.wikimediaEvents/desktopWebUIActions.js"
 				],
 				"minerva": [
 					"ext.wikimediaEvents/mobileWebUIActions.js",
@@ -154,6 +156,9 @@
 		},
 		"WMEReadingDepthEnabled": {
 			"value": false
+		},
+		"WMEDesktopWebUIActionsTracking": {
+			"value": 0
 		},
 		"WMEMobileWebUIActionsTracking": {
 			"value": 0
