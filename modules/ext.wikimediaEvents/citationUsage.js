@@ -137,31 +137,31 @@
 	/**
 	 * Return data specific to link
 	 *
-	 * @param {jQuery} $link
+	 * @param {HTMLElement} link
 	 * @return {Object}
 	 */
-	function getLinkStats( $link ) {
-		var href = $link.prop( 'href' );
-
+	function getLinkStats( link ) {
+		var $link = $( link );
 		return {
 			section_id: getSectionId( $link ),
 			in_infobox: isInInfobox( $link ),
-			link_text: normalizeSpaces( $link.text() ),
-			link_url: href,
-			link_occurrence: getLinkOccurence( href )
+			link_text: normalizeSpaces( link.textContent ),
+			link_url: link.href,
+			link_occurrence: getLinkOccurence( link.href )
 		};
 	}
 
 	/**
 	 * Return external link statistics.
 	 *
-	 * @param {jQuery} $link external link
+	 * @param {HTMLElement} link External link
 	 * @return {Object}
 	 */
-	function getExtLinkStats( $link ) {
-		var $refText = $link.closest( '.reference-text' ),
+	function getExtLinkStats( link ) {
+		var $link = $( link ),
+			$refText = $link.closest( '.reference-text' ),
 			$linkLi = $link.parents( '.references li' ),
-			data = getLinkStats( $link );
+			data = getLinkStats( link );
 
 		if ( $refText.length ) {
 			// get count of backlinks
@@ -171,7 +171,7 @@
 				.length;
 		}
 
-		data.ext_position = getExtLinkPosition( $link.prop( 'href' ) );
+		data.ext_position = getExtLinkPosition( link.href );
 
 		// eslint-disable-next-line no-jquery/no-class-state
 		data.freely_accessible = $link
@@ -198,7 +198,7 @@
 	 */
 	function setupExtLogging() {
 		$( '#content' ).on( 'click', 'a.external', function () {
-			var data = getExtLinkStats( $( this ) );
+			var data = getExtLinkStats( this );
 
 			data.action = 'extClick';
 			logEvent( SCHEMA_NAME, data );
@@ -211,7 +211,7 @@
 	function setupUpLogging() {
 		$( '.references' )
 			.on( 'click', '.mw-cite-backlink a', function () {
-				var data = getLinkStats( $( this ) );
+				var data = getLinkStats( this );
 
 				data.action = 'upClick';
 				logEvent( SCHEMA_NAME, data );
@@ -230,7 +230,7 @@
 		 * @param {HTMLElement} link
 		 */
 		function logHover( link ) {
-			var data = getLinkStats( $( link ) );
+			var data = getLinkStats( link );
 
 			data.action = 'fnHover';
 			logEvent( SCHEMA_NAME, data );
@@ -247,7 +247,7 @@
 				hoverTimeout = null;
 			} )
 			.on( 'click', 'sup.reference a', function () {
-				var data = getLinkStats( $( this ) );
+				var data = getLinkStats( this );
 
 				clearTimeout( hoverTimeout );
 				hoverTimeout = null;
