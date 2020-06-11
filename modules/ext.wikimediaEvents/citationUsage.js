@@ -8,55 +8,42 @@
  */
 ( function ( mwUser, mwExperiments, mwEventLog ) {
 	// configuration key for the population size (one in how many?)
-	var POPULATION_SIZE = mw.config.get( 'wgWMECitationUsagePopulationSize', 0 ),
-		PL_POPULATION_SIZE = mw.config.get( 'wgWMECitationUsagePageLoadPopulationSize', 0 ),
+	var POPULATION_SIZE = mw.config.get( 'wgWMECitationUsagePopulationSize' ) || 0,
+		PL_POPULATION_SIZE = mw.config.get( 'wgWMECitationUsagePageLoadPopulationSize' ) || 0,
 		// number of milliseconds after which a 'fnHover' is logged
 		HOVER_TIMEOUT = 1000,
 		SCHEMA_NAME = 'CitationUsage',
 		PL_SCHEMA_NAME = 'CitationUsagePageLoad',
 		REFERRER_MAX_LENGTH = 100,
-		getBaseData,
+		perf = window.performance,
 		getLinkOccurence,
 		getExtLinkPosition;
-
-	// Compute once the data used with all actions.
-	getBaseData = ( function () {
-		var baseData;
-
-		return function () {
-			if ( !baseData ) {
-				baseData = {
-					dom_interactive_time: window.performance.timing.domInteractive,
-					revision_id: mw.config.get( 'wgRevisionId' ),
-					page_id: mw.config.get( 'wgArticleId' ),
-					namespace_id: mw.config.get( 'wgNamespaceNumber' ),
-					page_token: mwUser.getPageviewToken(),
-					session_token: mwUser.sessionId(),
-					referrer: document.referrer.slice( 0, REFERRER_MAX_LENGTH ),
-					skin: mw.config.get( 'skin' ),
-					mode: mw.config.get( 'wgMFMode' ) ? 'mobile' : 'desktop'
-				};
-			}
-			return baseData;
-		};
-	}() );
 
 	/**
 	 * Log data to schemaName
 	 *
-	 * @param {string} schemaName
-	 * @param {string} data
+	 * @param {string} schema Schema name
+	 * @param {Object} data Event data to be added to the base data for CitationUsage events.
 	 */
-	function logEvent( schemaName, data ) {
-		var baseData = getBaseData();
-
-		mwEventLog.logEvent(
-			schemaName, $.extend( {}, baseData, data, {
-				event_offset_time: Math.round(
-					mw.now() - baseData.dom_interactive_time
-				)
-			} )
-		);
+	function logEvent( schema, data ) {
+		mwEventLog.logEvent( schema, $.extend(
+			// Add base data used with all actions
+			// Calling getPageviewToken() or sessionId() is expensive the first time,
+			// is thus done lazily here, not ahead of time!
+			{
+				dom_interactive_time: perf.timing.domInteractive,
+				event_offset_time: Math.round( mw.now() - perf.timing.domInteractive ),
+				revision_id: mw.config.get( 'wgRevisionId' ),
+				page_id: mw.config.get( 'wgArticleId' ),
+				namespace_id: mw.config.get( 'wgNamespaceNumber' ),
+				page_token: mwUser.getPageviewToken(),
+				session_token: mwUser.sessionId(),
+				referrer: document.referrer.slice( 0, REFERRER_MAX_LENGTH ),
+				skin: mw.config.get( 'skin' ),
+				mode: mw.config.get( 'wgMFMode' ) ? 'mobile' : 'desktop'
+			},
+			data
+		) );
 	}
 
 	/**
@@ -69,13 +56,9 @@
 		var links;
 
 		return function ( href ) {
-			var $links;
-
 			if ( !links ) {
-				$links = $( '#content a[href]' );
-
 				links = {};
-				$links.each( function ( i, link ) {
+				$( '#content a[href]' ).each( function ( i, link ) {
 					if ( link.href in links ) {
 						links[ link.href ] += 1;
 					} else {
@@ -99,13 +82,9 @@
 		var links;
 
 		return function ( href ) {
-			var $links;
-
 			if ( !links ) {
-				$links = $( '#content a.external' );
-
 				links = {};
-				$links.each( function ( i, link ) {
+				$( '#content a.external' ).each( function ( i, link ) {
 					links[ link.href ] = i + 1;
 				} );
 			}
@@ -286,8 +265,7 @@
 	 */
 	function shouldLog( populationSize ) {
 		return (
-			window.performance && window.performance.timing &&
-				window.performance.timing.domInteractive &&
+			perf && perf.timing && perf.timing.domInteractive &&
 				!mw.config.get( 'wgIsMainPage' ) &&
 				mw.config.get( 'wgNamespaceNumber' ) === 0 &&
 				mw.config.get( 'wgAction' ) === 'view' &&
@@ -298,17 +276,13 @@
 
 	$( function () {
 		if ( shouldLog( PL_POPULATION_SIZE ) ) {
-			mw.loader.using( 'ext.eventLogging', function () {
-				mw.requestIdleCallback( logPageLoad );
-			} );
+			mw.requestIdleCallback( logPageLoad );
 		}
 
 		if ( shouldLog( POPULATION_SIZE ) ) {
-			mw.loader.using( 'ext.eventLogging', function () {
-				setupExtLogging();
-				setupUpLogging();
-				setupFnLogging();
-			} );
+			setupExtLogging();
+			setupUpLogging();
+			setupFnLogging();
 		}
 	} );
 }( mw.user, mw.experiments, mw.eventLog ) );
