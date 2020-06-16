@@ -6,7 +6,7 @@
  */
 ( function ( config, user, mwExperiments, Schema ) {
 	var schemaMobileWebUIActionsTracking,
-		getEditCountBucket = mw.wikimediaEvents.editCountBucket;
+		getEditCountBucket = mw.wikimediaEvents.getEditCountBucket;
 
 	/**
 	 * Helper function to build comma-separated list of all enabled mobile modes
