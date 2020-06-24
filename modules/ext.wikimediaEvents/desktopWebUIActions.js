@@ -7,7 +7,7 @@
 ( function ( config, user, eventLog, getEditCountBucket ) {
 	var skinVersion,
 		sampleSize = config.get( 'wgWMEDesktopWebUIActionsTracking', 0 ),
-		pop = sampleSize ? 1 / config.get( 'wgWMEDesktopWebUIActionsTracking', 0 ) : 0;
+		pop = sampleSize ? 1 / sampleSize : 0;
 
 	/**
 	 *
