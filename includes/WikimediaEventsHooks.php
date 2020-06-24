@@ -54,7 +54,7 @@ class WikimediaEventsHooks {
 			$out->addModules( 'ext.wikimediaEvents.loggedin' );
 		}
 
-		if ( defined( 'WB_VERSION' ) ) {
+		if ( ExtensionRegistry::getInstance()->isLoaded( 'WikibaseRepository' ) ) {
 			// If we are in Wikibase Repo, load Wikibase module
 			$out->addModules( 'ext.wikimediaEvents.wikibase' );
 		}
