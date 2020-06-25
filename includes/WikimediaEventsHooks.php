@@ -3,7 +3,6 @@
 namespace WikimediaEvents;
 
 use ActorMigration;
-use Content;
 use DeferredUpdates;
 use DerivativeContext;
 use EditPage;
@@ -14,15 +13,15 @@ use IContextSource;
 use MediaWiki;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
+use MediaWiki\Storage\EditResult;
+use MediaWiki\User\UserIdentity;
 use MobileContext;
 use OutputPage;
 use RecentChange;
 use RequestContext;
 use ResourceLoader;
-use Revision;
 use SearchResultSet;
 use Skin;
-use Status;
 use Title;
 use User;
 use WebRequest;
@@ -154,22 +153,21 @@ class WikimediaEventsHooks {
 	 * Imported from EventLogging extension
 	 *
 	 * @param WikiPage $wikiPage
-	 * @param User $user
-	 * @param Content $content
+	 * @param UserIdentity $userIdentity
 	 * @param string $summary
-	 * @param bool $isMinor
-	 * @param bool $isWatch
-	 * @param string $section
 	 * @param int $flags
-	 * @param Revision $revision
-	 * @param Status $status
-	 * @param int $baseRevId
+	 * @param RevisionRecord $revisionRecord
+	 * @param EditResult $editResult
 	 *
-	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
+	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageSaveComplete
 	 */
-	public static function onPageContentSaveComplete(
-		WikiPage $wikiPage, $user, $content, $summary,
-		$isMinor, $isWatch, $section, $flags, Revision $revision, $status, $baseRevId
+	public static function onPageSaveComplete(
+		WikiPage $wikiPage,
+		UserIdentity $userIdentity,
+		string $summary,
+		int $flags,
+		RevisionRecord $revisionRecord,
+		EditResult $editResult
 	) {
 		if ( PHP_SAPI === 'cli' ) {
 			return; // ignore maintenance scripts
@@ -182,6 +180,9 @@ class WikimediaEventsHooks {
 		$nsInfo = $services->getNamespaceInfo();
 		$stats = $services->getStatsdDataFactory();
 		$permMgr = $services->getPermissionManager();
+
+		$user = User::newFromIdentity( $userIdentity );
+		$content = $wikiPage->getContent();
 
 		if (
 			$user->isBot() ||
@@ -214,7 +215,7 @@ class WikimediaEventsHooks {
 
 		// Null edits are both slow (due to user name mismatch reparses) and are
 		// not the focus of this benchmark, which is about actual edits to pages
-		$edit = $status->hasMessage( 'edit-no-change' ) ? 'nullEdit' : 'edit';
+		$edit = $editResult->isNullEdit() ? 'nullEdit' : 'edit';
 
 		$size = $content->getSize();
 
