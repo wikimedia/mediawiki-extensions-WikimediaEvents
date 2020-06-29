@@ -22,7 +22,7 @@
 ( function () {
 	'use strict';
 
-	var search, autoComplete, session, eventLog, initSubTest, initDebugLogging,
+	var search, autoComplete, session, initSubTest, initDebugLogging,
 		isSearchResultPage = mw.config.get( 'wgIsSearchResultPage' ),
 		uri = new mw.Uri( location.href ),
 		checkinTimes = [ 10, 20, 30, 40, 50, 60, 90, 120, 150, 180, 210, 240, 300, 360, 420 ],
@@ -343,118 +343,6 @@
 		setVisibleTimeout( action, 1000 * timeout );
 	}
 
-	/**
-	 * Increase deliverability of events fired close to unload, such as
-	 * autocomplete results that the user selects. Uses a bit of optimism that
-	 * multiple tabs are not working on the same localStorage queue at the same
-	 * time. Could perhaps be improved with locking, but not sure the
-	 * code+overhead is worth it.
-	 *
-	 * @return {Object}
-	 */
-	function extendMwEventLog() {
-		var self,
-			localQueue = {},
-			queueKey = 'wmE-Ss-queue';
-
-		// if we have send beacon or do not track is enabled do nothing
-		// FIXME: Don't use === $.noop, use a null/undefined value instead
-		// eslint-disable-next-line no-jquery/no-noop
-		if ( navigator.sendBeacon || mw.eventLog.sendBeacon === $.noop ) {
-			return mw.eventLog;
-		}
-
-		self = $.extend( {}, mw.eventLog, {
-			/**
-			 * Transfer data to a remote server by making a lightweight
-			 * HTTP request to the specified URL.
-			 *
-			 * @param {string} url URL to request from the server.
-			 */
-			sendBeacon: function ( url ) {
-				// increase deliverability guarantee of events fired
-				// close to page unload, while adding some latency
-				// and chance of duplicate events
-				var img = document.createElement( 'img' ),
-					handler = function () {
-						delete localQueue[ url ];
-					};
-
-				localQueue[ url ] = true;
-				img.addEventListener( 'load', handler );
-				img.addEventListener( 'error', handler );
-				img.setAttribute( 'src', url );
-			},
-
-			/**
-			 * Construct and transmit to a remote server a record of some event
-			 * having occurred.
-			 *
-			 * This is a direct copy of mw.eventLog.logEvent. It is necessary
-			 * to override the call to sendBeacon.
-			 *
-			 * @param {string} schemaName
-			 * @param {Object} eventData
-			 * @return {jQuery.Promise}
-			 */
-			logEvent: function ( schemaName, eventData ) {
-				var event = self.prepare( schemaName, eventData ),
-					url = self.makeBeaconUrl( event ),
-					sizeError = self.checkUrlSize( schemaName, url ),
-					deferred = $.Deferred();
-
-				if ( !sizeError ) {
-					self.sendBeacon( url );
-					deferred.resolveWith( event, [ event ] );
-				} else {
-					deferred.rejectWith( event, [ event, sizeError ] );
-				}
-				return deferred.promise();
-			}
-		} );
-
-		// @todo only doing this when a new log event initializes event logging
-		// might be reducing our deliverability. Not sure the best way to
-		// handle.
-		$( function () {
-			var queue, url,
-				jsonQueue = mw.storage.get( queueKey );
-
-			if ( jsonQueue ) {
-				mw.storage.remove( queueKey );
-				queue = JSON.parse( jsonQueue );
-				for ( url in queue ) {
-					if ( Object.prototype.hasOwnProperty.call( queue, url ) ) {
-						self.sendBeacon( url );
-					}
-				}
-			}
-		} );
-
-		$( window ).on( 'beforeunload', function () {
-			var jsonQueue, key,
-				queueIsEmpty = true;
-			// IE8 can't do Object.keys( x ).length, so
-			// we get this monstrosity
-			for ( key in localQueue ) {
-				if ( Object.prototype.hasOwnProperty.call( localQueue, key ) ) {
-					queueIsEmpty = false;
-					break;
-				}
-			}
-			if ( !queueIsEmpty ) {
-				jsonQueue = mw.storage.get( queueKey );
-				if ( jsonQueue ) {
-					$.extend( localQueue, JSON.parse( jsonQueue ) );
-				}
-				mw.storage.set( queueKey, JSON.stringify( localQueue ) );
-				localQueue = {};
-			}
-		} );
-
-		return self;
-	}
-
 	function genLogEventFn( source, session, sourceExtraData ) {
 		return function ( action, extraData ) {
 			var scrollTop = $( window ).scrollTop(),
@@ -515,8 +403,7 @@
 
 			// ship the event
 			mw.loader.using( [ 'ext.eventLogging' ] ).then( function () {
-				eventLog = eventLog || extendMwEventLog();
-				eventLog.logEvent( 'SearchSatisfaction', evt );
+				mw.eventLog.logEvent( 'SearchSatisfaction', evt );
 			} );
 		};
 	}
@@ -851,8 +738,7 @@
 
 			// ship the event
 			mw.loader.using( [ 'ext.eventLogging' ] ).then( function () {
-				eventLog = eventLog || extendMwEventLog();
-				eventLog.logEvent( 'SearchSatisfactionErrors', evt );
+				mw.eventLog.logEvent( 'SearchSatisfactionErrors', evt );
 			} );
 		} );
 	} );
