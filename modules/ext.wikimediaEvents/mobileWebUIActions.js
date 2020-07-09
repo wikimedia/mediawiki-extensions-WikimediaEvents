@@ -10,6 +10,7 @@
 
 	/**
 	 * Helper function to build comma-separated list of all enabled mobile modes
+	 *
 	 * @return {string[]}
 	 */
 	function getModes() {

@@ -43,6 +43,7 @@
 
 	/**
 	 * Log data to schemaName
+	 *
 	 * @param {string} schemaName
 	 * @param {string} data
 	 */
@@ -60,6 +61,7 @@
 
 	/**
 	 * Return the number of times a link appears on the page.
+	 *
 	 * @param {string} href
 	 * @return {number}
 	 */
@@ -89,6 +91,7 @@
 	 * Return the DOM position of an external link among other external links.
 	 * If the same link appears in multiple positions, return the last
 	 * position.
+	 *
 	 * @param {string} href
 	 * @return {number}
 	 */
@@ -112,6 +115,7 @@
 
 	/**
 	 * Replace multiple whitespaces around words with one space.
+	 *
 	 * @param {string} text
 	 * @return {string} normalized text
 	 */
@@ -121,6 +125,7 @@
 
 	/**
 	 * Return the ID of the section to which the link belongs.
+	 *
 	 * @param {jQuery} $link
 	 * @return {string|undefined}
 	 */
@@ -142,6 +147,7 @@
 
 	/**
 	 * Is the link in infobox?
+	 *
 	 * @param {jQuery} $link
 	 * @return {boolean}
 	 */
@@ -151,6 +157,7 @@
 
 	/**
 	 * Return data specific to link
+	 *
 	 * @param {jQuery} $link
 	 * @return {Object}
 	 */
@@ -168,6 +175,7 @@
 
 	/**
 	 * Return external link statistics.
+	 *
 	 * @param {jQuery} $link external link
 	 * @return {Object}
 	 */
@@ -239,6 +247,7 @@
 
 		/**
 		 * Log 'fnHover' event.
+		 *
 		 * @param {HTMLElement} link
 		 */
 		function logHover( link ) {
@@ -271,6 +280,7 @@
 
 	/**
 	 * Whether the current session should be logged.
+	 *
 	 * @param {number} populationSize one in how many should be logged?
 	 * @return {boolean}
 	 */

@@ -255,6 +255,7 @@
 	 * Hook handler for wikimedia.event.ReadingDepthSchema.enable
 	 * Callback that triggers the ReadingDepth test and sets a sample bucket the indicates the
 	 * test was triggered from an external source.
+	 *
 	 * @param {string} topic
 	 * @param {string} boolProperty unique boolean field in readingDepth schema that describes
 	 *                                the name and bucket of the test that triggered readingDepth,

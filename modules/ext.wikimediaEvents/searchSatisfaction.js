@@ -84,6 +84,9 @@
 		window.history.replaceState( {}, '', uri.toString() );
 	}
 
+	/**
+	 * @class SessionState
+	 */
 	function SessionState() {
 		// currently loaded state
 		var state = {},

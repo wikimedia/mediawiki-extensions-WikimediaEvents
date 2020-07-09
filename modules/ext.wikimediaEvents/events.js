@@ -8,6 +8,7 @@
 ( function () {
 	/**
 	 * Helper function to build the editCountBucket value
+	 *
 	 * @param {number} editCount
 	 * @return {string}
 	 */
