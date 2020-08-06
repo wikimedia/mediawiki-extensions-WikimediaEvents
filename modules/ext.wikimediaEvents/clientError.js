@@ -4,6 +4,10 @@
 // that can be logged via HTTP POST.
 //
 ( function () {
+	var
+		// [T259371] Only log up to this many errors per page.
+		errorLimit = 5,
+		errorCount = 0;
 	/**
 	 * Install handler to send a diagnostic event when a runtime error occurs.
 	 *
@@ -27,9 +31,11 @@
 		//
 		mw.trackSubscribe( 'global.error', function ( _, obj ) {
 
-			if ( !obj ) {
+			if ( !obj || errorCount >= errorLimit ) {
 				return;
 			}
+
+			errorCount++;
 
 			navigator.sendBeacon( intakeURL, JSON.stringify( {
 				meta: {
