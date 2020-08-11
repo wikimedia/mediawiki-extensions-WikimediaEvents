@@ -31,7 +31,33 @@
 		//
 		mw.trackSubscribe( 'global.error', function ( _, obj ) {
 
-			if ( !obj || errorCount >= errorLimit ) {
+			if ( !obj ) {
+				return;
+			}
+
+			if ( !obj.stackTrace && ( !obj.url || ( obj.url === location.href ) ) ) {
+				//
+				// [T259369] If there is no stack trace, then either:
+				//
+				// 1. The browser does not support stack traces.
+				// 2. The browser is not captured by our regex in
+				//    mediawiki.errorLogger.js.
+				// 3. The stack trace has been censored by the browser
+				//    due to cross site origin security requirements.
+				// 4. Some other weird thing is happening.
+				//
+				// We keep cases 1.) and 2.), but not 3.) and 4.), because
+				// the errors from those cases are not within our power to
+				// diagnose and fix.
+				//
+				// For reasons explored in T259369, the predicate above
+				// catches cases 3.) and 4.).
+				//
+				return;
+			}
+
+			// [T259371] Stop repeated errors from e.g. setInterval().
+			if ( errorCount >= errorLimit ) {
 				return;
 			}
 
