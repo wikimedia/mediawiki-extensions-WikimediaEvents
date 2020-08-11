@@ -71,3 +71,11 @@ Details at <https://phabricator.wikimedia.org/T238029>.
 * Contact: Product Infrastructure
 
 Details at <https://phabricator.wikimedia.org/T235189>.
+
+## Session Tick
+
+* Since: June 2020
+* Files: sessionTick.js
+* Contact: Product Infrastructure
+
+Details at <https://phabricator.wikimedia.org/T248987>.
