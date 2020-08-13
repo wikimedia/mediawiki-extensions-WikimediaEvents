@@ -35,10 +35,11 @@
 			dymo1: 'dym-original'
 		},
 		// some browsers can't do Object.keys properly, so manually maintain the list
-		didYouMeanList = [ 'dym1', 'dymr1', 'dymo1' ];
+		didYouMeanList = [ 'dym1', 'dymr1', 'dymo1' ],
+		skin = mw.config.get( 'skin' );
 
 	// reject mobile users
-	if ( mw.config.get( 'skin' ) === 'minerva' ) {
+	if ( skin === 'minerva' ) {
 		return;
 	}
 
@@ -391,6 +392,23 @@
 
 			if ( articleId > 0 ) {
 				evt.articleId = articleId;
+			}
+
+			evt.skin = skin;
+
+			// Is the user using the Vector skin? If so, then include which version of the skin
+			// they're using and which version of the search widget they're seeing.
+			//
+			// See https://phabricator.wikimedia.org/T256100 for detail.
+			if ( skin === 'vector' ) {
+				evt.skinVersion = document.body.classList.contains( 'skin-vector-legacy' ) ? 'legacy' : 'latest';
+
+				if ( document.querySelector( '#app .wvui-input' ) ) {
+
+					// Use the extraParams field as the subTest field is expected to be the current
+					// wiki's DB name (i.e. mw.config.get( 'wgDBname' )) if it's set.
+					evt.extraParams = evt.extraParams ? evt.extraParams + ';WVUI' : 'WVUI';
+				}
 			}
 
 			// add any action specific data
