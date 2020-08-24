@@ -5,6 +5,7 @@ namespace WikimediaEvents;
 use EventLogging;
 use FormatJson;
 use MWTimestamp;
+use RequestContext;
 use User;
 
 /**
@@ -111,6 +112,10 @@ class PrefUpdateInstrumentation {
 		array &$options,
 		array $originalOptions
 	) : void {
+		if ( !self::isUserInitiated() ) {
+			return;
+		}
+
 		$now = MWTimestamp::now( TS_MW );
 
 		foreach ( $options as $optName => $optValue ) {
@@ -198,5 +203,38 @@ class PrefUpdateInstrumentation {
 		}
 
 		return '0 edits';
+	}
+
+	/**
+	 * Given the global state of the application, gets whether or not *we think* that the user
+	 * initiated the preference update rather than, say, MediaWiki or an extension doing so.
+	 *
+	 * @return bool
+	 */
+	private static function isUserInitiated(): bool {
+		// TODO (mattflaschen, 2013-06-13): Ideally this would be done more cleanly without looking
+		// explicitly at page names and URL parameters. Maybe a $userInitiated flag passed to
+		// User::saveSettings would work.
+
+		if (
+			defined( 'MW_API' )
+			&& RequestContext::getMain()->getRequest()->getRawVal( 'action' ) === 'options'
+		) {
+			return true;
+		}
+
+		$title = RequestContext::getMain()->getTitle();
+
+		if ( $title === null ) {
+			return false;
+		}
+
+		foreach ( [ 'Preferences', 'MobileOptions' ] as $page ) {
+			if ( $title->isSpecial( $page ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
