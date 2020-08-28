@@ -30,28 +30,22 @@
 		// to the 'global.error' topic.
 		//
 		mw.trackSubscribe( 'global.error', function ( _, obj ) {
-
 			if ( !obj ) {
 				return;
 			}
 
-			if ( !obj.stackTrace && ( !obj.url || ( obj.url === location.href ) ) ) {
+			if ( !obj.url || obj.url === location.href ) {
 				//
-				// [T259369] If there is no stack trace, then either:
+				// [T259369], [T261523] When the error lacks a URL,
+				// or the URL is defaulted to page location, the
+				// stack trace is rarely meaningful, if ever.
 				//
-				// 1. The browser does not support stack traces.
-				// 2. The browser is not captured by our regex in
-				//    mediawiki.errorLogger.js.
-				// 3. The stack trace has been censored by the browser
-				//    due to cross site origin security requirements.
-				// 4. Some other weird thing is happening.
+				// It may have been censored by the browser due to
+				// cross site origin security requirements, or some
+				// other weird thing may be happening.
 				//
-				// We keep cases 1.) and 2.), but not 3.) and 4.), because
-				// the errors from those cases are not within our power to
-				// diagnose and fix.
-				//
-				// For reasons explored in T259369, the predicate above
-				// catches cases 3.) and 4.).
+				// We discard such errors because without a stack
+				// trace, they are not really within our power to fix.
 				//
 				return;
 			}
