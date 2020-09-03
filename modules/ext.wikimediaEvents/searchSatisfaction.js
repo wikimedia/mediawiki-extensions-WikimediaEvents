@@ -25,7 +25,13 @@
 
 	var search, autoComplete, session, initSubTest, initDebugLogging,
 		isSearchResultPage = mw.config.get( 'wgIsSearchResultPage' ),
-		uri = new mw.Uri( location.href ),
+		uri = ( function () {
+			try {
+				return new mw.Uri( location.href );
+			} catch ( e ) {
+				return null;
+			}
+		}() ),
 		checkinTimes = [ 10, 20, 30, 40, 50, 60, 90, 120, 150, 180, 210, 240, 300, 360, 420 ],
 		lastScrollTop = 0,
 		articleId = mw.config.get( 'wgArticleId' ),
@@ -39,8 +45,8 @@
 		didYouMeanList = [ 'dym1', 'dymr1', 'dymo1' ],
 		skin = mw.config.get( 'skin' );
 
-	// reject mobile users
-	if ( skin === 'minerva' ) {
+	// reject mobile users or where the URI could not be created
+	if ( mw.config.get( 'skin' ) === 'minerva' || uri === null ) {
 		return;
 	}
 
