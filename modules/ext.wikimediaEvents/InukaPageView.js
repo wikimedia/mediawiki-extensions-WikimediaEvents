@@ -1,15 +1,15 @@
 /*!
  * Track page views of Inuka target users
  *
- * @see https://phabricator.wikimedia.org/T238029
- * @see https://meta.wikimedia.org/wiki/Schema:InukaPageView
+ * Launch task: https://phabricator.wikimedia.org/T238029
+ * Schema: https://meta.wikimedia.org/wiki/Schema:InukaPageView
  */
 ( function () {
 	var cookieDomain = mw.config.get( 'wgWMEInukaPageViewCookiesDomain' ),
 		samplingRatePerOs = mw.config.get( 'wgWMEInukaPageViewSamplingRatePerOs' ),
 		userCookieExpirationDays = 30;
 
-	mw.requestIdleCallback( function () {
+	function init() {
 		var start = mw.now(),
 			sectionSelector = 'h2.section-heading',
 			openedSections = {},
@@ -157,5 +157,7 @@
 		} );
 
 		window.addEventListener( 'pagehide', logEvent );
-	} );
+	}
+
+	mw.requestIdleCallback( init );
 }() );

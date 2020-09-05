@@ -1,8 +1,8 @@
 /*!
  * Track desktop web ui interactions
  *
- * @see https://phabricator.wikimedia.org/T250282
- * @see https://meta.wikimedia.org/wiki/Schema:DesktopWebUIActionsTracking
+ * Launch task: https://phabricator.wikimedia.org/T250282
+ * Schema: https://meta.wikimedia.org/wiki/Schema:DesktopWebUIActionsTracking
  */
 ( function ( config, user, eventLog, getEditCountBucket ) {
 	var skinVersion,

@@ -1,8 +1,8 @@
 /*!
  * Track mobile web ui interactions
  *
- * @see https://phabricator.wikimedia.org/T220016
- * @see https://meta.wikimedia.org/wiki/Schema:MobileWebUIActionsTracking
+ * Launch task: https://phabricator.wikimedia.org/T220016
+ * Schema: https://meta.wikimedia.org/wiki/Schema:MobileWebUIActionsTracking
  */
 ( function ( config, user, mwExperiments, Schema ) {
 	var schemaMobileWebUIActionsTracking,
@@ -14,8 +14,8 @@
 	 * @return {string[]}
 	 */
 	function getModes() {
-		var mode = config.get( 'wgMFMode', 'desktop' ), modes;
-		modes = [ mode ];
+		var mode = config.get( 'wgMFMode', 'desktop' ),
+			modes = [ mode ];
 		if ( mode !== 'desktop' && config.get( 'wgMFAmc', false ) ) {
 			modes.push( 'amc' );
 		}
