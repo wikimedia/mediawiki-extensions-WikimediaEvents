@@ -83,6 +83,7 @@
 			"scripts": [
 				"ext.wikimediaEvents/events.js",
 				"ext.wikimediaEvents/statsd.js",
+				"ext.wikimediaEvents/deprecate.js",
 				"ext.wikimediaEvents/clientError.js"
 			],
 			"skinScripts": {
@@ -105,19 +106,6 @@
 			"targets": [
 				"desktop",
 				"mobile"
-			]
-		},
-		"ext.wikimediaEvents.loggedin": {
-			"scripts": [
-				"ext.wikimediaEvents.loggedin/deprecate.js"
-			],
-			"targets": [
-				"desktop",
-				"mobile"
-			],
-			"dependencies": [
-				"mediawiki.user",
-				"mediawiki.Uri"
 			]
 		},
 		"ext.wikimediaEvents.wikibase": {
