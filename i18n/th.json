@@ -1,8 +1,18 @@
 {
 	"@metadata": {
 		"authors": [
-			"B20180"
+			"B20180",
+			"Patsagorn Y."
 		]
 	},
-	"tag-php7-description": "การแก้ไขที่ทำโดยใช้ PHP7 แทน HHVM (คาดว่าจะปรับปรุงประสิทธิภาพ, ติดแท็กสำหรับการแก้จุดบกพร่อง/วิเคราะห์)"
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|การอัปโหลดข้ามวิกิ]]",
+	"tag-cross-wiki-upload-description": "ไฟล์ถูกอัปโหลดผ่านการแก้ไขข้อความวิกิหรือผ่านการแก้ไขแบบเห็นภาพจากวิกิอื่น",
+	"wikimediaevents-humanrel-question-a": "คุณจะคลิกที่หน้านี้เมื่อค้นหา \"$1\" หรือไม่",
+	"wikimediaevents-humanrel-question-b": "ถ้าคุณค้นหา \"$1\" บทความนี้ถือเป็นผลการค้นหาที่ดีหรือไม่",
+	"wikimediaevents-humanrel-question-c": "หากคุณค้นหา \"$1\" คุณคิดว่าบทความนี้เกี่ยวข้องหรือไม่",
+	"wikimediaevents-humanrel-question-d": "หากใครบางคนค้นหา \"$1\" คุณคิดว่าพวกเขาจะอ่านบทความนี้หรือไม่",
+	"wikimediaevents-humanrel-yes": "ใช่",
+	"wikimediaevents-humanrel-no": "ไม่ใช่",
+	"wikimediaevents-humanrel-unsure": "ฉันไม่แน่ใจ",
+	"wikimediaevents-humanrel-privacy-statement": "ถ้อยแถลงความเป็นส่วนตัว"
 }
