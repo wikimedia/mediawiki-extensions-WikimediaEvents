@@ -339,8 +339,7 @@ class WikimediaEventsHooks {
 	 * @param string $skinName Current skin name to restrict config variables to a certain skin
 	 */
 	public static function onResourceLoaderGetConfigVars( &$vars, $skinName ) {
-		global $wgWMEClientErrorIntakeURL, $wgWMEStatsdBaseUri, $wgWMEReadingDepthSamplingRate,
-			$wgWMEReadingDepthEnabled,
+		global $wgWMEClientErrorIntakeURL, $wgWMEStatsdBaseUri,
 			$wgWMEDesktopWebUIActionsTracking,
 			$wgWMESchemaEditAttemptStepSamplingRate, $wgWMEMobileWebUIActionsTracking,
 			$wgWMEWikidataCompletionSearchClicks,
@@ -356,8 +355,6 @@ class WikimediaEventsHooks {
 		//
 		$vars['wgWMEClientErrorIntakeURL'] = $wgWMEClientErrorIntakeURL;
 		$vars['wgWMEStatsdBaseUri'] = $wgWMEStatsdBaseUri;
-		$vars['wgWMEReadingDepthSamplingRate'] = $wgWMEReadingDepthSamplingRate;
-		$vars['wgWMEReadingDepthEnabled'] = $wgWMEReadingDepthEnabled;
 		$vars['wgWMESchemaEditAttemptStepSamplingRate'] = $wgWMESchemaEditAttemptStepSamplingRate;
 		$vars['wgWMEWikidataCompletionSearchClicks'] = $wgWMEWikidataCompletionSearchClicks;
 		if ( $skinName === 'minerva' ) {
