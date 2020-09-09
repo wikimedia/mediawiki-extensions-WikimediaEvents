@@ -1,5 +1,6 @@
 /*!
  * JavaScript module for measuring internal search bounce rate and dwell time.
+ *
  * Utilizes two wprov query string formats:
  * - serp:N - This indicates the link was visited directly from a SERP. N is
  *   a positive integer indicating the position of this page within the results.

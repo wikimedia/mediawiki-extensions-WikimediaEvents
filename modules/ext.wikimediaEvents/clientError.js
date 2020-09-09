@@ -1,56 +1,51 @@
-//
-// Listen for runtime errors in MediaWiki clients
-// and summarize key information into an event
-// that can be logged via HTTP POST.
-//
+/*!
+ * Listen for run-time errors in client-side JavaScript,
+ * and log key information to EventGate via HTTP POST.
+ *
+ * Launch task: https://phabricator.wikimedia.org/T235189
+ */
 ( function () {
 	var
-		// [T259371] Only log up to this many errors per page.
+		// Only log up to this many errors per page (T259371)
 		errorLimit = 5,
 		errorCount = 0;
+
 	/**
-	 * Install handler to send a diagnostic event when a runtime error occurs.
+	 * Install a subscriber for global errors that will log an event.
 	 *
-	 * The diagnostic event is built from the Error object
-	 * that the browser throws at window.onerror when the
-	 * error occurs.
+	 * The diagnostic event is built from the Error object that the browser
+	 * provides via window.onerror when the error occurs.
 	 *
-	 * @param {string} intakeURL  Where to POST the error event
+	 * @param {string} intakeURL Where to POST the error event
 	 */
 	function install( intakeURL ) {
+		// We indirectly capture browser errors by subscribing to the
+		// 'global.error' topic.
 		//
-		// We indirectly capture browser errors
-		// by subscribing to the 'global.error'
-		// topic.
-		//
-		// For more information, see the MediaWiki
-		// errorLogger module, which is responsible
-		// for directly handling the browser error
-		// events and producing equivalent messages
-		// to the 'global.error' topic.
-		//
+		// For more information, see mediawiki.errorLogger.js in MediaWiki,
+		// which is responsible for directly handling the browser's
+		// global.onerror events events and producing equivalent messages to
+		// the 'global.error' topic.
 		mw.trackSubscribe( 'global.error', function ( _, obj ) {
 			if ( !obj ) {
+				// Invalid
 				return;
 			}
 
 			if ( !obj.url || obj.url === location.href ) {
+				// When the error lacks a URL, or the URL is defaulted to page
+				// location, the stack trace is rarely meaningful, if ever.
 				//
-				// [T259369], [T261523] When the error lacks a URL,
-				// or the URL is defaulted to page location, the
-				// stack trace is rarely meaningful, if ever.
+				// It may have been censored by the browser due to cross-site
+				// origin security requirements, or some other weird thing may
+				// be happening.
 				//
-				// It may have been censored by the browser due to
-				// cross site origin security requirements, or some
-				// other weird thing may be happening.
-				//
-				// We discard such errors because without a stack
-				// trace, they are not really within our power to fix.
-				//
+				// We discard such errors because without a stack trace, they
+				// are not really within our power to fix. (T259369, T261523)
 				return;
 			}
 
-			// [T259371] Stop repeated errors from e.g. setInterval().
+			// Stop repeated errors from e.g. setInterval (T259371)
 			if ( errorCount >= errorLimit ) {
 				return;
 			}
@@ -85,12 +80,8 @@
 		} );
 	}
 
-	//
-	// Only install the logger if the module
-	// has been properly configured, and the
-	// client supports the necessary browser
-	// features.
-	//
+	// Only install the logger if the module has been properly configured, and
+	// the client supports the necessary browser features.
 	if (
 		navigator.sendBeacon &&
 		mw.config.get( 'wgWMEClientErrorIntakeURL' )
