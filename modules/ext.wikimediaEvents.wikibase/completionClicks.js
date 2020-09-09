@@ -59,8 +59,7 @@
 		 *  context: context name to limit bucket to
 		 *  language: language code to limit bucket to
 		 */
-		var bucketOverride = ( new mw.Uri( document.location.href )
-				.query.wikidataCompletionSearchClicksBucket ),
+		var bucketOverride = mw.util.getParamValue( 'wikidataCompletionSearchClicksBucket' ),
 			config = mw.config.get( 'wgWMEWikidataCompletionSearchClicks' ) || {},
 			buckets = config.buckets || {},
 			bucketName = bucketOverride || mw.experiments.getBucket( {
