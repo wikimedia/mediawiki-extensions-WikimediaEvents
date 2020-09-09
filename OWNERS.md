@@ -48,14 +48,6 @@ Background at <https://phabricator.wikimedia.org/T138659>.
 
 Details at <https://phabricator.wikimedia.org/T155639>.
 
-## Citation usage
-
-* Since: June 2018
-* Files: citationUsage.js
-* Contact: Research
-
-Details at <https://phabricator.wikimedia.org/T191086>
-
 ## Wikibase
 
 * Since: July 2018

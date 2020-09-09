@@ -65,8 +65,6 @@
 				"RecentChangesTopLinks": 16732249,
 				"InputDeviceDynamics": 17687647,
 				"MobileWebUIActionsTracking": 19230467,
-				"CitationUsage": 18810892,
-				"CitationUsagePageLoad": 18502712,
 				"WMDEBannerEvents": 19608660,
 				"WMDEBannerInteractions": 20160542,
 				"WMDEBannerSizeIssue": 18193993,
@@ -87,7 +85,6 @@
 				"ext.wikimediaEvents/events.js",
 				"ext.wikimediaEvents/statsd.js",
 				"ext.wikimediaEvents/readingDepth.js",
-				"ext.wikimediaEvents/citationUsage.js",
 				"ext.wikimediaEvents/clientError.js"
 			],
 			"skinScripts": {
@@ -161,12 +158,6 @@
 			"value": 0
 		},
 		"WMEMobileWebUIActionsTracking": {
-			"value": 0
-		},
-		"WMECitationUsagePopulationSize": {
-			"value": 0
-		},
-		"WMECitationUsagePageLoadPopulationSize": {
 			"value": 0
 		},
 		"WMEStatsdBaseUri": {

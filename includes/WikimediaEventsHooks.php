@@ -340,8 +340,7 @@ class WikimediaEventsHooks {
 	 */
 	public static function onResourceLoaderGetConfigVars( &$vars, $skinName ) {
 		global $wgWMEClientErrorIntakeURL, $wgWMEStatsdBaseUri, $wgWMEReadingDepthSamplingRate,
-			$wgWMEReadingDepthEnabled, $wgWMECitationUsagePopulationSize,
-			$wgWMECitationUsagePageLoadPopulationSize,
+			$wgWMEReadingDepthEnabled,
 			$wgWMEDesktopWebUIActionsTracking,
 			$wgWMESchemaEditAttemptStepSamplingRate, $wgWMEMobileWebUIActionsTracking,
 			$wgWMEWikidataCompletionSearchClicks,
@@ -359,8 +358,6 @@ class WikimediaEventsHooks {
 		$vars['wgWMEStatsdBaseUri'] = $wgWMEStatsdBaseUri;
 		$vars['wgWMEReadingDepthSamplingRate'] = $wgWMEReadingDepthSamplingRate;
 		$vars['wgWMEReadingDepthEnabled'] = $wgWMEReadingDepthEnabled;
-		$vars['wgWMECitationUsagePopulationSize'] = $wgWMECitationUsagePopulationSize;
-		$vars['wgWMECitationUsagePageLoadPopulationSize'] = $wgWMECitationUsagePageLoadPopulationSize;
 		$vars['wgWMESchemaEditAttemptStepSamplingRate'] = $wgWMESchemaEditAttemptStepSamplingRate;
 		$vars['wgWMEWikidataCompletionSearchClicks'] = $wgWMEWikidataCompletionSearchClicks;
 		if ( $skinName === 'minerva' ) {
