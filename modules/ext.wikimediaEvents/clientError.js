@@ -32,7 +32,7 @@
 				return;
 			}
 
-			if ( !obj.url || obj.url === location.href ) {
+			if ( !obj.url || obj.url === location.href.split( '#' )[ 0 ] ) {
 				// When the error lacks a URL, or the URL is defaulted to page
 				// location, the stack trace is rarely meaningful, if ever.
 				//
@@ -42,6 +42,11 @@
 				//
 				// We discard such errors because without a stack trace, they
 				// are not really within our power to fix. (T259369, T261523)
+				//
+				// If the two URLs differ only by a fragment identifier (e.g.
+				// 'example.org' vs. 'example.org#Section'), we consider them
+				// to be matching. It is sufficient to strip the fragment from
+				// location.href only, obj.url will not have one.
 				return;
 			}
 
