@@ -121,8 +121,8 @@
 		function initialize( session ) {
 
 			var sessionId = session.get( 'sessionId' ),
-				// T246947
-				validBuckets = [],
+				// T254388
+				validBuckets = [ 'control', 'mediasearch_commons', 'mediasearch_commons_int' ],
 				sampleSize = {
 					// % of sessions to sample
 					test: 1,
@@ -131,6 +131,7 @@
 						// Provides a place to handle wiki-specific sub-test
 						// handling. Must be a map from wiki dbname to % of
 						// requests that should be split between validBuckets.
+						commonswiki: 1
 					}[ mw.config.get( 'wgDBname' ) ] || null
 				},
 				/**
