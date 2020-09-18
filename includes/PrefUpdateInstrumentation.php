@@ -86,6 +86,9 @@ class PrefUpdateInstrumentation {
 		'growthexperiments-help-panel-tog-help-panel' => self::VALUE_WELLKNOWN_SHORT,
 		'growthexperiments-homepage-enable' => self::VALUE_WELLKNOWN_SHORT,
 		'growthexperiments-homepage-pt-link' => self::VALUE_WELLKNOWN_SHORT,
+
+		// WMDE Technical Wishes team: T260138
+		'usecodemirror' => self::VALUE_WELLKNOWN_SHORT,
 	];
 
 	/**
