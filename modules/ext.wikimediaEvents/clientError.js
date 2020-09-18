@@ -32,12 +32,13 @@
 				return;
 			}
 
-			if ( !obj.url || obj.url === location.href.split( '#' )[ 0 ] ) {
+			if ( !obj.url || obj.url.split( '#' )[ 0 ] === location.href.split( '#' )[ 0 ] ) {
 				// When the error lacks a URL, or the URL is defaulted to page
 				// location, the stack trace is rarely meaningful, if ever.
 				//
 				// It may have been censored by the browser due to cross-site
-				// origin security requirements, or some other weird thing may
+				// origin security requirements, or the code may have been
+				// executed as part of an eval, or some other weird thing may
 				// be happening.
 				//
 				// We discard such errors because without a stack trace, they
@@ -45,8 +46,11 @@
 				//
 				// If the two URLs differ only by a fragment identifier (e.g.
 				// 'example.org' vs. 'example.org#Section'), we consider them
-				// to be matching. It is sufficient to strip the fragment from
-				// location.href only, obj.url will not have one.
+				// to be matching.
+				//
+				// Per spec, obj.url should never contain a fragment identifier,
+				// yet we have observed this in the wild in several instances,
+				// hence we must strip the identifier from both.
 				return;
 			}
 
