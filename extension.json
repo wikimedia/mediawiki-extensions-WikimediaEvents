@@ -84,7 +84,8 @@
 				"ext.wikimediaEvents/events.js",
 				"ext.wikimediaEvents/statsd.js",
 				"ext.wikimediaEvents/deprecate.js",
-				"ext.wikimediaEvents/clientError.js"
+				"ext.wikimediaEvents/clientError.js",
+				"ext.wikimediaEvents/sessionTick.js"
 			],
 			"skinScripts": {
 				"default": [
@@ -172,6 +173,9 @@
 			"value": []
 		},
 		"WMEClientErrorIntakeURL": {
+			"value": false
+		},
+		"WMESessionTick": {
 			"value": false
 		}
 	},
