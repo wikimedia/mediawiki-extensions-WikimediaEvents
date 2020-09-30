@@ -187,7 +187,7 @@
 	// If the module has been enabled, and the browser supports the
 	// Page Visibility API.
 	//
-	if ( mw.config( 'wgWMESessionTick' ) && document.hidden !== undefined ) {
+	if ( mw.config.get( 'wgWMESessionTick' ) && document.hidden !== undefined ) {
 
 		// Sets the 'supportsPassive' flag.
 		detectPassiveEventListenerSupport();
