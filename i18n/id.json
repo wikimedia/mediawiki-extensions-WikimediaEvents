@@ -2,9 +2,13 @@
 	"@metadata": {
 		"authors": [
 			"Ahdan",
+			"Daud I.F. Argana",
 			"Rachmat04"
 		]
 	},
+	"wikimediaevents-desc": "Mencatat kejadian khusus Wikimedia menggunakan EventLogging",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Pengunggahan lintas wiki]]",
+	"tag-cross-wiki-upload-description": "Berkas yang diunggah dari dalam teks wiki dan penyunting visual di wiki lain",
 	"wikimediaevents-humanrel-question-a": "Apakah Anda mengeklik halaman ini ketika mencari \"$1\"?",
 	"wikimediaevents-humanrel-question-b": "Apabila Anda mencari \"$1\", akankah artikel ini merupakan salah satu hasil yang baik?",
 	"wikimediaevents-humanrel-question-c": "Apabila Anda mencari \"$1\", akankah artikel ini merupakan salah satu hasil yang relevan?",
