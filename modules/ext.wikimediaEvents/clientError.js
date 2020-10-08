@@ -82,9 +82,12 @@
 				url: location.href,
 				// Normalized stack trace string
 				// eslint-disable-next-line camelcase
-				stack_trace: obj.stackTrace
+				stack_trace: obj.stackTrace,
 				// Tags that can be specified as-needed
-				// tags: {}
+				tags: {
+					// eslint-disable-next-line camelcase
+					is_logged_in: !mw.user.isAnon()
+				}
 			} ) );
 		} );
 	}
