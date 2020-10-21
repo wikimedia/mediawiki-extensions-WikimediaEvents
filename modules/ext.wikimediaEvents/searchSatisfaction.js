@@ -23,7 +23,7 @@
 ( function () {
 	'use strict';
 
-	var search, autoComplete, session, initSubTest, initDebugLogging,
+	var search, autoComplete, session, initSubTest, initDebugLogging, cirrusUserTestingParam,
 		isSearchResultPage = mw.config.get( 'wgIsSearchResultPage' ),
 		uri = ( function () {
 			try {
@@ -87,8 +87,18 @@
 	autoComplete.cameFromAutocomplete = uri.query.wprov === 'acrw1';
 
 	// Cleanup the location bar in supported browsers.
-	if ( uri.query.wprov && window.history.replaceState ) {
+	if ( window.history.replaceState && ( uri.query.wprov || uri.query.cirrusUserTesting ) ) {
 		delete uri.query.wprov;
+		if ( uri.query.cirrusUserTesting ) {
+			cirrusUserTestingParam = uri.query.cirrusUserTesting;
+			delete uri.query.cirrusUserTesting;
+			// Re-attach removed cirrusUserTesting param so that hitting the back button will recover
+			// the same test bucket
+			window.addEventListener( 'unload', function () {
+				uri.query.cirrusUserTesting = cirrusUserTestingParam;
+				window.history.replaceState( {}, '', uri.toString() );
+			} );
+		}
 		window.history.replaceState( {}, '', uri.toString() );
 	}
 
