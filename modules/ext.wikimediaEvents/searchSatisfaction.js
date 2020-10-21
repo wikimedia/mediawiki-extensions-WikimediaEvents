@@ -25,6 +25,26 @@
 
 	var search, autoComplete, session, initSubTest, initDebugLogging, cirrusUserTestingParam,
 		isSearchResultPage = mw.config.get( 'wgIsSearchResultPage' ),
+		enabledBackendTests = mw.config.get( 'wgCirrusSearchBackendUserTests', [] ),
+		/**
+		 * valid buckets format is:
+		 * {
+		 *   trigger1: "backend_test_name1:backend_bucket_name1"
+		 *   trigger2: "backend_test_name2:backend_bucket_name2"
+		 * }
+		 * To be valid and when on isSearchResultPage the corresponding backend test and bucket name pair must be
+		 * matched in the array returned in wgCirrusSearchBackendUserTests.
+		 * If the actual subTest stored in an existing session:
+		 * - does not exist in validBuckets the subTest is tagged as "invalid"
+		 * - (when on the search results page) does not match any of the enabledBackendTests the subTest is tagged as "mismatch"
+		 */
+		validBuckets = {},
+		wikisInSubtest = {
+			// Provides a place to handle wiki-specific sub-test
+			// handling. Must be a map from wiki dbname to % of
+			// requests that should be split between validBuckets.
+		},
+
 		uri = ( function () {
 			try {
 				return new mw.Uri( location.href );
@@ -48,6 +68,18 @@
 	// reject mobile users or where the URI could not be created
 	if ( mw.config.get( 'skin' ) === 'minerva' || uri === null ) {
 		return;
+	}
+
+	/**
+	 * Test if a subTest is valid (not a mismatch nor invalid)
+	 * mismatch: session has seen a backend request enabling test A while frontend had chosen test B
+	 * invalid: session holds a probably stale value no long present in the validBuckets
+	 *
+	 * @param subTest
+	 * @returns boolean
+	 */
+	function isValidSubtest( subTest ) {
+		return !!( subTest && subTest !== 'mismatch' && subTest !== 'invalid' );
 	}
 
 	function extractResultPosition( uri, wprovPrefix ) {
@@ -136,18 +168,12 @@
 		 */
 		function initialize( session ) {
 
-			var sessionId = session.get( 'sessionId' ),
-				// T246947
-				validBuckets = [],
+			var subTest, sessionId = session.get( 'sessionId' ),
 				sampleSize = {
 					// % of sessions to sample
 					test: 1,
 					// % of sampled sessions to divide between `validBuckets`
-					subTest: {
-						// Provides a place to handle wiki-specific sub-test
-						// handling. Must be a map from wiki dbname to % of
-						// requests that should be split between validBuckets.
-					}[ mw.config.get( 'wgDBname' ) ] || null
+					subTest: wikisInSubtest[ mw.config.get( 'wgDBname' ) ] || null
 				},
 				/**
 				 * Return true for `percentAccept` percentage of calls
@@ -202,7 +228,19 @@
 				session.set( 'sampleMultiplier', 1 / sampleSize.test );
 
 				if ( sampleSize.subTest !== null && takeSample( sampleSize.subTest ) ) {
-					session.set( 'subTest', chooseBucket( validBuckets ) );
+					session.set( 'subTest', chooseBucket( Object.keys( validBuckets ) ) );
+				}
+			}
+
+			subTest = session.get( 'subTest' );
+			if ( isValidSubtest( subTest ) ) {
+				if ( !Object.prototype.hasOwnProperty.call( validBuckets, subTest ) ) {
+					// invalid or obsolete bucket
+					session.set( 'subTest', 'invalid' );
+				} else if ( isSearchResultPage && enabledBackendTests.indexOf( validBuckets[ subTest ] ) === -1 ) {
+					// mismatch between backend and frontend test, it might happen if the user
+					// triggered the backend test manually or followed a link to Special:Search results
+					session.set( 'subTest', 'mismatch' );
 				}
 			}
 
@@ -363,7 +401,7 @@
 
 	function genLogEventFn( source, session, sourceExtraData ) {
 		return function ( action, extraData ) {
-			var scrollTop = $( window ).scrollTop(),
+			var subTest, scrollTop = $( window ).scrollTop(),
 				evt = {
 					// searchResultPage, visitPage, checkin, click or iwclick
 					action: action,
@@ -399,8 +437,9 @@
 
 			lastScrollTop = scrollTop;
 
-			if ( session.get( 'subTest' ) ) {
-				evt.subTest = session.get( 'subTest' );
+			subTest = session.get( 'subTest' );
+			if ( subTest ) {
+				evt.subTest = validBuckets[ subTest ] || subTest;
 			}
 
 			if ( session.get( 'sampleMultiplier' ) ) {
@@ -754,12 +793,17 @@
 	// text setup, so wrap in atMostOnce to ensure it's
 	// only run once.
 	initSubTest = atMostOnce( function ( session ) {
-		if ( session.get( 'subTest' ) ) {
+		var subTest = session.get( 'subTest' );
+		if ( isValidSubtest( subTest ) ) {
 			$( '<input>' ).attr( {
 				type: 'hidden',
 				name: 'cirrusUserTesting',
-				value: session.get( 'subTest' )
+				value: subTest
 			} ).prependTo( $( 'input[type=search]' ).closest( 'form' ) );
+
+			$( '.mw-prevlink, .mw-nextlink, .mw-numlink' ).attr( 'href', function ( i, href ) {
+				return href + '&cirrusUserTesting=' + subTest;
+			} );
 		}
 	} );
 
