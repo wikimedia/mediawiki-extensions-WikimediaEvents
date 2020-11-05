@@ -171,7 +171,7 @@
 			mw.cookie.set( tickCount, count + n );
 
 			while ( n-- > 0 ) {
-				mw.eventLog.submit( 'session_tick', {
+				mw.eventLog.submit( 'mw_session_tick', {
 					$schema: '/analytics/session_tick/1.0.0',
 					tick: count + n,
 					test: {
