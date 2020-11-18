@@ -54,7 +54,7 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 	/**
 	 * @inheritDoc
 	 */
-	public function handle( array $record ) {
+	public function handle( array $record ) : bool {
 		$event = $this->getField( 'event', $record['context'] );
 		$type = $this->getField( [ 'eventType', 'type' ], $record['context'] );
 		$entrypoint = $this->getEntryPoint();
