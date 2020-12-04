@@ -59,7 +59,7 @@ Details at <https://phabricator.wikimedia.org/T220016>.
 ## Inuka page views
 
 * Since: February 2020
-* Files: InukaPageView.js
+* Files: inukaPageView.js
 * Contact: Inuka team
 
 Details at <https://phabricator.wikimedia.org/T238029>.

@@ -19,7 +19,7 @@
  * @license GNU GPL v2 or later
  * @author Erik Bernhardson <ebernhardson@wikimedia.org>
  */
-/* eslint-disable max-len, no-jquery/no-global-selector */
+/* eslint-disable max-len, no-shadow, no-jquery/no-global-selector, jsdoc/require-returns, jsdoc/require-param-type, jsdoc/check-tag-names */
 ( function () {
 	'use strict';
 
@@ -65,8 +65,8 @@
 		didYouMeanList = [ 'dym1', 'dymr1', 'dymo1' ],
 		skin = mw.config.get( 'skin' );
 
-	// reject mobile users or where the URI could not be created
-	if ( mw.config.get( 'skin' ) === 'minerva' || uri === null ) {
+	// bail out if the URI could not be created
+	if ( uri === null ) {
 		return;
 	}
 

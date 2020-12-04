@@ -3,6 +3,7 @@
 namespace WikimediaEvents;
 
 use ActorMigration;
+use Config;
 use DeferredUpdates;
 use DerivativeContext;
 use EditPage;
@@ -20,6 +21,8 @@ use OutputPage;
 use RecentChange;
 use RequestContext;
 use ResourceLoader;
+use ResourceLoaderContext;
+use ResourceLoaderFilePath;
 use SearchResultSet;
 use Skin;
 use Title;
@@ -328,39 +331,56 @@ class WikimediaEventsHooks {
 	}
 
 	/**
-	 * Set static (not request-specific) JS configuration variables
+	 * Callback for ext.wikimediaEvents virtual config.json file.
 	 *
-	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/ResourceLoaderGetConfigVars
-	 * @param array &$vars Array of variables to be added into the output of the startup module
-	 * @param string $skinName Current skin name to restrict config variables to a certain skin
+	 * @param ResourceLoaderContext $context
+	 * @param Config $config
+	 * @return array
 	 */
-	public static function onResourceLoaderGetConfigVars( &$vars, $skinName ) {
-		global $wgWMEClientErrorIntakeURL, $wgWMEStatsdBaseUri,
-			$wgWMEDesktopWebUIActionsTracking, $wgWMESessionTick,
-			$wgWMESchemaEditAttemptStepSamplingRate, $wgWMEMobileWebUIActionsTracking,
-			$wgWMEWikidataCompletionSearchClicks,
-			$wgWMEInukaPageViewEnabled, $wgWMEInukaPageViewCookiesDomain,
-			$wgWMEInukaPageViewSamplingRatePerOs;
+	public static function getModuleConfig( ResourceLoaderContext $context, Config $config ) {
+		$vars = [];
+		$vars['clientErrorIntakeURL'] = $config->get( 'WMEClientErrorIntakeURL' );
+		$vars['statsdBaseUri'] = $config->get( 'WMEStatsdBaseUri' );
+		$vars['schemaEditAttemptStepSamplingRate'] = $config->get( 'WMESchemaEditAttemptStepSamplingRate' );
+		$vars['wikidataCompletionSearchClicks'] = $config->get( 'WMEWikidataCompletionSearchClicks' );
+		$vars['sessionTick'] = $config->get( 'WMESessionTick' );
 
-		// WARNING: Do not add new entries here.
-		//
-		// This legacy mechanism is suboptimial for performance and code quality.
-		//
-		// For new variables you need to access in a JS module, use a virtual 'config.json' file.
-		// See <https://www.mediawiki.org/wiki/ResourceLoader/Package_modules>
-		//
-		$vars['wgWMEClientErrorIntakeURL'] = $wgWMEClientErrorIntakeURL;
-		$vars['wgWMEStatsdBaseUri'] = $wgWMEStatsdBaseUri;
-		$vars['wgWMESchemaEditAttemptStepSamplingRate'] = $wgWMESchemaEditAttemptStepSamplingRate;
-		$vars['wgWMEWikidataCompletionSearchClicks'] = $wgWMEWikidataCompletionSearchClicks;
-		$vars['wgWMESessionTick'] = $wgWMESessionTick;
-		if ( $skinName === 'minerva' ) {
-			$vars['wgWMEMobileWebUIActionsTracking'] = $wgWMEMobileWebUIActionsTracking;
-			$vars['wgWMEInukaPageViewEnabled'] = $wgWMEInukaPageViewEnabled;
-			$vars['wgWMEInukaPageViewCookiesDomain'] = $wgWMEInukaPageViewCookiesDomain;
-			$vars['wgWMEInukaPageViewSamplingRatePerOs'] = $wgWMEInukaPageViewSamplingRatePerOs;
-		} else {
-			$vars['wgWMEDesktopWebUIActionsTracking'] = $wgWMEDesktopWebUIActionsTracking;
+		$skin = $context->getSkin();
+		if ( $skin === 'minerva' ) {
+			$vars['mobileWebUIActionsTracking'] = $config->get( 'WMEMobileWebUIActionsTracking' );
+			$vars['inukaPageViewEnabled'] = $config->get( 'WMEInukaPageViewEnabled' );
+			$vars['inukaPageViewCookiesDomain'] = $config->get( 'WMEInukaPageViewCookiesDomain' );
+			$vars['inukaPageViewSamplingRatePerOs'] = $config->get( 'WMEInukaPageViewSamplingRatePerOs' );
+		} elseif ( $skin === 'vector' ) {
+			$vars['desktopWebUIActionsTracking'] = $config->get( 'WMEDesktopWebUIActionsTracking' );
+		}
+
+		return $vars;
+	}
+
+	/**
+	 * Callback for dynamic source files, for conditional loading based on the current skin.
+	 *
+	 * @param ResourceLoaderContext $context
+	 * @param string $param callback param - corresponds to the file name to conditionally load
+	 * @return ResourceLoaderFilePath|string
+	 */
+	public static function getModuleFile( ResourceLoaderContext $context, $param ) {
+		$skin = $context->getSkin();
+		switch ( $param ) {
+			case 'searchSatisfaction':
+				return $skin !== 'minerva' ? new ResourceLoaderFilePath( 'searchSatisfaction.js' )
+					: '';
+			case 'desktopWebUIActions':
+				return $skin === 'vector' ? new ResourceLoaderFilePath( 'desktopWebUIActions.js' )
+					: '';
+			case 'mobileWebUIActions':
+				return $skin === 'minerva' ? new ResourceLoaderFilePath( 'mobileWebUIActions.js' )
+					: '';
+			case 'inukaPageView':
+				return $skin === 'minerva' ? new ResourceLoaderFilePath( 'inukaPageView.js' ) : '';
+			default:
+				return '';
 		}
 	}
 

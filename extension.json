@@ -28,7 +28,6 @@
 		"UserSaveOptions": "WikimediaEvents\\PrefUpdateInstrumentation::onUserSaveOptions",
 		"ArticleViewHeader": "WikimediaEvents\\WikimediaEventsHooks::onArticleViewHeader",
 		"EditPageBeforeConflictDiff": "WikimediaEvents\\WikimediaEventsHooks::onEditPageBeforeConflictDiff",
-		"ResourceLoaderGetConfigVars": "WikimediaEvents\\WikimediaEventsHooks::onResourceLoaderGetConfigVars",
 		"ListDefinedTags": "WikimediaEvents\\WikimediaEventsHooks::onListDefinedTags",
 		"ChangeTagsListActive": "WikimediaEvents\\WikimediaEventsHooks::onChangeTagsListActive",
 		"XAnalyticsSetHeader": "WikimediaEvents\\WikimediaEventsHooks::onXAnalyticsSetHeader",
@@ -81,23 +80,40 @@
 	},
 	"ResourceModules": {
 		"ext.wikimediaEvents": {
-			"scripts": [
-				"ext.wikimediaEvents/events.js",
-				"ext.wikimediaEvents/statsd.js",
-				"ext.wikimediaEvents/deprecate.js",
-				"ext.wikimediaEvents/clientError.js",
-				"ext.wikimediaEvents/sessionTick.js"
+			"localBasePath": "modules/ext.wikimediaEvents",
+			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents",
+			"packageFiles": [
+				"index.js",
+				"events.js",
+				"statsd.js",
+				"deprecate.js",
+				"clientError.js",
+				"sessionTick.js",
+				{
+					"name": "searchSatisfaction.js",
+					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
+					"callbackParam": "searchSatisfaction"
+				},
+				{
+					"name": "desktopWebUIActions.js",
+					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
+					"callbackParam": "desktopWebUIActions"
+				},
+				{
+					"name": "mobileWebUIActions.js",
+					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
+					"callbackParam": "mobileWebUIActions"
+				},
+				{
+					"name": "inukaPageView.js",
+					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
+					"callbackParam": "inukaPageView"
+				},
+				{
+					"name": "config.json",
+					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleConfig"
+				}
 			],
-			"skinScripts": {
-				"default": [
-					"ext.wikimediaEvents/searchSatisfaction.js",
-					"ext.wikimediaEvents/desktopWebUIActions.js"
-				],
-				"minerva": [
-					"ext.wikimediaEvents/mobileWebUIActions.js",
-					"ext.wikimediaEvents/InukaPageView.js"
-				]
-			},
 			"dependencies": [
 				"ext.eventLogging",
 				"mediawiki.user",
@@ -111,8 +127,21 @@
 			]
 		},
 		"ext.wikimediaEvents.wikibase": {
-			"scripts": [
-				"ext.wikimediaEvents.wikibase/completionClicks.js"
+			"localBasePath": "modules/ext.wikimediaEvents.wikibase",
+			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.wikibase",
+			"packageFiles": [
+				"completionClicks.js",
+				{
+					"name": "config.json",
+					"config": {
+						"wikidataCompletionSearchClicks": "WMEWikidataCompletionSearchClicks"
+					}
+				}
+			],
+			"dependencies": [
+				"ext.eventLogging",
+				"mediawiki.user",
+				"mediawiki.experiments"
 			],
 			"targets": [
 				"desktop",

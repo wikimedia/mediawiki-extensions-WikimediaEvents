@@ -16,7 +16,8 @@
 ( function () {
 	var queue = [],
 		batchSize = 50,
-		baseUrl = mw.config.get( 'wgWMEStatsdBaseUri' );
+		moduleConfig = require( './config.json' ),
+		baseUrl = moduleConfig.statsdBaseUri;
 
 	// Statsv not configured, or DNT enabled
 	if ( !baseUrl || mw.eventLog.isDntEnabled ) {

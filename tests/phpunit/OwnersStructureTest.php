@@ -52,14 +52,22 @@ class OwnersStructureTest extends \PHPUnit\Framework\TestCase {
 			foreach ( $moduleInfo as $key => $value ) {
 				$files = [];
 				switch ( $key ) {
-					case 'scripts':
-						$files = $value;
-						break;
-					case 'skinScripts':
-						foreach ( $value as $media => $styles ) {
-							$files = array_merge( $files, $styles );
+					case 'packageFiles':
+						foreach ( $value as $entry ) {
+							if ( is_string( $entry ) && $entry !== 'index.js' ) {
+								$files[] = $entry;
+							}
+							if (
+								is_array( $entry ) &&
+								isset( $entry['name'] ) &&
+								str_ends_with( $entry['name'], '.js' )
+							) {
+								$files[] = $entry['name'];
+							}
 						}
 						break;
+					case 'localBasePath':
+					case 'remoteExtPath':
 					case 'dependencies':
 					case 'targets':
 						// ignore

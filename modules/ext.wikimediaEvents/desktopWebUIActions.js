@@ -44,11 +44,9 @@
 	// Don't initialize the instrument if the user isn't using the Vector skin or if their pageview
 	// isn't in the sample.
 	//
-	// The schema works on skins other than Vector however for now
-	// it's limited to Vector to aid the work of data analysts.
-	// A future developer should feel free to remove this if they need
-	// to click track another skin.
-	if ( skin !== 'vector' || !eventLog.eventInSample( pop ) ) {
+	// The schema works on skins other than Vector however for now it's limited to Vector (see
+	// WikimediaEventsHooks::getModuleFile) to aid the work of data analysts.
+	if ( !eventLog.eventInSample( pop ) ) {
 		return;
 	}
 

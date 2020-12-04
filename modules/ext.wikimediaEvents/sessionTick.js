@@ -34,7 +34,9 @@
  * remain inactive.
  */
 ( function () {
-	var
+	var moduleConfig = require( './config.json' ),
+		enabled = moduleConfig.sessionTick,
+
 		// Milliseconds between ticks
 		TICK_MS = 60000,
 		// Milliseconds before the page tries to idle and check for activity.
@@ -187,7 +189,7 @@
 	// If the module has been enabled, and the browser supports the
 	// Page Visibility API.
 	//
-	if ( mw.config.get( 'wgWMESessionTick' ) && document.hidden !== undefined ) {
+	if ( enabled && document.hidden !== undefined ) {
 
 		// Sets the 'supportsPassive' flag.
 		detectPassiveEventListenerSupport();

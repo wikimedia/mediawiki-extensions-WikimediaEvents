@@ -5,8 +5,10 @@
  * Schema: https://meta.wikimedia.org/wiki/Schema:InukaPageView
  */
 ( function () {
-	var cookieDomain = mw.config.get( 'wgWMEInukaPageViewCookiesDomain' ),
-		samplingRatePerOs = mw.config.get( 'wgWMEInukaPageViewSamplingRatePerOs' ),
+	var moduleConfig = require( './config.json' ),
+		cookieDomain = moduleConfig.inukaPageViewCookiesDomain,
+		enabled = moduleConfig.inukaPageViewEnabled,
+		samplingRatePerOs = moduleConfig.inukaPageViewSamplingRatePerOs,
 		userCookieExpirationDays = 30;
 
 	function init() {
@@ -111,7 +113,7 @@
 		}
 
 		if (
-			!mw.config.get( 'wgWMEInukaPageViewEnabled' ) ||
+			!enabled ||
 			!mw.user.isAnon()
 		) {
 			return;

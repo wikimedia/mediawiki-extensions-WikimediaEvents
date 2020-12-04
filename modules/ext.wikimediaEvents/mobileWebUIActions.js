@@ -4,8 +4,9 @@
  * Launch task: https://phabricator.wikimedia.org/T220016
  * Schema: https://meta.wikimedia.org/wiki/Schema:MobileWebUIActionsTracking
  */
-( function ( config, user, mwExperiments, Schema ) {
-	var schemaMobileWebUIActionsTracking,
+( function ( mwConfig, user, mwExperiments, Schema ) {
+	var moduleConfig = require( './config.json' ),
+		schemaMobileWebUIActionsTracking,
 		getEditCountBucket = mw.wikimediaEvents.getEditCountBucket;
 
 	/**
@@ -14,19 +15,19 @@
 	 * @return {string[]}
 	 */
 	function getModes() {
-		var mode = config.get( 'wgMFMode', 'desktop' ),
+		var mode = mwConfig.get( 'wgMFMode', 'desktop' ),
 			modes = [ mode ];
-		if ( mode !== 'desktop' && config.get( 'wgMFAmc', false ) ) {
+		if ( mode !== 'desktop' && mwConfig.get( 'wgMFAmc', false ) ) {
 			modes.push( 'amc' );
 		}
 		return modes;
 	}
 
 	schemaMobileWebUIActionsTracking = new Schema( 'MobileWebUIActionsTracking',
-		config.get( 'wgWMEMobileWebUIActionsTracking', 0 ),
+		moduleConfig.mobileWebUIActionsTracking || 0,
 		{
 			isAnon: user.isAnon(),
-			editCountBucket: getEditCountBucket( config.get( 'wgUserEditCount' ) ),
+			editCountBucket: getEditCountBucket( mwConfig.get( 'wgUserEditCount' ) ),
 			modes: getModes().join( ',' )
 		}
 	);

@@ -4,8 +4,9 @@
  *
  * Launch task: https://phabricator.wikimedia.org/T235189
  */
+/* eslint-disable max-len */
 ( function () {
-	var
+	var moduleConfig = require( './config.json' ),
 		// Only log up to this many errors per page (T259371)
 		errorLimit = 5,
 		errorCount = 0;
@@ -132,8 +133,8 @@
 	// the client supports the necessary browser features.
 	if (
 		navigator.sendBeacon &&
-		mw.config.get( 'wgWMEClientErrorIntakeURL' )
+		moduleConfig.clientErrorIntakeURL
 	) {
-		install( mw.config.get( 'wgWMEClientErrorIntakeURL' ) );
+		install( moduleConfig.clientErrorIntakeURL );
 	}
 }() );

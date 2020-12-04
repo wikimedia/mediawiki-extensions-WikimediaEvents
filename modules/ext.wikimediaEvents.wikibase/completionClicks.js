@@ -60,7 +60,8 @@
 		 *  language: language code to limit bucket to
 		 */
 		var bucketOverride = mw.util.getParamValue( 'wikidataCompletionSearchClicksBucket' ),
-			config = mw.config.get( 'wgWMEWikidataCompletionSearchClicks' ) || {},
+			moduleConfig = require( './config.json' ),
+			config = moduleConfig.wikidataCompletionSearchClicks || {},
 			buckets = config.buckets || {},
 			bucketName = bucketOverride || mw.experiments.getBucket( {
 				name: 'WikidataCompletionSearchClicks',
