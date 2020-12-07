@@ -336,7 +336,7 @@ class WikimediaEventsHooks {
 	 */
 	public static function onResourceLoaderGetConfigVars( &$vars, $skinName ) {
 		global $wgWMEClientErrorIntakeURL, $wgWMEStatsdBaseUri,
-			$wgWMEDesktopWebUIActionsTracking,
+			$wgWMEDesktopWebUIActionsTracking, $wgWMESessionTick,
 			$wgWMESchemaEditAttemptStepSamplingRate, $wgWMEMobileWebUIActionsTracking,
 			$wgWMEWikidataCompletionSearchClicks,
 			$wgWMEInukaPageViewEnabled, $wgWMEInukaPageViewCookiesDomain,
@@ -353,6 +353,7 @@ class WikimediaEventsHooks {
 		$vars['wgWMEStatsdBaseUri'] = $wgWMEStatsdBaseUri;
 		$vars['wgWMESchemaEditAttemptStepSamplingRate'] = $wgWMESchemaEditAttemptStepSamplingRate;
 		$vars['wgWMEWikidataCompletionSearchClicks'] = $wgWMEWikidataCompletionSearchClicks;
+		$vars['wgWMESessionTick'] = $wgWMESessionTick;
 		if ( $skinName === 'minerva' ) {
 			$vars['wgWMEMobileWebUIActionsTracking'] = $wgWMEMobileWebUIActionsTracking;
 			$vars['wgWMEInukaPageViewEnabled'] = $wgWMEInukaPageViewEnabled;
