@@ -38,11 +38,36 @@
 		 * - does not exist in validBuckets the subTest is tagged as "invalid"
 		 * - (when on the search results page) does not match any of the enabledBackendTests the subTest is tagged as "mismatch"
 		 */
-		validBuckets = {},
+		validBuckets = {
+			perfield: 'T266027_perfield_builder:perfield',
+			control: 'T266027_perfield_builder:control'
+		},
 		wikisInSubtest = {
 			// Provides a place to handle wiki-specific sub-test
 			// handling. Must be a map from wiki dbname to % of
 			// requests that should be split between validBuckets.
+			/* eslint-disable camelcase */
+			bowiki: 1,
+			dzwiki: 1,
+			ganwiki: 1,
+			jawiki: 1,
+			kmwiki: 1,
+			lowiki: 1,
+			mywiki: 1,
+			thwiki: 1,
+			wuuwiki: 1,
+			zhwiki: 1,
+			zh_classicalwiki: 1,
+			yuewiki: 1,
+			zh_yuewiki: 1,
+			bugwiki: 1,
+			cdowiki: 1,
+			crwiki: 1,
+			hakwiki: 1,
+			jvwiki: 1,
+			nanwiki: 1,
+			zh_min_nanwiki: 1
+			/* eslint-enable camelcase */
 		},
 
 		uri = ( function () {
