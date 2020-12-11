@@ -172,7 +172,7 @@
 
 			while ( n-- > 0 ) {
 				mw.eventLog.submit( 'mediawiki.client.session_tick', {
-					$schema: '/analytics/session_tick/1.0.0',
+					$schema: '/analytics/session_tick/2.0.0',
 					tick: count + n,
 					test: {
 						// eslint-disable-next-line camelcase
