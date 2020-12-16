@@ -47,8 +47,11 @@ require_once __DIR__ . '/../../vendor/autoload.php';
  * @coversNothing
  */
 class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
+
+	/** @var string */
 	private static $mwBaseUrl;
 
+	/** @var RemoteWebDriver */
 	protected $webDriver;
 
 	public function setUp() : void {
@@ -722,10 +725,17 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		$this->assertEquals( $expectedEvents, $finalEvents, $debug );
 	}
 
+	/**
+	 * @return int
+	 */
 	private function getEventLogPosition() {
 		return strlen( file_get_contents( $this->eventLoggingPath ) );
 	}
 
+	/**
+	 * @param int $prevPosition
+	 * @return array[]
+	 */
 	private function collectEvents( $prevPosition ) {
 		$log = file_get_contents( $this->eventLoggingPath );
 		$events = [];
@@ -738,6 +748,9 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		return $events;
 	}
 
+	/**
+	 * @param array $event
+	 */
 	private function assertValidEvent( array $event ) {
 		$searchTokenActions = [ 'searchResultPage', 'click' ];
 		if ( in_array( $event['action'], $searchTokenActions ) ) {
@@ -746,6 +759,10 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		}
 	}
 
+	/**
+	 * @param string $url
+	 * @return callable
+	 */
 	protected function visitPage( $url ) {
 		return function ( $webDriver ) use ( $url ) {
 			$webDriver->get( self::$mwBaseUrl . $url );
@@ -806,7 +823,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	/**
 	 * Shown when the original search query was run, but the
 	 * search engine has a suggestion for a better query
-	 * @return function
+	 * @return callable
 	 */
 	protected function clickDidYouMeanSuggestion() {
 		return function ( $webDriver ) {
@@ -820,7 +837,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	 * Shown when the rewritten search query was run. Gives
 	 * the user a direct link to this search, which might show
 	 * a new did you mean.
-	 * @return function
+	 * @return callable
 	 */
 	protected function clickDidYouMeanRewritten() {
 		return function ( $webDriver ) {
@@ -834,7 +851,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	 * Shown when the rewritten search query was run. Gives
 	 * the user a direct link to the original search without
 	 * it being rewritten.
-	 * @return function
+	 * @return callable
 	 */
 	protected function clickDidYouMeanOriginal() {
 		return function ( $webDriver ) {
