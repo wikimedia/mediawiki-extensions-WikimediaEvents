@@ -400,6 +400,12 @@ class WikimediaEventsHooks {
 		return true;
 	}
 
+	/**
+	 * @param string $term
+	 * @param Title $title
+	 * @param string|null &$url
+	 * @return true
+	 */
 	public static function onSpecialSearchGoResult( $term, Title $title, &$url ) {
 		$request = RequestContext::getMain()->getRequest();
 
@@ -494,6 +500,9 @@ class WikimediaEventsHooks {
 		return true;
 	}
 
+	/**
+	 * @param ResourceLoader $resourceLoader
+	 */
 	public static function onResourceLoaderRegisterModules( ResourceLoader $resourceLoader ) {
 		if ( !ExtensionRegistry::getInstance()->isLoaded( 'VisualEditor' ) ) {
 			return;
@@ -530,6 +539,11 @@ class WikimediaEventsHooks {
 		} );
 	}
 
+	/**
+	 * @param array &$vars
+	 * @param OutputPage $out
+	 * @return true
+	 */
 	public static function onMakeGlobalVariablesScript( array &$vars, OutputPage $out ) {
 		global $wgWMESearchRelevancePages;
 		if ( $vars['wgAction'] === 'view' ) {
@@ -544,6 +558,10 @@ class WikimediaEventsHooks {
 		return true;
 	}
 
+	/**
+	 * @param IContextSource $context
+	 * @return bool
+	 */
 	public static function shouldSchemaEditAttemptStepOversample( IContextSource $context ) {
 		global $wgWMEUnderstandingFirstDay;
 		// Conditions under which Schema:EditAttemptStep should oversample (always log)
