@@ -76,7 +76,7 @@
 	 * invalid: session holds a probably stale value no long present in the validBuckets
 	 *
 	 * @param subTest
-	 * @returns boolean
+	 * @return boolean
 	 */
 	function isValidSubtest( subTest ) {
 		return !!( subTest && subTest !== 'mismatch' && subTest !== 'invalid' );
@@ -460,7 +460,7 @@
 			if ( skin === 'vector' ) {
 				evt.skinVersion = document.body.classList.contains( 'skin-vector-legacy' ) ? 'legacy' : 'latest';
 
-				if ( document.querySelector( '#app .wvui-input' ) ) {
+				if ( document.querySelector( '#p-search .wvui-input' ) ) {
 
 					// Use the extraParams field as the subTest field is expected to be the current
 					// wiki's DB name (i.e. mw.config.get( 'wgDBname' )) if it's set.
