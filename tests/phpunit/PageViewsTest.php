@@ -6,6 +6,7 @@ use FauxRequest;
 use HashConfig;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWikiTestCase;
+use MockHttpTrait;
 use MultiConfig;
 use MWException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -19,6 +20,7 @@ use WikimediaEvents\PageViews;
  * @covers \WikimediaEvents\PageViews
  */
 class PageViewsTest extends MediaWikiTestCase {
+	use MockHttpTrait;
 
 	public static function getDefaultContext() {
 		$user = User::newFromName( 'Test' );
@@ -449,6 +451,9 @@ class PageViewsTest extends MediaWikiTestCase {
 	 * @throws MWException
 	 */
 	public function testLog() {
+		// EventLogging wants to load a remote schema definition over HTTP. Set a dummy response.
+		$this->installMockHttp( 'dummy' );
+
 		// Anon users are excluded from logging.
 		$context = self::getDefaultContext();
 		$context->setUser( User::newFromId( 0 ) );
