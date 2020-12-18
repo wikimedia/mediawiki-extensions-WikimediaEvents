@@ -138,7 +138,7 @@ class WikimediaEventsHooks {
 			}
 		}
 
-		if ( $out->getUser()->isLoggedIn() ) {
+		if ( $out->getUser()->isRegistered() ) {
 			$headerItems['loggedIn'] = 1;
 		}
 	}
