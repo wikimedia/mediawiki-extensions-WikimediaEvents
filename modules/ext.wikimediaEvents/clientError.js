@@ -27,14 +27,21 @@
 		// global.onerror events events and producing equivalent messages to
 		// the 'global.error' topic.
 		mw.trackSubscribe( 'global.error', function ( _, obj ) {
-			var message;
+			var message, fileUrl;
 
 			if ( !obj ) {
 				// Invalid
 				return;
 			}
 
-			if ( !obj.url || obj.url.split( '#' )[ 0 ] === location.href.split( '#' )[ 0 ] ) {
+			fileUrl = obj.url;
+			if ( !fileUrl ||
+				fileUrl.split( '#' )[ 0 ] === location.href.split( '#' )[ 0 ] ||
+				fileUrl.indexOf( 'blob:' ) === 0 ||
+				fileUrl.indexOf( 'chrome-extension://' ) === 0 ||
+				fileUrl.indexOf( 'safari-extension://' ) === 0 ||
+				fileUrl.indexOf( 'moz-extension://' ) === 0
+			) {
 				// When the error lacks a URL, or the URL is defaulted to page
 				// location, the stack trace is rarely meaningful, if ever.
 				//
@@ -53,6 +60,11 @@
 				// Per spec, obj.url should never contain a fragment identifier,
 				// yet we have observed this in the wild in several instances,
 				// hence we must strip the identifier from both.
+				//
+				// Various errors originate from scripts we do not control. These may be
+				// prefixed by "blob:" or one of the browser extensions.
+				// These are not logged but may in future be diverted
+				// to another channel (see T259383 for more information).
 				return;
 			}
 
@@ -94,7 +106,7 @@
 				message: message,
 				// URL of the file causing the error
 				// eslint-disable-next-line camelcase
-				file_url: obj.url,
+				file_url: fileUrl,
 				// URL of the web page.
 				url: location.href,
 				// Normalized stack trace string
