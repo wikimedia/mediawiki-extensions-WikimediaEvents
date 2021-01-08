@@ -8,7 +8,168 @@
 	var
 		// Only log up to this many errors per page (T259371)
 		errorLimit = 5,
-		errorCount = 0;
+		errorCount = 0,
+
+		// Browser stack trace strings are usually provided on the Error object,
+		// and render each stack frame on its own line, e.g.:
+		//
+		// WebKit browsers:
+		//      "at foo (http://w.org/ex.js:11:22)"
+		//
+		// Gecko browsers:
+		//      "foo@http://w.org/ex.js:11:22"
+		//
+		// The format is not standardized, but the two given above predominate,
+		// reflecting the two major browser engine lineages:
+		//
+		//          WebKit              Gecko
+		//          /   \                 |
+		//      Safari  Chrome          Firefox
+		//              /  |  \
+		//             /   |   \
+		//      Opera 12+ Edge Brave
+		//
+		// Given below are regular expressions that extract the "function name" and
+		// "location" portions of such strings.
+		//
+		// For the examples above, a successful match would yield:
+		//
+		//      [ "foo", "http://w.org/ex.js:11:22" ]
+		//
+		// This pair can then be re-composed into a new string with whatever format is desired.
+		//
+		//                 begin        end
+		//                 non-capture  non-capture
+		//                 group        group
+		//                     |         |
+		//                    /|\       /|
+		regexWebKit = /^\s*at (?:(.*?)\()?(.*?:\d+:\d+)\)?\s*$/i,
+		//             - --       --- --   ----------- --- - -
+		//            / /         /    |        |       |  |  \___
+		//  line start /      group 1, |        |       |  |      \
+		//            /       function |     group 2,   |  any     line
+		//         any # of   name     |   url:line:col |  # of    end
+		//         spaces     (maybe   |                |  spaces
+		//                     empty)  |                |
+		//                             |                |
+		//                          literal          literal
+		//                            '('              ')'
+		//                                        (or nothing)
+		//
+		//          begin                               end
+		//          outer                               outer
+		//          non-capture                         non-capture
+		//          group                               group
+		//              \__    begin        end            |
+		//                 |   inner        inner          |
+		//                 |   non-capture  non-capture    |
+		//                 |   group        group          |
+		//                 |       |         |  ___________|
+		//                /|\     /|\       /| /|
+		regexGecko = /^\s*(?:(.*?)(?:\(.*?\))?@)?(.*:\d+:\d+)\s*$/i;
+		//            - --    ---    -- - --  -   ----------  - -
+		//           /  /      /      | |  \_  \_      |      |_ \__ line
+		//  line start /   group 1,   | |    |   | group 2,     |    end
+		//            /    function   | args |   | url:line:col |
+		//       any # of  name       |      |   |              |
+		//       spaces    (maybe     |      | literal         any
+		//                 empty)     |      |  '@'            # of
+		//                            |      |                 spaces
+		//                         literal  literal
+		//                           '('      ')'
+
+	/**
+	 * Convert most stack trace strings to an array of lines in a common format.
+	 *
+	 * @param {string} str Native stack trace string
+	 * @return {string[]} If the stack trace matches a supported format, an array of strings in the
+	 *  form `"at [funcName] scriptUrl:lineNo:colNo"`, otherwise an empty array
+	 */
+	function getNormalizedStackTraceLines( str ) {
+		var result = [],
+			lines = str.split( '\n' ),
+			i,
+			parts;
+
+		for ( i = 0; i < lines.length; i++ ) {
+			// Try to boil each line of the stack trace string down to a function and
+			// location pair, e.g. [ 'myFoo', 'myscript.js:1:23' ].
+			// using regexes that match the WebKit-like and Gecko-like stack trace
+			// formats, in that order.
+			//
+			// A line will match only one of the two expressions (or neither).
+			// Note that in JavaScript regex, the first value in the array is
+			// the original string.
+			parts = regexWebKit.exec( lines[ i ] ) || regexGecko.exec( lines[ i ] );
+
+			if ( parts ) {
+				// If the line was successfully matched into two parts, then re-assemble
+				// the parts in our output format.
+				if ( parts[ 1 ] ) {
+					result.push( 'at ' + parts[ 1 ] + ' ' + parts[ 2 ] );
+				} else {
+					result.push( 'at ' + parts[ 2 ] );
+				}
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * @typedef ParsedStackTrace
+	 * @property {string} url
+	 * @property {number} columnNumber
+	 * @property {number} lineNumber
+	 * @property {string} normalizedStackTrace
+	 */
+
+	/**
+	 * Parses and extracts the following information from an error's stack trace: the URL of the
+	 * file, column- and line number of the code that threw the error; and the normalized version of
+	 * the stack trace (see `getNormalizedStackTraceLines()`).
+	 *
+	 * @param {string} stackTrace
+	 * @return {ParsedStackTrace|null} If the stack trace can't be parsed, then `null`
+	 */
+	function parseStackTrace( stackTrace ) {
+		// The 'stack' property is non-standard, so we check.
+		// In some browsers it will be undefined, and in some
+		// it may be an object, etc.
+		var stackTraceLines,
+			firstLine, parts,
+			columnNumber, lineNumber, url;
+
+		stackTraceLines = getNormalizedStackTraceLines( stackTrace );
+
+		if ( !stackTraceLines ) {
+			return null;
+		}
+
+		firstLine = stackTraceLines[ 0 ];
+
+		// getStackTraceLines returns lines in the form
+		//
+		//     at [funcName] scriptUrl:lineNo:colNo
+		//
+		// and we want to extract scriptUrl, lineNo, and colNo.
+		parts = firstLine.split( ' ' );
+		parts = parts[ parts.length - 1 ].split( ':' );
+
+		columnNumber = parseInt( parts[ parts.length - 1 ], 10 );
+		lineNumber = parseInt( parts[ parts.length - 2 ], 10 );
+
+		// If the URL contains a port (or another unencoded ":" character?), then we need to
+		// reconstruct it from the remaining parts.
+		url = parts.slice( 0, parts.length - 2 ).join( ':' );
+
+		return {
+			url: url,
+			columnNumber: columnNumber,
+			lineNumber: lineNumber,
+			normalizedStackTrace: stackTraceLines.join( '\n' )
+		};
+	}
 
 	/**
 	 * Install a subscriber for global errors that will log an event.
@@ -20,21 +181,29 @@
 	 */
 	function install( intakeURL ) {
 		// We indirectly capture browser errors by subscribing to the
-		// 'global.error' topic.
+		// 'error.uncaught' topic.
 		//
 		// For more information, see mediawiki.errorLogger.js in MediaWiki,
 		// which is responsible for directly handling the browser's
-		// global.onerror events events and producing equivalent messages to
-		// the 'global.error' topic.
-		mw.trackSubscribe( 'global.error', function ( _, obj ) {
-			var message, fileUrl;
+		// window.onerror events and producing equivalent messages to
+		// the 'error.uncaught' topic.
+		//
+		// We also indirectly capture errors thrown by components and
+		// tracked on the 'error.caught' topic by
+		// `mw.errorLogger.logError()`.
+		mw.trackSubscribe( 'error.*', function ( _, errorObj ) {
+			var parsedStackTrace,
+				fileUrl,
+				message;
 
-			if ( !obj ) {
+			if ( !errorObj || !( errorObj instanceof Error ) || !errorObj.stack ) {
 				// Invalid
 				return;
 			}
 
-			fileUrl = obj.url;
+			parsedStackTrace = parseStackTrace( errorObj.stack );
+			fileUrl = parseStackTrace.url;
+
 			if ( !fileUrl ||
 				fileUrl.split( '#' )[ 0 ] === location.href.split( '#' )[ 0 ] ||
 				fileUrl.indexOf( 'blob:' ) === 0 ||
@@ -75,7 +244,7 @@
 
 			errorCount++;
 
-			message = obj.errorMessage;
+			message = errorObj.errorMessage;
 
 			// Users unintentionally sometimes, directly or indirectly, end up running multiple scripts
 			// that try to load a gadget from another site by the same name. Ths can cause an error if
@@ -101,9 +270,9 @@
 				$schema: '/mediawiki/client/error/1.0.0',
 				// Name of the error constructor
 				// eslint-disable-next-line camelcase
-				error_class: ( obj.errorObject && obj.errorObject.constructor.name ) || '',
+				error_class: errorObj.constructor.name || '',
 				// Message included with the Error object
-				message: message,
+				message: errorObj.message,
 				// URL of the file causing the error
 				// eslint-disable-next-line camelcase
 				file_url: fileUrl,
@@ -111,7 +280,7 @@
 				url: location.href,
 				// Normalized stack trace string
 				// eslint-disable-next-line camelcase
-				stack_trace: obj.stackTrace
+				stack_trace: parsedStackTrace.stack
 				// Tags that can be specified as-needed
 				// tags: {}
 			} ) );
