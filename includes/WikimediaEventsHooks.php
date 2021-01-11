@@ -686,6 +686,10 @@ class WikimediaEventsHooks {
 
 		DeferredUpdates::addCallableUpdate(
 			function () use ( $event ) {
+				// NOTE!  SpecialMuteSubmit has been migrated to Event Platform,
+				// and is no longer using the metawiki based schema.  This revision_id
+				// will be overridden by the value of the EventLogging Schemas extension attribute
+				// set in extension.json.
 				EventLogging::logEvent( 'SpecialMuteSubmit', 19265572, $event );
 			}
 		);

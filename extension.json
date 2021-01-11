@@ -59,6 +59,7 @@
 				"SearchSatisfaction": "/analytics/legacy/searchsatisfaction/1.3.0",
 				"SearchSatisfactionErrors": 17181648,
 				"Search": 14361785,
+				"SpecialMuteSubmit": "/analytics/legacy/specialmutesubmit/1.0.0",
 				"ChangesListHighlights": 16484288,
 				"ChangesListFilterGrouping": 17008168,
 				"RecentChangesTopLinks": 16732249,
