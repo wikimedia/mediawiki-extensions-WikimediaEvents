@@ -105,6 +105,9 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 		return false;
 	}
 
+	/**
+	 * @return string
+	 */
 	protected function getEntryPoint() {
 		$entrypoint = defined( 'MW_API' ) ? 'api' : 'web';
 		if ( $entrypoint === 'web' && wfWikiID() === 'loginwiki' ) {

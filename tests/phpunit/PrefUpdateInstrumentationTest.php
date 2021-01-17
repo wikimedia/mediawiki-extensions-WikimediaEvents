@@ -82,10 +82,6 @@ class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 
 	/**
 	 * @dataProvider providePrefUpdate
-	 * @param string $name
-	 * @param string $value
-	 * @param false|array $expect
-	 * @param null|string $error
 	 */
 	public function testCreatePrefUpdateEvent( $user, $name, $value, $expect, $error = null ) {
 		$prefUpdate = TestingAccessWrapper::newFromClass( PrefUpdateInstrumentation::class );
