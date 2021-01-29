@@ -29,6 +29,16 @@
 		mw.trackSubscribe( 'global.error', function ( _, obj ) {
 			var message, fileUrl;
 
+			// If we are in an iframe do not log errors. (T264245)
+			try {
+				if ( window.self !== window.top ) {
+					return;
+				}
+			} catch ( e ) {
+				// permission was denied, so assume iframe.
+				return;
+			}
+
 			if ( !obj ) {
 				// Invalid
 				return;
