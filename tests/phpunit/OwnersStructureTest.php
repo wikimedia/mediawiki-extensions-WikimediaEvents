@@ -96,8 +96,8 @@ class OwnersStructureTest extends \PHPUnit\Framework\TestCase {
 
 		$resources = $this->getResources();
 		foreach ( $resources as $file => $moduleName ) {
-			$this->assertTrue(
-				in_array( $file, $ownedFiles ),
+			$this->assertContains(
+				$file, $ownedFiles,
 				"File $file in $moduleName has an owner"
 			);
 		}
