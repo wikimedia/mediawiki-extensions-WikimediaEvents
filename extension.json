@@ -31,7 +31,7 @@
 		"ResourceLoaderGetConfigVars": "WikimediaEvents\\WikimediaEventsHooks::onResourceLoaderGetConfigVars",
 		"ListDefinedTags": "WikimediaEvents\\WikimediaEventsHooks::onListDefinedTags",
 		"ChangeTagsListActive": "WikimediaEvents\\WikimediaEventsHooks::onChangeTagsListActive",
-		"XAnalyticsSetHeader": "WikimediaEvents\\WikimediaEventsHooks::onXAnalyticsHeader",
+		"XAnalyticsSetHeader": "WikimediaEvents\\WikimediaEventsHooks::onXAnalyticsSetHeader",
 		"SpecialSearchGoResult": "WikimediaEvents\\WikimediaEventsHooks::onSpecialSearchGoResult",
 		"SpecialSearchResults": "WikimediaEvents\\WikimediaEventsHooks::onSpecialSearchResults",
 		"RecentChange_save": [

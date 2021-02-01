@@ -106,7 +106,7 @@ class WikimediaEventsHooks {
 	}
 
 	/**
-	 * On XAnalyticsHeader
+	 * On XAnalyticsSetHeader
 	 *
 	 * When adding new headers here please update the docs:
 	 * https://wikitech.wikimedia.org/wiki/X-Analytics
@@ -120,7 +120,7 @@ class WikimediaEventsHooks {
 	 * @param OutputPage $out
 	 * @param array &$headerItems
 	 */
-	public static function onXAnalyticsHeader( OutputPage $out, array &$headerItems ) {
+	public static function onXAnalyticsSetHeader( OutputPage $out, array &$headerItems ) {
 		$title = $out->getTitle();
 		if ( $title !== null ) {
 			$pageId = $title->getArticleID();
