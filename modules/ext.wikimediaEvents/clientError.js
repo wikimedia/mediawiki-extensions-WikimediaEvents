@@ -39,8 +39,8 @@
 				return;
 			}
 
-			if ( !obj ) {
-				// Invalid
+			if ( !obj || mw.storage.session.get( 'client-error-opt-out' ) ) {
+				// Invalid error object or the user has opted out of error logging.
 				return;
 			}
 
