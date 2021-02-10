@@ -173,11 +173,7 @@
 			while ( n-- > 0 ) {
 				mw.eventLog.submit( 'mediawiki.client.session_tick', {
 					$schema: '/analytics/session_tick/2.0.0',
-					tick: count + n,
-					test: {
-						// eslint-disable-next-line camelcase
-						supports_passive: supportsPassive
-					}
+					tick: count + n
 				} );
 			}
 		} );
@@ -192,13 +188,18 @@
 		// Sets the 'supportsPassive' flag.
 		detectPassiveEventListenerSupport();
 
-		//
-		// Prevents the cookie I/O along these code paths from slowing down
-		// the initial paint and other time-critical tasks at page load.
-		//
-		mw.requestIdleCallback( function () {
-			regulator();
-			instrument();
-		} );
+		// Only enable for browsers that support passive event listeners.
+		// See: T274264, T248987
+		if ( supportsPassive === 1 ) {
+			//
+			// Prevents the cookie I/O along these code paths from
+			// slowing down the initial paint and other critical
+			// tasks at page load.
+			//
+			mw.requestIdleCallback( function () {
+				regulator();
+				instrument();
+			} );
+		}
 	}
 }() );
