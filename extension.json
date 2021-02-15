@@ -149,6 +149,18 @@
 		"localBasePath": "modules/",
 		"remoteExtPath": "WikimediaEvents/modules"
 	},
+	"QUnitTestModule": {
+		"localBasePath": "",
+		"remoteExtPath": "WikimediaEvents/",
+		"packageFiles": [
+			"tests/qunit/ext.wikimediaEvents/clientError.test.js",
+			"modules/ext.wikimediaEvents/clientError.js",
+			{
+				"name": "modules/ext.wikimediaEvents/config.json",
+				"content": {}
+			}
+		]
+	},
 	"config": {
 		"WMEUnderstandingFirstDay": {
 			"value": false

@@ -80,18 +80,27 @@
 		//                           '('      ')'
 
 	/**
-	 * Convert most stack trace strings to a common format.
+	 * @typedef ErrorDescriptor
+	 * @property {string} errorClass The class of the underlying error, e.g. `"Error"`
+	 * @property {string} errorMessage The error message
+	 * @property {string} fileUrl The URL of the file that the underlying error originated in
+	 * @property {string} [stackTrace] The normalized stack trace (see
+	 *  `getNormalizedStackTraceLines()`)
+	 * @property {Error} [errorObject] The underlying error if available
+	 */
+
+	/**
+	 * Convert most native stack trace strings to a common format.
 	 *
 	 * If the input string does not match a supported format,
-	 * the output will be the empty string.
-	 * Otherwise, "at funcName scriptUrl:lineNo:colNo".
+	 * the output will be an empty array.
 	 *
 	 * @private
-	 * @param {string} str Native stack trace string
-	 * @return {string} Cross-browser normal stack trace
+	 * @param {string} str Native stack trace string from `Error.stack`
+	 * @return {string[]} Normalized lines of the stack trace
 	 */
-	function crossBrowserStackTrace( str ) {
-		var result = '',
+	function getNormalizedStackTraceLines( str ) {
+		var result = [],
 			lines = str.split( '\n' ),
 			parts,
 			i;
@@ -112,12 +121,9 @@
 				// If the line was successfully matched into two parts, then re-assemble
 				// the parts in our output format.
 				if ( parts[ 1 ] ) {
-					result += 'at ' + parts[ 1 ] + ' ' + parts[ 2 ];
+					result.push( 'at ' + parts[ 1 ] + ' ' + parts[ 2 ] );
 				} else {
-					result += 'at ' + parts[ 2 ];
-				}
-				if ( i < lines.length ) {
-					result += '\n';
+					result.push( 'at ' + parts[ 2 ] );
 				}
 			}
 		}
@@ -127,7 +133,7 @@
 
 	/**
 	 * @param {string} message
-	 * @return {bool}
+	 * @return {boolean}
 	 */
 	function shouldIgnoreMessage( message ) {
 		return message && [
@@ -154,6 +160,190 @@
 	}
 
 	/**
+	 * Parses out an error descriptor from the error's stack trace.
+	 *
+	 * @param {Mixed} error
+	 * @return {ErrorDescriptor?} If the error can be parsed, then an `ErrorDescriptor` object;
+	 *  otherwise, `null`
+	 */
+	function processErrorInstance( error ) {
+		// The 'stack' property is non-standard, so we check.
+		// In some browsers it will be undefined, and in some
+		// it may be an object, etc.
+		var stackTraceLines,
+			firstLine, parts,
+			fileUrlParts, fileUrl;
+
+		if ( !error || !( error instanceof Error ) || !error.stack ) {
+			return null;
+		}
+
+		stackTraceLines = getNormalizedStackTraceLines( String( error.stack ) );
+
+		if ( !stackTraceLines.length ) {
+			return null;
+		}
+
+		firstLine = stackTraceLines[ 0 ];
+
+		// getStackTraceLines returns lines in the form
+		//
+		//     at [funcName]  fileUrl:lineNo:colNo
+		//
+		// and we want to extract fileUrl.
+		parts = firstLine.split( ' ' );
+		fileUrlParts = parts[ parts.length - 1 ].split( ':' );
+
+		// If the URL contains a port (or another unencoded ":" character?), then we need to
+		// reconstruct it from the remaining parts.
+		fileUrl = fileUrlParts.slice( 0, -2 ).join( ':' );
+
+		return {
+			errorClass: error.constructor.name,
+			errorMessage: error.message,
+			fileUrl: fileUrl,
+			stackTrace: stackTraceLines.join( '\n' ),
+			errorObject: error
+		};
+	}
+
+	/**
+	 * @param {Object|null|undefined} [errorLoggerObject]
+	 * @return {ErrorDescriptor|null}
+	 */
+	function processErrorLoggerObject( errorLoggerObject ) {
+		var errorObject,
+			stackTrace;
+
+		if ( !errorLoggerObject ) {
+			return null;
+		}
+
+		errorObject = errorLoggerObject.errorObject;
+		stackTrace = errorObject && errorObject.stack ?
+			getNormalizedStackTraceLines( errorObject.stack ).join( '\n' ) :
+			'';
+
+		return {
+			errorClass: ( errorObject && errorObject.constructor.name ) || '',
+			errorMessage: errorLoggerObject.errorMessage,
+			fileUrl: errorLoggerObject.url,
+			stackTrace: stackTrace,
+			errorObject: errorObject
+		};
+	}
+
+	/**
+	 * Gets whether or not the error, described by an `ErrorDescriptor` object, should be logged.
+	 *
+	 * @param {ErrorDescriptor|null} descriptor
+	 * @return {boolean}
+	 */
+	function shouldLog( descriptor ) {
+		var fileUrl;
+
+		if ( !descriptor ) {
+			return false;
+		}
+
+		// If we are in an iframe do not log errors. (T264245)
+		try {
+			if ( window.self !== window.top ) {
+				return false;
+			}
+		} catch ( e ) {
+			// permission was denied, so assume iframe.
+			return false;
+		}
+
+		if ( mw.storage.session.get( 'client-error-opt-out' ) ) {
+			// Invalid error object or the user has opted out of error logging.
+			return false;
+		}
+
+		fileUrl = descriptor.fileUrl;
+		if ( !fileUrl ||
+			fileUrl.split( '#' )[ 0 ] === location.href.split( '#' )[ 0 ] ||
+			fileUrl.indexOf( 'blob:' ) === 0 ||
+			fileUrl.indexOf( 'chrome-extension://' ) === 0 ||
+			fileUrl.indexOf( 'safari-extension://' ) === 0 ||
+			fileUrl.indexOf( 'moz-extension://' ) === 0
+		) {
+			// When the error lacks a URL, or the URL is defaulted to page
+			// location, the stack trace is rarely meaningful, if ever.
+			//
+			// It may have been censored by the browser due to cross-site
+			// origin security requirements, or the code may have been
+			// executed as part of an eval, or some other weird thing may
+			// be happening.
+			//
+			// We discard such errors because without a stack trace, they
+			// are not really within our power to fix. (T259369, T261523)
+			//
+			// If the two URLs differ only by a fragment identifier (e.g.
+			// 'example.org' vs. 'example.org#Section'), we consider them
+			// to be matching.
+			//
+			// Per spec, obj.url should never contain a fragment identifier,
+			// yet we have observed this in the wild in several instances,
+			// hence we must strip the identifier from both.
+			//
+			// Various errors originate from scripts we do not control. These may be
+			// prefixed by "blob:" or one of the browser extensions.
+			// These are not logged but may in future be diverted
+			// to another channel (see T259383 for more information).
+			return false;
+		}
+
+		// Stop repeated errors from e.g. setInterval (T259371)
+		if ( errorCount >= errorLimit ) {
+			return false;
+		}
+
+		errorCount++;
+
+		if ( shouldIgnoreMessage( descriptor.errorMessage ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Log the error to the "mediawiki.client.error" stream on the specified EventGate instance.
+	 *
+	 * @param {string} intakeURL The URL of the EventGate instance
+	 * @param {ErrorDescriptor} descriptor
+	 */
+	function log( intakeURL, descriptor ) {
+		navigator.sendBeacon( intakeURL, JSON.stringify( {
+			meta: {
+				// Name of the stream
+				stream: 'mediawiki.client.error',
+				// Domain of the web page
+				domain: location.hostname
+			},
+			// Schema used to validate events
+			$schema: '/mediawiki/client/error/1.0.0',
+			// Name of the error constructor
+			// eslint-disable-next-line camelcase
+			error_class: descriptor.errorClass,
+			// Message included with the Error object
+			message: descriptor.message,
+			// URL of the file causing the error
+			// eslint-disable-next-line camelcase
+			file_url: descriptor.fileUrl,
+			// URL of the web page.
+			url: location.href,
+			// Normalized stack trace string
+			// eslint-disable-next-line camelcase
+			stack_trace: descriptor.stackTrace
+			// Tags that can be specified as-needed
+			// tags: {}
+		} ) );
+	}
+
+	/**
 	 * Install a subscriber for global errors that will log an event.
 	 *
 	 * The diagnostic event is built from the Error object that the browser
@@ -170,103 +360,38 @@
 		// global.onerror events events and producing equivalent messages to
 		// the 'global.error' topic.
 		mw.trackSubscribe( 'global.error', function ( _, obj ) {
-			var message, fileUrl;
+			var descriptor = processErrorLoggerObject( obj );
 
-			// If we are in an iframe do not log errors. (T264245)
-			try {
-				if ( window.self !== window.top ) {
-					return;
-				}
-			} catch ( e ) {
-				// permission was denied, so assume iframe.
-				return;
+			if ( shouldLog( descriptor ) ) {
+				log( intakeURL, descriptor );
 			}
+		} );
 
-			if ( !obj || mw.storage.session.get( 'client-error-opt-out' ) ) {
-				// Invalid error object or the user has opted out of error logging.
-				return;
+		mw.trackSubscribe( 'error.vue', function ( error ) {
+			var descriptor = processErrorInstance( error );
+
+			if ( shouldLog( descriptor ) ) {
+				log( intakeURL, descriptor );
 			}
-
-			fileUrl = obj.url;
-			if ( !fileUrl ||
-				fileUrl.split( '#' )[ 0 ] === location.href.split( '#' )[ 0 ] ||
-				fileUrl.indexOf( 'blob:' ) === 0 ||
-				fileUrl.indexOf( 'chrome-extension://' ) === 0 ||
-				fileUrl.indexOf( 'safari-extension://' ) === 0 ||
-				fileUrl.indexOf( 'moz-extension://' ) === 0
-			) {
-				// When the error lacks a URL, or the URL is defaulted to page
-				// location, the stack trace is rarely meaningful, if ever.
-				//
-				// It may have been censored by the browser due to cross-site
-				// origin security requirements, or the code may have been
-				// executed as part of an eval, or some other weird thing may
-				// be happening.
-				//
-				// We discard such errors because without a stack trace, they
-				// are not really within our power to fix. (T259369, T261523)
-				//
-				// If the two URLs differ only by a fragment identifier (e.g.
-				// 'example.org' vs. 'example.org#Section'), we consider them
-				// to be matching.
-				//
-				// Per spec, obj.url should never contain a fragment identifier,
-				// yet we have observed this in the wild in several instances,
-				// hence we must strip the identifier from both.
-				//
-				// Various errors originate from scripts we do not control. These may be
-				// prefixed by "blob:" or one of the browser extensions.
-				// These are not logged but may in future be diverted
-				// to another channel (see T259383 for more information).
-				return;
-			}
-
-			// Stop repeated errors from e.g. setInterval (T259371)
-			if ( errorCount >= errorLimit ) {
-				return;
-			}
-
-			errorCount++;
-
-			message = obj.errorMessage;
-
-			if ( shouldIgnoreMessage( message ) ) {
-				return;
-			}
-			navigator.sendBeacon( intakeURL, JSON.stringify( {
-				meta: {
-					// Name of the stream
-					stream: 'mediawiki.client.error',
-					// Domain of the web page
-					domain: location.hostname
-				},
-				// Schema used to validate events
-				$schema: '/mediawiki/client/error/1.0.0',
-				// Name of the error constructor
-				// eslint-disable-next-line camelcase
-				error_class: ( obj.errorObject && obj.errorObject.constructor.name ) || '',
-				// Message included with the Error object
-				message: message,
-				// URL of the file causing the error
-				// eslint-disable-next-line camelcase
-				file_url: fileUrl,
-				// URL of the web page.
-				url: location.href,
-				// Normalized stack trace string
-				// eslint-disable-next-line camelcase
-				stack_trace: obj.stackTrace ? crossBrowserStackTrace( obj.stackTrace ) : ''
-				// Tags that can be specified as-needed
-				// tags: {}
-			} ) );
 		} );
 	}
 
-	// Only install the logger if the module has been properly configured, and
-	// the client supports the necessary browser features.
-	if (
+	if ( window.QUnit ) {
+		module.exports = {
+			getNormalizedStackTraceLines: getNormalizedStackTraceLines,
+			processErrorInstance: processErrorInstance,
+			processErrorLoggerObject: processErrorLoggerObject
+		};
+	} else if (
 		navigator.sendBeacon &&
 		moduleConfig.clientErrorIntakeURL
 	) {
+		// Only install the logger if:
+		//
+		// - We're not in a testing environment;
+		// - The module has been properly configured; and
+		// - The client supports the necessary browser features.
+
 		install( moduleConfig.clientErrorIntakeURL );
 	}
 }() );
