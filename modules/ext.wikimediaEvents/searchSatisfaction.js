@@ -452,6 +452,7 @@
 
 			evt.skin = skin;
 			evt.isAnon = mw.user.isAnon();
+			evt.userEditBucket = mw.wikimediaEvents.getEditCountBucket( mw.config.get( 'wgUserEditCount' ) );
 
 			// Is the user using the Vector skin? If so, then include which version of the skin
 			// they're using and which version of the search widget they're seeing.
