@@ -362,11 +362,13 @@ class WikimediaEventsHooks {
 	 * Callback for dynamic source files, for conditional loading based on the current skin.
 	 *
 	 * @param ResourceLoaderContext $context
+	 * @param Config $config
 	 * @param string $param callback param - corresponds to the file name to conditionally load
 	 * @return ResourceLoaderFilePath|string
 	 */
-	public static function getModuleFile( ResourceLoaderContext $context, $param ) {
+	public static function getModuleFile( ResourceLoaderContext $context, Config $config, $param ) {
 		$skin = $context->getSkin();
+
 		switch ( $param ) {
 			case 'searchSatisfaction':
 				return $skin !== 'minerva' ? new ResourceLoaderFilePath( 'searchSatisfaction.js' )
