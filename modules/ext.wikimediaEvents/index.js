@@ -6,7 +6,6 @@ require( './clientError.js' );
 require( './sessionTick.js' );
 if ( skin === 'minerva' ) {
 	require( './mobileWebUIActions.js' );
-	require( './inukaPageView.js' );
 } else if ( skin === 'vector' ) {
 	require( './searchSatisfaction.js' );
 	require( './desktopWebUIActions.js' );

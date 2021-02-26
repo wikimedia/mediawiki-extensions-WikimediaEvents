@@ -51,7 +51,6 @@
 		"EventLogging": {
 			"Schemas": {
 				"DesktopWebUIActionsTracking": 20184974,
-				"InukaPageView": 19739286,
 				"EditAttemptStep": 21024286,
 				"VisualEditorFeatureUse": 21041448,
 				"CompletionSuggestions": 13630018,
@@ -103,11 +102,6 @@
 					"name": "mobileWebUIActions.js",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
 					"callbackParam": "mobileWebUIActions"
-				},
-				{
-					"name": "inukaPageView.js",
-					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
-					"callbackParam": "inukaPageView"
 				},
 				{
 					"name": "config.json",
@@ -181,20 +175,6 @@
 		},
 		"WMEEditCampaigns": {
 			"value": []
-		},
-		"WMEInukaPageViewEnabled": {
-			"value": false
-		},
-		"WMEInukaPageViewCookiesDomain": {
-			"value": "wikipedia.org"
-		},
-		"WMEInukaPageViewSamplingRatePerOs": {
-			"value": {
-				"kaios": 1,
-				"android": 0.1,
-				"ios": 0.5,
-				"unknown": 0
-			}
 		},
 		"WMESchemaEditAttemptStepSamplingRate": {
 			"value": "0.0625"

@@ -348,9 +348,6 @@ class WikimediaEventsHooks {
 		$skin = $context->getSkin();
 		if ( $skin === 'minerva' ) {
 			$vars['mobileWebUIActionsTracking'] = $config->get( 'WMEMobileWebUIActionsTracking' );
-			$vars['inukaPageViewEnabled'] = $config->get( 'WMEInukaPageViewEnabled' );
-			$vars['inukaPageViewCookiesDomain'] = $config->get( 'WMEInukaPageViewCookiesDomain' );
-			$vars['inukaPageViewSamplingRatePerOs'] = $config->get( 'WMEInukaPageViewSamplingRatePerOs' );
 		} elseif ( $skin === 'vector' ) {
 			$vars['desktopWebUIActionsTracking'] = $config->get( 'WMEDesktopWebUIActionsTracking' );
 		}
@@ -379,8 +376,6 @@ class WikimediaEventsHooks {
 			case 'mobileWebUIActions':
 				return $skin === 'minerva' ? new ResourceLoaderFilePath( 'mobileWebUIActions.js' )
 					: '';
-			case 'inukaPageView':
-				return $skin === 'minerva' ? new ResourceLoaderFilePath( 'inukaPageView.js' ) : '';
 			default:
 				return '';
 		}
