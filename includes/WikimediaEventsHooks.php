@@ -125,7 +125,7 @@ class WikimediaEventsHooks {
 	 */
 	public static function onXAnalyticsSetHeader( OutputPage $out, array &$headerItems ) {
 		$title = $out->getTitle();
-		if ( $title !== null ) {
+		if ( $title !== null && !defined( 'MW_API' ) ) {
 			$pageId = $title->getArticleID();
 			$headerItems['ns'] = $title->getNamespace();
 			if ( is_int( $pageId ) && $pageId > 0 ) {
