@@ -117,6 +117,7 @@
 			"dependencies": [
 				"ext.eventLogging",
 				"mediawiki.user",
+				"mediawiki.cookie",
 				"mediawiki.Uri",
 				"mediawiki.experiments",
 				"mediawiki.storage"
