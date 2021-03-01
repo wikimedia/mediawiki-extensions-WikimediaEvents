@@ -331,6 +331,30 @@ class WikimediaEventsHooks {
 	}
 
 	/**
+	 * Set static (not request-specific) JS configuration variables
+	 *
+	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/ResourceLoaderGetConfigVars
+	 * @param array &$vars Array of variables to be added into the output of the startup module
+	 * @param string $skinName Current skin name to restrict config variables to a certain skin
+	 */
+	public static function onResourceLoaderGetConfigVars( &$vars, $skinName ) {
+		global $wgWMESchemaEditAttemptStepSamplingRate;
+
+		// WARNING: Do not add new entries here.
+		//
+		// This legacy mechanism is suboptimial for performance and code quality.
+		//
+		// For new variables you need to access in a JS module, use a virtual 'config.json' file.
+		// See <https://www.mediawiki.org/wiki/ResourceLoader/Package_modules>
+		//
+		// TODO: wgWMESchemaEditAttemptStepSamplingRate is preserved here for now because it is
+		//  consumed by multiple downstream clients. These clients should each be updated to use
+		//  virtual config, and this should be removed.
+		//
+		$vars['wgWMESchemaEditAttemptStepSamplingRate'] = $wgWMESchemaEditAttemptStepSamplingRate;
+	}
+
+	/**
 	 * Callback for ext.wikimediaEvents virtual config.json file.
 	 *
 	 * @param ResourceLoaderContext $context
