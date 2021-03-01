@@ -28,6 +28,7 @@
 		"UserSaveOptions": "WikimediaEvents\\PrefUpdateInstrumentation::onUserSaveOptions",
 		"ArticleViewHeader": "WikimediaEvents\\WikimediaEventsHooks::onArticleViewHeader",
 		"EditPageBeforeConflictDiff": "WikimediaEvents\\WikimediaEventsHooks::onEditPageBeforeConflictDiff",
+		"ResourceLoaderGetConfigVars": "WikimediaEvents\\WikimediaEventsHooks::onResourceLoaderGetConfigVars",
 		"ListDefinedTags": "WikimediaEvents\\WikimediaEventsHooks::onListDefinedTags",
 		"ChangeTagsListActive": "WikimediaEvents\\WikimediaEventsHooks::onChangeTagsListActive",
 		"XAnalyticsSetHeader": "WikimediaEvents\\WikimediaEventsHooks::onXAnalyticsSetHeader",
