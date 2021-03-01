@@ -12,6 +12,34 @@
 		errorCount = 0;
 
 	/**
+	 * @param {string} message
+	 * @return {bool}
+	 */
+	function shouldIgnoreMessage( message ) {
+		return message && [
+			// Users unintentionally sometimes, directly or indirectly, end up running multiple scripts
+			// that try to load a gadget from another site by the same name. This can cause an error if
+			// those uncoordinated attempts overlap. The error is harmless to the user as both copies are
+			// probably the same and they don't mind getting whichever won the race (T262493). It is hard
+			// for users to centralise and coordinate such naming and state across wikis without actual
+			// server-side support for the "Global gadgets" concept (T22153), and users generally have no
+			// incentive to avoid these errors since it works fine for them as it is.
+			// Given this mistake is fairly common among power users that view many pages, we manually
+			// exclude these errors from error logging (T266720). The error must not be excluded more generally since
+			// it does represent a valid error condition for Wikimedia-supported modules.
+			'module already implemented: ext.gadget',
+			// Ignore permission errors:
+			// It is common for gadgets (or browser extensions) to create iframes and access nodes that are not
+			// allowed by the current browser (T264245). There's little we can do about these errors, so
+			// these should be excluded.
+			'Permission denied to access property',
+			'Permission denied to access object'
+		].some( function ( m ) {
+			return message.indexOf( m ) > -1;
+		} );
+	}
+
+	/**
 	 * Install a subscriber for global errors that will log an event.
 	 *
 	 * The diagnostic event is built from the Error object that the browser
@@ -88,17 +116,7 @@
 
 			message = obj.errorMessage;
 
-			// Users unintentionally sometimes, directly or indirectly, end up running multiple scripts
-			// that try to load a gadget from another site by the same name. Ths can cause an error if
-			// those uncoordinated attempts overlap. The error is harmless to the user as both copies are
-			// probably the same and they don't mind getting whichever won the race (T262493). It is hard
-			// for users to centralise and coordinate such naming and state across wikis without actual
-			// server-side support for the "Global gadgets" concept (T22153), and users generally have no
-			// incentive to avoid these errors since it works fine for them as it is.
-			// Given this mistake is fairly common among power users that view many pages, we manually
-			// exclude from error logging (T266720). The error must not be excluded more generally since
-			// it does represent a valid error condition for Wikimedia-supported modules.
-			if ( message && message.indexOf( 'module already implemented: ext.gadget' ) > -1 ) {
+			if ( shouldIgnoreMessage( message ) ) {
 				return;
 			}
 			navigator.sendBeacon( intakeURL, JSON.stringify( {
