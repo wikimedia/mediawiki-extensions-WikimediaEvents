@@ -4,6 +4,7 @@ namespace WikimediaEvents;
 
 use EventLogging;
 use FormatJson;
+use MediaWiki\MediaWikiServices;
 use MWTimestamp;
 use RequestContext;
 use User;
@@ -163,6 +164,7 @@ class PrefUpdateInstrumentation {
 			trigger_error( "Unknown handler for $optName in PrefUpdate", E_USER_ERROR );
 			return false;
 		}
+		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
 
 		return [
 			'version' => self::MAJOR_VERSION,
@@ -172,7 +174,7 @@ class PrefUpdateInstrumentation {
 			// Encode value as JSON.
 			// This is parseable and allows a consistent type for validation.
 			'value' => FormatJson::encode( $trackedValue ),
-			'isDefault' => User::getDefaultOption( $optName ) == $optValue,
+			'isDefault' => $userOptionsLookup->getDefaultOption( $optName ) == $optValue,
 			'bucketedUserEditCount' => self::getBucketedUserEditCount( $user ),
 		];
 	}
