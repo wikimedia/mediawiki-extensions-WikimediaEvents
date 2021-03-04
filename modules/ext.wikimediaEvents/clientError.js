@@ -244,6 +244,17 @@
 	}
 
 	/**
+	 * A simple transformation for common normalization problems.
+	 * @param {string} message
+	 * @return {string} normalized version of message
+	 */
+	function normalizeErrorMessage( message ) {
+		// T262627 - drop "Uncaught" from the beginning of error messages (Chrome browser),
+		// for consistency with Firefox (no "Uncaught")
+		return message.replace( /^Uncaught /, '' );
+	}
+
+	/**
 	 * @param {Object|null|undefined} [errorLoggerObject]
 	 * @return {ErrorDescriptor|null}
 	 */
@@ -262,7 +273,7 @@
 
 		return {
 			errorClass: ( errorObject && errorObject.constructor.name ) || '',
-			errorMessage: errorLoggerObject.errorMessage,
+			errorMessage: normalizeErrorMessage( errorLoggerObject.errorMessage ),
 			fileUrl: errorLoggerObject.url,
 			stackTrace: stackTrace,
 			errorObject: errorObject
