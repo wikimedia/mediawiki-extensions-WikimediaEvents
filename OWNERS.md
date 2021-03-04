@@ -52,7 +52,7 @@ Details at <https://phabricator.wikimedia.org/T196186>.
 
 * Since: July 2019
 * Files: mobileWebUIActions.js, desktopWebUIActions.js
-* Contact: Readers Web"
+* Contact: Readers Web
 
 Details at <https://phabricator.wikimedia.org/T220016>.
 
