@@ -160,6 +160,42 @@
 	}
 
 	/**
+	 * Check whether error logging is supported for the current file URI
+	 *
+	 * @param {string} [fileUrl]
+	 * @return {bool}
+	 */
+	function shouldLogFileUrl( fileUrl ) {
+		// file url may not be defined given cached scripts run from localStorage.
+		// If not explicitly set to undefined (T266517) to support filtering but still log.
+		fileUrl = fileUrl || 'undefined';
+		//
+		// If the two URLs differ only by a fragment identifier (e.g.
+		// 'example.org' vs. 'example.org#Section'), we consider them
+		// to be matching.
+		// Per spec, obj.url should never contain a fragment identifier,
+		// yet we have observed this in the wild in several instances,
+		// hence we must strip the identifier from both.
+		//
+		return fileUrl.split( '#' )[ 0 ] === location.href.split( '#' )[ 0 ] ||
+			// Various errors originate from scripts we do not control. These may be
+			// prefixed by "blob:" or "javascript:" or one of the browser extensions.
+			// These are not logged but may in future be diverted
+			// to another channel (see T259383 for more information).
+			// eslint-disable-next-line no-script-url
+			fileUrl.indexOf( 'javascript:' ) === 0 ||
+			// Common pattern seen in the wild. Short for "inject JS".
+			fileUrl.indexOf( '/inj_js/' ) > -1 ||
+			fileUrl.indexOf( 'blob:' ) === 0 ||
+			fileUrl.indexOf( 'jar:' ) === 0 ||
+			// from Windows file system.
+			fileUrl.indexOf( 'C:\\' ) === 0 ||
+			fileUrl.indexOf( 'chrome-extension://' ) === 0 ||
+			fileUrl.indexOf( 'safari-extension://' ) === 0 ||
+			fileUrl.indexOf( 'moz-extension://' ) === 0;
+	}
+
+	/**
 	 * Parses out an error descriptor from the error's stack trace.
 	 *
 	 * @param {Mixed} error
@@ -240,8 +276,6 @@
 	 * @return {boolean}
 	 */
 	function shouldLog( descriptor ) {
-		var fileUrl;
-
 		if ( !descriptor ) {
 			return false;
 		}
@@ -261,14 +295,7 @@
 			return false;
 		}
 
-		fileUrl = descriptor.fileUrl;
-		if ( !fileUrl ||
-			fileUrl.split( '#' )[ 0 ] === location.href.split( '#' )[ 0 ] ||
-			fileUrl.indexOf( 'blob:' ) === 0 ||
-			fileUrl.indexOf( 'chrome-extension://' ) === 0 ||
-			fileUrl.indexOf( 'safari-extension://' ) === 0 ||
-			fileUrl.indexOf( 'moz-extension://' ) === 0
-		) {
+		if ( shouldLogFileUrl( descriptor.fileUrl ) ) {
 			// When the error lacks a URL, or the URL is defaulted to page
 			// location, the stack trace is rarely meaningful, if ever.
 			//
