@@ -73,8 +73,6 @@ class PrefUpdateInstrumentation {
 		'mfMode' => self::VALUE_WELLKNOWN_SHORT,
 		'mf_amc_optin' => self::VALUE_WELLKNOWN_SHORT,
 		'VectorSkinVersion' => self::VALUE_WELLKNOWN_SHORT,
-		'popups' => self::VALUE_WELLKNOWN_SHORT,
-		'popupsreferencepreviews' => self::VALUE_WELLKNOWN_SHORT,
 
 		// Editing team
 		'discussiontools-betaenable' => self::VALUE_WELLKNOWN_SHORT,
@@ -89,8 +87,10 @@ class PrefUpdateInstrumentation {
 		'growthexperiments-homepage-enable' => self::VALUE_WELLKNOWN_SHORT,
 		'growthexperiments-homepage-pt-link' => self::VALUE_WELLKNOWN_SHORT,
 
-		// WMDE Technical Wishes team: T260138
+		// WMDE Technical Wishes team
 		'usecodemirror' => self::VALUE_WELLKNOWN_SHORT,
+		'popups' => self::VALUE_WELLKNOWN_SHORT,
+		'popupsreferencepreviews' => self::VALUE_WELLKNOWN_SHORT,
 	];
 
 	/**
