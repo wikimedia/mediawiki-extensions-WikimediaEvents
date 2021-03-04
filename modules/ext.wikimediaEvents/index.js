@@ -9,6 +9,7 @@ if ( skin === 'minerva' ) {
 } else if ( skin === 'vector' ) {
 	require( './searchSatisfaction.js' );
 	require( './desktopWebUIActions.js' );
+	require( './universalLanguageSelector.js' );
 } else {
 	require( './searchSatisfaction.js' );
 }

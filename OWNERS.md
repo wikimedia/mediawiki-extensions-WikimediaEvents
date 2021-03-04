@@ -71,3 +71,12 @@ Details at <https://phabricator.wikimedia.org/T235189>.
 * Contact: Product Infrastructure
 
 Details at <https://phabricator.wikimedia.org/T248987>.
+
+## Universal Language Selector
+
+* Since: March 2021
+* Files: universalLanguageSelector.js
+* Contact: Language and Translation, Readers Web
+
+Migrated from the UniversalLanguageSwitcher extension. Details at
+<https://phabricator.wikimedia.org/T275894>.

@@ -105,6 +105,11 @@
 					"callbackParam": "mobileWebUIActions"
 				},
 				{
+					"name": "universalLanguageSelector.js",
+					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
+					"callbackParam": "universalLanguageSelector"
+				},
+				{
 					"name": "config.json",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleConfig"
 				}

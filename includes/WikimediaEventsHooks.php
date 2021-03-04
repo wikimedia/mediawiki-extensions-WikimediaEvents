@@ -400,6 +400,9 @@ class WikimediaEventsHooks {
 			case 'mobileWebUIActions':
 				return $skin === 'minerva' ? new ResourceLoaderFilePath( 'mobileWebUIActions.js' )
 					: '';
+			case 'universalLanguageSelector':
+				return $skin === 'vector' ? new ResourceLoaderFilePath( 'universalLanguageSelector.js' )
+					: '';
 			default:
 				return '';
 		}
