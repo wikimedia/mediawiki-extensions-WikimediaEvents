@@ -19,7 +19,7 @@
  * @license GNU GPL v2 or later
  * @author Erik Bernhardson <ebernhardson@wikimedia.org>
  */
-/* eslint-disable max-len, no-shadow, no-jquery/no-global-selector, jsdoc/require-returns, jsdoc/require-param-type, jsdoc/check-tag-names */
+/* eslint-disable max-len, no-shadow, no-jquery/no-global-selector */
 ( function () {
 	'use strict';
 
@@ -75,8 +75,8 @@
 	 * mismatch: session has seen a backend request enabling test A while frontend had chosen test B
 	 * invalid: session holds a probably stale value no long present in the validBuckets
 	 *
-	 * @param subTest
-	 * @return boolean
+	 * @param {string} subTest
+	 * @return {boolean}
 	 */
 	function isValidSubtest( subTest ) {
 		return !!( subTest && subTest !== 'mismatch' && subTest !== 'invalid' );

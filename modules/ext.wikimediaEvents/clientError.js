@@ -163,7 +163,7 @@
 	 * Check whether error logging is supported for the current file URI
 	 *
 	 * @param {string} [fileUrl]
-	 * @return {bool}
+	 * @return {boolean}
 	 */
 	function shouldLogFileUrl( fileUrl ) {
 		// file url may not be defined given cached scripts run from localStorage.
