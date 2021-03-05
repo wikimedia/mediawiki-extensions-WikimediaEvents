@@ -36,6 +36,8 @@
 ( function () {
 	var moduleConfig = require( './config.json' ),
 		enabled = moduleConfig.sessionTick,
+		userGroups = mw.config.get( 'wgUserGroups' ),
+		userIsDataQATester = Array.isArray( userGroups ) && userGroups.indexOf( 'data-qa' ) > -1,
 
 		// Milliseconds between ticks
 		TICK_MS = 60000,
@@ -175,7 +177,8 @@
 			while ( n-- > 0 ) {
 				mw.eventLog.submit( 'mediawiki.client.session_tick', {
 					$schema: '/analytics/session_tick/2.0.0',
-					tick: count + n
+					tick: count + n,
+					test: userIsDataQATester ? { qa: 1 } : undefined // TODO: Remove after data QA is complete. (T276515)
 				} );
 			}
 		} );
