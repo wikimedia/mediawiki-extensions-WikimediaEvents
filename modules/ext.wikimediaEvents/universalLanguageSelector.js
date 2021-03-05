@@ -28,12 +28,37 @@
  * @param {Object} event Event action and optional fields
  */
 function log( event ) {
+	var userEditBucket = mw.wikimediaEvents.getEditCountBucket( mw.config.get( 'wgUserEditCount' ) );
+
 	event = $.extend( {
-		version: 1,
-		token: mw.user.id(),
+
+		// Note well that the version and token properties _could_ be removed as they've both been
+		// superseded: version has been superseded by the move to the Modern Event Platform; and
+		// token has been superseded by the use of the web_session_id property from the
+		// web_identifiers fragment below. As of 2021/03/22, however, they can't be removed as
+		// backwards incompatible changes may cause issues with the Hive ingestion process (see
+		// the discussion on https://gerrit.wikimedia.org/r/c/schemas/event/secondary/+/668743 for
+		// detail).
+		version: 2,
+		token: '',
+
+		// ---
+
 		contentLanguage: mw.config.get( 'wgContentLanguage' ),
-		interfaceLanguage: mw.config.get( 'wgUserLanguage' )
+		interfaceLanguage: mw.config.get( 'wgUserLanguage' ),
+
+		// The following properties were added in https://phabricator.wikimedia.org/T275766.
+
+		// For detail about the web_session_id property, see
+		// https://schema.wikimedia.org/repositories/secondary/jsonschema/fragment/analytics/web_identifiers/current.yaml.
+		web_session_id: mw.user.sessionId(), // eslint-disable-line camelcase
+
+		isAnon: mw.user.isAnon()
 	}, event );
+
+	if ( userEditBucket ) {
+		event.userEditBucket = userEditBucket;
+	}
 
 	mw.track( 'event.UniversalLanguageSelector', event );
 }
@@ -113,7 +138,7 @@ function interfaceLanguageChange( language ) {
 	var logParams = {
 		action: 'language-change',
 		context: 'interface',
-		interfaceLanguage: language
+		selectedInterfaceLanguage: language
 	};
 
 	log( logParams );
@@ -144,8 +169,7 @@ function fontChange( context, language, font ) {
 
 	if ( context === 'interface' ) {
 		logParams.interfaceFont = font;
-		// Override in case the user changed the ui language but hasn't applied it yet
-		logParams.interfaceLanguage = language;
+		logParams.selectedInterfaceLanguage = language;
 	} else {
 		logParams.contentFont = font;
 	}
