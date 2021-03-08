@@ -51,7 +51,7 @@
 	"attributes": {
 		"EventLogging": {
 			"Schemas": {
-				"DesktopWebUIActionsTracking": 20184974,
+				"DesktopWebUIActionsTracking": "/analytics/legacy/desktopwebuiactionstracking/1.0.0",
 				"EditAttemptStep": "/analytics/legacy/editattemptstep/1.0.0",
 				"VisualEditorFeatureUse": "/analytics/legacy/visualeditorfeatureuse/1.0.0",
 				"CompletionSuggestions": 13630018,
@@ -64,7 +64,7 @@
 				"ChangesListFilterGrouping": 17008168,
 				"RecentChangesTopLinks": 16732249,
 				"InputDeviceDynamics": 17687647,
-				"MobileWebUIActionsTracking": 19230467,
+				"MobileWebUIActionsTracking": "/analytics/legacy/mobilewebuiactionstracking/1.0.0",
 				"WMDEBannerEvents": 19608660,
 				"WMDEBannerInteractions": 20160542,
 				"WMDEBannerSizeIssue": 18193993,
