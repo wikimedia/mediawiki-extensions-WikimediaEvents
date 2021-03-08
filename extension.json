@@ -52,8 +52,8 @@
 		"EventLogging": {
 			"Schemas": {
 				"DesktopWebUIActionsTracking": 20184974,
-				"EditAttemptStep": 21024286,
-				"VisualEditorFeatureUse": 21041448,
+				"EditAttemptStep": "/analytics/legacy/editattemptstep/1.0.0",
+				"VisualEditorFeatureUse": "/analytics/legacy/visualeditorfeatureuse/1.0.0",
 				"CompletionSuggestions": 13630018,
 				"PrefUpdate": "/analytics/legacy/prefupdate/1.0.0",
 				"SearchSatisfaction": "/analytics/legacy/searchsatisfaction/1.4.0",
