@@ -21,11 +21,6 @@ use User;
 class PrefUpdateInstrumentation {
 
 	/**
-	 * @var int The revision ID of the PrefUpdate schema that we're using.
-	 */
-	private const REV_ID = 19799589;
-
-	/**
 	 * @var string Bumped when the nature of the data collected in the log is changed.
 	 */
 	private const MAJOR_VERSION = '2';
@@ -130,7 +125,7 @@ class PrefUpdateInstrumentation {
 			if ( $prevValue != $optValue ) {
 				$event = self::createPrefUpdateEvent( $user, $optName, $optValue, $now );
 				if ( $event !== false ) {
-					EventLogging::logEvent( 'PrefUpdate', self::REV_ID, $event );
+					EventLogging::logEvent( 'PrefUpdate', -1, $event );
 				}
 			}
 		}
@@ -159,6 +154,10 @@ class PrefUpdateInstrumentation {
 			}
 			$trackedValue = $optValue;
 		} elseif ( $trackType === self::VALUE_NEWLINE_COUNT ) {
+			// NOTE!  PrefUpdate has been migrated to Event Platform,
+			// and is no longer using the metawiki based schema.  This -1 revision_id
+			// will be overridden by the value of the EventLogging Schemas extension attribute
+			// set in extension.json.
 			$trackedValue = count( preg_split( '/\n/', $optValue, -1, PREG_SPLIT_NO_EMPTY ) );
 		} else {
 			trigger_error( "Unknown handler for $optName in PrefUpdate", E_USER_ERROR );
