@@ -9,10 +9,6 @@
 		"no-shadow": "warn",
 		"compat/compat": "warn"
 	},
-	"globals": {
-		"mw": false,
-		"OO": false
-	},
 	"env": {
 		"commonjs": true
 	}
