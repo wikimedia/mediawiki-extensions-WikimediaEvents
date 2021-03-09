@@ -36,8 +36,6 @@
 ( function () {
 	var moduleConfig = require( './config.json' ),
 		enabled = moduleConfig.sessionTick,
-		userGroups = mw.config.get( 'wgUserGroups' ),
-		userIsDataQATester = Array.isArray( userGroups ) && userGroups.indexOf( 'data-qa' ) > -1,
 
 		// Milliseconds between ticks
 		TICK_MS = 60000,
@@ -159,7 +157,9 @@
 	 * Handle 'sessionReset' and 'sessionTick' events from mw.track()
 	 */
 	function instrument() {
-		var tickCount = 'wmE-sessionTickTickCount';
+		var tickCount = 'wmE-sessionTickTickCount',
+			userGroups = mw.config.get( 'wgUserGroups' ),
+			userIsDataQATester = Array.isArray( userGroups ) && userGroups.indexOf( 'data-qa' ) > -1;
 
 		mw.trackSubscribe( 'sessionReset', function () {
 			mw.cookie.set( tickCount, 0 );
