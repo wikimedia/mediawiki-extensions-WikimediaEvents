@@ -23,7 +23,7 @@
 ( function () {
 	'use strict';
 
-	var search, autoComplete, session, initSubTest, initDebugLogging, cirrusUserTestingParam,
+	var search, autoComplete, session, initSubTest, cirrusUserTestingParam,
 		isSearchResultPage = mw.config.get( 'wgIsSearchResultPage' ),
 		enabledBackendTests = mw.config.get( 'wgCirrusSearchBackendUserTests', [] ),
 		/**
@@ -808,22 +808,6 @@
 		}
 	} );
 
-	initDebugLogging = atMostOnce( function ( session ) {
-		mw.trackSubscribe( 'global.error', function ( topic, data ) {
-			var evt = {
-				searchSessionId: session.get( 'sessionId' ),
-				visitPageId: session.get( 'pageViewId' ),
-				message: data.errorMessage,
-				error: data.errorObject.toString()
-			};
-
-			// ship the event
-			mw.loader.using( [ 'ext.eventLogging' ] ).then( function () {
-				mw.eventLog.logEvent( 'SearchSatisfactionErrors', evt );
-			} );
-		} );
-	} );
-
 	/**
 	 * Delay session initialization as late in the
 	 * process as possible, but only do it once.
@@ -834,7 +818,6 @@
 		session = session || new SessionState();
 
 		if ( session.isActive() ) {
-			initDebugLogging( session );
 			initSubTest( session );
 			fn( session );
 		}
