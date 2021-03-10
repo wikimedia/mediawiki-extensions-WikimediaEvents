@@ -43,7 +43,7 @@ class WikimediaEventsHooks {
 	 * @param OutputPage $out
 	 * @param Skin $skin
 	 */
-	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) {
+	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) : void {
 		global $wgWMEUnderstandingFirstDay;
 
 		if ( $wgWMEUnderstandingFirstDay ) {
@@ -63,14 +63,12 @@ class WikimediaEventsHooks {
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/UserLogout
 	 *
 	 * @param User $user
-	 * @return bool
 	 */
-	public static function onUserLogout( User $user ) {
+	public static function onUserLogout( User $user ) : void {
 		global $wgWMEUnderstandingFirstDay;
 		if ( $wgWMEUnderstandingFirstDay ) {
 			PageViews::deferredLog( $user->getId() );
 		}
-		return true;
 	}
 
 	/**
@@ -80,14 +78,12 @@ class WikimediaEventsHooks {
 	 * @param OutputPage $out
 	 * @param string &$redirect URL string, modifiable
 	 * @param string &$code HTTP code, modifiable
-	 * @return bool
 	 */
-	public static function onBeforePageRedirect( $out, &$redirect, &$code ) {
+	public static function onBeforePageRedirect( $out, &$redirect, &$code ) : void {
 		global $wgWMEUnderstandingFirstDay;
 		if ( $wgWMEUnderstandingFirstDay ) {
 			PageViews::deferredLog();
 		}
-		return true;
 	}
 
 	/**
@@ -96,7 +92,7 @@ class WikimediaEventsHooks {
 	 * @param User $user
 	 * @param bool $autocreated
 	 */
-	public static function onLocalUserCreated( User $user, $autocreated ) {
+	public static function onLocalUserCreated( User $user, $autocreated ) : void {
 		global $wgWMEUnderstandingFirstDay;
 		if ( $wgWMEUnderstandingFirstDay && !$autocreated ) {
 			$context = new DerivativeContext( RequestContext::getMain() );
@@ -123,7 +119,7 @@ class WikimediaEventsHooks {
 	 * @param OutputPage $out
 	 * @param array &$headerItems
 	 */
-	public static function onXAnalyticsSetHeader( OutputPage $out, array &$headerItems ) {
+	public static function onXAnalyticsSetHeader( OutputPage $out, array &$headerItems ) : void {
 		$title = $out->getTitle();
 		if ( $title !== null && !defined( 'MW_API' ) ) {
 			$pageId = $title->getArticleID();
@@ -167,7 +163,7 @@ class WikimediaEventsHooks {
 		int $flags,
 		RevisionRecord $revisionRecord,
 		EditResult $editResult
-	) {
+	) : void {
 		if ( PHP_SAPI === 'cli' ) {
 			return; // ignore maintenance scripts
 		}
@@ -251,7 +247,7 @@ class WikimediaEventsHooks {
 	 *
 	 * @param RevisionRecord $revRecord
 	 */
-	public static function onRevisionRecordInserted( RevisionRecord $revRecord ) {
+	public static function onRevisionRecordInserted( RevisionRecord $revRecord ) : void {
 		// Only mainspace edits qualify
 		if ( !$revRecord->getPageAsLinkTarget()->inNamespace( NS_MAIN ) ) {
 			return;
@@ -312,9 +308,8 @@ class WikimediaEventsHooks {
 	 * @see https://meta.wikimedia.org/wiki/Schema:EditConflict
 	 * @param EditPage $editPage
 	 * @param OutputPage &$out
-	 * @return bool true in all cases
 	 */
-	public static function onEditPageBeforeConflictDiff( EditPage $editPage, &$out ) {
+	public static function onEditPageBeforeConflictDiff( EditPage $editPage, &$out ) : void {
 		$user = $out->getUser();
 		$title = $out->getTitle();
 
@@ -326,18 +321,16 @@ class WikimediaEventsHooks {
 			'title' => $title->getDBkey(),
 			'revId' => (int)$title->getLatestRevID(),
 		] );
-
-		return true;
 	}
 
 	/**
 	 * Set static (not request-specific) JS configuration variables
 	 *
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/ResourceLoaderGetConfigVars
-	 * @param array &$vars Array of variables to be added into the output of the startup module
-	 * @param string $skinName Current skin name to restrict config variables to a certain skin
+	 * @param array &$vars Array of `mw.config` variables to export side-wide
+	 * @param string $skinName Current skin name
 	 */
-	public static function onResourceLoaderGetConfigVars( &$vars, $skinName ) {
+	public static function onResourceLoaderGetConfigVars( &$vars, $skinName ) : void {
 		global $wgWMESchemaEditAttemptStepSamplingRate;
 
 		// WARNING: Do not add new entries here.
@@ -412,9 +405,8 @@ class WikimediaEventsHooks {
 	 * Register change tags.
 	 *
 	 * @param array &$tags
-	 * @return bool
 	 */
-	public static function onListDefinedTags( &$tags ) {
+	public static function onListDefinedTags( array &$tags ) : void {
 		if ( wfWikiID() === 'commonswiki' ) {
 			$tags[] = 'cross-wiki-upload';
 			// For A/B test
@@ -423,16 +415,14 @@ class WikimediaEventsHooks {
 			$tags[] = 'cross-wiki-upload-3';
 			$tags[] = 'cross-wiki-upload-4';
 		}
-		return true;
 	}
 
 	/**
 	 * Mark active change tags.
 	 *
 	 * @param array &$tags
-	 * @return bool
 	 */
-	public static function onChangeTagsListActive( &$tags ) {
+	public static function onChangeTagsListActive( array &$tags ) : void {
 		if ( wfWikiID() === 'commonswiki' ) {
 			$tags[] = 'cross-wiki-upload';
 			// For A/B test
@@ -441,70 +431,63 @@ class WikimediaEventsHooks {
 			$tags[] = 'cross-wiki-upload-3';
 			$tags[] = 'cross-wiki-upload-4';
 		}
-		return true;
 	}
 
 	/**
 	 * @param string $term
 	 * @param Title $title
 	 * @param string|null &$url
-	 * @return true
 	 */
-	public static function onSpecialSearchGoResult( $term, Title $title, &$url ) {
+	public static function onSpecialSearchGoResult( $term, Title $title, &$url ) : void {
 		$request = RequestContext::getMain()->getRequest();
 
-		$wprov = $request->getVal( 'wprov' );
+		$wprov = $request->getRawVal( 'wprov' );
 		if ( $wprov ) {
 			$url = $title->getFullURL( [ 'wprov' => $wprov ] );
 		}
-
-		return true;
 	}
 
 	/**
 	 * The javascript that records search metrics needs to know if it is on a
 	 * SERP or not. This ends up being non-trivial due to localization, so
 	 * make it trivial by injecting a boolean value to check.
+	 *
 	 * @param string $term
 	 * @param SearchResultSet $titleMatches
 	 * @param SearchResultSet $textMatches
-	 * @return true
 	 */
-	public static function onSpecialSearchResults( $term, $titleMatches, $textMatches ) {
+	public static function onSpecialSearchResults( $term, $titleMatches, $textMatches ) : void {
 		global $wgOut;
 
 		$wgOut->addJsConfigVars( [
 			'wgIsSearchResultPage' => true,
 		] );
-
-		return true;
 	}
 
 	/**
 	 * Add a change tag 'cross-wiki-upload' to cross-wiki uploads to Commons, to track usage of the
 	 * new feature. (Both to track adoption, and to let Commons editors review the uploads.) (T115328)
 	 *
-	 * @param RecentChange $recentChange
-	 * @return bool
+	 * @param RecentChange $rc
 	 */
-	public static function onRecentChangeSaveCrossWikiUpload( RecentChange $recentChange ) {
+	public static function onRecentChangeSaveCrossWikiUpload( RecentChange $rc ) : void {
 		if ( !defined( 'MW_API' ) || wfWikiID() !== 'commonswiki' ) {
-			return true;
+			return;
 		}
 
 		if (
-			$recentChange->getAttribute( 'rc_log_type' ) !== 'upload' ||
-			$recentChange->getAttribute( 'rc_log_action' ) !== 'upload'
+			$rc->getAttribute( 'rc_log_type' ) !== 'upload' ||
+			$rc->getAttribute( 'rc_log_action' ) !== 'upload'
 		) {
-			return true;
+			return;
 		}
 		$request = RequestContext::getMain()->getRequest();
 		if ( !$request->response()->getHeader( 'Access-Control-Allow-Origin' ) ) {
-			return true;
+			return;
 		}
 
 		// A/B test
-		$bucket = $request->getVal( 'bucket' );
+		$bucket = $request->getRawVal( 'bucket' );
 		if ( !in_array( $bucket, [ '1', '2', '3', '4' ] ) ) {
 			$bucket = null;
 		}
@@ -513,48 +496,43 @@ class WikimediaEventsHooks {
 		if ( $bucket ) {
 			$tags[] = "cross-wiki-upload-$bucket";
 		}
-		$recentChange->addTags( $tags );
-
-		return true;
+		$rc->addTags( $tags );
 	}
 
 	/**
 	 * Add a change tag 'campaign-...' to edits made via edit campaigns (identified by an URL
 	 * parameter passed to the API via VisualEditor). (T209132)
 	 *
-	 * @param RecentChange $recentChange
-	 * @return bool
+	 * @param RecentChange $rc
 	 */
-	public static function onRecentChangeSaveEditCampaign( RecentChange $recentChange ) {
+	public static function onRecentChangeSaveEditCampaign( RecentChange $rc ) : void {
 		global $wgWMEEditCampaigns;
 
 		if ( !defined( 'MW_API' ) ) {
-			return true;
+			return;
 		}
 
 		$request = RequestContext::getMain()->getRequest();
-		$campaign = $request->getVal( 'campaign' );
+		$campaign = $request->getRawVal( 'campaign' );
 		if ( !in_array( $campaign, $wgWMEEditCampaigns ) ) {
-			return true;
+			return;
 		}
 
 		$tags = [ "campaign-$campaign" ];
-		$recentChange->addTags( $tags );
-
-		return true;
+		$rc->addTags( $tags );
 	}
 
 	/**
-	 * @param ResourceLoader $resourceLoader
+	 * @param ResourceLoader $rl
 	 */
-	public static function onResourceLoaderRegisterModules( ResourceLoader $resourceLoader ) {
+	public static function onResourceLoaderRegisterModules( ResourceLoader $rl ) : void {
 		if ( !ExtensionRegistry::getInstance()->isLoaded( 'VisualEditor' ) ) {
 			return;
 		}
 
 		$dir = dirname( __DIR__ ) . DIRECTORY_SEPARATOR;
 
-		$resourceLoader->register( "ext.wikimediaEvents.visualEditor", [
+		$rl->register( "ext.wikimediaEvents.visualEditor", [
 			'localBasePath' => $dir . 'modules',
 			'remoteExtPath' => 'WikimediaEvents/modules',
 			"scripts" => "ext.wikimediaEvents.visualEditor/campaigns.js",
@@ -586,9 +564,8 @@ class WikimediaEventsHooks {
 	/**
 	 * @param array &$vars
 	 * @param OutputPage $out
-	 * @return true
 	 */
-	public static function onMakeGlobalVariablesScript( array &$vars, OutputPage $out ) {
+	public static function onMakeGlobalVariablesScript( array &$vars, OutputPage $out ) : void {
 		global $wgWMESearchRelevancePages;
 		if ( $vars['wgAction'] === 'view' ) {
 			$articleId = $out->getTitle()->getArticleID();
@@ -599,7 +576,6 @@ class WikimediaEventsHooks {
 
 		$vars['wgWMESchemaEditAttemptStepOversample'] =
 			static::shouldSchemaEditAttemptStepOversample( $out->getContext() );
-		return true;
 	}
 
 	/**
@@ -716,7 +692,7 @@ class WikimediaEventsHooks {
 	 *
 	 * @param array $data
 	 */
-	public static function onSpecialMuteSubmit( $data ) {
+	public static function onSpecialMuteSubmit( $data ) : void {
 		$event = [];
 		if ( isset( $data['email-blacklist'] ) ) {
 			$event['emailsBefore'] = $data['email-blacklist']['before'];
@@ -728,14 +704,11 @@ class WikimediaEventsHooks {
 			$event['notificationsAfter'] = $data['echo-notifications-blacklist']['after'];
 		}
 
-		DeferredUpdates::addCallableUpdate(
-			function () use ( $event ) {
-				// NOTE!  SpecialMuteSubmit has been migrated to Event Platform,
-				// and is no longer using the metawiki based schema.  This revision_id
-				// will be overridden by the value of the EventLogging Schemas extension attribute
-				// set in extension.json.
-				EventLogging::logEvent( 'SpecialMuteSubmit', 19265572, $event );
-			}
-		);
+		DeferredUpdates::addCallableUpdate( function () use ( $event ) {
+			// NOTE! The 'SpecialMuteSubmit' event was migrated to EventGate, and is no longer
+			// using Meta-Wiki EventLogging schema.  This revision_id is actually overridden by
+			// WikimediaEvent's EventLoggingSchemas attribute in extension.json.
+			EventLogging::logEvent( 'SpecialMuteSubmit', 19265572, $event );
+		} );
 	}
 }
