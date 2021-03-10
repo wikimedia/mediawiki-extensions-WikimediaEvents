@@ -604,14 +604,16 @@ class WikimediaEventsHooks {
 
 	/**
 	 * WMDE runs banner campaigns to encourage users to create an account and edit.
-	 * The tracking already implemented in the Campaigns extension doesn't quite cover the WMDE
-	 * usecase as they have a wikipage landing page before the user progresses to registration.
-	 * This could one day be factored out into its own extension or part of Campaigns.
 	 *
-	 * The task for adding this functionality to the Campaigns extension can be found below:
+	 * The tracking already implemented in the Campaigns extension doesn't quite cover the WMDE
+	 * use case. WMDE has a landing page that must be shown before the user progresses to
+	 * registration. This could one day be factored out into its own extension, or made
+	 * part of the Campaigns extension.
+	 *
+	 * Task for moving this to the Campaigns extension:
 	 * https://phabricator.wikimedia.org/T174939
 	 *
-	 * The series of banner campaigns can be seen on Phabricator:
+	 * Active WMDE campaigns tracked at:
 	 * https://phabricator.wikimedia.org/project/subprojects/2821/
 	 *
 	 * @author addshore on behalf of WMDE
@@ -630,55 +632,47 @@ class WikimediaEventsHooks {
 		$user,
 		$request,
 		$mediaWiki
-	) {
+	) : void {
 		// Only run for dewiki
 		if ( wfWikiID() !== 'dewiki' ) {
 			return;
 		}
 
-		/**
-		 * Setup the campaign prefix.
-		 * Everything below this block is agnostic to which tour is being run.
-		 */
+		// Setup the campaign prefix.
+		// Everything below this block is agnostic to which campaign is being run.
 		$campaignPrefix = 'WMDE_';
-
 		$cookieName = 'wmdecampaign-' . $campaignPrefix;
-		$hasCampaignGetValue = strstr( $request->getVal( 'campaign' ), $campaignPrefix ) !== false;
-		$hasCampaignCookie = $request->getCookie( $cookieName ) !== null;
 
-		// Get the campaign name from either the URL params or cookie
-		$campaign = 'NULL';
-		if ( $hasCampaignGetValue ) {
-			$campaign = $request->getVal( 'campaign' );
-		}
+		$hasCampaignCookie = $request->getCookie( $cookieName ) !== null;
+		$hasCampaignQuery = strpos( $request->getRawVal( 'campaign' ), $campaignPrefix ) === 0;
+
+		// Get the campaign name from either the cookie or query param
+		// Cookie has precedence
 		if ( $hasCampaignCookie ) {
 			$campaign = $request->getCookie( $cookieName );
-		}
-
-		// Bail if this request has nothing to do with our campaign
-		if ( $campaign === 'NULL' ) {
+		} elseif ( $hasCampaignQuery ) {
+			$campaign = $request->getRawVal( 'campaign' );
+		} else {
+			// Request has nothing to do with our campaign
 			return;
 		}
 
 		$stats = MediaWikiServices::getInstance()->getStatsdDataFactory();
 
-		/**
-		 * If an anon user clicks on the banner and doesn't yet have a session cookie then
-		 * add a session cookie and count the click.
-		 */
-		if ( $hasCampaignGetValue && !$hasCampaignCookie && $user->isAnon() ) {
+		// If an anon user clicks on the banner and doesn't yet have a session cookie then
+		// add a session cookie and count the click.
+		if ( !$hasCampaignCookie && $hasCampaignQuery && $user->isAnon() ) {
 			$request->response()->setCookie( $cookieName, $campaign, null );
 			$stats->increment( "wmde.campaign.$campaign.banner.click" );
 			wfDebugLog( 'WMDE', "$campaign - 1 - Banner click by anon user without cookie" );
 		}
 
-		/**
-		 * If an anon user with the cookie, views the create account page without a campaign
-		 * value set then inject it into the WebRequest object.
-		 */
+		// If an anon user with the cookie, views the create account page without a campaign
+		// query param, then inject it into the WebRequest object to influence the Campaigns
+		// extension.
 		if (
+			!$hasCampaignQuery &&
 			$hasCampaignCookie &&
-			!$hasCampaignGetValue &&
 			$user->isAnon() &&
 			$title->isSpecial( 'CreateAccount' )
 		) {
