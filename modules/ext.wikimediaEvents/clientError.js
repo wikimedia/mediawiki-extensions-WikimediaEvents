@@ -295,7 +295,7 @@
 			return false;
 		}
 
-		if ( !shouldLogFileUrl( descriptor.fileUrl ) ) {
+		if ( shouldLogFileUrl( descriptor.fileUrl ) ) {
 			// When the error lacks a URL, or the URL is defaulted to page
 			// location, the stack trace is rarely meaningful, if ever.
 			//
