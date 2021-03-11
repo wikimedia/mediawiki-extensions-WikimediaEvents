@@ -162,13 +162,10 @@
 	/**
 	 * Check whether error logging is supported for the current file URI
 	 *
-	 * @param {string} [fileUrl]
+	 * @param {string} fileUrl
 	 * @return {boolean}
 	 */
-	function shouldLogFileUrl( fileUrl ) {
-		// file url may not be defined given cached scripts run from localStorage.
-		// If not explicitly set to undefined (T266517) to support filtering but still log.
-		fileUrl = fileUrl || 'undefined';
+	function shouldIgnoreFileUrl( fileUrl ) {
 		//
 		// If the two URLs differ only by a fragment identifier (e.g.
 		// 'example.org' vs. 'example.org#Section'), we consider them
@@ -274,7 +271,9 @@
 		return {
 			errorClass: ( errorObject && errorObject.constructor.name ) || '',
 			errorMessage: normalizeErrorMessage( errorLoggerObject.errorMessage ),
-			fileUrl: errorLoggerObject.url,
+			// file url may not be defined given cached scripts run from localStorage.
+			// If not explicitly set to undefined (T266517) to support filtering but still log.
+			fileUrl: errorLoggerObject.url || 'undefined',
 			stackTrace: stackTrace,
 			errorObject: errorObject
 		};
@@ -306,7 +305,7 @@
 			return false;
 		}
 
-		if ( shouldLogFileUrl( descriptor.fileUrl ) ) {
+		if ( shouldIgnoreFileUrl( descriptor.fileUrl ) ) {
 			// When the error lacks a URL, or the URL is defaulted to page
 			// location, the stack trace is rarely meaningful, if ever.
 			//
@@ -367,7 +366,7 @@
 			// eslint-disable-next-line camelcase
 			error_class: descriptor.errorClass,
 			// Message included with the Error object
-			message: descriptor.message,
+			message: descriptor.errorMessage,
 			// URL of the file causing the error
 			// eslint-disable-next-line camelcase
 			file_url: descriptor.fileUrl,
