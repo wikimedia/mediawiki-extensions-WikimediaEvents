@@ -849,11 +849,11 @@
 			// This has to subscribe to multiple events to ensure it captures
 			// in modern browsers (input) and less modern browsers (the rest).
 			// The atMostOnce() makes sure we only truly initialize once.
-			$( document.body )
-				.one( 'input', 'input[type="search"]', initialize )
-				.one( 'change', 'input[type="search"]', initialize )
-				.one( 'paste', 'input[type="search"]', initialize )
-				.one( 'keypress', 'input[type="search"]', initialize );
+			$( '#p-search, #searchText' ).one(
+				'input change paste keypress',
+				'input[type="search"]',
+				initialize
+			);
 		}
 	} );
 
