@@ -277,6 +277,12 @@
 			return false;
 		}
 
+		if ( descriptor.fileUrl === 'undefined' && descriptor.errorMessage === 'Script error.' ) {
+			// ScriptErrors do not have stack traces and are inactionable without file uri.
+			// See T266517#6906587 for more background.
+			return false;
+		}
+
 		// If we are in an iframe do not log errors. (T264245)
 		try {
 			if ( window.self !== window.top ) {
