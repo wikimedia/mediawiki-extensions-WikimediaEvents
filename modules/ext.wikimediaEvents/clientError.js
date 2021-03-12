@@ -165,7 +165,7 @@
 	 * @param {string} fileUrl
 	 * @return {boolean}
 	 */
-	function shouldNotLogFileUrl( fileUrl ) {
+	function shouldIgnoreFileUrl( fileUrl ) {
 		//
 		// If the two URLs differ only by a fragment identifier (e.g.
 		// 'example.org' vs. 'example.org#Section'), we consider them
@@ -241,6 +241,17 @@
 	}
 
 	/**
+	 * A simple transformation for common normalization problems.
+	 * @param {string} message
+	 * @return {string} normalized version of message
+	 */
+	function normalizeErrorMessage( message ) {
+		// T262627 - drop "Uncaught" from the beginning of error messages (Chrome browser),
+		// for consistency with Firefox (no "Uncaught")
+		return message.replace( /^Uncaught /, '' );
+	}
+
+	/**
 	 * @param {Object|null|undefined} [errorLoggerObject]
 	 * @return {ErrorDescriptor|null}
 	 */
@@ -259,8 +270,10 @@
 
 		return {
 			errorClass: ( errorObject && errorObject.constructor.name ) || '',
-			errorMessage: errorLoggerObject.errorMessage,
-			fileUrl: errorLoggerObject.url,
+			errorMessage: normalizeErrorMessage( errorLoggerObject.errorMessage ),
+			// file url may not be defined given cached scripts run from localStorage.
+			// If not explicitly set to undefined (T266517) to support filtering but still log.
+			fileUrl: errorLoggerObject.url || 'undefined',
 			stackTrace: stackTrace,
 			errorObject: errorObject
 		};
@@ -298,7 +311,7 @@
 			return false;
 		}
 
-		if ( shouldNotLogFileUrl( descriptor.fileUrl ) ) {
+		if ( shouldIgnoreFileUrl( descriptor.fileUrl ) ) {
 			// When the error lacks a URL, or the URL is defaulted to page
 			// location, the stack trace is rarely meaningful, if ever.
 			//
@@ -361,10 +374,8 @@
 			// Message included with the Error object
 			message: descriptor.errorMessage,
 			// URL of the file causing the error
-			// file url may not be defined given cached scripts run from localStorage.
-			// If not explicitly set to undefined (T266517) to support filtering but still log.
 			// eslint-disable-next-line camelcase
-			file_url: descriptor.fileUrl || 'undefined',
+			file_url: descriptor.fileUrl,
 			// URL of the web page.
 			url: location.href,
 			// Normalized stack trace string
