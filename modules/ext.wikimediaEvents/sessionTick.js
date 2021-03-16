@@ -88,6 +88,7 @@ function regulator() {
 		if ( gap > RESET_MS ) {
 			mw.cookie.set( lastTickTime, now );
 			mw.track( 'sessionReset', 1 );
+			mw.track( 'sessionTick', 1 ); // Tick once to start
 		} else if ( gap > TICK_MS ) {
 			mw.cookie.set( lastTickTime, now - ( gap % TICK_MS ) );
 			mw.track( 'sessionTick', Math.floor( gap / TICK_MS ) );
