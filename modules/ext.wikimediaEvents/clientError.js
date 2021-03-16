@@ -241,6 +241,7 @@ function processErrorInstance( error ) {
 
 /**
  * A simple transformation for common normalization problems.
+ *
  * @param {string} message
  * @return {string} normalized version of message
  */
