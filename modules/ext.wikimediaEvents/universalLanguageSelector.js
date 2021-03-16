@@ -20,6 +20,33 @@
  */
 'use strict';
 
+// ---
+//
+// The following functions and data are used time how long the page is visible before the user
+// changed their interface language (see `interfaceLanguageChange()`).
+//
+// See also Stephane Bisson's implementation in WikimediaEvents/ext.wikimediaEvents/InukaPageView.js
+// and associated collaborative design/discussion at https://gerrit.wikimedia.org/r/c/mediawiki/extensions/WikimediaEvents/+/551259.
+
+var startedAt = mw.now(),
+	hiddenAt = null,
+	timeHidden = 0;
+
+function onHide() {
+	if ( !hiddenAt ) {
+		hiddenAt = mw.now();
+	}
+}
+
+function onShow() {
+	if ( hiddenAt ) {
+		timeHidden += mw.now() - hiddenAt;
+		hiddenAt = null;
+	}
+}
+
+// ---
+
 /**
  * Try to emit an EventLogging event with schema 'UniversalLanguageSelector'.
  *
@@ -138,7 +165,14 @@ function interfaceLanguageChange( language ) {
 	var logParams = {
 		action: 'language-change',
 		context: 'interface',
-		selectedInterfaceLanguage: language
+		selectedInterfaceLanguage: language,
+
+		// The number of milliseconds that the page was visible before the user changed their
+		// interface language.
+		//
+		// Since `mw.now()` is used, this could be a floating-point value with microsecond
+		// precision.
+		timeToChangeLanguage: mw.now() - startedAt - timeHidden
 	};
 
 	log( logParams );
@@ -233,6 +267,19 @@ function listen() {
 		'.uls-menu .uls-languagefilter',
 		noSearchResults
 	);
+
+	// Time how long the page is visible.
+	if ( document.hidden ) {
+		onHide();
+	}
+
+	document.addEventListener( 'visibilitychange', function () {
+		if ( document.hidden ) {
+			onHide();
+		} else {
+			onShow();
+		}
+	} );
 }
 
 listen();
