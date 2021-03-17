@@ -504,7 +504,15 @@ function createVisitPageEvent() {
 			evt.searchToken = referrer.query.searchToken;
 		}
 		if ( referrer.query.search ) {
-			evt.query = referrer.query.search;
+			// Some wikis might use a custom search implementation and/or deliver gadgets to the
+			// user that modify the search form. In the case of wikidatawiki, something is
+			// adding a hidden input named "search" to the form, which results in
+			// referrer.query.search being an array of duplicate strings rather than a string.
+			//
+			// See https://phabricator.wikimedia.org/T276474 for more detail.
+			evt.query = Array.isArray( referrer.query.search ) ?
+				referrer.query.search[ 0 ] :
+				referrer.query.search;
 		}
 	} catch ( e ) {
 		// Happens when document.referrer is not a proper url. Probably
