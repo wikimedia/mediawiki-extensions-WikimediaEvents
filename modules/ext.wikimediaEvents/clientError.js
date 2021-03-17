@@ -410,7 +410,7 @@ function install( intakeURL ) {
 		}
 	} );
 
-	mw.trackSubscribe( 'error.vue', function ( error ) {
+	mw.trackSubscribe( 'error.vue', function ( _, error ) {
 		var descriptor = processErrorInstance( error );
 
 		if ( shouldLog( descriptor ) ) {
