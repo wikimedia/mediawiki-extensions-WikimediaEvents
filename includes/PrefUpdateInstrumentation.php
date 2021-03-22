@@ -4,9 +4,11 @@ namespace WikimediaEvents;
 
 use EventLogging;
 use FormatJson;
+use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MWTimestamp;
 use RequestContext;
+use RuntimeException;
 use User;
 
 /**
@@ -112,6 +114,19 @@ class PrefUpdateInstrumentation {
 		array $originalOptions
 	) : void {
 		if ( !self::isUserInitiated() ) {
+			return;
+		}
+
+		// An empty $originalOptions array will almost certainly cause spurious PrefUpdates events to be issued,
+		// and indicates a likely bug in the preference handling code causing the save. Emit a warning and abort.
+		if ( empty( $originalOptions ) ) {
+			LoggerFactory::getInstance( 'WikimediaEvents' )->warning(
+				'WikimediaEventsHooks::onUserSaveOptions called with empty originalOptions array. ' .
+				'Aborting to avoid creating spurious PrefUpdate events.',
+				// Record a stack trace to help track down the source of this call.
+				// https://www.mediawiki.org/wiki/Manual:Structured_logging#Add_structured_data_to_logging_context
+				[ 'exception' => new RuntimeException() ]
+			);
 			return;
 		}
 
