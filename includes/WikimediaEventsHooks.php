@@ -658,7 +658,7 @@ class WikimediaEventsHooks {
 		}
 
 		// If an anon user clicks on the banner and doesn't yet have a session cookie then
-		// add a session cookie and count the click.
+		// add a session cookie and log the click.
 		if ( !$hasCampaignCookie && $hasCampaignQuery && $user->isAnon() ) {
 			$request->response()->setCookie( $cookieName, $campaign, null );
 			wfDebugLog( 'WMDE', "$campaign - 1 - Banner click by anon user without cookie" );
