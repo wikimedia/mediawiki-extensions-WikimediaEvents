@@ -71,7 +71,7 @@
 				"WikidataCompletionSearchClicks": 18665070,
 				"UserFeedback": 18903446,
 				"Test": "/analytics/legacy/test/1.2.0",
-				"UniversalLanguageSelector": "/analytics/legacy/universallanguageselector/1.1.0"
+				"UniversalLanguageSelector": "/analytics/legacy/universallanguageselector/1.2.0"
 			}
 		},
 		"VisualEditor": {
