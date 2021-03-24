@@ -657,13 +657,10 @@ class WikimediaEventsHooks {
 			return;
 		}
 
-		$stats = MediaWikiServices::getInstance()->getStatsdDataFactory();
-
 		// If an anon user clicks on the banner and doesn't yet have a session cookie then
 		// add a session cookie and count the click.
 		if ( !$hasCampaignCookie && $hasCampaignQuery && $user->isAnon() ) {
 			$request->response()->setCookie( $cookieName, $campaign, null );
-			$stats->increment( "wmde.campaign.$campaign.banner.click" );
 			wfDebugLog( 'WMDE', "$campaign - 1 - Banner click by anon user without cookie" );
 		}
 
