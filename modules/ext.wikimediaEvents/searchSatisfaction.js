@@ -37,17 +37,11 @@ var search, autoComplete, session, initSubTest, cirrusUserTestingParam,
 	 * - does not exist in validBuckets the subTest is tagged as "invalid"
 	 * - (when on the search results page) does not match any of the enabledBackendTests the subTest is tagged as "mismatch"
 	 */
-	validBuckets = {
-		glent_m01: 'T262612_glent_m01:glent_m01', // eslint-disable-line
-		control: 'T262612_glent_m01:control'
-	},
+	validBuckets = {},
 	wikisInSubtest = {
 		// Provides a place to handle wiki-specific sub-test
 		// handling. Must be a map from wiki dbname to % of
 		// requests that should be split between validBuckets.
-		dewiki: 1,
-		enwiki: 1,
-		frwiki: 1
 	},
 
 	uri = ( function () {
