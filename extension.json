@@ -25,6 +25,7 @@
 		"BeforePageRedirect": "WikimediaEvents\\WikimediaEventsHooks::onBeforePageRedirect",
 		"BeforePageDisplay": "WikimediaEvents\\WikimediaEventsHooks::onBeforePageDisplay",
 		"PageSaveComplete": "WikimediaEvents\\WikimediaEventsHooks::onPageSaveComplete",
+		"PreferencesFormPreSave": "WikimediaEvents\\VectorPrefDiffInstrumentation::onPreferencesFormPreSave",
 		"UserSaveOptions": "WikimediaEvents\\PrefUpdateInstrumentation::onUserSaveOptions",
 		"ArticleViewHeader": "WikimediaEvents\\WikimediaEventsHooks::onArticleViewHeader",
 		"EditPageBeforeConflictDiff": "WikimediaEvents\\WikimediaEventsHooks::onEditPageBeforeConflictDiff",
@@ -208,6 +209,10 @@
 		},
 		"WMESessionTick": {
 			"value": false
+		},
+		"WMEVectorPrefDiffSalt": {
+			"value": null,
+			"description": "@var string Used as a salt in VectorPrefDiffInstrumentation to hash the user id. Set this in `wmf-config/PrivateSettings`."
 		}
 	},
 	"manifest_version": 2
