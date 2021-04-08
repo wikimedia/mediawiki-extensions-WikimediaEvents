@@ -6,7 +6,7 @@
  */
 var eventLog = mw.eventLog,
 	getEditCountBucket = mw.wikimediaEvents.getEditCountBucket,
-	sampleSize = mw.config.get( 'wgWMEDesktopWebUIActionsTracking', 0 ),
+	sampleSize = require( './config.json' ).desktopWebUIActionsTracking || 0,
 	pop = sampleSize ? 1 / sampleSize : 0,
 	skinVersion;
 
