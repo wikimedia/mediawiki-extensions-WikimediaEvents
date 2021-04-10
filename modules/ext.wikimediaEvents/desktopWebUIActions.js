@@ -27,7 +27,7 @@ function logEvent( action, name ) {
 			// Ideally this would use an mw.config value but this will do for now
 			skinVersion: skinVersion,
 			skin: mw.config.get( 'skin' ),
-			editCountBucket: mw.wikimediaEvents.getEditCountBucket( mw.config.get( 'wgUserEditCount' ) ),
+			editCountBucket: mw.config.get( 'wgUserEditCountBucket' ),
 			isSidebarCollapsed: checkbox ? !checkbox.checked : false,
 			token: mw.user.sessionId()
 		};

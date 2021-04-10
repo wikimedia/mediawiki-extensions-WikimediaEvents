@@ -10,6 +10,7 @@ use MWTimestamp;
 use RequestContext;
 use RuntimeException;
 use User;
+use UserBucketProvider;
 
 /**
  * Hooks and helper functions used for Wikimedia-related logging of user preference updates.
@@ -189,39 +190,8 @@ class PrefUpdateInstrumentation {
 			// This is parseable and allows a consistent type for validation.
 			'value' => FormatJson::encode( $trackedValue ),
 			'isDefault' => $userOptionsLookup->getDefaultOption( $optName ) == $optValue,
-			'bucketedUserEditCount' => self::getBucketedUserEditCount( $user ),
+			'bucketedUserEditCount' => UserBucketProvider::getUserEditCountBucket( $user ),
 		];
-	}
-
-	/**
-	 * Buckets a user's edit count, e.g. "5-99 edits".
-	 *
-	 * See https://phabricator.wikimedia.org/T169672 for discussion about why you would want to do
-	 * this.
-	 *
-	 * @param User $user
-	 * @return string
-	 */
-	private static function getBucketedUserEditCount( User $user ) : string {
-		$editCount = $user->getEditCount();
-
-		if ( $editCount >= 1000 ) {
-			return '1000+ edits';
-		}
-
-		if ( $editCount >= 100 ) {
-			return '100-999 edits';
-		}
-
-		if ( $editCount >= 5 ) {
-			return '5-99 edits';
-		}
-
-		if ( $editCount >= 1 ) {
-			return '1-4 edits';
-		}
-
-		return '0 edits';
 	}
 
 	/**

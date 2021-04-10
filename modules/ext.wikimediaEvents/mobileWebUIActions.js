@@ -6,7 +6,6 @@
  */
 var moduleConfig = require( './config.json' ),
 	Schema = mw.eventLog.Schema,
-	getEditCountBucket = mw.wikimediaEvents.getEditCountBucket,
 	schemaMobileWebUIActionsTracking;
 
 /**
@@ -28,7 +27,7 @@ schemaMobileWebUIActionsTracking = new Schema(
 	moduleConfig.mobileWebUIActionsTracking || 0,
 	{
 		isAnon: mw.user.isAnon(),
-		editCountBucket: getEditCountBucket( mw.config.get( 'wgUserEditCount' ) ),
+		editCountBucket: mw.config.get( 'wgUserEditCountBucket' ),
 		modes: getModes().join( ',' )
 	}
 );

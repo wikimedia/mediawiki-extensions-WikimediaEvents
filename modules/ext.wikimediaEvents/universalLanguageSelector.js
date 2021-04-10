@@ -55,7 +55,7 @@ function onShow() {
  * @param {Object} event Event action and optional fields
  */
 function log( event ) {
-	var userEditBucket = mw.wikimediaEvents.getEditCountBucket( mw.config.get( 'wgUserEditCount' ) );
+	var userEditBucket = mw.config.get( 'wgUserEditCountBucket' );
 
 	event = $.extend( {
 
