@@ -7,7 +7,6 @@ use ContextSource;
 use DeferredUpdates;
 use EventLogging;
 use ExtensionRegistry;
-use GrowthExperiments\GrowthExperimentsServices;
 use GrowthExperiments\HelpPanel;
 use IContextSource;
 use MediaWiki\Logger\LoggerFactory;
@@ -434,15 +433,11 @@ class PageViews extends ContextSource {
 	 * @throws \ConfigException
 	 */
 	private function isHelpPanelAndHelpDeskConfigured() {
-		if ( !ExtensionRegistry::getInstance()->isLoaded( 'GrowthExperiments' ) ) {
-			return false;
-		}
 		$config = $this->getConfig();
-		$wikiConfig = GrowthExperimentsServices::wrap( MediaWikiServices::getInstance() )
-			->getGrowthWikiConfig();
-		return $config->get( 'GEHelpPanelEnabled' ) &&
-			$wikiConfig->get( 'GEHelpPanelHelpDeskTitle' ) &&
-			HelpPanel::getHelpDeskTitle( $wikiConfig )->isValid();
+		return ExtensionRegistry::getInstance()->isLoaded( 'GrowthExperiments' ) &&
+			$config->get( 'GEHelpPanelEnabled' ) &&
+			$config->get( 'GEHelpPanelHelpDeskTitle' ) &&
+			HelpPanel::getHelpDeskTitle( $config )->isValid();
 	}
 
 	/**
@@ -455,14 +450,7 @@ class PageViews extends ContextSource {
 	 * @return bool
 	 */
 	private function isHelpDeskVisit() {
-		if ( !ExtensionRegistry::getInstance()->isLoaded( 'GrowthExperiments' ) ) {
-			return false;
-		}
-		$helpDeskTitle = HelpPanel::getHelpDeskTitle(
-			GrowthExperimentsServices::wrap( MediaWikiServices::getInstance() )
-				->getGrowthWikiConfig()
-		);
-
+		$helpDeskTitle = HelpPanel::getHelpDeskTitle( $this->getConfig() );
 		return $this->originalTitle->equals( $helpDeskTitle ) ||
 			$this->getTitle()->equals( $helpDeskTitle ) ||
 			$this->originalTitle->isSubpageOf( $helpDeskTitle ) ||
