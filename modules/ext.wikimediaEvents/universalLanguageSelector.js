@@ -55,7 +55,7 @@ function onShow() {
  * @param {Object} event Event action and optional fields
  */
 function log( event ) {
-	var userEditBucket = mw.config.get( 'wgUserEditCountBucket' );
+	var userEditBucket;
 
 	event = $.extend( {
 
@@ -83,6 +83,7 @@ function log( event ) {
 		isAnon: mw.user.isAnon()
 	}, event );
 
+	userEditBucket = mw.config.get( 'wgUserEditCountBucket' );
 	if ( userEditBucket ) {
 		event.userEditBucket = userEditBucket;
 	}
