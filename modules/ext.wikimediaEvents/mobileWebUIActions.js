@@ -27,7 +27,7 @@ schemaMobileWebUIActionsTracking = new Schema(
 	moduleConfig.mobileWebUIActionsTracking || 0,
 	{
 		isAnon: mw.user.isAnon(),
-		editCountBucket: mw.config.get( 'wgUserEditCountBucket' ),
+		editCountBucket: mw.config.get( 'wgUserEditCountBucket' ) || '0 edits',
 		modes: getModes().join( ',' )
 	}
 );
