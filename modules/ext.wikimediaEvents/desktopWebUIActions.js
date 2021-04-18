@@ -14,8 +14,7 @@ var sampleSize = require( './config.json' ).desktopWebUIActionsTracking || 0,
  */
 function logEvent( action, name ) {
 	var data,
-		checkbox = document.getElementById( 'mw-sidebar-checkbox' ),
-		editCountBucket;
+		checkbox = document.getElementById( 'mw-sidebar-checkbox' );
 
 	if ( !skinVersion ) {
 		skinVersion = document.body.classList.contains( 'skin-vector-legacy' ) ?
@@ -28,15 +27,12 @@ function logEvent( action, name ) {
 			// Ideally this would use an mw.config value but this will do for now
 			skinVersion: skinVersion,
 			skin: mw.config.get( 'skin' ),
+			editCountBucket: mw.config.get( 'wgUserEditCountBucket' ) || '0 edits',
 			isSidebarCollapsed: checkbox ? !checkbox.checked : false,
 			token: mw.user.sessionId()
 		};
 		if ( name ) {
 			data.name = name;
-		}
-		editCountBucket = mw.config.get( 'wgUserEditCountBucket' );
-		if ( editCountBucket ) {
-			data.editCountBucket = editCountBucket;
 		}
 		mw.eventLog.logEvent( 'DesktopWebUIActionsTracking', data );
 	}

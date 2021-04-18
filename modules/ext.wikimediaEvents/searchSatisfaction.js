@@ -426,8 +426,7 @@ function genLogEventFn( source, session, sourceExtraData ) {
 				// Depending on speed of the network the request may or may
 				// not get completed before page unload
 				uniqueId: randomToken()
-			},
-			userEditBucket;
+			};
 
 		// Allow checkin events to fire after the session closes, as those
 		// are still meaningful.
@@ -452,10 +451,7 @@ function genLogEventFn( source, session, sourceExtraData ) {
 
 		evt.skin = skin;
 		evt.isAnon = mw.user.isAnon();
-		userEditBucket = mw.config.get( 'wgUserEditCountBucket' );
-		if ( userEditBucket ) {
-			evt.userEditBucket = userEditBucket;
-		}
+		evt.userEditBucket = mw.config.get( 'wgUserEditCountBucket' ) || '0 edits';
 
 		// Is the user using the Vector skin? If so, then include which version of the skin
 		// they're using and which version of the search widget they're seeing.

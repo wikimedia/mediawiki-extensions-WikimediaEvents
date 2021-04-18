@@ -6,8 +6,6 @@
  */
 var moduleConfig = require( './config.json' ),
 	Schema = mw.eventLog.Schema,
-	eventDefaults,
-	editCountBucket,
 	schemaMobileWebUIActionsTracking;
 
 /**
@@ -24,18 +22,14 @@ function getModes() {
 	return modes;
 }
 
-eventDefaults = {
-	isAnon: mw.user.isAnon(),
-	modes: getModes().join( ',' )
-};
-editCountBucket = mw.config.get( 'wgUserEditCountBucket' );
-if ( editCountBucket ) {
-	eventDefaults.editCountBucket = editCountBucket;
-}
 schemaMobileWebUIActionsTracking = new Schema(
 	'MobileWebUIActionsTracking',
 	moduleConfig.mobileWebUIActionsTracking || 0,
-	eventDefaults
+	{
+		isAnon: mw.user.isAnon(),
+		editCountBucket: mw.config.get( 'wgUserEditCountBucket' ) || '0 edits',
+		modes: getModes().join( ',' )
+	}
 );
 
 // eslint-disable-next-line no-jquery/no-global-selector
