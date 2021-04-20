@@ -161,11 +161,12 @@ function imeMoreLanguages() {
  * Log interface language change
  *
  * @param {string} language language code
+ * @param {string} [source] symbolic name for source
  */
-function interfaceLanguageChange( language ) {
+function interfaceLanguageChange( language, source ) {
 	var logParams = {
 		action: 'language-change',
-		context: 'interface',
+		context: source || 'interface',
 		selectedInterfaceLanguage: language,
 
 		// The number of milliseconds that the page was visible before the user changed their
@@ -280,6 +281,18 @@ function listen() {
 		} else {
 			onShow();
 		}
+	} );
+
+	// Wait for DOMContentLoaded to ensure #p-lang is present.
+	$( function () {
+		// Log language switching event in legacy sidebar.
+		// eslint-disable-next-line no-jquery/no-global-selector
+		$( '#p-lang' ).on( 'click', '.interlanguage-link-target', function () {
+			mw.hook( 'mw.uls.interface.language.change' ).fire(
+				this.attributes.getNamedItem( 'hreflang' ).value,
+				'languages-list'
+			);
+		} );
 	} );
 }
 
