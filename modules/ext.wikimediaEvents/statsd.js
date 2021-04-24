@@ -18,8 +18,8 @@ var queue = [],
 	moduleConfig = require( './config.json' ),
 	baseUrl = moduleConfig.statsdBaseUri;
 
-// Statsv not configured, or DNT enabled
-if ( !baseUrl || mw.eventLog.isDntEnabled ) {
+// Statsv not configured
+if ( !baseUrl ) {
 	// Do nothing
 	return;
 }
