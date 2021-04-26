@@ -285,9 +285,9 @@ function listen() {
 
 	// Wait for DOMContentLoaded to ensure #p-lang is present.
 	$( function () {
-		// Log language switching event in legacy sidebar.
+		// Log language switching event in legacy sidebar for modern Vector.
 		// eslint-disable-next-line no-jquery/no-global-selector
-		$( '#p-lang' ).on( 'click', '.interlanguage-link-target', function () {
+		$( '.mw-workspace-container #p-lang' ).on( 'click', '.interlanguage-link-target', function () {
 			mw.hook( 'mw.uls.interface.language.change' ).fire(
 				this.attributes.getNamedItem( 'hreflang' ).value,
 				'languages-list'
