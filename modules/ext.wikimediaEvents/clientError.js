@@ -379,8 +379,9 @@ function log( intakeURL, descriptor ) {
 		// URL of the web page.
 		url: location.href,
 		// Normalized stack trace string
+		// We log undefined rather than empty string (consistent with file_url) to allow for filtering.
 		// eslint-disable-next-line camelcase
-		stack_trace: descriptor.stackTrace
+		stack_trace: descriptor.stackTrace || 'undefined'
 		// Tags that can be specified as-needed
 		// tags: {}
 	} ) );
