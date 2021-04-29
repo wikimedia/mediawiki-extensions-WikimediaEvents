@@ -477,9 +477,7 @@ function genLogEventFn( source, session, sourceExtraData ) {
 		}
 
 		// ship the event
-		mw.loader.using( [ 'ext.eventLogging' ] ).then( function () {
-			mw.eventLog.logEvent( 'SearchSatisfaction', evt );
-		} );
+		mw.eventLog.logEvent( 'SearchSatisfaction', evt );
 	};
 }
 
