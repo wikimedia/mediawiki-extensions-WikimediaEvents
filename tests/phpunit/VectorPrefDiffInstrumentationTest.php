@@ -161,9 +161,28 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 			$user,
 			null
 		];
+		yield 'when `VectorSkinVersion` field null' => [
+			[
+				'skin' => 'vector',
+				'VectorSkinVersion' => null
+			],
+			$this->createFormWithDefaultValues( 'minerva', true ),
+			$user,
+			null
+		];
+		yield 'when `VectorSkinVersion` field empty string' => [
+			[
+				'skin' => 'vector',
+				'VectorSkinVersion' => ''
+			],
+			$this->createFormWithDefaultValues( 'minerva', true ),
+			$user,
+			null
+		];
 	}
 
 	public function testNullSalt() {
+		$this->setMwGlobals( 'wgWMEVectorPrefDiffSalt', null );
 		$subject = TestingAccessWrapper::newFromClass( VectorPrefDiffInstrumentation::class );
 
 		$result = $subject->createEventIfNecessary(
