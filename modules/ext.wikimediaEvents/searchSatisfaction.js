@@ -784,13 +784,13 @@ $( function () {
 	} else {
 		// delay initialization until the user clicks into the autocomplete
 		// box. Note there are two elements matching this selector, the
-		// main search box on Special:Search and the search box on every
-		// page.
+		// main search box on Special:Search (.mw-search-form-wrapper) and
+		// the skin autocomplete, aka go box, on every page (#p-search).
 		//
 		// This has to subscribe to multiple events to ensure it captures
 		// in modern browsers (input) and less modern browsers (the rest).
 		// The atMostOnce() makes sure we only truly initialize once.
-		$( '#p-search, #searchText' ).one(
+		$( '#p-search, .mw-search-form-wrapper' ).one(
 			'input change paste keypress',
 			'input[type="search"]',
 			initialize

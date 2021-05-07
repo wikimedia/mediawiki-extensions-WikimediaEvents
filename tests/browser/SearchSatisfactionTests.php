@@ -14,9 +14,8 @@ require_once __DIR__ . '/../../vendor/autoload.php';
  * Best run from inside vagrant, as accessing eventlogging.log from the mwv
  * host is sometimes not instantaneous.
  *
- * IMPORTANT: For this to work right the * ext.wikimediaEvents.searchSatisfaction.js
- * script needs to be edited such that the oneIn() function returns true no
- * matter what.
+ * IMPORTANT: For this to work right the searchSatisfaction.js script needs to
+ * be edited such that all sessions are in-sample.
  *
  * Steps to run in a chrome browser on the host:
  *
@@ -247,12 +246,16 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 				// actions
 				[
 					$this->visitPage( "Main_Page" ),
-					$this->typeIntoSkinAutocomplete( "main" ),
+					// For reasons outside our control the 'containing' link doesn't
+					// show up the first time we type, we have to do it twice.
+					$this->typeIntoSkinAutocomplete( "ma" ),
+					$this->typeIntoSkinAutocomplete( "in" ),
 					$this->waitForSkinAutocomplete(),
 					$this->clickSkinAutocompleteContaining(),
 				],
 				// expected events
 				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
 					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
 					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ],
 					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ],
@@ -263,12 +266,14 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 				// actions
 				[
 					$this->visitPage( "Main_Page" ),
-					$this->typeIntoSkinAutocomplete( "main" ),
+					$this->typeIntoSkinAutocomplete( "ma" ),
+					$this->typeIntoSkinAutocomplete( "in" ),
 					$this->waitForSkinAutocomplete(),
 					$this->typeIntoSkinAutocomplete( WebDriverKeys::ARROW_UP . "\n" ),
 				],
 				// expected events
 				[
+					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
 					[ 'action' => 'searchResultPage', 'source' => 'autocomplete', 'position' => null ],
 					[ 'action' => 'click', 'source' => 'autocomplete', 'position' => -1 ],
 					[ 'action' => 'visitPage', 'source' => 'autocomplete', 'position' => -1 ],
@@ -678,11 +683,11 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		$finalEvents = [];
 		$seen = [];
 		foreach ( $actualEvents as $idx => $envelope ) {
-			$actualEvent = $envelope['event'];
-			// Only concerned with satisfaction events
-			if ( $envelope['schema'] !== 'TestSearchSatisfaction2' ) {
+			// Only concerned with satisfaction events.
+			if ( ( $envelope['schema'] ?? '' ) !== 'SearchSatisfaction' ) {
 				continue;
 			}
+			$actualEvent = $envelope['event'];
 			// Filter unreliable checkin events
 			if ( $actualEvent['action'] === 'checkin' ) {
 				continue;
@@ -929,9 +934,15 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 
 	protected function clickSkinAutocompleteContaining() {
 		return static function ( $webDriver ) {
-			$webDriver->findElement(
-				WebDriverBy::cssSelector( '.suggestions .special-label' )
-			)->click();
+			$label = WebDriverBy::cssSelector( '.suggestions-special .special-label' );
+			// If the first autocomplete query is in-flight this might not have been
+			// created yet. Need to wait around for the box to show up.
+			$webDriver->wait()->until(
+				WebDriverExpectedCondition::presenceOfElementLocated(
+					$label
+				)
+			);
+			$webDriver->findElement( $label )->click();
 		};
 	}
 
