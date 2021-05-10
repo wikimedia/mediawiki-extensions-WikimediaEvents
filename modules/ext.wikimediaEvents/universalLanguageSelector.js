@@ -104,6 +104,13 @@ function ulsSettingsOpen( context ) {
 }
 
 /**
+ * Log when the compact language links treatment is opened.
+ */
+function ulsCompactLanguageLinksOpen() {
+	log( { action: 'compact-language-links-open' } );
+}
+
+/**
  * Log language revert
  */
 function ulsLanguageRevert() {
@@ -252,6 +259,7 @@ function noSearchResults( event, data ) {
 function listen() {
 	// Register handlers for event logging triggers
 	mw.hook( 'mw.uls.settings.open' ).add( ulsSettingsOpen );
+	mw.hook( 'mw.uls.compact_language_links.open' ).add( ulsCompactLanguageLinksOpen );
 	mw.hook( 'mw.uls.language.revert' ).add( ulsLanguageRevert );
 	mw.hook( 'mw.uls.ime.enable' ).add( enableIME );
 	mw.hook( 'mw.uls.ime.disable' ).add( disableIME );
