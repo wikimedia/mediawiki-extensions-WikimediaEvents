@@ -4,6 +4,7 @@ namespace WikimediaEvents;
 
 use EventLogging;
 use HTMLForm;
+use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MWCryptHash;
 use User;
@@ -135,9 +136,31 @@ class VectorPrefDiffInstrumentation {
 			$formData[ self::PREF_KEY_SKIN_VERSION ] ?? ''
 		);
 
+		// T261842#7043199: Some events sent from this instrumentation have their
+		// `final_state` field mysteriously set to `vector` instead of the correct
+		// `vector1` or `vector2` value. When this happens, log to Logstash to gain
+		// more context around this unexpected state, and return early to stop bad
+		// data being sent. This block of code is intended to be temporary and is
+		// for debugging purposes.
+		if ( $newSkinVersionName === 'vector' ) {
+			LoggerFactory::getInstance( 'AdHocDebug' )->warning(
+				'VectorPrefDiffInstrumentation given unexpected data',
+				[
+					'formDataKeys' => implode( ' ', array_keys( $formData ) ),
+					'formDefault:skin' => $form->getField( 'skin' )->getDefault(),
+					'formData:skin' => $formData[ 'skin' ] ?? null,
+					'formDefault:VectorSkinVersion' =>
+						$form->getField( self::PREF_KEY_SKIN_VERSION )->getDefault(),
+					'formData:VectorSkinVersion' => $formData[ self::PREF_KEY_SKIN_VERSION ] ?? null
+				]
+			);
+
+			return null;
+		}
+
 		// We are only interested in skin changes that involve Vector.
 		if (
-			in_array( self::VECTOR_SKIN_NAME, [ $oldSkin, $newSkin ] ) &&
+			in_array( self::VECTOR_SKIN_NAME, [ $oldSkin, $newSkin ], true ) &&
 			$oldSkinVersionName !== $newSkinVersionName
 		) {
 
