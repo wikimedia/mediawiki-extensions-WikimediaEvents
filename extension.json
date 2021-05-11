@@ -126,7 +126,8 @@
 				"mediawiki.cookie",
 				"mediawiki.Uri",
 				"mediawiki.experiments",
-				"mediawiki.storage"
+				"mediawiki.storage",
+				"mediawiki.visibleTimeout"
 			],
 			"targets": [
 				"desktop",

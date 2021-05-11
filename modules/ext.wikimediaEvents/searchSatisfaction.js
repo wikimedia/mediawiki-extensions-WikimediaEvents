@@ -316,73 +316,9 @@ function SessionState() {
  * @private
  */
 function interval( checkinTimes, fn ) {
-	var hidden, visibilityChange,
+	var visibleTimeout = require( 'mediawiki.visibleTimeout' ),
 		checkin = checkinTimes.shift(),
 		timeout = checkin;
-
-	if ( document.hidden !== undefined ) {
-		hidden = 'hidden';
-		visibilityChange = 'visibilitychange';
-	} else if ( document.mozHidden !== undefined ) {
-		hidden = 'mozHidden';
-		visibilityChange = 'mozvisibilitychange';
-	} else if ( document.msHidden !== undefined ) {
-		hidden = 'msHidden';
-		visibilityChange = 'msvisibilitychange';
-	} else if ( document.webkitHidden !== undefined ) {
-		hidden = 'webkitHidden';
-		visibilityChange = 'webkitvisibilitychange';
-	}
-
-	/**
-	 * Generally similar to setTimeout, but turns itself on/off on page
-	 * visibility changes.
-	 *
-	 * @param {Function} fn The action to execute
-	 * @param {number} delay The number of ms the page should be visible before
-	 *  calling fn
-	 * @private
-	 */
-	function setVisibleTimeout( fn, delay ) {
-		var handleVisibilityChange,
-			timeoutId = null,
-			lastStartedAt = 0,
-			onComplete = function () {
-				timeoutId = null;
-				if ( document.removeEventListener ) {
-					document.removeEventListener( visibilityChange, handleVisibilityChange, false );
-				}
-				fn();
-			};
-
-		handleVisibilityChange = function () {
-			var now = Date.now();
-
-			if ( document[ hidden ] ) {
-				// pause timeout if running
-				if ( timeoutId !== null ) {
-					// Subtract the amount of time we have waited so far.
-					delay = Math.max( 0, delay - Math.max( 0, now - lastStartedAt ) );
-					clearTimeout( timeoutId );
-					timeoutId = null;
-					if ( delay === 0 ) {
-						onComplete();
-					}
-				}
-			} else {
-				// resume timeout if not running
-				if ( timeoutId === null ) {
-					lastStartedAt = now;
-					timeoutId = setTimeout( onComplete, delay );
-				}
-			}
-		};
-
-		if ( hidden !== undefined && document.addEventListener ) {
-			document.addEventListener( visibilityChange, handleVisibilityChange, false );
-		}
-		handleVisibilityChange();
-	}
 
 	function action() {
 		var current = checkin;
@@ -391,11 +327,11 @@ function interval( checkinTimes, fn ) {
 		checkin = checkinTimes.shift();
 		if ( checkin ) {
 			timeout = checkin - current;
-			setVisibleTimeout( action, 1000 * timeout );
+			visibleTimeout.set( action, 1000 * timeout );
 		}
 	}
 
-	setVisibleTimeout( action, 1000 * timeout );
+	visibleTimeout.set( action, 1000 * timeout );
 }
 
 function genLogEventFn( source, session, sourceExtraData ) {
