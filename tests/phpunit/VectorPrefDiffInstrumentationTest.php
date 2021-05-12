@@ -161,23 +161,31 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 			$user,
 			null
 		];
-		yield 'when `VectorSkinVersion` field null' => [
+		yield 'when `VectorSkinVersion` field is false' => [
 			[
 				'skin' => 'vector',
-				'VectorSkinVersion' => null
+				'VectorSkinVersion' => false
 			],
 			$this->createFormWithDefaultValues( 'minerva', true ),
 			$user,
-			null
+			[
+				'initial_state' => 'minerva',
+				'final_state' => 'vector2',
+				'bucketed_user_edit_count' => '5-99 edits',
+			]
 		];
-		yield 'when `VectorSkinVersion` field empty string' => [
+		yield 'when `VectorSkinVersion` field true' => [
 			[
 				'skin' => 'vector',
-				'VectorSkinVersion' => ''
+				'VectorSkinVersion' => true
 			],
 			$this->createFormWithDefaultValues( 'minerva', true ),
 			$user,
-			null
+			[
+				'initial_state' => 'minerva',
+				'final_state' => 'vector1',
+				'bucketed_user_edit_count' => '5-99 edits',
+			]
 		];
 	}
 
