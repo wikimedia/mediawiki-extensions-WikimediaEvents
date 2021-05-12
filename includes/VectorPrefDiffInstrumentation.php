@@ -85,10 +85,30 @@ class VectorPrefDiffInstrumentation {
 	 * Vector's skin version. If skin is not Vector, simply return $skin.
 	 *
 	 * @param string $skin
-	 * @param string $vectorSkinVersion Version of Vector skin.
+	 * @param string|bool $vectorSkinVersion Version of Vector skin in string
+	 * form (e.g. '1' or '2') or bool form (e.g. true or false).
 	 * @return string
 	 */
 	private static function generateSkinVersionName( $skin, $vectorSkinVersion ) : string {
+		// The value of `$vectorSkinVersion` can either be a string or a bool
+		// depending on whether the field's `getDefault` method or
+		// `loadDataFromRequest` method is called. [1] The `getDefault` method can
+		// be called if the field is disabled which can occur through the
+		// GlobalPreferences extension. [2] Therefore, we must check whether the
+		// value is a string or a bool to get the correct skin version.
+		//
+		// Please see T261842#7084144 for additional context.
+		//
+		// [1] https://github.com/wikimedia/mediawiki/blob/fca9c972de9333bfbf881fdaa639abe27b9de4da/includes/htmlform/HTMLForm.php#L1861-L1865
+		// [2] https://github.com/wikimedia/mediawiki-extensions-GlobalPreferences/blob/ccf4c9d470bfc0714119153b592bcc167dceccc6/includes/GlobalPreferencesFactory.php#L175
+		if ( is_bool( $vectorSkinVersion ) ) {
+			// Since this value is a bool, we must map it to the corresponding skin
+			// version to get a meaningful skin version.
+			$vectorSkinVersion = self::CHECKBOX_TO_SKIN_VERSION_MAP[
+				(int)$vectorSkinVersion
+			];
+		}
+
 		return $skin === self::VECTOR_SKIN_NAME ? $skin . $vectorSkinVersion : $skin;
 	}
 
@@ -122,12 +142,7 @@ class VectorPrefDiffInstrumentation {
 		$oldSkin = (string)$form->getField( 'skin' )->getDefault();
 		$oldSkinVersionName = self::generateSkinVersionName(
 			$oldSkin,
-			// Get the old skin version value from the form's default value. Because
-			// this value is a bool, we must map it to the corresponding skin
-			// version to get a meaningful skin version.
-			self::CHECKBOX_TO_SKIN_VERSION_MAP[
-				(int)$form->getField( self::PREF_KEY_SKIN_VERSION )->getDefault()
-			] ?? ''
+			$form->getField( self::PREF_KEY_SKIN_VERSION )->getDefault()
 		);
 		// Get the new skin value from the form data that was submitted.
 		$newSkin = $formData['skin'] ?? '';
