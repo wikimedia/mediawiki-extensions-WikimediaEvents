@@ -265,7 +265,7 @@ class WikimediaEventsHooks {
 		// If it is, then this editor has just made the cut as an active
 		// editor for this wiki for this month.
 		DeferredUpdates::addCallableUpdate( function () use ( $user ) {
-			$db = wfGetDB( DB_MASTER );
+			$db = wfGetDB( DB_PRIMARY );
 			$revWhere = ActorMigration::newMigration()->getWhere( $db, 'rev_user', $user );
 			$since = $db->addQuotes( $db->timestamp( date( 'Ym' ) . '00000000' ) );
 			$numMainspaceEditsThisMonth = 0;
