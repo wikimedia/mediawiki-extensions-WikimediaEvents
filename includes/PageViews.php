@@ -97,7 +97,7 @@ class PageViews extends ContextSource {
 		// fires for the subsequent GET request.
 		$stage = RequestContext::getMain()->getRequest()->wasPosted() ? DeferredUpdates::PRESEND :
 			DeferredUpdates::POSTSEND;
-		DeferredUpdates::addCallableUpdate( function () use ( $userId ) {
+		DeferredUpdates::addCallableUpdate( static function () use ( $userId ) {
 			$pageViews = new PageViews( RequestContext::getMain() );
 			$pageViews->setOriginalUserId( $userId );
 			$pageViews->log();
@@ -181,7 +181,7 @@ class PageViews extends ContextSource {
 		if ( !$permissionErrors ) {
 			return '';
 		}
-		$flattenedErrors = array_map( function ( $error ) {
+		$flattenedErrors = array_map( static function ( $error ) {
 			return implode( ',', $error );
 		}, $permissionErrors );
 

@@ -215,7 +215,7 @@ class WikimediaEventsHooks {
 		$size = $content->getSize();
 
 		DeferredUpdates::addCallableUpdate(
-			function () use ( $stats, $size, $nsType, $accType, $entry, $edit ) {
+			static function () use ( $stats, $size, $nsType, $accType, $entry, $edit ) {
 				$timing = RequestContext::getMain()->getTiming();
 				$measure = $timing->measure(
 					'editResponseTime', 'requestStart', 'requestShutdown' );
@@ -264,7 +264,7 @@ class WikimediaEventsHooks {
 		// Check if this is the user's fifth mainspace edit this month.
 		// If it is, then this editor has just made the cut as an active
 		// editor for this wiki for this month.
-		DeferredUpdates::addCallableUpdate( function () use ( $user ) {
+		DeferredUpdates::addCallableUpdate( static function () use ( $user ) {
 			$db = wfGetDB( DB_PRIMARY );
 			$revWhere = ActorMigration::newMigration()->getWhere( $db, 'rev_user', $user );
 			$since = $db->addQuotes( $db->timestamp( date( 'Ym' ) . '00000000' ) );
@@ -542,7 +542,7 @@ class WikimediaEventsHooks {
 	}
 
 	public static function onArticleViewHeader() {
-		DeferredUpdates::addCallableUpdate( function () {
+		DeferredUpdates::addCallableUpdate( static function () {
 			$context = RequestContext::getMain();
 			$timing = $context->getTiming();
 			if ( ExtensionRegistry::getInstance()->isLoaded( 'MobileFrontend' )
@@ -695,7 +695,7 @@ class WikimediaEventsHooks {
 			$event['notificationsAfter'] = $data['echo-notifications-blacklist']['after'];
 		}
 
-		DeferredUpdates::addCallableUpdate( function () use ( $event ) {
+		DeferredUpdates::addCallableUpdate( static function () use ( $event ) {
 			// NOTE! The 'SpecialMuteSubmit' event was migrated to EventGate, and is no longer
 			// using Meta-Wiki EventLogging schema.  This revision_id is actually overridden by
 			// WikimediaEvent's EventLoggingSchemas attribute in extension.json.

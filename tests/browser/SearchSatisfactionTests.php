@@ -714,7 +714,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 
 		// Sometimes the events come in with different orders due to
 		// sendBeacon, so lets sort them.
-		$sorter = function ( $a, $b ) {
+		$sorter = static function ( $a, $b ) {
 			ksort( $a );
 			ksort( $b );
 			return strcmp( json_encode( $a ), json_encode( $b ) );
@@ -764,13 +764,13 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	 * @return callable
 	 */
 	protected function visitPage( $url ) {
-		return function ( $webDriver ) use ( $url ) {
+		return static function ( $webDriver ) use ( $url ) {
 			$webDriver->get( self::$mwBaseUrl . $url );
 		};
 	}
 
 	protected function waitForSkinAutocomplete() {
-		return function ( $webDriver ) {
+		return static function ( $webDriver ) {
 			$webDriver->wait()->until(
 				WebDriverExpectedCondition::presenceOfElementLocated(
 					WebDriverBy::cssSelector( '.suggestions-results a' )
@@ -780,14 +780,14 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	}
 
 	protected function typeIntoSkinAutocomplete( $chars ) {
-		return function ( $webDriver ) use ( $chars ) {
+		return static function ( $webDriver ) use ( $chars ) {
 			sleep( 1 );
 			$webDriver->findElement( WebDriverBy::id( 'searchInput' ) )->sendKeys( $chars );
 		};
 	}
 
 	protected function clickSkinAutocompleteResult( $position ) {
-		return function ( $webDriver ) use ( $position ) {
+		return static function ( $webDriver ) use ( $position ) {
 			$webDriver->findElement(
 				WebDriverBy::cssSelector( ".suggestions-result[rel='$position']" )
 			)->click();
@@ -803,7 +803,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	}
 
 	protected function waitForSearchAutocomplete() {
-		return function ( $webDriver ) {
+		return static function ( $webDriver ) {
 			$webDriver->wait()->until(
 				WebDriverExpectedCondition::presenceOfElementLocated(
 					WebDriverBy::cssSelector( '.mw-widget-searchWidget-menu a' )
@@ -813,7 +813,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	}
 
 	protected function typeIntoSearchAutocomplete( $chars ) {
-		return function ( $webDriver ) use ( $chars ) {
+		return static function ( $webDriver ) use ( $chars ) {
 			$webDriver->findElement( WebDriverBy::cssSelector(
 				'#searchText input.oo-ui-inputWidget-input'
 			) )->sendKeys( $chars );
@@ -826,7 +826,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	 * @return callable
 	 */
 	protected function clickDidYouMeanSuggestion() {
-		return function ( $webDriver ) {
+		return static function ( $webDriver ) {
 			$webDriver->findElement( WebDriverBy::cssSelector(
 				'#mw-search-DYM-suggestion'
 			) )->click();
@@ -840,7 +840,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	 * @return callable
 	 */
 	protected function clickDidYouMeanRewritten() {
-		return function ( $webDriver ) {
+		return static function ( $webDriver ) {
 			$webDriver->findElement( WebDriverBy::cssSelector(
 				'#mw-search-DYM-rewritten'
 			) )->click();
@@ -854,7 +854,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	 * @return callable
 	 */
 	protected function clickDidYouMeanOriginal() {
-		return function ( $webDriver ) {
+		return static function ( $webDriver ) {
 			$webDriver->findElement( WebDriverBy::cssSelector(
 				'#mw-search-DYM-original'
 			) )->click();
@@ -880,7 +880,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	}
 
 	protected function clickSearchResult( $position ) {
-		return function ( $webDriver ) use ( $position ) {
+		return static function ( $webDriver ) use ( $position ) {
 			$webDriver->findElement(
 				WebDriverBy::cssSelector( "*[data-serp-pos='$position']" )
 			)->click();
@@ -896,7 +896,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	}
 
 	protected function clickRedirectSearchResult( $position ) {
-		return function ( $webDriver ) use ( $position ) {
+		return static function ( $webDriver ) use ( $position ) {
 			$webDriver->findElement( WebDriverBy::cssSelector(
 				"*[data-serp-pos='$position'] ~ span a.mw-redirect"
 			) )->click();
@@ -912,7 +912,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	}
 
 	protected function clickAltTitleSearchResult( $position ) {
-		return function ( $webDriver ) use ( $position ) {
+		return static function ( $webDriver ) use ( $position ) {
 			$webDriver->findElement( WebDriverBy::cssSelector(
 				"[data-serp-pos='$position'] ~ span.searchalttitle a"
 			) )->click();
@@ -928,7 +928,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	}
 
 	protected function clickSkinAutocompleteContaining() {
-		return function ( $webDriver ) {
+		return static function ( $webDriver ) {
 			$webDriver->findElement(
 				WebDriverBy::cssSelector( '.suggestions .special-label' )
 			)->click();
@@ -936,7 +936,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	}
 
 	protected function clickMagnifyingGlass() {
-		return function ( $webDriver ) {
+		return static function ( $webDriver ) {
 			$webDriver->findElement(
 				WebDriverBy::id( 'searchButton' )
 			)->click();
@@ -950,13 +950,13 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	}
 
 	protected function clickBackButton() {
-		return function ( $webDriver ) {
+		return static function ( $webDriver ) {
 			$webDriver->navigate()->back();
 		};
 	}
 
 	protected function sleep( $length ) {
-		return function () use ( $length ) {
+		return static function () use ( $length ) {
 			sleep( $length );
 		};
 	}

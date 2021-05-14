@@ -19,7 +19,7 @@ class AuthManagerStatsdHandlerTest extends MediaWikiTestCase {
 		$stats = $this->createMock( IBufferingStatsdDataFactory::class );
 		$this->setService( 'StatsdDataFactory', $stats );
 		$handler = $this->getMockBuilder( AuthManagerStatsdHandler::class )
-			->setMethods( [ 'getEntryPoint' ] )->getMock();
+			->onlyMethods( [ 'getEntryPoint' ] )->getMock();
 		$handler->expects( $this->any() )->method( 'getEntryPoint' )->willReturn( null );
 
 		if ( $expectedKey === null ) {
