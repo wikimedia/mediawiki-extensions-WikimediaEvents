@@ -22,28 +22,8 @@
 /* eslint-disable max-len, no-shadow, no-jquery/no-global-selector */
 'use strict';
 
-var search, autoComplete, session, initSubTest, cirrusUserTestingParam,
+var search, autoComplete, session,
 	isSearchResultPage = mw.config.get( 'wgIsSearchResultPage' ),
-	enabledBackendTests = mw.config.get( 'wgCirrusSearchBackendUserTests', [] ),
-	/**
-	 * valid buckets format is:
-	 * {
-	 *   trigger1: "backend_test_name1:backend_bucket_name1"
-	 *   trigger2: "backend_test_name2:backend_bucket_name2"
-	 * }
-	 * To be valid and when on isSearchResultPage the corresponding backend test and bucket name pair must be
-	 * matched in the array returned in wgCirrusSearchBackendUserTests.
-	 * If the actual subTest stored in an existing session:
-	 * - does not exist in validBuckets the subTest is tagged as "invalid"
-	 * - (when on the search results page) does not match any of the enabledBackendTests the subTest is tagged as "mismatch"
-	 */
-	validBuckets = {},
-	wikisInSubtest = {
-		// Provides a place to handle wiki-specific sub-test
-		// handling. Must be a map from wiki dbname to % of
-		// requests that should be split between validBuckets.
-	},
-
 	uri = ( function () {
 		try {
 			return new mw.Uri( location.href );
@@ -67,18 +47,6 @@ var search, autoComplete, session, initSubTest, cirrusUserTestingParam,
 // bail out if the URI could not be created
 if ( uri === null ) {
 	return;
-}
-
-/**
- * Test if a subTest is valid (not a mismatch nor invalid)
- * mismatch: session has seen a backend request enabling test A while frontend had chosen test B
- * invalid: session holds a probably stale value no long present in the validBuckets
- *
- * @param {string} subTest
- * @return {boolean}
- */
-function isValidSubtest( subTest ) {
-	return !!( subTest && subTest !== 'mismatch' && subTest !== 'invalid' );
 }
 
 function extractResultPosition( uri, wprovPrefix ) {
@@ -118,18 +86,8 @@ autoComplete = initFromWprov( 'acrw1_' );
 autoComplete.cameFromAutocomplete = uri.query.wprov === 'acrw1';
 
 // Cleanup the location bar in supported browsers.
-if ( window.history.replaceState && ( uri.query.wprov || uri.query.cirrusUserTesting ) ) {
+if ( window.history.replaceState && uri.query.wprov ) {
 	delete uri.query.wprov;
-	if ( uri.query.cirrusUserTesting ) {
-		cirrusUserTestingParam = uri.query.cirrusUserTesting;
-		delete uri.query.cirrusUserTesting;
-		// Re-attach removed cirrusUserTesting param so that hitting the back button will recover
-		// the same test bucket
-		window.addEventListener( 'unload', function () {
-			uri.query.cirrusUserTesting = cirrusUserTestingParam;
-			window.history.replaceState( {}, '', uri.toString() );
-		} );
-	}
 	window.history.replaceState( {}, '', uri.toString() );
 }
 
@@ -167,13 +125,23 @@ function SessionState() {
 	 */
 	function initialize( session ) {
 
+		/**
+		 * Transform backend reported subTest into local value
+		 *
+		 * The backend always returns a string for the active user test. When
+		 * no test is active that returns the empty string. To keep everything
+		 * very explicit transform the empty string into a specific marker.
+		 *
+		 * @param {string} val Backend reported active user test
+		 * @return {string}
+		 */
+		function resolveSubTest( val ) {
+			return val === '' ? 'inactive' : val;
+		}
+
 		var subTest, sessionId = session.get( 'sessionId' ),
-			sampleSize = {
-				// % of sessions to sample
-				test: 1,
-				// % of sampled sessions to divide between `validBuckets`
-				subTest: wikisInSubtest[ mw.config.get( 'wgDBname' ) ] || null
-			},
+			// % of sessions to sample
+			sampleSize = 1,
 			/**
 			 * Return true for `percentAccept` percentage of calls
 			 *
@@ -187,24 +155,6 @@ function SessionState() {
 					// integer precision
 					parsed = parseInt( rand.slice( 0, 13 ), 16 );
 				return parsed / Math.pow( 2, 52 ) < percentAccept;
-			},
-			/**
-			 * Choose a single bucket from a list of buckets with even
-			 * distribution
-			 *
-			 * @param {string[]} buckets
-			 * @return {string}
-			 * @private
-			 */
-			chooseBucket = function ( buckets ) {
-				var rand = mw.user.generateRandomSessionId(),
-					// take the first 52 bits of the rand value to match js
-					// integer precision
-					parsed = parseInt( rand.slice( 0, 13 ), 16 ),
-					// step size between buckets. No -1 on pow or the maximum
-					// value would be past the end.
-					step = Math.pow( 2, 52 ) / buckets.length;
-				return buckets[ Math.floor( parsed / step ) ];
 			};
 
 		if ( sessionId === 'rejected' ) {
@@ -213,7 +163,7 @@ function SessionState() {
 		}
 		// If a sessionId exists the user was previously accepted into the test
 		if ( !sessionId ) {
-			if ( !takeSample( sampleSize.test ) ) {
+			if ( !takeSample( sampleSize ) ) {
 				// user was not chosen in a sampling of search results
 				session.set( 'sessionId', 'rejected' );
 				return;
@@ -224,21 +174,43 @@ function SessionState() {
 				return;
 			}
 
-			session.set( 'sampleMultiplier', 1 / sampleSize.test );
-
-			if ( sampleSize.subTest !== null && takeSample( sampleSize.subTest ) ) {
-				session.set( 'subTest', chooseBucket( Object.keys( validBuckets ) ) );
-			}
+			session.set( 'sampleMultiplier', 1 / sampleSize );
 		}
 
 		subTest = session.get( 'subTest' );
-		if ( isValidSubtest( subTest ) ) {
-			if ( !Object.prototype.hasOwnProperty.call( validBuckets, subTest ) ) {
-				// invalid or obsolete bucket
-				session.set( 'subTest', 'invalid' );
-			} else if ( isSearchResultPage && enabledBackendTests.indexOf( validBuckets[ subTest ] ) === -1 ) {
-				// mismatch between backend and frontend test, it might happen if the user
-				// triggered the backend test manually or followed a link to Special:Search results
+		// null means we didn't store anything yet, pending means another
+		// page load tried but hasn't set the value.
+		if ( subTest === null || subTest === 'pending' ) {
+			subTest = mw.config.get( 'wgCirrusSearchActiveUserTest' );
+			if ( subTest !== null ) {
+				// Session starting at Special:Search has the value available
+				session.set( 'subTest', resolveSubTest( subTest ) );
+			} else {
+				// Other starting points, such as autocomplete, have to fetch
+				// the trigger. Mark the pending state so events can be sent
+				// with an appropriate marker instead of masquerading as no
+				// activated test.
+				session.set( 'subTest', 'pending' );
+				new mw.Api().get( {
+					formatversion: 2,
+					action: 'cirrus-config-dump',
+					prop: 'usertesting'
+				} ).then( function ( data ) {
+					session.set( 'subTest', resolveSubTest( data.CirrusSearchActiveUserTest ) );
+				} );
+			}
+		} else if ( mw.config.exists( 'wgCirrusSearchActiveUserTest' ) ) {
+			// We have a stored test and the backend is reporting the test
+			// used. We require a single session to have a constant sub test,
+			// if somehow that is not the case report it. This may happen due
+			// to bugs, but also is expected for active sessions when a new
+			// test is deployed. In practice this value is only available on
+			// Special:Search.
+			if ( subTest !== resolveSubTest( mw.config.get( 'wgCirrusSearchActiveUserTest' ) ) ) {
+				// Ideally we should log the inputs to the inequality, but
+				// indirectly the right side can be looked up from the
+				// searchToken in cirrus events and the left side from earlier
+				// events in this session.
 				session.set( 'subTest', 'mismatch' );
 			}
 		}
@@ -373,8 +345,9 @@ function genLogEventFn( source, session, sourceExtraData ) {
 		lastScrollTop = scrollTop;
 
 		subTest = session.get( 'subTest' );
-		if ( subTest ) {
-			evt.subTest = validBuckets[ subTest ] || subTest;
+		// Schema expects no subTest value to be provided when no test is active.
+		if ( subTest !== 'inactive' ) {
+			evt.subTest = subTest;
 		}
 
 		if ( session.get( 'sampleMultiplier' ) ) {
@@ -731,24 +704,6 @@ function atMostOnce( fn ) {
 	};
 }
 
-// This could be called both by autocomplete and full
-// text setup, so wrap in atMostOnce to ensure it's
-// only run once.
-initSubTest = atMostOnce( function ( session ) {
-	var subTest = session.get( 'subTest' );
-	if ( isValidSubtest( subTest ) ) {
-		$( '<input>' ).attr( {
-			type: 'hidden',
-			name: 'cirrusUserTesting',
-			value: subTest
-		} ).prependTo( $( 'input[type=search]' ).closest( 'form' ) );
-
-		$( '.mw-prevlink, .mw-nextlink, .mw-numlink' ).attr( 'href', function ( i, href ) {
-			return href + '&cirrusUserTesting=' + subTest;
-		} );
-	}
-} );
-
 /**
  * Delay session initialization as late in the
  * process as possible, but only do it once.
@@ -759,7 +714,6 @@ function setup( fn ) {
 	session = session || new SessionState();
 
 	if ( session.isActive() ) {
-		initSubTest( session );
 		fn( session );
 	}
 }
