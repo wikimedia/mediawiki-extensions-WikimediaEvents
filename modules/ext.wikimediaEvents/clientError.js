@@ -359,6 +359,18 @@ function shouldLog( descriptor ) {
  * @param {ErrorDescriptor} descriptor
  */
 function log( intakeURL, descriptor ) {
+	var host = location.host,
+		protocol = location.protocol,
+		search = location.search,
+		hash = location.hash,
+		canonicalName = mw.config.get( 'wgCanonicalSpecialPageName' ),
+		url = canonicalName ?
+			// T266504: Rewrites URL to canonical name to allow grouping.
+			// note: if URL is in form `<host>/w/index.php?title=Spécial:Préférences` this will be converted to
+			// "<host>/wiki/Special:Preferences?title=Sp%C3%A9cial:Pr%C3%A9f%C3%A9rences"
+			protocol + '//' + host + mw.util.getUrl( 'Special:' + canonicalName ) + search + hash :
+			location.href;
+
 	navigator.sendBeacon( intakeURL, JSON.stringify( {
 		meta: {
 			// Name of the stream
@@ -377,7 +389,7 @@ function log( intakeURL, descriptor ) {
 		// eslint-disable-next-line camelcase
 		file_url: descriptor.fileUrl,
 		// URL of the web page.
-		url: location.href,
+		url: url,
 		// Normalized stack trace string
 		// We log undefined rather than empty string (consistent with file_url) to allow for filtering.
 		// eslint-disable-next-line camelcase
