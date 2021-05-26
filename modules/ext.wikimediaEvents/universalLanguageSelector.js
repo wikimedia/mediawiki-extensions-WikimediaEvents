@@ -47,6 +47,25 @@ function onShow() {
 
 // ---
 
+var skin = mw.config.get( 'skin' ),
+	skinVersion;
+
+/**
+ * @returns {string|null} If the user is using the Vector skin, then `'legacy'` or `'latest'`;
+ *  `null` otherwise
+ */
+function getSkinVersion() {
+	if ( skinVersion === undefined ) {
+		if ( skin === 'vector' ) {
+			skinVersion = document.body.classList.contains( 'skin-vector-legacy' ) ? 'legacy' : 'latest';
+		} else {
+			skinVersion = null;
+		}
+	}
+
+	return skinVersion;
+}
+
 /**
  * Try to emit an EventLogging event with schema 'UniversalLanguageSelector'.
  *
@@ -66,7 +85,7 @@ function log( event ) {
 		// backwards incompatible changes may cause issues with the Hive ingestion process (see
 		// the discussion on https://gerrit.wikimedia.org/r/c/schemas/event/secondary/+/668743 for
 		// detail).
-		version: 2,
+		version: 3,
 		token: '',
 
 		// ---
@@ -80,7 +99,10 @@ function log( event ) {
 		// https://schema.wikimedia.org/repositories/secondary/jsonschema/fragment/analytics/web_identifiers/current.yaml.
 		web_session_id: mw.user.sessionId(), // eslint-disable-line camelcase
 
-		isAnon: mw.user.isAnon()
+		isAnon: mw.user.isAnon(),
+
+		skin: skin,
+		skinVersion: getSkinVersion()
 	}, event );
 
 	userEditBucket = mw.config.get( 'wgUserEditCountBucket' );
@@ -105,9 +127,15 @@ function ulsSettingsOpen( context ) {
 
 /**
  * Log when the compact language links treatment is opened.
+ *
+ * @param {jQuery} $trigger The element that triggered the opening of the compact language links
+ *  dialog
  */
-function ulsCompactLanguageLinksOpen() {
-	log( { action: 'compact-language-links-open' } );
+function ulsCompactLanguageLinksOpen( $trigger ) {
+	log( {
+		action: 'compact-language-links-open',
+		context: skin === 'vector' && $trigger.is( '#p-lang-btn-label' ) ? 'header' : 'other'
+	} );
 }
 
 /**
