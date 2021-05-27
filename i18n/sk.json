@@ -1,9 +1,0 @@
-{
-	"@metadata": {
-		"authors": [
-			"Sudo77(new)",
-			"Teslaton"
-		]
-	},
-	"tag-HHVM-description": "Úpravy, obslúžené pomocou HipHop Virtual Machine namiesto PHP interpréteru Zend (očekávaný zvýšený výkon, označené pre ladenie/analýzu)"
-}

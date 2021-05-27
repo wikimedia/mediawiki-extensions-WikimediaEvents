@@ -1,9 +1,0 @@
-{
-	"@metadata": {
-		"authors": [
-			"PiefPafPier"
-		]
-	},
-	"tag-HHVM-description": "Ferzjes makke mei de HipHop-firtuele masine ynskeakele yn stee fan de Zend PHP-ynterpretearder (bettere prestaasjes fan ferwachte, lebele foar flateropspoaring/analyze)",
-	"tag-php7-description": "Ferzjes makke mei PHP7 ynskeakele yn stee fan HHVM (bettere prestaasjes fan ferwachte, lebele foar flateropspoaring/analyze)"
-}

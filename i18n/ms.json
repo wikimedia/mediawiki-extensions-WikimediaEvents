@@ -1,8 +1,0 @@
-{
-	"@metadata": {
-		"authors": [
-			"Anakmalaysia"
-		]
-	},
-	"tag-HHVM-description": "Semakan yang dilakukan dengan menghidupkan HipHop Virtual Machine sebagai ganti untuk pentafsir Zend PHP (yang dijangka meningkatkan prestasi, diteg untuk penyahpepijatan/analisis)"
-}
