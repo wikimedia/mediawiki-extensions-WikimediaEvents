@@ -103,10 +103,8 @@ function SessionState() {
 		storageNamespace = 'wmE-sS-',
 		// persistent state keys that have a lifetime. unlisted
 		// keys are not persisted between page loads.
-		ttl = {
-			sessionId: 10 * 60 * 1000,
-			subTest: 10 * 60 * 1000
-		};
+		ttl = 10 * 60 * 1000,
+		persist = [ 'sessionId', 'subTest' ];
 
 	/**
 	 * Generates a cache key specific to this session and key type.
@@ -119,12 +117,25 @@ function SessionState() {
 	}
 
 	/**
+	 * Invalidate current session, if any.
+	 */
+	function invalidate() {
+		// todo: send an end-session event or something?
+		state = {};
+		mw.storage.remove( key( '__EndTime__' ) );
+		persist.forEach( function ( type ) {
+			mw.storage.remove( key( type ) );
+		} );
+	}
+
+	/**
 	 * Initializes the session.
 	 *
 	 * @param {SessionState} session
 	 * @private
 	 */
 	function initialize( session ) {
+		var subTest;
 
 		/**
 		 * Transform backend reported subTest into local value
@@ -140,13 +151,27 @@ function SessionState() {
 			return val === '' ? 'inactive' : val;
 		}
 
-		var subTest = session.get( 'subTest' ),
-			sessionId = session.get( 'sessionId' );
+		function startSession() {
+			invalidate();
+			return mw.storage.set( key( '__EndTime__' ), Date.now() + ttl ) &&
+				mw.storage.set( key( 'sessionId' ), randomToken() );
+		}
 
-		// If user does not yet have a session id, generate one. Bail if we
-		// can't persist in storage, they would otherwise log a new session
-		// every page load.
-		if ( !sessionId && !session.set( 'sessionId', randomToken() ) ) {
+		function set( type, value ) {
+			if ( persist.indexOf( type ) >= 0 ) {
+				if ( !mw.storage.set( key( type ), value ) ) {
+					return false;
+				}
+			}
+			state[ type ] = value;
+			return true;
+		}
+
+		// When there is no active session clear any lingering state and
+		// start a new session. Bail if we can't persist in storage, they
+		// would otherwise log a new session every page load.
+		if ( !session.isActive() && !startSession() ) {
+			invalidate();
 			return;
 		}
 
@@ -157,19 +182,19 @@ function SessionState() {
 			subTest = mw.config.get( 'wgCirrusSearchActiveUserTest' );
 			if ( subTest !== null ) {
 				// Session starting at Special:Search has the value available
-				session.set( 'subTest', resolveSubTest( subTest ) );
+				set( 'subTest', resolveSubTest( subTest ) );
 			} else {
 				// Other starting points, such as autocomplete, have to fetch
 				// the trigger. Mark the pending state so events can be sent
 				// with an appropriate marker instead of masquerading as no
 				// activated test.
-				session.set( 'subTest', 'pending' );
+				set( 'subTest', 'pending' );
 				new mw.Api().get( {
 					formatversion: 2,
 					action: 'cirrus-config-dump',
 					prop: 'usertesting'
 				} ).then( function ( data ) {
-					session.set( 'subTest', resolveSubTest( data.CirrusSearchActiveUserTest ) );
+					set( 'subTest', resolveSubTest( data.CirrusSearchActiveUserTest ) );
 				} );
 			}
 		} else if ( mw.config.exists( 'wgCirrusSearchActiveUserTest' ) ) {
@@ -177,44 +202,31 @@ function SessionState() {
 			// used. We require a single session to have a constant sub test,
 			// if somehow that is not the case report it. This may happen due
 			// to bugs, but also is expected for active sessions when a new
-			// test is deployed. In practice this value is only available on
+			// test is (un)deployed. In practice this value is only available on
 			// Special:Search.
 			if ( subTest !== resolveSubTest( mw.config.get( 'wgCirrusSearchActiveUserTest' ) ) ) {
 				// Ideally we should log the inputs to the inequality, but
 				// indirectly the right side can be looked up from the
 				// searchToken in cirrus events and the left side from earlier
 				// events in this session.
-				session.set( 'subTest', 'mismatch' );
+				set( 'subTest', 'mismatch' );
 			}
 		}
 
 		// Unique token per page load to know which events occurred
 		// within the exact same page.
-		session.set( 'pageViewId', randomToken() );
+		set( 'pageViewId', randomToken() );
 	}
 
 	this.isActive = function () {
-		var sessionId = this.get( 'sessionId' );
-		return sessionId && sessionId !== 'rejected';
-	};
-
-	this.has = function ( type ) {
-		return this.get( type ) !== null;
+		var end = +mw.storage.get( key( '__EndTime__' ) );
+		return end > Date.now() && this.get( 'sessionId' ) !== null;
 	};
 
 	this.get = function ( type ) {
-		var endTime, now;
 		if ( !hasOwn.call( state, type ) ) {
-			if ( hasOwn.call( ttl, type ) ) {
-				endTime = +mw.storage.get( key( type + 'EndTime' ) );
-				now = Date.now();
-				if ( endTime && endTime > now ) {
-					state[ type ] = mw.storage.get( key( type ) );
-				} else {
-					mw.storage.remove( key( type ) );
-					mw.storage.remove( key( type + 'EndTime' ) );
-					state[ type ] = null;
-				}
+			if ( persist.indexOf( type ) >= 0 ) {
+				state[ type ] = mw.storage.get( key( type ) );
 			} else {
 				state[ type ] = null;
 			}
@@ -222,27 +234,11 @@ function SessionState() {
 		return state[ type ];
 	};
 
-	this.set = function ( type, value ) {
-		var now;
-		if ( hasOwn.call( ttl, type ) ) {
-			now = Date.now();
-			if ( !mw.storage.set( key( type + 'EndTime' ), now + ttl[ type ] ) ) {
-				return false;
-			}
-			if ( !mw.storage.set( key( type ), value ) ) {
-				mw.storage.remove( key( type + 'EndTime' ) );
-				return false;
-			}
-		}
-		state[ type ] = value;
-		return true;
-	};
-
-	this.refresh = function ( type ) {
-		var now;
-		if ( this.isActive() && hasOwn.call( ttl, type ) && this.has( type ) ) {
-			now = Date.now();
-			mw.storage.set( key( type + 'EndTime' ), now + ttl[ type ] );
+	this.refresh = function () {
+		if ( this.isActive() ) {
+			mw.storage.set( key( '__EndTime__' ), Date.now() + ttl );
+		} else {
+			invalidate();
 		}
 	};
 
@@ -479,8 +475,7 @@ function setupSearchTest( session ) {
 
 	if ( isSearchResultPage ) {
 		// When a new search is performed reset the session lifetime.
-		session.refresh( 'sessionId' );
-		session.refresh( 'subTest' );
+		session.refresh();
 
 		// Standard did you mean suggestion when the user gets results for
 		// their original query
@@ -582,15 +577,15 @@ function setupSearchTest( session ) {
 function setupAutocompleteTest( session ) {
 	var lastSearchId,
 		logEvent = genLogEventFn( 'autocomplete', session, {} ),
+		autocompleteStart = null,
 		track = function ( topic, data ) {
 			var $wprov, params;
 
 			if ( data.action === 'session-start' ) {
-				session.set( 'autocompleteStart', Date.now() );
+				autocompleteStart = Date.now();
 			} else if ( data.action === 'impression-results' ) {
 				// When a new search is performed reset the session lifetime.
-				session.refresh( 'sessionId' );
-				session.refresh( 'subTest' );
+				session.refresh();
 
 				// run every time an autocomplete result is shown
 				params = {
@@ -605,8 +600,8 @@ function setupAutocompleteTest( session ) {
 				} else {
 					lastSearchId = null;
 				}
-				if ( session.has( 'autocompleteStart' ) ) {
-					params.msToDisplayResults = Math.round( Date.now() - session.get( 'autocompleteStart' ) );
+				if ( autocompleteStart !== null ) {
+					params.msToDisplayResults = Math.round( Date.now() - autocompleteStart );
 				}
 				logEvent( 'searchResultPage', params );
 			} else if ( data.action === 'render-one' ) {
