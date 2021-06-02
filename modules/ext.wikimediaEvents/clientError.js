@@ -388,31 +388,33 @@ function log( intakeURL, descriptor ) {
 }
 
 /**
- * Install a subscriber for global errors that will log an event.
- *
- * The diagnostic event is built from the Error object that the browser
- * provides via window.onerror when the error occurs.
+ * Install a subscriber for Javascript errors that sends them to some
+ * logging server.
  *
  * @param {string} intakeURL Where to POST the error event
  */
 function install( intakeURL ) {
-	// We indirectly capture browser errors by subscribing to the
+	// Capture errors which were logged manually via
+	// mw.errorLogger.logError( <error>, <topic> )
+	[ 'error.vue', 'error.growthexperiments' ].forEach( function ( topic ) {
+		mw.trackSubscribe( topic, function ( _, error ) {
+			var descriptor = processErrorInstance( error );
+
+			if ( shouldLog( descriptor ) ) {
+				log( intakeURL, descriptor );
+			}
+		} );
+	} );
+
+	// We capture unhandled Javascript errors by subscribing to the
 	// 'global.error' topic.
 	//
 	// For more information, see mediawiki.errorLogger.js in MediaWiki,
 	// which is responsible for directly handling the browser's
-	// global.onerror events events and producing equivalent messages to
+	// window.onerror events and producing equivalent messages to
 	// the 'global.error' topic.
 	mw.trackSubscribe( 'global.error', function ( _, obj ) {
 		var descriptor = processErrorLoggerObject( obj );
-
-		if ( shouldLog( descriptor ) ) {
-			log( intakeURL, descriptor );
-		}
-	} );
-
-	mw.trackSubscribe( 'error.vue', function ( _, error ) {
-		var descriptor = processErrorInstance( error );
 
 		if ( shouldLog( descriptor ) ) {
 			log( intakeURL, descriptor );
