@@ -1,6 +1,8 @@
 /*!
  * JavaScript module for measuring internal search bounce rate and dwell time.
  *
+ * See also docs/user_testing.md in CirrusSearch
+ *
  * Utilizes two wprov query string formats:
  * - serp:N - This indicates the link was visited directly from a SERP. N is
  *   a positive integer indicating the position of this page within the results.
@@ -23,6 +25,7 @@
 'use strict';
 
 var search, autoComplete, session,
+	hasOwn = Object.prototype.hasOwnProperty,
 	isSearchResultPage = mw.config.get( 'wgIsSearchResultPage' ),
 	uri = ( function () {
 		try {
@@ -40,7 +43,7 @@ var search, autoComplete, session,
 		dymr1: 'dym-rewritten',
 		dymo1: 'dym-original'
 	},
-	// some browsers can't do Object.keys properly, so manually maintain the list
+	// some browsers (IE11) can't do Object.keys, so manually maintain the list
 	didYouMeanList = [ 'dym1', 'dymr1', 'dymo1' ],
 	skin = mw.config.get( 'skin' );
 
@@ -101,10 +104,8 @@ function SessionState() {
 		// persistent state keys that have a lifetime. unlisted
 		// keys are not persisted between page loads.
 		ttl = {
-			sampleMultiplier: 10 * 60 * 1000,
 			sessionId: 10 * 60 * 1000,
-			subTest: 10 * 60 * 1000,
-			token: 24 * 60 * 60 * 1000
+			subTest: 10 * 60 * 1000
 		};
 
 	/**
@@ -139,42 +140,14 @@ function SessionState() {
 			return val === '' ? 'inactive' : val;
 		}
 
-		var subTest, sessionId = session.get( 'sessionId' ),
-			// % of sessions to sample
-			sampleSize = 1,
-			/**
-			 * Return true for `percentAccept` percentage of calls
-			 *
-			 * @param {number} percentAccept
-			 * @return {boolean}
-			 * @private
-			 */
-			takeSample = function ( percentAccept ) {
-				var rand = mw.user.generateRandomSessionId(),
-					// take the first 52 bits of the rand value to match js
-					// integer precision
-					parsed = parseInt( rand.slice( 0, 13 ), 16 );
-				return parsed / Math.pow( 2, 52 ) < percentAccept;
-			};
+		var subTest = session.get( 'subTest' ),
+			sessionId = session.get( 'sessionId' );
 
-		if ( sessionId === 'rejected' ) {
-			// User was previously rejected
+		// If user does not yet have a session id, generate one. Bail if we
+		// can't persist in storage, they would otherwise log a new session
+		// every page load.
+		if ( !sessionId && !session.set( 'sessionId', randomToken() ) ) {
 			return;
-		}
-		// If a sessionId exists the user was previously accepted into the test
-		if ( !sessionId ) {
-			if ( !takeSample( sampleSize ) ) {
-				// user was not chosen in a sampling of search results
-				session.set( 'sessionId', 'rejected' );
-				return;
-			}
-			// User was chosen to participate in the test and does not yet
-			// have a search session id, generate one.
-			if ( !session.set( 'sessionId', randomToken() ) ) {
-				return;
-			}
-
-			session.set( 'sampleMultiplier', 1 / sampleSize );
 		}
 
 		subTest = session.get( 'subTest' );
@@ -231,8 +204,8 @@ function SessionState() {
 
 	this.get = function ( type ) {
 		var endTime, now;
-		if ( !Object.prototype.hasOwnProperty.call( state, type ) ) {
-			if ( Object.prototype.hasOwnProperty.call( ttl, type ) ) {
+		if ( !hasOwn.call( state, type ) ) {
+			if ( hasOwn.call( ttl, type ) ) {
 				endTime = +mw.storage.get( key( type + 'EndTime' ) );
 				now = Date.now();
 				if ( endTime && endTime > now ) {
@@ -251,7 +224,7 @@ function SessionState() {
 
 	this.set = function ( type, value ) {
 		var now;
-		if ( Object.prototype.hasOwnProperty.call( ttl, type ) ) {
+		if ( hasOwn.call( ttl, type ) ) {
 			now = Date.now();
 			if ( !mw.storage.set( key( type + 'EndTime' ), now + ttl[ type ] ) ) {
 				return false;
@@ -267,7 +240,7 @@ function SessionState() {
 
 	this.refresh = function ( type ) {
 		var now;
-		if ( this.isActive() && Object.prototype.hasOwnProperty.call( ttl, type ) && mw.storage.get( key( type ) ) !== null ) {
+		if ( this.isActive() && hasOwn.call( ttl, type ) && this.has( type ) ) {
 			now = Date.now();
 			mw.storage.set( key( type + 'EndTime' ), now + ttl[ type ] );
 		}
@@ -327,13 +300,19 @@ function genLogEventFn( source, session, sourceExtraData ) {
 				scroll: scrollTop !== lastScrollTop,
 				// mediawiki session id to correlate with other schemas,
 				// such as QuickSurvey
+				// TODO: Is this still used? Can it be removed to restore
+				// the separation between sessions?
 				mwSessionId: mw.user.sessionId(),
 				// unique event identifier to filter duplicate events. In
 				// testing these primarily come from browsers without
 				// sendBeacon using our extended event log implementation.
 				// Depending on speed of the network the request may or may
 				// not get completed before page unload
-				uniqueId: randomToken()
+				uniqueId: randomToken(),
+				// reports the inverse sampling rate when this was taken. Currently
+				// no sampling is being done.
+				// TODO: Current downstream processing expects this, deprecate?
+				sampleMultiplier: 1.0
 			};
 
 		// Allow checkin events to fire after the session closes, as those
@@ -348,10 +327,6 @@ function genLogEventFn( source, session, sourceExtraData ) {
 		// Schema expects no subTest value to be provided when no test is active.
 		if ( subTest !== 'inactive' ) {
 			evt.subTest = subTest;
-		}
-
-		if ( session.get( 'sampleMultiplier' ) ) {
-			evt.sampleMultiplier = parseFloat( session.get( 'sampleMultiplier' ) );
 		}
 
 		if ( articleId > 0 ) {
@@ -525,6 +500,7 @@ function setupSearchTest( session ) {
 			search.wprovPrefix + 'dymo1'
 		) );
 
+		// Clicks in search results and dym (did you mean, a form of suggested queries)
 		$( '#mw-content-text' ).on(
 			'click',
 			'.mw-search-result a, #mw-search-DYM-suggestion, #mw-search-DYM-original, #mw-search-DYM-rewritten',
