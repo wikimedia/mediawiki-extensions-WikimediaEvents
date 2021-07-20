@@ -80,3 +80,11 @@ Details at <https://phabricator.wikimedia.org/T248987>.
 
 Migrated from the UniversalLanguageSwitcher extension. Details at
 <https://phabricator.wikimedia.org/T275894>.
+
+## IPInfo
+
+* Since: July 2021
+* Files: ipAddressCopyAction.js
+* Contact: Anti-Harassment Tools
+
+Details at <https://phabricator.wikimedia.org/T273021>.

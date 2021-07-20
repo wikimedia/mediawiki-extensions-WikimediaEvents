@@ -4,6 +4,7 @@ require( './statsd.js' );
 require( './deprecate.js' );
 require( './clientError.js' );
 require( './sessionTick.js' );
+require( './ipAddressCopyAction.js' );
 if ( skin === 'minerva' ) {
 	require( './mobileWebUIActions.js' );
 } else if ( skin === 'vector' ) {
