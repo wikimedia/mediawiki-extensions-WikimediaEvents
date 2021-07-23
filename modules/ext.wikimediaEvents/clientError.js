@@ -434,13 +434,13 @@ function install( intakeURL ) {
 	} );
 }
 
-if ( window.QUnit ) {
-	module.exports = {
-		getNormalizedStackTraceLines: getNormalizedStackTraceLines,
-		processErrorInstance: processErrorInstance,
-		processErrorLoggerObject: processErrorLoggerObject
-	};
-} else if (
+module.exports = {
+	getNormalizedStackTraceLines: getNormalizedStackTraceLines,
+	processErrorInstance: processErrorInstance,
+	processErrorLoggerObject: processErrorLoggerObject
+};
+
+if ( !window.QUnit &&
 	navigator.sendBeacon &&
 	moduleConfig.clientErrorIntakeURL
 ) {

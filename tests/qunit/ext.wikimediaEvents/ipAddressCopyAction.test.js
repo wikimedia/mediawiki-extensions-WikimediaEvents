@@ -3,37 +3,27 @@
 
 var instrument = require( '../../../modules/ext.wikimediaEvents/ipAddressCopyAction.js' );
 
-QUnit.module( 'ext.wikimediaEvents/ipAddressCopyAction' );
+QUnit.module( 'ext.wikimediaEvents/ipAddressCopyAction', QUnit.newMwEnvironment() );
 
 QUnit.test( 'isEnabled', function ( assert ) {
 	mw.config.set( 'wgAction', 'history' );
-
-	assert.ok( instrument.isEnabled(), 'The instrument is enabled when viewing the history of a page' );
-
-	// ---
+	assert.true( instrument.isEnabled(), 'viewing the history of a page' );
 
 	mw.config.set( 'wgAction', 'view' );
-
-	assert.notOk( instrument.isEnabled(), 'The instrument is not enabled when viewing a page' );
-
-	// ---
+	assert.false( instrument.isEnabled(), 'reading a page' );
 
 	[
 		'Recentchanges',
 		'Log',
 		'Investigate',
 		'Contributions'
-	].forEach( function ( canonicalSpecialPageName ) {
-		mw.config.set( 'wgCanonicalSpecialPageName', canonicalSpecialPageName );
-
-		assert.ok( instrument.isEnabled(), 'The instrument is enabled on Special:' + canonicalSpecialPageName );
+	].forEach( function ( specialPageName ) {
+		mw.config.set( 'wgCanonicalSpecialPageName', specialPageName );
+		assert.true( instrument.isEnabled(), 'on Special:' + specialPageName );
 	} );
 
-	// ---
-
 	mw.config.set( 'wgCanonicalSpecialPageName', 'Version' );
-
-	assert.notOk( instrument.isEnabled(), 'The instrument is not enabled for other special pages' );
+	assert.false( instrument.isEnabled(), 'on Special:Version' );
 } );
 
 QUnit.test( 'log', function ( assert ) {
@@ -41,16 +31,10 @@ QUnit.test( 'log', function ( assert ) {
 
 	mw.config.set( 'wgAction', 'view' );
 	mw.config.set( 'wgCanonicalSpecialPageName', 'Log' );
-
 	instrument.log();
-
-	assert.strictEqual( mw.track.lastCall.args[ 0 ], 'counter.IPInfo.ip-address-copy.special-log' );
-
-	// ---
+	assert.strictEqual( mw.track.lastCall.args[ 0 ], 'counter.MediaWiki.ipinfo_address_copy.special_log' );
 
 	mw.config.set( 'wgAction', 'history' );
-
 	instrument.log();
-
-	assert.strictEqual( mw.track.lastCall.args[ 0 ], 'counter.IPInfo.ip-address-copy.action-history' );
+	assert.strictEqual( mw.track.lastCall.args[ 0 ], 'counter.MediaWiki.ipinfo_address_copy.action_history' );
 } );
