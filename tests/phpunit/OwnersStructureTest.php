@@ -11,7 +11,7 @@ class OwnersStructureTest extends \PHPUnit\Framework\TestCase {
 	/** @var array */
 	private static $ownerSections;
 
-	public static function setUpBeforeClass() : void {
+	public static function setUpBeforeClass(): void {
 		// Parse the owners data and store it in an array.
 		$sections = [];
 		$lines = file( __DIR__ . '/../../OWNERS.md',  FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
@@ -41,7 +41,7 @@ class OwnersStructureTest extends \PHPUnit\Framework\TestCase {
 		self::$ownerSections = $sections;
 	}
 
-	private function getResources() : array {
+	private function getResources(): array {
 		$extension = json_decode(
 			file_get_contents( __DIR__ . '/../../extension.json' ),
 			JSON_OBJECT_AS_ARRAY

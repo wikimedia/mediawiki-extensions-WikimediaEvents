@@ -43,7 +43,7 @@ class WikimediaEventsHooks {
 	 * @param OutputPage $out
 	 * @param Skin $skin
 	 */
-	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) : void {
+	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ): void {
 		global $wgWMEUnderstandingFirstDay;
 
 		if ( $wgWMEUnderstandingFirstDay ) {
@@ -64,7 +64,7 @@ class WikimediaEventsHooks {
 	 *
 	 * @param User $user
 	 */
-	public static function onUserLogout( User $user ) : void {
+	public static function onUserLogout( User $user ): void {
 		global $wgWMEUnderstandingFirstDay;
 		if ( $wgWMEUnderstandingFirstDay ) {
 			PageViews::deferredLog( $user->getId() );
@@ -79,7 +79,7 @@ class WikimediaEventsHooks {
 	 * @param string &$redirect URL string, modifiable
 	 * @param string &$code HTTP code, modifiable
 	 */
-	public static function onBeforePageRedirect( $out, &$redirect, &$code ) : void {
+	public static function onBeforePageRedirect( $out, &$redirect, &$code ): void {
 		global $wgWMEUnderstandingFirstDay;
 		if ( $wgWMEUnderstandingFirstDay ) {
 			PageViews::deferredLog();
@@ -92,7 +92,7 @@ class WikimediaEventsHooks {
 	 * @param User $user
 	 * @param bool $autocreated
 	 */
-	public static function onLocalUserCreated( User $user, $autocreated ) : void {
+	public static function onLocalUserCreated( User $user, $autocreated ): void {
 		global $wgWMEUnderstandingFirstDay;
 		if ( $wgWMEUnderstandingFirstDay && !$autocreated ) {
 			$context = new DerivativeContext( RequestContext::getMain() );
@@ -119,7 +119,7 @@ class WikimediaEventsHooks {
 	 * @param OutputPage $out
 	 * @param array &$headerItems
 	 */
-	public static function onXAnalyticsSetHeader( OutputPage $out, array &$headerItems ) : void {
+	public static function onXAnalyticsSetHeader( OutputPage $out, array &$headerItems ): void {
 		$title = $out->getTitle();
 		if ( $title !== null && !defined( 'MW_API' ) ) {
 			$pageId = $title->getArticleID();
@@ -163,7 +163,7 @@ class WikimediaEventsHooks {
 		int $flags,
 		RevisionRecord $revisionRecord,
 		EditResult $editResult
-	) : void {
+	): void {
 		if ( PHP_SAPI === 'cli' ) {
 			return; // ignore maintenance scripts
 		}
@@ -247,7 +247,7 @@ class WikimediaEventsHooks {
 	 *
 	 * @param RevisionRecord $revRecord
 	 */
-	public static function onRevisionRecordInserted( RevisionRecord $revRecord ) : void {
+	public static function onRevisionRecordInserted( RevisionRecord $revRecord ): void {
 		// Only mainspace edits qualify
 		if ( !$revRecord->getPageAsLinkTarget()->inNamespace( NS_MAIN ) ) {
 			return;
@@ -309,7 +309,7 @@ class WikimediaEventsHooks {
 	 * @param EditPage $editPage
 	 * @param OutputPage &$out
 	 */
-	public static function onEditPageBeforeConflictDiff( EditPage $editPage, &$out ) : void {
+	public static function onEditPageBeforeConflictDiff( EditPage $editPage, &$out ): void {
 		$user = $out->getUser();
 		$title = $out->getTitle();
 
@@ -330,7 +330,7 @@ class WikimediaEventsHooks {
 	 * @param array &$vars Array of `mw.config` variables to export side-wide
 	 * @param string $skinName Current skin name
 	 */
-	public static function onResourceLoaderGetConfigVars( &$vars, $skinName ) : void {
+	public static function onResourceLoaderGetConfigVars( &$vars, $skinName ): void {
 		global $wgWMESchemaEditAttemptStepSamplingRate;
 
 		// WARNING: Do not add new entries here.
@@ -407,7 +407,7 @@ class WikimediaEventsHooks {
 	 *
 	 * @param array &$tags
 	 */
-	public static function onListDefinedTags( array &$tags ) : void {
+	public static function onListDefinedTags( array &$tags ): void {
 		if ( wfWikiID() === 'commonswiki' ) {
 			$tags[] = 'cross-wiki-upload';
 			// For A/B test
@@ -423,7 +423,7 @@ class WikimediaEventsHooks {
 	 *
 	 * @param array &$tags
 	 */
-	public static function onChangeTagsListActive( array &$tags ) : void {
+	public static function onChangeTagsListActive( array &$tags ): void {
 		if ( wfWikiID() === 'commonswiki' ) {
 			$tags[] = 'cross-wiki-upload';
 			// For A/B test
@@ -439,7 +439,7 @@ class WikimediaEventsHooks {
 	 * @param Title $title
 	 * @param string|null &$url
 	 */
-	public static function onSpecialSearchGoResult( $term, Title $title, &$url ) : void {
+	public static function onSpecialSearchGoResult( $term, Title $title, &$url ): void {
 		$request = RequestContext::getMain()->getRequest();
 
 		$wprov = $request->getRawVal( 'wprov' );
@@ -457,7 +457,7 @@ class WikimediaEventsHooks {
 	 * @param SearchResultSet $titleMatches
 	 * @param SearchResultSet $textMatches
 	 */
-	public static function onSpecialSearchResults( $term, $titleMatches, $textMatches ) : void {
+	public static function onSpecialSearchResults( $term, $titleMatches, $textMatches ): void {
 		global $wgOut;
 
 		$wgOut->addJsConfigVars( [
@@ -471,7 +471,7 @@ class WikimediaEventsHooks {
 	 *
 	 * @param RecentChange $rc
 	 */
-	public static function onRecentChangeSaveCrossWikiUpload( RecentChange $rc ) : void {
+	public static function onRecentChangeSaveCrossWikiUpload( RecentChange $rc ): void {
 		if ( !defined( 'MW_API' ) || wfWikiID() !== 'commonswiki' ) {
 			return;
 		}
@@ -506,7 +506,7 @@ class WikimediaEventsHooks {
 	 *
 	 * @param RecentChange $rc
 	 */
-	public static function onRecentChangeSaveEditCampaign( RecentChange $rc ) : void {
+	public static function onRecentChangeSaveEditCampaign( RecentChange $rc ): void {
 		global $wgWMEEditCampaigns;
 
 		if ( !defined( 'MW_API' ) ) {
@@ -526,7 +526,7 @@ class WikimediaEventsHooks {
 	/**
 	 * @param ResourceLoader $rl
 	 */
-	public static function onResourceLoaderRegisterModules( ResourceLoader $rl ) : void {
+	public static function onResourceLoaderRegisterModules( ResourceLoader $rl ): void {
 		if ( !ExtensionRegistry::getInstance()->isLoaded( 'VisualEditor' ) ) {
 			return;
 		}
@@ -566,7 +566,7 @@ class WikimediaEventsHooks {
 	 * @param array &$vars
 	 * @param OutputPage $out
 	 */
-	public static function onMakeGlobalVariablesScript( array &$vars, OutputPage $out ) : void {
+	public static function onMakeGlobalVariablesScript( array &$vars, OutputPage $out ): void {
 		global $wgWMESearchRelevancePages;
 		if ( $vars['wgAction'] === 'view' ) {
 			$articleId = $out->getTitle()->getArticleID();
@@ -633,7 +633,7 @@ class WikimediaEventsHooks {
 		$user,
 		$request,
 		$mediaWiki
-	) : void {
+	): void {
 		// Only run for dewiki
 		if ( wfWikiID() !== 'dewiki' ) {
 			return;
@@ -684,7 +684,7 @@ class WikimediaEventsHooks {
 	 *
 	 * @param array $data
 	 */
-	public static function onSpecialMuteSubmit( $data ) : void {
+	public static function onSpecialMuteSubmit( $data ): void {
 		$event = [];
 		if ( isset( $data['email-blacklist'] ) ) {
 			$event['emailsBefore'] = $data['email-blacklist']['before'];

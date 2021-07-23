@@ -53,7 +53,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	/** @var RemoteWebDriver */
 	protected $webDriver;
 
-	public function setUp() : void {
+	public function setUp(): void {
 		$browser = getenv( 'SELENIUM_BROWSER' );
 		switch ( strtolower( $browser ) ) {
 		case 'chrome':

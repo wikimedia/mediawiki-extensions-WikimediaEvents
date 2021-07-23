@@ -13,7 +13,7 @@ class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 
 	private const MOCK_TIME = '20110401080000';
 
-	public function setUp() : void {
+	public function setUp(): void {
 		parent::setUp();
 		$this->setMwGlobals( 'wgDefaultSkin', 'fallback' );
 	}

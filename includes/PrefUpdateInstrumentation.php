@@ -113,7 +113,7 @@ class PrefUpdateInstrumentation {
 		User $user,
 		array &$options,
 		array $originalOptions
-	) : void {
+	): void {
 		if ( !self::isUserInitiated() ) {
 			return;
 		}

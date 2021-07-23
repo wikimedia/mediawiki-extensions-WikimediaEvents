@@ -88,7 +88,7 @@ class VectorPrefDiffInstrumentation {
 	 * form (e.g. '1' or '2') or bool form (e.g. true or false).
 	 * @return string
 	 */
-	private static function generateSkinVersionName( $skin, $vectorSkinVersion ) : string {
+	private static function generateSkinVersionName( $skin, $vectorSkinVersion ): string {
 		// The value of `$vectorSkinVersion` can either be a string or a bool
 		// depending on whether the field's `getDefault` method or
 		// `loadDataFromRequest` method is called. [1] The `getDefault` method can
@@ -126,7 +126,7 @@ class VectorPrefDiffInstrumentation {
 		array $formData,
 		HTMLForm $form,
 		User $user
-	) : ?array {
+	): ?array {
 		$salt = MediaWikiServices::getInstance()->getMainConfig()->get( self::SALT_CONFIG_KEY );
 		// Exit early if preconditions aren't met.
 		if ( !(
