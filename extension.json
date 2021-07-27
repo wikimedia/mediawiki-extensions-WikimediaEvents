@@ -10,7 +10,7 @@
 	"descriptionmsg": "wikimediaevents-desc",
 	"license-name": "GPL-2.0-or-later",
 	"requires": {
-		"MediaWiki": ">= 1.36.0",
+		"MediaWiki": ">= 1.37.0",
 		"extensions": {
 			"EventLogging": "*"
 		}
@@ -29,7 +29,7 @@
 		"BeforePageDisplay": "WikimediaEvents\\WikimediaEventsHooks::onBeforePageDisplay",
 		"PageSaveComplete": "WikimediaEvents\\WikimediaEventsHooks::onPageSaveComplete",
 		"PreferencesFormPreSave": "WikimediaEvents\\VectorPrefDiffInstrumentation::onPreferencesFormPreSave",
-		"UserSaveOptions": "WikimediaEvents\\PrefUpdateInstrumentation::onUserSaveOptions",
+		"SaveUserOptions": "WikimediaEvents\\PrefUpdateInstrumentation::onSaveUserOptions",
 		"ArticleViewHeader": "WikimediaEvents\\WikimediaEventsHooks::onArticleViewHeader",
 		"EditPageBeforeConflictDiff": "WikimediaEvents\\WikimediaEventsHooks::onEditPageBeforeConflictDiff",
 		"ResourceLoaderGetConfigVars": "WikimediaEvents\\WikimediaEventsHooks::onResourceLoaderGetConfigVars",

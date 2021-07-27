@@ -6,6 +6,7 @@ use EventLogging;
 use FormatJson;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\User\UserIdentity;
 use MWTimestamp;
 use RequestContext;
 use RuntimeException;
@@ -103,15 +104,15 @@ class PrefUpdateInstrumentation {
 	 * to store user preferences.
 	 *
 	 * @see https://meta.wikimedia.org/wiki/Schema:PrefUpdate
-	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/UserSaveOptions
+	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/SaveUserOptions
 	 *
-	 * @param User $user The user whose options are being saved
-	 * @param array &$options The options being saved
+	 * @param UserIdentity $user The user whose options are being saved
+	 * @param array &$modifiedOptions The options being saved
 	 * @param array $originalOptions The original options being replaced
 	 */
-	public static function onUserSaveOptions(
-		User $user,
-		array &$options,
+	public static function onSaveUserOptions(
+		UserIdentity $user,
+		array &$modifiedOptions,
 		array $originalOptions
 	): void {
 		if ( !self::isUserInitiated() ) {
@@ -133,12 +134,13 @@ class PrefUpdateInstrumentation {
 
 		$now = MWTimestamp::now( TS_MW );
 
-		foreach ( $options as $optName => $optValue ) {
+		foreach ( $modifiedOptions as $optName => $optValue ) {
 			$prevValue = $originalOptions[$optName] ?? null;
-			// Use loose comparision because the implicit default form declared in PHP
+			// Use loose comparison because the implicit default form declared in PHP
 			// often uses integers and booleans, whereas the stored format often uses
 			// strings (e.g. "" vs false)
 			if ( $prevValue != $optValue ) {
+				$user = MediaWikiServices::getInstance()->getUserFactory()->newFromUserIdentity( $user );
 				$event = self::createPrefUpdateEvent( $user, $optName, $optValue, $now );
 				if ( $event !== false ) {
 					EventLogging::logEvent( 'PrefUpdate', -1, $event );
