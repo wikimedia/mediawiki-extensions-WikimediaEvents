@@ -5,7 +5,6 @@ namespace WikimediaEvents;
 use ActorMigration;
 use Config;
 use DeferredUpdates;
-use DerivativeContext;
 use EditPage;
 use EventLogging;
 use ExtensionRegistry;
@@ -44,63 +43,11 @@ class WikimediaEventsHooks {
 	 * @param Skin $skin
 	 */
 	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ): void {
-		global $wgWMEUnderstandingFirstDay;
-
-		if ( $wgWMEUnderstandingFirstDay ) {
-			PageViews::deferredLog();
-		}
-
 		$out->addModules( 'ext.wikimediaEvents' );
 
 		if ( ExtensionRegistry::getInstance()->isLoaded( 'WikibaseRepository' ) ) {
 			// If we are in Wikibase Repo, load Wikibase module
 			$out->addModules( 'ext.wikimediaEvents.wikibase' );
-		}
-	}
-
-	/**
-	 * UserLogout hook handler.
-	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/UserLogout
-	 *
-	 * @param User $user
-	 */
-	public static function onUserLogout( User $user ): void {
-		global $wgWMEUnderstandingFirstDay;
-		if ( $wgWMEUnderstandingFirstDay ) {
-			PageViews::deferredLog( $user->getId() );
-		}
-	}
-
-	/**
-	 * BeforePageRedirect hook handler.
-	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/BeforePageRedirect
-	 *
-	 * @param OutputPage $out
-	 * @param string &$redirect URL string, modifiable
-	 * @param string &$code HTTP code, modifiable
-	 */
-	public static function onBeforePageRedirect( $out, &$redirect, &$code ): void {
-		global $wgWMEUnderstandingFirstDay;
-		if ( $wgWMEUnderstandingFirstDay ) {
-			PageViews::deferredLog();
-		}
-	}
-
-	/**
-	 * LocalUserCreated hook handler.
-	 *
-	 * @param User $user
-	 * @param bool $autocreated
-	 */
-	public static function onLocalUserCreated( User $user, $autocreated ): void {
-		global $wgWMEUnderstandingFirstDay;
-		if ( $wgWMEUnderstandingFirstDay && !$autocreated ) {
-			$context = new DerivativeContext( RequestContext::getMain() );
-			$context->setUser( $user );
-			$pageViews = new PageViews( $context );
-			// We don't need to check the cohort, since we know the user is not autocreated
-			// and the account was just created.
-			$pageViews->setUserHashingSalt();
 		}
 	}
 
@@ -584,22 +531,12 @@ class WikimediaEventsHooks {
 	 * @return bool
 	 */
 	public static function shouldSchemaEditAttemptStepOversample( IContextSource $context ) {
-		global $wgWMEUnderstandingFirstDay;
-		// Conditions under which Schema:EditAttemptStep should oversample (always log)
-
-		// Oversample when UnderstandingFirstDay is enabled and the user is in the UFD cohort
-		$pageViews = new PageViews( $context );
-		$userInCohort = $wgWMEUnderstandingFirstDay && $pageViews->userIsInCohort();
-
 		// The editingStatsOversample request parameter can trigger oversampling
-		$fromRequest = $context->getRequest()->getBool( 'editingStatsOversample' );
-
-		$shouldOversample = $userInCohort || $fromRequest;
+		$shouldOversample = $context->getRequest()->getBool( 'editingStatsOversample' );
 		Hooks::run(
 			'WikimediaEventsShouldSchemaEditAttemptStepOversample',
 			[ $context, &$shouldOversample ]
 		);
-
 		return $shouldOversample;
 	}
 
