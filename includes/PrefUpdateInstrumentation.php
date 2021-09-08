@@ -168,7 +168,6 @@ class PrefUpdateInstrumentation {
 		if ( $trackType === self::VALUE_WELLKNOWN_SHORT ) {
 			if ( strlen( $optValue ) > self::SHORT_MAX_LEN ) {
 					trigger_error( "Unexpected value for $optName in PrefUpdate", E_USER_ERROR );
-					return false;
 			}
 			$trackedValue = $optValue;
 		} elseif ( $trackType === self::VALUE_NEWLINE_COUNT ) {
@@ -179,7 +178,6 @@ class PrefUpdateInstrumentation {
 			$trackedValue = count( preg_split( '/\n/', $optValue, -1, PREG_SPLIT_NO_EMPTY ) );
 		} else {
 			trigger_error( "Unknown handler for $optName in PrefUpdate", E_USER_ERROR );
-			return false;
 		}
 		$userOptionsLookup = MediaWikiServices::getInstance()->getUserOptionsLookup();
 
