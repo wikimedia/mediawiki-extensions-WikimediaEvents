@@ -4,6 +4,9 @@
 		<exclude name="MediaWiki.Files.ClassMatchesFilename.NotMatch" />
 		<exclude name="MediaWiki.WhiteSpace.SpaceBeforeSingleLineComment.NewLineComment" />
 	</rule>
+	<rule ref="Generic.PHP.NoSilencedErrors.Discouraged">
+		<exclude-pattern>*/tests/*</exclude-pattern>
+	</rule>
 	<file>.</file>
 	<arg name="extensions" value="php" />
 	<arg name="encoding" value="UTF-8" />

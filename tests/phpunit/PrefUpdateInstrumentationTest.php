@@ -45,10 +45,6 @@ class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 			'bucketedUserEditCount' => '5-99 edits',
 		] ];
 
-		yield 'Store bogus skin value' => [ $user, 'skin', str_repeat( 'x', 100 ), false,
-			'Unexpected value for skin'
-		];
-
 		yield 'Set new VectorSkinVersion' => [ $user, 'VectorSkinVersion', '2', [
 			'version' => '2',
 			'userId' => 4,
@@ -83,17 +79,39 @@ class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 	/**
 	 * @dataProvider providePrefUpdate
 	 */
-	public function testCreatePrefUpdateEvent( $user, $name, $value, $expect, $error = null ) {
+	public function testCreatePrefUpdateEvent( $user, $name, $value, $expect ) {
 		$prefUpdate = TestingAccessWrapper::newFromClass( PrefUpdateInstrumentation::class );
 
-		if ( $error ) {
-			$this->expectError();
-			$this->expectErrorMessage( $error );
-		}
 		$this->assertSame(
 			$expect,
 			$prefUpdate->createPrefUpdateEvent( $user, $name, $value, self::MOCK_TIME )
 		);
+	}
+
+	public function providePrefUpdateError() {
+		$user = $this->createMock( User::class );
+
+		yield 'Store bogus skin value' => [ $user, 'skin', str_repeat( 'x', 100 ), false,
+			'Unexpected value for skin'
+		];
+	}
+
+	/**
+	 * @dataProvider providePrefUpdateError
+	 */
+	public function testPrefUpdateError( $user, $name, $value, $expect, $error ) {
+		$prefUpdate = TestingAccessWrapper::newFromClass( PrefUpdateInstrumentation::class );
+
+		$this->assertSame(
+			$expect,
+			@$prefUpdate->createPrefUpdateEvent( $user, $name, $value, self::MOCK_TIME )
+		);
+
+		// Above we assert the return value (ignoring the log-only error).
+		// Below we assert the logged error.
+		$this->expectError();
+		$this->expectErrorMessage( $error );
+		$prefUpdate->createPrefUpdateEvent( $user, $name, $value, self::MOCK_TIME );
 	}
 
 }
