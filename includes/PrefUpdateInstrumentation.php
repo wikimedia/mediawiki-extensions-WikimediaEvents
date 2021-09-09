@@ -167,7 +167,7 @@ class PrefUpdateInstrumentation {
 
 		if ( $trackType === self::VALUE_WELLKNOWN_SHORT ) {
 			if ( strlen( $optValue ) > self::SHORT_MAX_LEN ) {
-					trigger_error( "Unexpected value for $optName in PrefUpdate", E_USER_ERROR );
+				trigger_error( "Unexpected value for $optName in PrefUpdate", E_USER_ERROR );
 			}
 			$trackedValue = $optValue;
 		} elseif ( $trackType === self::VALUE_NEWLINE_COUNT ) {
