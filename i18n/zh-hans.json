@@ -3,12 +3,13 @@
 		"authors": [
 			"Liuxinyu970226",
 			"Sunny00217",
+			"Tranve",
 			"VulpesVulpes825"
 		]
 	},
 	"wikimediaevents-desc": "使用EventLogging的维基媒体特定事件日志",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|跨wiki上传]]",
-	"tag-cross-wiki-upload-description": "在其他wiki上使用wiki文本和可视化编辑器上传的文件",
+	"tag-cross-wiki-upload-description": "在其他wiki上使用wikitext和可视化编辑器上传的文件",
 	"wikimediaevents-humanrel-question-a": "当您搜索“$1”时，您会点击此页面么？",
 	"wikimediaevents-humanrel-question-b": "如果您搜索“$1”，该条目会是好结果么？",
 	"wikimediaevents-humanrel-question-c": "如果您搜索“$1”，该条目相关么？",
