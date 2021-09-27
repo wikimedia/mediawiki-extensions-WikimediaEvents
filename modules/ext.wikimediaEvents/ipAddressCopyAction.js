@@ -37,16 +37,19 @@ function isEnabled() {
  *    such as `special_log`.
  */
 function log() {
-	var bucketName = 'MediaWiki.ipinfo_address_copy.';
+
+	var bucketNamePrefix = 'MediaWiki.ipinfo_address_copy';
+	var bucketNameSuffix;
 
 	if ( mw.config.get( 'wgAction' ) === 'history' ) {
-		bucketName += 'action_history';
+		bucketNameSuffix = 'action_history';
 	} else {
 		var specialPageName = mw.config.get( 'wgCanonicalSpecialPageName' );
-		bucketName += 'special_' + specialPageName.toLowerCase();
+		bucketNameSuffix = 'special_' + specialPageName.toLowerCase();
 	}
 
-	mw.track( 'counter.' + bucketName );
+	mw.track( 'counter.' + bucketNamePrefix + '.' + bucketNameSuffix );
+	mw.track( 'counter.' + bucketNamePrefix + '_by_wiki.' + mw.config.get( 'wgDBname' ) + '.' + bucketNameSuffix, 1 );
 }
 
 function main() {
