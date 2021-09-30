@@ -22,7 +22,7 @@ class VectorPrefDiffInstrumentation {
 	 * This must match the name used in $wgEventStreams config.
 	 * @var string
 	 */
-	private const STREAM_NAME = 'mediawiki.pref_diff';
+	private const STREAM_NAME = 'mediawiki.skin_diff';
 
 	/**
 	 * Keep in sync with Vector Constants::SKIN_NAME.
