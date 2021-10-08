@@ -51,7 +51,7 @@ var skin = mw.config.get( 'skin' ),
 	skinVersion;
 
 /**
- * @returns {string|null} If the user is using the Vector skin, then `'legacy'` or `'latest'`;
+ * @return {string|null} If the user is using the Vector skin, then `'legacy'` or `'latest'`;
  *  `null` otherwise
  */
 function getSkinVersion() {
@@ -134,7 +134,7 @@ function ulsSettingsOpen( context ) {
 function ulsCompactLanguageLinksOpen( $trigger ) {
 	log( {
 		action: 'compact-language-links-open',
-		context: skin === 'vector' && $trigger.is( '#p-lang-btn-label' ) ? 'header' : 'other'
+		context: skin === 'vector' && $trigger.is( '#p-lang-btn-checkbox' ) ? 'header' : 'other'
 	} );
 }
 
