@@ -3,7 +3,7 @@
 namespace WikimediaEvents\Tests;
 
 use IBufferingStatsdDataFactory;
-use MediaWikiTestCase;
+use MediaWikiIntegrationTestCase;
 use Status;
 use StatusValue;
 use WikimediaEvents\AuthManagerStatsdHandler;
@@ -11,7 +11,7 @@ use WikimediaEvents\AuthManagerStatsdHandler;
 /**
  * @covers \WikimediaEvents\AuthManagerStatsdHandler
  */
-class AuthManagerStatsdHandlerTest extends MediaWikiTestCase {
+class AuthManagerStatsdHandlerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @dataProvider provideHandle
 	 */
