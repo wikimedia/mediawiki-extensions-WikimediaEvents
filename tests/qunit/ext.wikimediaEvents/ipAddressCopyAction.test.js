@@ -29,12 +29,19 @@ QUnit.test( 'isEnabled', function ( assert ) {
 QUnit.test( 'log', function ( assert ) {
 	this.sandbox.spy( mw, 'track' );
 
+	mw.config.set( 'wgDBname', 'wikidb' );
 	mw.config.set( 'wgAction', 'view' );
 	mw.config.set( 'wgCanonicalSpecialPageName', 'Log' );
+
 	instrument.log();
-	assert.strictEqual( mw.track.lastCall.args[ 0 ], 'counter.MediaWiki.ipinfo_address_copy.special_log' );
+
+	assert.strictEqual( mw.track.getCall( 0 ).args[ 0 ], 'counter.MediaWiki.ipinfo_address_copy.special_log' );
+	assert.strictEqual( mw.track.getCall( 1 ).args[ 0 ], 'counter.MediaWiki.ipinfo_address_copy_by_wiki.wikidb.special_log' );
 
 	mw.config.set( 'wgAction', 'history' );
+
 	instrument.log();
-	assert.strictEqual( mw.track.lastCall.args[ 0 ], 'counter.MediaWiki.ipinfo_address_copy.action_history' );
+
+	assert.strictEqual( mw.track.getCall( 2 ).args[ 0 ], 'counter.MediaWiki.ipinfo_address_copy.action_history' );
+	assert.strictEqual( mw.track.getCall( 3 ).args[ 0 ], 'counter.MediaWiki.ipinfo_address_copy_by_wiki.wikidb.action_history' );
 } );
