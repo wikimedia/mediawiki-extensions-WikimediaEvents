@@ -64,6 +64,14 @@ Details at <https://phabricator.wikimedia.org/T220016>.
 
 Details at <https://phabricator.wikimedia.org/T292587>.
 
+## Scroll-tracking for Vector
+
+* Since: October 2021
+* Files: webUIScroll.js
+* Contact: Readers Web
+
+Details at <https://phabricator.wikimedia.org/T292586>.
+
 ## Client Error Logging
 
 * Since: February 2020

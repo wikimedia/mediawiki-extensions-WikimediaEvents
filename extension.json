@@ -94,6 +94,7 @@
 				"sessionTick.js",
 				"webABTestEnrollment.js",
 				"ipAddressCopyAction.js",
+				"webUIScroll.js",
 				{
 					"name": "searchSatisfaction.js",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
@@ -183,6 +184,12 @@
 		},
 		"WMEDesktopWebUIActionsTrackingOversampleLoggedInUsers": {
 			"value": true
+		},
+		"WMEWebUIScrollTrackingSamplingRate": {
+			"value": 0
+		},
+		"WMEWebUIScrollTrackingTimeToWaitBeforeScrollUp": {
+			"value": 0
 		},
 		"WMEMobileWebUIActionsTracking": {
 			"value": 0
