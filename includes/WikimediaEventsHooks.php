@@ -315,6 +315,8 @@ class WikimediaEventsHooks {
 			$vars['mobileWebUIActionsTracking'] = $config->get( 'WMEMobileWebUIActionsTracking' );
 		} elseif ( $skin === 'vector' ) {
 			$vars['desktopWebUIActionsTracking'] = $config->get( 'WMEDesktopWebUIActionsTracking' );
+			$vars['desktopWebUIActionsTrackingOversampleLoggedInUsers'] =
+				$config->get( 'WMEDesktopWebUIActionsTrackingOversampleLoggedInUsers' );
 		}
 
 		return $vars;

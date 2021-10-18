@@ -4,7 +4,9 @@
  * Launch task: https://phabricator.wikimedia.org/T250282
  * Schema: https://meta.wikimedia.org/wiki/Schema:DesktopWebUIActionsTracking
  */
-var sampleSize = require( './config.json' ).desktopWebUIActionsTracking || 0,
+var config = require( './config.json' ),
+	sampleSize = config.desktopWebUIActionsTracking || 0,
+	overSampleLoggedInUsers = config.desktopWebUIActionsTrackingOversampleLoggedInUsers || false,
 	skinVersion;
 
 /**
@@ -47,6 +49,11 @@ function logEvent( action, name ) {
 //
 // Note well the schema works on skins other than Vector but for now it's limited to it to aid the
 // work of data analysts.
+//
+// Always log events for logged in users if overSample config is set (T292588)
+if ( overSampleLoggedInUsers && !mw.user.isAnon() ) {
+	sampleSize = 1;
+}
 if ( !sampleSize || !mw.eventLog.eventInSample( 1 / sampleSize ) ) {
 	return;
 }

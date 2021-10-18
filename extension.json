@@ -180,6 +180,9 @@
 		"WMEDesktopWebUIActionsTracking": {
 			"value": 0
 		},
+		"WMEDesktopWebUIActionsTrackingOversampleLoggedInUsers": {
+			"value": true
+		},
 		"WMEMobileWebUIActionsTracking": {
 			"value": 0
 		},
