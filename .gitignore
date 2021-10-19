@@ -1,8 +1,10 @@
-.svn
-*~
-*.kate-swp
-.*.swp
-node_modules/
-/vendor
+/node_modules/
+/vendor/
+
+/.eslintcache
 /composer.lock
-.eslintcache
+
+*.kate-swp
+*~
+.*.swp
+.DS_Store
