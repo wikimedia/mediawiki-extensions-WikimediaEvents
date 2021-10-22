@@ -56,6 +56,14 @@ Details at <https://phabricator.wikimedia.org/T196186>.
 
 Details at <https://phabricator.wikimedia.org/T220016>.
 
+## A/B Test initialization for Vector
+
+* Since: October 2021
+* Files: webABTestEnrollment.js
+* Contact: Readers Web
+
+Details at <https://phabricator.wikimedia.org/T292587>.
+
 ## Client Error Logging
 
 * Since: February 2020

@@ -92,6 +92,7 @@
 				"deprecate.js",
 				"clientError.js",
 				"sessionTick.js",
+				"webABTestEnrollment.js",
 				"ipAddressCopyAction.js",
 				{
 					"name": "searchSatisfaction.js",
