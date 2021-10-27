@@ -4,6 +4,7 @@ require( './deprecate.js' );
 require( './clientError.js' );
 require( './sessionTick.js' );
 require( './ipAddressCopyAction.js' );
+require( './webABTestEnrollment.js' );
 
 var skin = mw.config.get( 'skin' );
 if ( skin === 'minerva' ) {
