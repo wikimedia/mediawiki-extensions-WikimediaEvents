@@ -31,10 +31,9 @@ function logEvent( data ) {
 // On page load RIC, check whether to log A/B test initialization.
 mw.requestIdleCallback( function () {
 	// Get data from hook to pass into log function.
-	mw.hook( 'mediawiki.web_AB_test_enrollment' ).add( function ( data, samplingRate ) {
-		// Only initialize the instrument for modern Vector skin or if config allows:
-		if ( mw.eventLog.eventInSample( 1 / samplingRate ) ) {
-			logEvent( data );
-		}
+	// Callers of this hook must take care of sampling.
+	mw.hook( 'mediawiki.web_AB_test_enrollment' ).add( function ( data ) {
+		// Only initialize the instrument if config allows:
+		logEvent( data );
 	} );
 } );
