@@ -95,6 +95,7 @@
 				"webABTestEnrollment.js",
 				"ipAddressCopyAction.js",
 				"webUIScroll.js",
+				"readingDepth.js",
 				{
 					"name": "searchSatisfaction.js",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
@@ -179,6 +180,9 @@
 		]
 	},
 	"config": {
+		"WMEReadingDepthSamplingRate": {
+			"value": 0
+		},
 		"WMEDesktopWebUIActionsTracking": {
 			"value": 0
 		},

@@ -313,6 +313,7 @@ class WikimediaEventsHooks {
 		$vars['wikidataCompletionSearchClicks'] = $config->get( 'WMEWikidataCompletionSearchClicks' );
 		$vars['sessionTick'] = $config->get( 'WMESessionTick' );
 		$vars['ipAddressCopyActionEnabled'] = $config->get( 'WMEIPAddressCopyActionEnabled' );
+		$vars['readingDepthSamplingRate'] = $config->get( 'WMEReadingDepthSamplingRate' );
 
 		$skin = $context->getSkin();
 		if ( $skin === 'minerva' ) {
@@ -536,6 +537,11 @@ class WikimediaEventsHooks {
 
 		$vars['wgWMESchemaEditAttemptStepOversample'] =
 			static::shouldSchemaEditAttemptStepOversample( $out->getContext() );
+
+		// Set page length for reading depth instrument T294777.
+		$length = $out->getTitle()->getLength();
+		$log = log10( $length );
+		$vars[ 'wgWMEPageLength' ] = round( $length, -intval( $log ) );
 	}
 
 	/**
