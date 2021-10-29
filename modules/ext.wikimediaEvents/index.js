@@ -5,6 +5,7 @@ require( './clientError.js' );
 require( './sessionTick.js' );
 require( './ipAddressCopyAction.js' );
 require( './webABTestEnrollment.js' );
+require( './readingDepth.js' );
 
 var skin = mw.config.get( 'skin' );
 if ( skin === 'minerva' ) {

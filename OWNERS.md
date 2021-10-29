@@ -40,6 +40,14 @@ Documentation at <https://wikitech.wikimedia.org/wiki/Graphite#statsv>.
 Proxies the mw-track topic `wikimedia.event.*` to `event.*`.
 Background at <https://phabricator.wikimedia.org/T138659>.
 
+## Reading depth
+
+* Since: November 2021
+* Files: readingDepth.js
+* Contact: https://www.mediawiki.org/wiki/Readers/Web/Team
+
+Details at <https://phabricator.wikimedia.org/T294777>.
+
 ## Wikibase
 
 * Since: July 2018
