@@ -147,12 +147,16 @@ class WikimediaEventsHooks {
 			$nsType = 'meta';
 		}
 
-		if ( defined( 'MW_API' ) ) {
-			$entry = 'api';
-		} elseif ( defined( 'MEDIAWIKI_JOB_RUNNER' ) ) {
-			$entry = 'job';
-		} else {
+		if ( MW_ENTRY_POINT === 'index' ) {
+			// non-AJAX submission from user interface
+			// (for non-WMF this could also mean jobrunner, since jobs run post-send
+			// from index.php by default)
 			$entry = 'index';
+		} elseif ( MW_ENTRY_POINT === 'api' || MW_ENTRY_POINT === 'rest' ) {
+			$entry = 'api';
+		} else {
+			// jobrunner, maint/cli
+			$entry = 'other';
 		}
 
 		// Null edits are both slow (due to user name mismatch reparses) and are
