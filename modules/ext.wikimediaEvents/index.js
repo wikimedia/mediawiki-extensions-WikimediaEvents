@@ -13,6 +13,7 @@ if ( skin === 'minerva' ) {
 	require( './searchSatisfaction.js' );
 	require( './desktopWebUIActions.js' );
 	require( './universalLanguageSelector.js' );
+	require( './webUIScroll.js' );
 } else {
 	require( './searchSatisfaction.js' );
 }

@@ -317,6 +317,9 @@ class WikimediaEventsHooks {
 			$vars['desktopWebUIActionsTracking'] = $config->get( 'WMEDesktopWebUIActionsTracking' );
 			$vars['desktopWebUIActionsTrackingOversampleLoggedInUsers'] =
 				$config->get( 'WMEDesktopWebUIActionsTrackingOversampleLoggedInUsers' );
+			$vars['webUIScrollTrackingSamplingRate'] = $config->get( 'WMEWebUIScrollTrackingSamplingRate' );
+			$vars['webUIScrollTrackingTimeToWaitBeforeScrollUp'] =
+				$config->get( 'WMEWebUIScrollTrackingTimeToWaitBeforeScrollUp' );
 		}
 
 		return $vars;
@@ -345,6 +348,9 @@ class WikimediaEventsHooks {
 					: '';
 			case 'universalLanguageSelector':
 				return $skin === 'vector' ? new ResourceLoaderFilePath( 'universalLanguageSelector.js' )
+					: '';
+			case 'webUIScroll':
+				return $skin === 'vector' ? new ResourceLoaderFilePath( 'webUIScroll.js' )
 					: '';
 			default:
 				return '';
