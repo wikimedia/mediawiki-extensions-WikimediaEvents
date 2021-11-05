@@ -32,22 +32,38 @@ schemaMobileWebUIActionsTracking = new Schema(
 	}
 );
 
+/**
+ * Log an event.
+ *
+ * @param {string} action Type of interaction.
+ * @param {string} name Uniquely describes the thing that was interacted.
+ * @param {string|null} destination If defined, where the interaction will take the user.
+ */
+function logEvent( action, name, destination ) {
+	var analyticsEvent = {
+		action: action,
+		name: name,
+		token: mw.user.sessionId()
+	};
+	if ( destination ) {
+		analyticsEvent.destination = destination;
+	}
+	schemaMobileWebUIActionsTracking.log( analyticsEvent );
+}
+
+// Log the page load.
+mw.requestIdleCallback( function () {
+	logEvent( 'init', 'no-interaction' );
+} );
+
 // eslint-disable-next-line no-jquery/no-global-selector
 $( 'body' ).on( 'click', function ( event ) {
 	var element = event.target,
 		name = element.getAttribute( 'data-event-name' ),
-		analyticsEvent, destination;
+		destination;
 
 	if ( name ) {
 		destination = element.getAttribute( 'href' );
-		analyticsEvent = {
-			action: 'click',
-			name: name,
-			token: mw.user.sessionId()
-		};
-		if ( destination ) {
-			analyticsEvent.destination = destination;
-		}
-		schemaMobileWebUIActionsTracking.log( analyticsEvent );
+		logEvent( 'click', name, destination );
 	}
 } );
