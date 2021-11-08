@@ -34,16 +34,18 @@ function log( action ) {
 
 // Watch for specific scroll events via hooks.
 mw.requestIdleCallback( function () {
-	var enabled = webUIScrollTrackingSamplingRate !== 0;
+	var disabled = webUIScrollTrackingSamplingRate === 0;
 	// Only initialize the instrument if config allows.
-	if ( !enabled ||
+	if ( disabled ||
 		( mw.user.isAnon() &&
 			!mw.eventLog.eventInSample( 1 / webUIScrollTrackingSamplingRate ) )
 	) {
 		return;
 	}
 
-	// Check for scroll hooks and log scroll event when conditions are met.
+	// Check for scroll hooks and log scroll event when conditions are met (T292586).
+	// The data parameter should include a "context" key (and an "action" key if applicable)
+	// when firing corresponding hooks. See logScrollEvent() in scrollObserver.js in Vector.
 	mw.hook( 'vector.page_title_scroll' ).add( function ( data ) {
 		// The user is scrolling down so initiate a timer to set the variable flag which determines
 		// whether the scroll action should be logged (see T292586).
