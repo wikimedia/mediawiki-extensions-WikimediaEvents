@@ -53,7 +53,8 @@ function logEvent( action, name, destination ) {
 
 // Log the page load.
 mw.requestIdleCallback( function () {
-	logEvent( 'init', 'no-interaction' );
+	// ns= allows us to tell the namespace this occurred in.
+	logEvent( 'init', 'ns=' + mw.config.get( 'wgNamespaceNumber' ) );
 } );
 
 // eslint-disable-next-line no-jquery/no-global-selector
