@@ -11,7 +11,8 @@
 var webUIScrollTrackingSamplingRate = require( './config.json' ).webUIScrollTrackingSamplingRate || 0,
 	webUIScrollTrackingTimeToWaitBeforeScrollUp = require( './config.json' ).webUIScrollTrackingTimeToWaitBeforeScrollUp || 0,
 	timer,
-	waitBeforeScrollUp = true;
+	waitBeforeScrollUp = true,
+	isMobile = mw.config.get( 'wgMFMode' );
 
 /**
  * Emit an EventLogging event with schema 'Scroll'.
@@ -25,7 +26,8 @@ function log( action ) {
 		web_session_id: mw.user.sessionId(),
 		page_id: mw.config.get( 'wgArticleId' ),
 		is_anon: mw.user.isAnon(),
-		action: action
+		action: action,
+		access_method: isMobile ? 'mobile web' : 'desktop'
 	};
 	/* eslint-enable camelcase */
 
