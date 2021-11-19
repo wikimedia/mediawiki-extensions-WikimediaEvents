@@ -132,9 +132,16 @@ function ulsSettingsOpen( context ) {
  *  dialog
  */
 function ulsCompactLanguageLinksOpen( $trigger ) {
+	var context = 'other';
+	if ( skin === 'vector' && $trigger.is( '#p-lang-btn-checkbox' ) ) {
+		context = 'header';
+	} else if ( skin === 'vector' && $trigger.is( '#p-lang-btn-sticky-header' ) ) {
+		context = 'sticky-header';
+	}
+
 	log( {
 		action: 'compact-language-links-open',
-		context: skin === 'vector' && $trigger.is( '#p-lang-btn-checkbox' ) ? 'header' : 'other'
+		context: context
 	} );
 }
 
