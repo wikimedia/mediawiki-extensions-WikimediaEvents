@@ -166,7 +166,7 @@
 					undefined,
 				visibility_listeners_time: Math.round( visibilityListenersAdded ),
 				page_length: pageLength,
-				access_method: isMobile ? 'mobile' : 'desktop'
+				access_method: isMobile ? 'mobile web' : 'desktop'
 			}, eventData );
 			/* eslint-enable camelcase */
 
