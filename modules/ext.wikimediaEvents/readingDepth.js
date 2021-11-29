@@ -152,7 +152,7 @@
 		var
 			domInteractive = getDomInteractive(),
 			firstPaint = getFirstPaint(),
-			pageLength = mw.config.get( 'wgWMEPageLength' ),
+			pageLength = mw.config.get( 'wgWMEPageLength', -1 ),
 			isMobile = mw.config.get( 'wgMFMode' ),
 
 			/* eslint-disable camelcase */
