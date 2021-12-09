@@ -58,17 +58,16 @@ if ( !sampleSize || !mw.eventLog.eventInSample( 1 / sampleSize ) ) {
 	return;
 }
 
-// Log the page load
-mw.requestIdleCallback( function () {
+// Log the page load when <body> available.
+$( function () {
 	logEvent( 'init' );
+	$( document )
+		.on( 'click', function ( event ) {
+			// Track special links that have data-event-name associated
+			logEvent( 'click', event.target.getAttribute( 'data-event-name' ) );
+		} )
+		// Track links in nav element e.g. menus.
+		.on( 'click', 'nav a', function ( event ) {
+			logEvent( 'click', event.target.parentNode.getAttribute( 'id' ) );
+		} );
 } );
-
-$( document )
-	.on( 'click', function ( event ) {
-		// Track special links that have data-event-name associated
-		logEvent( 'click', event.target.getAttribute( 'data-event-name' ) );
-	} )
-	// Track links in nav element e.g. menus.
-	.on( 'click', 'nav a', function ( event ) {
-		logEvent( 'click', event.target.parentNode.getAttribute( 'id' ) );
-	} );
