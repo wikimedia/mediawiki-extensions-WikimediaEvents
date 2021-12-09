@@ -76,7 +76,7 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 			$successful = $status;
 		}
 
-		// sanity check in case this was invoked from some non-metrics-related
+		// Sense-check in case this was invoked from some non-metrics-related
 		// code by accident
 		if (
 			( $record['channel'] !== 'authevents' && $record['channel'] !== 'captcha' )
