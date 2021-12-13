@@ -9,7 +9,7 @@
 	},
 	"wikimediaevents-desc": "ウィキメディア特有のイベントを、EventLogging を使用して記録する",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|ウィキ間アップロード]]",
-	"tag-cross-wiki-upload-description": "他ウィキでのウィキテキストの内側およびビジュアルエディターの内側から、ファイルをアップロード",
+	"tag-cross-wiki-upload-description": "他ウィキからアップロードしたファイルで、出処はウィキテキストの中ならびにビジュアルエディター内",
 	"wikimediaevents-humanrel-question-a": "「$1」を検索する場合、このページをクリックしますか？",
 	"wikimediaevents-humanrel-question-b": "もし「$1'」を検索中でしたら、この記事はお役に立ちそうですか？",
 	"wikimediaevents-humanrel-question-c": "もし「$1」を検索中でしたら、この記事は関係がありそうですか？",
