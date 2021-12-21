@@ -28,6 +28,7 @@ use MediaWiki\MediaWikiServices;
 use Monolog\Handler\AbstractHandler;
 use Status;
 use StatusValue;
+use WikiMap;
 
 /**
  * Counts authentication-related log events (those sent to the 'authevents'
@@ -110,7 +111,7 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 	 */
 	protected function getEntryPoint() {
 		$entrypoint = defined( 'MW_API' ) ? 'api' : 'web';
-		if ( $entrypoint === 'web' && wfWikiID() === 'loginwiki' ) {
+		if ( $entrypoint === 'web' && WikiMap::getCurrentWikiId() === 'loginwiki' ) {
 			$entrypoint = 'centrallogin';
 		}
 		return $entrypoint;

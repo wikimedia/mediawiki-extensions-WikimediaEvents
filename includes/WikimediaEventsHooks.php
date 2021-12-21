@@ -27,6 +27,7 @@ use Skin;
 use Title;
 use User;
 use WebRequest;
+use WikiMap;
 use WikiPage;
 
 /**
@@ -368,7 +369,7 @@ class WikimediaEventsHooks {
 	 * @param array &$tags
 	 */
 	public static function onListDefinedTags( array &$tags ): void {
-		if ( wfWikiID() === 'commonswiki' ) {
+		if ( WikiMap::getCurrentWikiId() === 'commonswiki' ) {
 			$tags[] = 'cross-wiki-upload';
 			// For A/B test
 			$tags[] = 'cross-wiki-upload-1';
@@ -384,7 +385,7 @@ class WikimediaEventsHooks {
 	 * @param array &$tags
 	 */
 	public static function onChangeTagsListActive( array &$tags ): void {
-		if ( wfWikiID() === 'commonswiki' ) {
+		if ( WikiMap::getCurrentWikiId() === 'commonswiki' ) {
 			$tags[] = 'cross-wiki-upload';
 			// For A/B test
 			$tags[] = 'cross-wiki-upload-1';
@@ -432,7 +433,7 @@ class WikimediaEventsHooks {
 	 * @param RecentChange $rc
 	 */
 	public static function onRecentChangeSaveCrossWikiUpload( RecentChange $rc ): void {
-		if ( !defined( 'MW_API' ) || wfWikiID() !== 'commonswiki' ) {
+		if ( !defined( 'MW_API' ) || WikiMap::getCurrentWikiId() !== 'commonswiki' ) {
 			return;
 		}
 
@@ -590,7 +591,7 @@ class WikimediaEventsHooks {
 		$mediaWiki
 	): void {
 		// Only run for dewiki
-		if ( wfWikiID() !== 'dewiki' ) {
+		if ( WikiMap::getCurrentWikiId() !== 'dewiki' ) {
 			return;
 		}
 
