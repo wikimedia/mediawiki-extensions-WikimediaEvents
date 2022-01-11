@@ -337,7 +337,7 @@ function genLogEventFn( source, session, sourceExtraData ) {
 		// they're using and which version of the search widget they're seeing.
 		//
 		// See https://phabricator.wikimedia.org/T256100 for detail.
-		if ( skin === 'vector' ) {
+		if ( [ 'vector', 'vector-2022' ].indexOf( String( skin ) ) > -1 ) {
 			evt.skinVersion = document.body.classList.contains( 'skin-vector-legacy' ) ? 'legacy' : 'latest';
 
 			if ( document.querySelector( '#p-search .wvui-input' ) ) {

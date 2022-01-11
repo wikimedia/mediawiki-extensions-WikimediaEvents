@@ -56,7 +56,7 @@ var skin = mw.config.get( 'skin' ),
  */
 function getSkinVersion() {
 	if ( skinVersion === undefined ) {
-		if ( skin === 'vector' ) {
+		if ( [ 'vector', 'vector-2022' ].indexOf( String( skin ) ) > -1 ) {
 			skinVersion = document.body.classList.contains( 'skin-vector-legacy' ) ? 'legacy' : 'latest';
 		} else {
 			skinVersion = null;
@@ -132,10 +132,12 @@ function ulsSettingsOpen( context ) {
  *  dialog
  */
 function ulsCompactLanguageLinksOpen( $trigger ) {
-	var context = 'other';
-	if ( skin === 'vector' && $trigger.is( '#p-lang-btn-checkbox' ) ) {
+	var
+		context = 'other',
+		isVector = [ 'vector', 'vector-2022' ].indexOf( String( skin ) ) > -1;
+	if ( isVector && $trigger.is( '#p-lang-btn-checkbox' ) ) {
 		context = 'header';
-	} else if ( skin === 'vector' && $trigger.is( '#p-lang-btn-sticky-header' ) ) {
+	} else if ( isVector && $trigger.is( '#p-lang-btn-sticky-header' ) ) {
 		context = 'sticky-header';
 	}
 

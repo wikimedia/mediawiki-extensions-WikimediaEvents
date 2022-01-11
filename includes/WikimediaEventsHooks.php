@@ -319,7 +319,7 @@ class WikimediaEventsHooks {
 		$skin = $context->getSkin();
 		if ( $skin === 'minerva' ) {
 			$vars['mobileWebUIActionsTracking'] = $config->get( 'WMEMobileWebUIActionsTracking' );
-		} elseif ( $skin === 'vector' ) {
+		} elseif ( in_array( $skin, [ 'vector', 'vector-2022' ] ) ) {
 			$vars['desktopWebUIActionsTracking'] = $config->get( 'WMEDesktopWebUIActionsTracking' );
 			$vars['desktopWebUIActionsTrackingOversampleLoggedInUsers'] =
 				$config->get( 'WMEDesktopWebUIActionsTrackingOversampleLoggedInUsers' );
@@ -342,24 +342,32 @@ class WikimediaEventsHooks {
 	public static function getModuleFile( ResourceLoaderContext $context, Config $config, $param ) {
 		$skin = $context->getSkin();
 
-		switch ( $param ) {
-			case 'searchSatisfaction':
-				return $skin !== 'minerva' ? new ResourceLoaderFilePath( 'searchSatisfaction.js' )
-					: '';
-			case 'desktopWebUIActions':
-				return $skin === 'vector' ? new ResourceLoaderFilePath( 'desktopWebUIActions.js' )
-					: '';
-			case 'mobileWebUIActions':
-				return $skin === 'minerva' ? new ResourceLoaderFilePath( 'mobileWebUIActions.js' )
-					: '';
-			case 'universalLanguageSelector':
-				return $skin === 'vector' ? new ResourceLoaderFilePath( 'universalLanguageSelector.js' )
-					: '';
-			case 'webUIScroll':
-				return $skin === 'vector' ? new ResourceLoaderFilePath( 'webUIScroll.js' )
-					: '';
+		switch ( $skin ) {
+			case 'vector':
+			case 'vector-2022':
+				switch ( $param ) {
+					case 'desktopWebUIActions':
+					case 'searchSatisfaction':
+					case 'universalLanguageSelector':
+					case 'webUIScroll':
+						return new ResourceLoaderFilePath( $param . '.js' );
+					default:
+						return '';
+				}
+			case 'minerva':
+				switch ( $param ) {
+					case 'mobileWebUIActions':
+						return new ResourceLoaderFilePath( $param . '.js' );
+					default:
+						return '';
+				}
 			default:
-				return '';
+				switch ( $param ) {
+					case 'searchSatisfaction':
+						return new ResourceLoaderFilePath( $param . '.js' );
+					default:
+						return '';
+				}
 		}
 	}
 
