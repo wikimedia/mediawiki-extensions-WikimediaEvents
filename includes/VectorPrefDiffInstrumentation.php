@@ -25,10 +25,16 @@ class VectorPrefDiffInstrumentation {
 	private const STREAM_NAME = 'mediawiki.skin_diff';
 
 	/**
-	 * Keep in sync with Vector Constants::SKIN_NAME.
+	 * Keep in sync with Vector Constants::SKIN_NAME_LEGACY.
 	 * @var string
 	 */
 	private const VECTOR_SKIN_NAME = 'vector';
+
+	/**
+	 * Keep in sync with Vector Constants::SKIN_NAME_MODERN.
+	 * @var string
+	 */
+	private const VECTOR_SKIN_NAME_MODERN = 'vector-2022';
 
 	/**
 	 * Keep in sync with Vector Constants::PREF_KEY_SKIN_VERSION.
@@ -54,6 +60,15 @@ class VectorPrefDiffInstrumentation {
 	private const CHECKBOX_TO_SKIN_VERSION_MAP = [
 		1 => '1',
 		0 => '2'
+	];
+
+	/**
+	 * Maps skin names to vector version names.
+	 * @var array
+	 */
+	private const SEPARATE_SKINS_TO_SKIN_VERSION_NAME_MAP = [
+		self::VECTOR_SKIN_NAME => 'vector1',
+		self::VECTOR_SKIN_NAME_MODERN => 'vector2'
 	];
 
 	/**
@@ -112,6 +127,17 @@ class VectorPrefDiffInstrumentation {
 	}
 
 	/**
+	 * Helper method that converts the legacy or modern Vector skin names (e.g.
+	 * 'vector-2022') into skin version names (e.g. 'vector2'). Returns $skin if
+	 * $skin is not an interation of Vector.
+	 * @param string $skin
+	 * @return string
+	 */
+	private static function generateSkinVersionNameFromSeparateSkins( $skin ): string {
+		return self::SEPARATE_SKINS_TO_SKIN_VERSION_NAME_MAP[ $skin ] ?? $skin;
+	}
+
+	/**
 	 * Creates an EventLogging event if a skin changes has been made that
 	 * involves Vector legacy/latest and returns null otherwise.
 	 *
@@ -131,28 +157,42 @@ class VectorPrefDiffInstrumentation {
 		// Exit early if preconditions aren't met.
 		if ( !(
 			$form->hasField( 'skin' ) &&
-			$form->hasField( self::PREF_KEY_SKIN_VERSION ) &&
 			$salt !== null
 		) ) {
 			return null;
 		}
 
+		// T291098: Check if 'vector-2022 is an option.
+		$hasVectorSkinNameModern = in_array( self::VECTOR_SKIN_NAME_MODERN, $form->getField( 'skin' )->getOptions() );
+
+		if ( !$hasVectorSkinNameModern && !$form->hasField( self::PREF_KEY_SKIN_VERSION ) ) {
+			return null;
+		}
+
 		// Get the old skin value from the form's default value.
 		$oldSkin = (string)$form->getField( 'skin' )->getDefault();
-		$oldSkinVersionName = self::generateSkinVersionName(
+		$oldSkinVersionName = $hasVectorSkinNameModern ?
+			self::generateSkinVersionNameFromSeparateSkins( $oldSkin ) :
+			self::generateSkinVersionName(
 			$oldSkin,
 			$form->getField( self::PREF_KEY_SKIN_VERSION )->getDefault()
 		);
 		// Get the new skin value from the form data that was submitted.
 		$newSkin = $formData['skin'] ?? '';
-		$newSkinVersionName = self::generateSkinVersionName(
+		$newSkinVersionName = $hasVectorSkinNameModern ?
+			self::generateSkinVersionNameFromSeparateSkins( $newSkin ) :
+			self::generateSkinVersionName(
 			$newSkin,
 			$formData[ self::PREF_KEY_SKIN_VERSION ] ?? ''
 		);
 
+		$involvesVector =
+				in_array( 'vector1', [ $oldSkinVersionName, $newSkinVersionName ], true ) ||
+				in_array( 'vector2', [ $oldSkinVersionName, $newSkinVersionName ], true );
+
 		// We are only interested in skin changes that involve Vector.
 		if (
-			in_array( self::VECTOR_SKIN_NAME, [ $oldSkin, $newSkin ], true ) &&
+			$involvesVector &&
 			$oldSkinVersionName !== $newSkinVersionName
 		) {
 

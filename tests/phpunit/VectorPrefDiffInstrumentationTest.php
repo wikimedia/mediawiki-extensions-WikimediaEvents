@@ -15,17 +15,31 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @param string $skinDefault
 	 * @param bool $skinVersionDefault
+	 * @param bool $shouldIncludeVector2022
 	 * @return HTMLForm
 	 */
-	private function createFormWithDefaultValues( $skinDefault, $skinVersionDefault ) {
+	private function createFormWithDefaultValues( $skinDefault, $skinVersionDefault, $shouldIncludeVector2022 ) {
 		$skinField = $this->createMock( \HTMLFormField::class );
 		$skinField->method( 'getDefault' )->willReturn( $skinDefault );
+		$skinOptions = [
+			"Vector ()" => "vector",
+			"MinervaNeue ()" => "minerva",
+		];
 
+		if ( $shouldIncludeVector2022 ) {
+			$skinOptions[ "Vector 2022 (<>)" ] = "vector-2022";
+		}
+		$skinField->method( 'getOptions' )->willReturn( $skinOptions );
 		$skinVersionField = $this->createMock( \HTMLFormField::class );
 		$skinVersionField->method( 'getDefault' )->willReturn( $skinVersionDefault );
 
 		$form = $this->createMock( \HTMLForm::class );
-		$form->method( 'hasField' )->willReturn( true );
+		$form->method( 'hasField' )->will(
+			$this->returnValueMap( [
+				[ 'skin', true ],
+				[ 'VectorSkinVersion', true ]
+			] )
+		);
 
 		$form->method( 'getField' )->will(
 			$this->returnValueMap( [
@@ -56,7 +70,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'vector',
 				'VectorSkinVersion' => '2',
 			],
-			$this->createFormWithDefaultValues( 'vector', true ),
+			$this->createFormWithDefaultValues( 'vector', true, false ),
 			$user,
 			[
 				'initial_state' => 'vector1',
@@ -70,7 +84,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'vector',
 				'VectorSkinVersion' => '1',
 			],
-			$this->createFormWithDefaultValues( 'vector', false ),
+			$this->createFormWithDefaultValues( 'vector', false, false ),
 			$user,
 			[
 				'initial_state' => 'vector2',
@@ -84,7 +98,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'minerva',
 				'VectorSkinVersion' => '1',
 			],
-			$this->createFormWithDefaultValues( 'vector', true ),
+			$this->createFormWithDefaultValues( 'vector', true, false ),
 			$user,
 			[
 				'initial_state' => 'vector1',
@@ -98,7 +112,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'vector',
 				'VectorSkinVersion' => '1',
 			],
-			$this->createFormWithDefaultValues( 'minerva', true ),
+			$this->createFormWithDefaultValues( 'minerva', true, false ),
 			$user,
 			[
 				'initial_state' => 'minerva',
@@ -112,7 +126,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'minerva',
 				'VectorSkinVersion' => '2',
 			],
-			$this->createFormWithDefaultValues( 'vector', false ),
+			$this->createFormWithDefaultValues( 'vector', false, false ),
 			$user,
 			[
 				'initial_state' => 'vector2',
@@ -126,7 +140,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'vector',
 				'VectorSkinVersion' => '2',
 			],
-			$this->createFormWithDefaultValues( 'minerva', false ),
+			$this->createFormWithDefaultValues( 'minerva', false, false ),
 			$user,
 			[
 				'initial_state' => 'minerva',
@@ -140,7 +154,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'timeless',
 				'VectorSkinVersion' => '1',
 			],
-			$this->createFormWithDefaultValues( 'minerva', true ),
+			$this->createFormWithDefaultValues( 'minerva', true, false ),
 			$user,
 			null
 		];
@@ -148,7 +162,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 		yield 'when `skin` field not present' => [
 			[
 			],
-			$this->createFormWithDefaultValues( 'minerva', true ),
+			$this->createFormWithDefaultValues( 'minerva', true, false ),
 			$user,
 			null
 		];
@@ -157,7 +171,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 			[
 				'skin' => 'timeless'
 			],
-			$this->createFormWithDefaultValues( 'minerva', true ),
+			$this->createFormWithDefaultValues( 'minerva', true, false ),
 			$user,
 			null
 		];
@@ -166,7 +180,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'vector',
 				'VectorSkinVersion' => false
 			],
-			$this->createFormWithDefaultValues( 'minerva', true ),
+			$this->createFormWithDefaultValues( 'minerva', true, false ),
 			$user,
 			[
 				'initial_state' => 'minerva',
@@ -179,13 +193,100 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'vector',
 				'VectorSkinVersion' => true
 			],
-			$this->createFormWithDefaultValues( 'minerva', true ),
+			$this->createFormWithDefaultValues( 'minerva', true, false ),
 			$user,
 			[
 				'initial_state' => 'minerva',
 				'final_state' => 'vector1',
 				'bucketed_user_edit_count' => '5-99 edits',
 			]
+		];
+		yield 'when `vector-2022` present and switching from vector1 to vector2' => [
+			[
+				'skin' => 'vector-2022',
+				'VectorSkinVersion' => true
+			],
+			$this->createFormWithDefaultValues( 'vector', true, true ),
+			$user,
+			[
+				'initial_state' => 'vector1',
+				'final_state' => 'vector2',
+				'bucketed_user_edit_count' => '5-99 edits',
+			]
+		];
+		yield 'when `vector-2022` present and switching from vector2 to vector1' => [
+			[
+				'skin' => 'vector',
+				'VectorSkinVersion' => true
+			],
+			$this->createFormWithDefaultValues( 'vector-2022', true, true ),
+			$user,
+			[
+				'initial_state' => 'vector2',
+				'final_state' => 'vector1',
+				'bucketed_user_edit_count' => '5-99 edits',
+			]
+		];
+		yield 'when `vector-2022` present and switching from vector2 to minerva' => [
+			[
+				'skin' => 'minerva',
+				'VectorSkinVersion' => true
+			],
+			$this->createFormWithDefaultValues( 'vector-2022', true, true ),
+			$user,
+			[
+				'initial_state' => 'vector2',
+				'final_state' => 'minerva',
+				'bucketed_user_edit_count' => '5-99 edits',
+			]
+		];
+		yield 'when `vector-2022` present and switching from minerva to vector2' => [
+			[
+				'skin' => 'vector-2022',
+				'VectorSkinVersion' => true
+			],
+			$this->createFormWithDefaultValues( 'minerva', true, true ),
+			$user,
+			[
+				'initial_state' => 'minerva',
+				'final_state' => 'vector2',
+				'bucketed_user_edit_count' => '5-99 edits',
+			]
+		];
+		yield 'when `vector-2022` present and switching from vector1 to minerva' => [
+			[
+				'skin' => 'minerva',
+				'VectorSkinVersion' => true
+			],
+			$this->createFormWithDefaultValues( 'vector', true, true ),
+			$user,
+			[
+				'initial_state' => 'vector1',
+				'final_state' => 'minerva',
+				'bucketed_user_edit_count' => '5-99 edits',
+			]
+		];
+		yield 'when `vector-2022` present and switching from minerva to vector1' => [
+			[
+				'skin' => 'vector',
+				'VectorSkinVersion' => true
+			],
+			$this->createFormWithDefaultValues( 'minerva', true, true ),
+			$user,
+			[
+				'initial_state' => 'minerva',
+				'final_state' => 'vector1',
+				'bucketed_user_edit_count' => '5-99 edits',
+			]
+		];
+		yield 'when `vector-2022` present and switching from minerva to timeless' => [
+			[
+				'skin' => 'timeless',
+				'VectorSkinVersion' => true
+			],
+			$this->createFormWithDefaultValues( 'minerva', true, true ),
+			$user,
+			null
 		];
 	}
 
@@ -198,7 +299,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'vector',
 				'VectorSkinVersion' => '2',
 			],
-			$this->createFormWithDefaultValues( 'minerva', false ),
+			$this->createFormWithDefaultValues( 'minerva', false, false ),
 			$this->createUser()
 		);
 
@@ -215,8 +316,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 
 		$result = $subject->createEventIfNecessary( $formData, $form, $user, $isFormSuccessful, [] );
 
-		if ( is_array( $expect ) && is_array( $result ) ) {
-			$this->assertIsArray( $result );
+		if ( is_array( $expect ) ) {
 			$this->assertArraySubmapSame( $expect, $result );
 			$this->assertArrayHasKey( 'user_hash', $result, '"user_hash" key is present' );
 			$this->assertIsString( $result['user_hash'], 'User hash is a string' );
