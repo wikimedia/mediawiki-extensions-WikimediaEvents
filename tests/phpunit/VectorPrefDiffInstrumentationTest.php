@@ -3,6 +3,7 @@
 namespace WikimediaEvents\Tests;
 
 use HTMLForm;
+use MediaWiki\User\UserEditTracker;
 use MediaWikiIntegrationTestCase;
 use User;
 use Wikimedia\TestingAccessWrapper;
@@ -57,7 +58,6 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 	private function createUser() {
 		$user = $this->createMock( User::class );
 		$user->method( 'getId' )->willReturn( 1 );
-		$user->method( 'getEditCount' )->willReturn( 42 );
 
 		return $user;
 	}
@@ -292,6 +292,11 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 
 	public function testNullSalt() {
 		$this->setMwGlobals( 'wgWMEVectorPrefDiffSalt', null );
+		$userEditTracker = $this->createMock( UserEditTracker::class );
+		$userEditTracker->method( 'getUserEditCount' )
+			->willReturn( 42 );
+		$this->setService( 'UserEditTracker', $userEditTracker );
+
 		$subject = TestingAccessWrapper::newFromClass( VectorPrefDiffInstrumentation::class );
 
 		$result = $subject->createEventIfNecessary(
@@ -311,6 +316,11 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 	 */
 	public function testCreateEventIfNecessary( $formData, $form, $user, $expect ) {
 		$this->setMwGlobals( 'wgWMEVectorPrefDiffSalt', 'secret' );
+		$userEditTracker = $this->createMock( UserEditTracker::class );
+		$userEditTracker->method( 'getUserEditCount' )
+			->willReturn( 42 );
+		$this->setService( 'UserEditTracker', $userEditTracker );
+
 		$subject = TestingAccessWrapper::newFromClass( VectorPrefDiffInstrumentation::class );
 		$isFormSuccessful = true;
 

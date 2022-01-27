@@ -2,6 +2,7 @@
 
 namespace WikimediaEvents\Tests;
 
+use MediaWiki\User\UserEditTracker;
 use User;
 use Wikimedia\TestingAccessWrapper;
 use WikimediaEvents\PrefUpdateInstrumentation;
@@ -21,7 +22,6 @@ class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 	public function providePrefUpdate() {
 		$user = $this->createMock( User::class );
 		$user->method( 'getId' )->willReturn( 4 );
-		$user->method( 'getEditCount' )->willReturn( 42 );
 
 		yield 'Enable foo' => [ $user, 'foo', '1', false ];
 
@@ -80,6 +80,11 @@ class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 	 * @dataProvider providePrefUpdate
 	 */
 	public function testCreatePrefUpdateEvent( $user, $name, $value, $expect ) {
+		$userEditTracker = $this->createMock( UserEditTracker::class );
+		$userEditTracker->method( 'getUserEditCount' )
+			->willReturn( 42 );
+		$this->setService( 'UserEditTracker', $userEditTracker );
+
 		$prefUpdate = TestingAccessWrapper::newFromClass( PrefUpdateInstrumentation::class );
 
 		$this->assertSame(
