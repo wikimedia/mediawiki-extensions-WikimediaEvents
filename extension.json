@@ -10,7 +10,7 @@
 	"descriptionmsg": "wikimediaevents-desc",
 	"license-name": "GPL-2.0-or-later",
 	"requires": {
-		"MediaWiki": ">= 1.37.0",
+		"MediaWiki": ">= 1.38.0",
 		"extensions": {
 			"EventLogging": "*"
 		}

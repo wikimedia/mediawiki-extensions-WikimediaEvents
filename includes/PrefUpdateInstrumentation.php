@@ -3,7 +3,9 @@
 namespace WikimediaEvents;
 
 use EventLogging;
+use ExtensionRegistry;
 use FormatJson;
+use MediaWiki\Extension\BetaFeatures\BetaFeatures;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\User\UserIdentity;
@@ -63,6 +65,14 @@ class PrefUpdateInstrumentation {
 	private const VALUE_NEWLINE_COUNT = 2;
 
 	/**
+	 * Indicates that a property is a beta feature that managed by the
+	 * BetaFeatures extension. For use in PROPERTY_TRACKLIST.
+	 *
+	 * @var int
+	 */
+	private const VALUE_BETA_FEATURE = 3;
+
+	/**
 	 * @var string[] List of preferences (aka user properties, aka user options)
 	 * to track via EventLogging when they are changed (T249894)
 	 */
@@ -74,7 +84,7 @@ class PrefUpdateInstrumentation {
 		'VectorSkinVersion' => self::VALUE_WELLKNOWN_SHORT,
 
 		// Editing team
-		'discussiontools-betaenable' => self::VALUE_WELLKNOWN_SHORT,
+		'discussiontools-betaenable' => self::VALUE_BETA_FEATURE,
 		'betafeatures-auto-enroll'  => self::VALUE_WELLKNOWN_SHORT,
 
 		// AHT
@@ -90,7 +100,7 @@ class PrefUpdateInstrumentation {
 		// WMDE Technical Wishes team
 		'usecodemirror' => self::VALUE_WELLKNOWN_SHORT,
 		'popups' => self::VALUE_WELLKNOWN_SHORT,
-		'popupsreferencepreviews' => self::VALUE_WELLKNOWN_SHORT,
+		'popupsreferencepreviews' => self::VALUE_BETA_FEATURE,
 	];
 
 	/**
@@ -134,9 +144,16 @@ class PrefUpdateInstrumentation {
 		}
 
 		$now = MWTimestamp::now( TS_MW );
+		$betaLoaded = ExtensionRegistry::getInstance()->isLoaded( 'BetaFeatures' );
 
 		foreach ( $modifiedOptions as $optName => $optValue ) {
-			$prevValue = $originalOptions[$optName] ?? null;
+			$trackType = self::PROPERTY_TRACKLIST[$optName] ?? null;
+			if ( $betaLoaded && $trackType === self::VALUE_BETA_FEATURE ) {
+				$optValue = BetaFeatures::isFeatureEnabled( $user, $optName );
+				$prevValue = BetaFeatures::isFeatureEnabled( $user, $optName, $originalOptions );
+			} else {
+				$prevValue = $originalOptions[$optName] ?? null;
+			}
 			// Use loose comparison because the implicit default form declared in PHP
 			// often uses integers and booleans, whereas the stored format often uses
 			// strings (e.g. "" vs false)
@@ -166,7 +183,9 @@ class PrefUpdateInstrumentation {
 			return false;
 		}
 
-		if ( $trackType === self::VALUE_WELLKNOWN_SHORT ) {
+		if ( $trackType === self::VALUE_WELLKNOWN_SHORT ||
+			$trackType === self::VALUE_BETA_FEATURE
+		) {
 			if ( strlen( $optValue ) > self::SHORT_MAX_LEN ) {
 				trigger_error( "Unexpected value for $optName in PrefUpdate", E_USER_WARNING );
 				return false;
