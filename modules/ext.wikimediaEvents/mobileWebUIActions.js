@@ -57,14 +57,11 @@ mw.requestIdleCallback( function () {
 	logEvent( 'init', 'ns=' + mw.config.get( 'wgNamespaceNumber' ) );
 } );
 
-// eslint-disable-next-line no-jquery/no-global-selector
-$( 'body' ).on( 'click', function ( event ) {
-	var element = event.target,
-		name = element.getAttribute( 'data-event-name' ),
-		destination;
-
+$( document.body ).on( 'click', function ( event ) {
+	var element = event.target;
+	var name = element.getAttribute( 'data-event-name' );
 	if ( name ) {
-		destination = element.getAttribute( 'href' );
+		var destination = element.getAttribute( 'href' );
 		logEvent( 'click', name, destination );
 	}
 } );
