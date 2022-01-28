@@ -4,10 +4,10 @@
  * Launch task: https://phabricator.wikimedia.org/T250282
  * Schema: https://meta.wikimedia.org/wiki/Schema:DesktopWebUIActionsTracking
  */
-var config = require( './config.json' ),
-	sampleSize = config.desktopWebUIActionsTracking || 0,
-	overSampleLoggedInUsers = config.desktopWebUIActionsTrackingOversampleLoggedInUsers || false,
-	skinVersion;
+var config = require( './config.json' );
+var sampleSize = config.desktopWebUIActionsTracking || 0;
+var overSampleLoggedInUsers = config.desktopWebUIActionsTrackingOversampleLoggedInUsers || false;
+var skinVersion;
 
 /**
  *
@@ -15,15 +15,14 @@ var config = require( './config.json' ),
  * @param {string} [name]
  */
 function logEvent( action, name ) {
-	var data,
-		checkbox = document.getElementById( 'mw-sidebar-checkbox' );
+	var checkbox = document.getElementById( 'mw-sidebar-checkbox' );
 
 	if ( !skinVersion ) {
 		skinVersion = document.body.classList.contains( 'skin-vector-legacy' ) ?
 			1 : 2;
 	}
 	if ( name || action === 'init' ) {
-		data = {
+		var data = {
 			action: action,
 			isAnon: mw.user.isAnon(),
 			// Ideally this would use an mw.config value but this will do for now

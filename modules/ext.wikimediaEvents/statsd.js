@@ -13,10 +13,9 @@
  * $wgWMEStatsdBaseUri must point to a URL that accepts query strings,
  * such as `?foo=1235ms&bar=5c&baz=42g`.
  */
-var queue = [],
-	batchSize = 50,
-	moduleConfig = require( './config.json' ),
-	baseUrl = moduleConfig.statsdBaseUri;
+var queue = [];
+var batchSize = 50;
+var baseUrl = require( './config.json' ).statsdBaseUri;
 
 // Statsv not configured
 if ( !baseUrl ) {

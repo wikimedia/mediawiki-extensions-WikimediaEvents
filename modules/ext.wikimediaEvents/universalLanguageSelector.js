@@ -74,8 +74,6 @@ function getSkinVersion() {
  * @param {Object} event Event action and optional fields
  */
 function log( event ) {
-	var userEditBucket;
-
 	event = $.extend( {
 
 		// Note well that the version and token properties _could_ be removed as they've both been
@@ -105,7 +103,7 @@ function log( event ) {
 		skinVersion: getSkinVersion()
 	}, event );
 
-	userEditBucket = mw.config.get( 'wgUserEditCountBucket' );
+	var userEditBucket = mw.config.get( 'wgUserEditCountBucket' );
 	if ( userEditBucket ) {
 		event.userEditBucket = userEditBucket;
 	}
@@ -132,9 +130,8 @@ function ulsSettingsOpen( context ) {
  *  dialog
  */
 function ulsCompactLanguageLinksOpen( $trigger ) {
-	var
-		context = 'other',
-		isVector = [ 'vector', 'vector-2022' ].indexOf( String( skin ) ) > -1;
+	var context = 'other';
+	var isVector = [ 'vector', 'vector-2022' ].indexOf( String( skin ) ) > -1;
 	if ( isVector && $trigger.is( '#p-lang-btn-checkbox' ) ) {
 		context = 'header';
 	} else if ( isVector && $trigger.is( '#p-lang-btn-sticky-header' ) ) {

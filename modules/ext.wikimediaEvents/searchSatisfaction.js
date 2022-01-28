@@ -24,28 +24,28 @@
 /* eslint-disable max-len, no-shadow, no-jquery/no-global-selector */
 'use strict';
 
-var search, autoComplete, session,
-	hasOwn = Object.prototype.hasOwnProperty,
-	isSearchResultPage = mw.config.get( 'wgIsSearchResultPage' ),
-	uri = ( function () {
-		try {
-			return new mw.Uri( location.href );
-		} catch ( e ) {
-			return null;
-		}
-	}() ),
-	checkinTimes = [ 10, 20, 30, 40, 50, 60, 90, 120, 150, 180, 210, 240, 300, 360, 420 ],
-	lastScrollTop = 0,
-	articleId = mw.config.get( 'wgArticleId' ),
-	// map from dym wprov values to eventlogging inputLocation values
-	didYouMeanMap = {
-		dym1: 'dym-suggest',
-		dymr1: 'dym-rewritten',
-		dymo1: 'dym-original'
-	},
-	// some browsers (IE11) can't do Object.keys, so manually maintain the list
-	didYouMeanList = [ 'dym1', 'dymr1', 'dymo1' ],
-	skin = mw.config.get( 'skin' );
+var session;
+var hasOwn = Object.prototype.hasOwnProperty;
+var isSearchResultPage = mw.config.get( 'wgIsSearchResultPage' );
+var uri = ( function () {
+	try {
+		return new mw.Uri( location.href );
+	} catch ( e ) {
+		return null;
+	}
+}() );
+var checkinTimes = [ 10, 20, 30, 40, 50, 60, 90, 120, 150, 180, 210, 240, 300, 360, 420 ];
+var lastScrollTop = 0;
+var articleId = mw.config.get( 'wgArticleId' );
+// map from dym wprov values to eventlogging inputLocation values
+var didYouMeanMap = {
+	dym1: 'dym-suggest',
+	dymr1: 'dym-rewritten',
+	dymo1: 'dym-original'
+};
+// some browsers (IE11) can't do Object.keys, so manually maintain the list
+var didYouMeanList = [ 'dym1', 'dymr1', 'dymo1' ];
+var skin = mw.config.get( 'skin' );
 
 // bail out if the URI could not be created
 if ( uri === null ) {
@@ -77,13 +77,13 @@ function randomToken() {
 	return mw.user.generateRandomSessionId() + Date.now().toString( 36 );
 }
 
-search = initFromWprov( 'srpw1_' );
+var search = initFromWprov( 'srpw1_' );
 search.didYouMean = uri.query.wprov &&
 	uri.query.wprov.substr( 0, search.wprovPrefix.length ) === search.wprovPrefix &&
 	didYouMeanList.indexOf( uri.query.wprov.substr( search.wprovPrefix.length ) ) >= 0 &&
 	uri.query.wprov.substr( search.wprovPrefix.length );
 
-autoComplete = initFromWprov( 'acrw1_' );
+var autoComplete = initFromWprov( 'acrw1_' );
 // with no position appended indicates the user submitted the
 // autocomplete form.
 autoComplete.cameFromAutocomplete = uri.query.wprov === 'acrw1';
@@ -135,7 +135,6 @@ function SessionState() {
 	 * @private
 	 */
 	function initialize( session ) {
-		var subTest;
 
 		/**
 		 * Transform backend reported subTest into local value
@@ -175,7 +174,7 @@ function SessionState() {
 			return;
 		}
 
-		subTest = session.get( 'subTest' );
+		var subTest = session.get( 'subTest' );
 		// null means we didn't store anything yet, pending means another
 		// page load tried but hasn't set the value.
 		if ( subTest === null || subTest === 'pending' ) {
@@ -370,14 +369,13 @@ function genAttachWprov( value ) {
 }
 
 function createVisitPageEvent() {
-	var referrer,
-		evt = {
-			position: search.resultPosition
-		};
+	var evt = {
+		position: search.resultPosition
+	};
 
 	// Attach helpfull information for tieing together various events in the backend
 	try {
-		referrer = new mw.Uri( document.referrer );
+		var referrer = new mw.Uri( document.referrer );
 		if ( referrer.query.searchToken ) {
 			evt.searchToken = referrer.query.searchToken;
 		}
@@ -400,14 +398,13 @@ function createVisitPageEvent() {
 }
 
 function createSerpEvent() {
-	var params, iwResultSet,
-		serpExtras = {
-			offset: $( '.results-info' ).data( 'mw-num-results-offset' )
-		};
+	var serpExtras = {
+		offset: $( '.results-info' ).data( 'mw-num-results-offset' )
+	};
 
 	// Track which sister wiki results were shown in the sidebar and in what order
 	if ( $( '#mw-interwiki-results > .iw-results' ).length ) {
-		iwResultSet = [];
+		var iwResultSet = [];
 		$( 'li.iw-resultset' ).each( function () {
 			iwResultSet.push( {
 				source: $( this ).data( 'iw-resultset-source' ),
@@ -429,7 +426,7 @@ function createSerpEvent() {
 		serpExtras.teamDraft = mw.config.get( 'wgCirrusSearchTeamDraft' );
 	}
 
-	params = {
+	var params = {
 		query: mw.config.get( 'searchTerm' ),
 		hitsReturned: $( '.results-info' ).data( 'mw-num-results-total' ),
 		extraParams: JSON.stringify( serpExtras )

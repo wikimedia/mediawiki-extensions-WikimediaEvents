@@ -28,10 +28,11 @@ var pageToken,
 	searchSessionStarted = false;
 
 function makeSamplingRate( context, language, config ) {
-	var bucket, name, rate, rates = {}, valid = false;
-	for ( name in config ) {
-		bucket = config[ name ];
-		rate = bucket.samplingRate;
+	var rates = {};
+	var valid = false;
+	for ( var name in config ) {
+		var bucket = config[ name ];
+		var rate = bucket.samplingRate;
 		if (
 			rate > 0 &&
 			( !bucket.context || bucket.context === context ) &&

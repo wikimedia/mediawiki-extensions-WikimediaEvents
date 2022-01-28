@@ -8,11 +8,11 @@
  *
  * Task: https://phabricator.wikimedia.org/T292586
  */
-var webUIScrollTrackingSamplingRate = require( './config.json' ).webUIScrollTrackingSamplingRate || 0,
-	webUIScrollTrackingTimeToWaitBeforeScrollUp = require( './config.json' ).webUIScrollTrackingTimeToWaitBeforeScrollUp || 0,
-	timer,
-	waitBeforeScrollUp = true,
-	isMobile = mw.config.get( 'wgMFMode' );
+var webUIScrollTrackingSamplingRate = require( './config.json' ).webUIScrollTrackingSamplingRate || 0;
+var webUIScrollTrackingTimeToWaitBeforeScrollUp = require( './config.json' ).webUIScrollTrackingTimeToWaitBeforeScrollUp || 0;
+var isMobile = mw.config.get( 'wgMFMode' );
+var waitBeforeScrollUp = true;
+var timer;
 
 /**
  * Emit an EventLogging event with schema 'Scroll'.

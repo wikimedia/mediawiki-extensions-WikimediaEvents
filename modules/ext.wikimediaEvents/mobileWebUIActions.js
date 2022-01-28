@@ -4,9 +4,7 @@
  * Launch task: https://phabricator.wikimedia.org/T220016
  * Schema: https://meta.wikimedia.org/wiki/Schema:MobileWebUIActionsTracking
  */
-var moduleConfig = require( './config.json' ),
-	Schema = mw.eventLog.Schema,
-	schemaMobileWebUIActionsTracking;
+var moduleConfig = require( './config.json' );
 
 /**
  * Helper function to build comma-separated list of all enabled mobile modes
@@ -14,15 +12,15 @@ var moduleConfig = require( './config.json' ),
  * @return {string[]}
  */
 function getModes() {
-	var mode = mw.config.get( 'wgMFMode', 'desktop' ),
-		modes = [ mode ];
+	var mode = mw.config.get( 'wgMFMode', 'desktop' );
+	var modes = [ mode ];
 	if ( mode !== 'desktop' && mw.config.get( 'wgMFAmc', false ) ) {
 		modes.push( 'amc' );
 	}
 	return modes;
 }
 
-schemaMobileWebUIActionsTracking = new Schema(
+var schemaMobileWebUIActionsTracking = new mw.eventLog.Schema(
 	'MobileWebUIActionsTracking',
 	moduleConfig.mobileWebUIActionsTracking || 0,
 	{

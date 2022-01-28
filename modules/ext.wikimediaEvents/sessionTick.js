@@ -54,10 +54,9 @@ var moduleConfig = require( './config.json' ),
  * See: https://dom.spec.whatwg.org/#dictdef-addeventlisteneroptions
  */
 function detectPassiveEventListenerSupport() {
-	var options,
-		noop = function () {};
+	var noop = function () {};
 	try {
-		options = Object.defineProperty( {}, 'passive', {
+		var options = Object.defineProperty( {}, 'passive', {
 			get: function () {
 				supportsPassive = 1;
 				return false;

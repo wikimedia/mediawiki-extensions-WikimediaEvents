@@ -17,10 +17,10 @@ var SPECIAL_PAGE_ALLOWLIST = [
 ];
 
 function isEnabled() {
-	var isEnabled = !!require( './config.json' ).ipAddressCopyActionEnabled;
+	var enabled = !!require( './config.json' ).ipAddressCopyActionEnabled;
 	var specialPageName = mw.config.get( 'wgCanonicalSpecialPageName' );
 
-	return isEnabled && (
+	return enabled && (
 		mw.config.get( 'wgAction' ) === 'history' ||
 		SPECIAL_PAGE_ALLOWLIST.indexOf( specialPageName ) !== -1
 	);
@@ -37,10 +37,9 @@ function isEnabled() {
  *    such as `special_log`.
  */
 function log() {
-
 	var bucketNamePrefix = 'MediaWiki.ipinfo_address_copy';
-	var bucketNameSuffix;
 
+	var bucketNameSuffix;
 	if ( mw.config.get( 'wgAction' ) === 'history' ) {
 		bucketNameSuffix = 'action_history';
 	} else {

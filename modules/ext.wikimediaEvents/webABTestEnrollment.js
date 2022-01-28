@@ -1,13 +1,9 @@
 /*!
- * Web A/B test enrollment event logger
- */
-'use strict';
-
-/*!
- * Tracks bucketing of users for an A/B test.
+ * Web A/B test enrollment event logger. Tracks bucketing of users for an A/B test.
  *
  * Task: https://phabricator.wikimedia.org/T292587
  */
+'use strict';
 
 /**
  * Log the A/B test initialization event.
