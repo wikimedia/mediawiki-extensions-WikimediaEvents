@@ -96,6 +96,7 @@ class PrefUpdateInstrumentation {
 		'growthexperiments-homepage-enable' => self::VALUE_WELLKNOWN_SHORT,
 		'growthexperiments-homepage-pt-link' => self::VALUE_WELLKNOWN_SHORT,
 		'growthexperiments-mentorship-weight' => self::VALUE_WELLKNOWN_SHORT,
+		'growthexperiments-mentor-away-timestamp' => self::VALUE_WELLKNOWN_SHORT,
 
 		// WMDE Technical Wishes team
 		'usecodemirror' => self::VALUE_WELLKNOWN_SHORT,
