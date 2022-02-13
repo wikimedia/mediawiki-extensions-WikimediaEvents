@@ -2,7 +2,7 @@
  * Track desktop web ui interactions
  *
  * Launch task: https://phabricator.wikimedia.org/T250282
- * Schema: https://meta.wikimedia.org/wiki/Schema:DesktopWebUIActionsTracking
+ * Schema: https://schema.wikimedia.org/#!/secondary/jsonschema/analytics/legacy/desktopwebuiactionstracking
  */
 var config = require( './config.json' );
 var sampleSize = config.desktopWebUIActionsTracking || 0;
