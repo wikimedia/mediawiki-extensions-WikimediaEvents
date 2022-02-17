@@ -21,9 +21,20 @@
 	"TestAutoloadNamespaces": {
 		"WikimediaEvents\\Tests\\": "tests/phpunit/"
 	},
+	"HookHandlers": {
+		"PageSplitterHooks": {
+			"class": "WikimediaEvents\\PageSplitter\\PageSplitterHooks",
+			"services": [
+				"MainConfig"
+			]
+		}
+	},
 	"Hooks": {
 		"BeforeInitialize": "WikimediaEvents\\WikimediaEventsHooks::onBeforeInitializeWMDECampaign",
-		"BeforePageDisplay": "WikimediaEvents\\WikimediaEventsHooks::onBeforePageDisplay",
+		"BeforePageDisplay": [
+			"WikimediaEvents\\WikimediaEventsHooks::onBeforePageDisplay",
+			"PageSplitterHooks"
+		],
 		"PageSaveComplete": "WikimediaEvents\\WikimediaEventsHooks::onPageSaveComplete",
 		"PreferencesFormPreSave": "WikimediaEvents\\VectorPrefDiffInstrumentation::onPreferencesFormPreSave",
 		"SaveUserOptions": "WikimediaEvents\\PrefUpdateInstrumentation::onSaveUserOptions",
@@ -32,7 +43,10 @@
 		"ResourceLoaderGetConfigVars": "WikimediaEvents\\WikimediaEventsHooks::onResourceLoaderGetConfigVars",
 		"ListDefinedTags": "WikimediaEvents\\WikimediaEventsHooks::onListDefinedTags",
 		"ChangeTagsListActive": "WikimediaEvents\\WikimediaEventsHooks::onChangeTagsListActive",
-		"XAnalyticsSetHeader": "WikimediaEvents\\WikimediaEventsHooks::onXAnalyticsSetHeader",
+		"XAnalyticsSetHeader": [
+			"WikimediaEvents\\WikimediaEventsHooks::onXAnalyticsSetHeader",
+			"PageSplitterHooks"
+		],
 		"SpecialSearchGoResult": "WikimediaEvents\\WikimediaEventsHooks::onSpecialSearchGoResult",
 		"SpecialSearchResults": "WikimediaEvents\\WikimediaEventsHooks::onSpecialSearchResults",
 		"RecentChange_save": [
@@ -226,6 +240,22 @@
 		"WMEIPAddressCopyActionEnabled": {
 			"value": false,
 			"description": "Whether the Anti-Harassment Tools team's \"IP address copy action\" instrument is enabled. See https://phabricator.wikimedia.org/T273021 and associated tasks for detail."
+		},
+		"WMEPageSchemaSplitTestSamplingRatio": {
+			"value": 0,
+			"description": "If set to 1, 100% of pages will be sampled. Half of those (.5) will receive the new treatment. See https://phabricator.wikimedia.org/T301584 and associated tasks for detail."
+		},
+		"WMEPageSchemaSplitTestBuckets": {
+			"value":
+				[
+					"control",
+					"treatment"
+				],
+			"description": "Pages are bucketed in [0, .5) for control and [.5, 1) for treatment. If a page is sampled and bucketed in treatment, it will contain the new changes. Otherwise, it will show no changes. See https://phabricator.wikimedia.org/T301584 and associated tasks for detail."
+		},
+		"WMEPageSchemaSplitTestTreatment": {
+			"value": "treatment",
+			"description": "The name of the bucket where pages see the new treatment. See https://phabricator.wikimedia.org/T301584 and associated tasks for detail."
 		}
 	},
 	"manifest_version": 2
