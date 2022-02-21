@@ -43,7 +43,7 @@ function enqueue( k, v ) {
 
 mw.trackSubscribe( 'timing.', function ( topic, time ) {
 	enqueue(
-		topic.substring( 'timing.'.length ),
+		topic.slice( 'timing.'.length ),
 		Math.round( time ) + 'ms'
 	);
 } );
@@ -54,7 +54,7 @@ mw.trackSubscribe( 'counter.', function ( topic, count ) {
 		count = 1;
 	}
 	enqueue(
-		topic.substring( 'counter.'.length ),
+		topic.slice( 'counter.'.length ),
 		count + 'c'
 	);
 } );
@@ -65,7 +65,7 @@ mw.trackSubscribe( 'gauge.', function ( topic, value ) {
 		return;
 	}
 	enqueue(
-		topic.substring( 'gauge.'.length ),
+		topic.slice( 'gauge.'.length ),
 		value + 'g'
 	);
 } );

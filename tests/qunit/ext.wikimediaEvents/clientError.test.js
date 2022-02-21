@@ -9,7 +9,7 @@ QUnit.test( 'processErrorLoggerObject', function ( assert ) {
 	var expected, actual,
 		error = new Error( 'foo' );
 
-	assert.strictEqual( null, clientError.processErrorLoggerObject( null ) );
+	assert.strictEqual( clientError.processErrorLoggerObject( null ), null );
 
 	// ---
 
@@ -50,17 +50,17 @@ QUnit.test( 'processErrorInstance', function ( assert ) {
 		error = new Error( 'bar' ),
 		expected, actual, actualFileUrl;
 
-	assert.strictEqual( null, clientError.processErrorInstance( null ) );
+	assert.strictEqual( clientError.processErrorInstance( null ), null );
 
 	// ---
 
-	assert.strictEqual( null, clientError.processErrorInstance( {} ) );
+	assert.strictEqual( clientError.processErrorInstance( {} ), null );
 
 	// ---
 
 	errorWithoutStack.stack = null;
 
-	assert.strictEqual( null, clientError.processErrorInstance( errorWithoutStack ) );
+	assert.strictEqual( clientError.processErrorInstance( errorWithoutStack ), null );
 
 	// ---
 
@@ -77,5 +77,10 @@ QUnit.test( 'processErrorInstance', function ( assert ) {
 	delete actual.fileUrl;
 
 	assert.propEqual( actual, expected );
-	assert.ok( new mw.Uri( actualFileUrl, { strictMode: true } ), 'The processed URL can be parsed.' );
+
+	var uri = null;
+	try {
+		uri = new mw.Uri( actualFileUrl, { strictMode: true } );
+	} catch ( e ) {}
+	assert.notStrictEqual( uri, null, 'The processed URL can be parsed.' );
 } );
