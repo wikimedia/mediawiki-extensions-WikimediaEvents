@@ -54,8 +54,8 @@ if ( uri === null ) {
 
 function extractResultPosition( uri, wprovPrefix ) {
 	return parseInt( uri.query.wprov &&
-		uri.query.wprov.substr( 0, wprovPrefix.length ) === wprovPrefix &&
-		uri.query.wprov.substr( wprovPrefix.length ), 10 );
+		uri.query.wprov.slice( 0, wprovPrefix.length ) === wprovPrefix &&
+		uri.query.wprov.slice( wprovPrefix.length ), 10 );
 }
 
 function initFromWprov( wprovPrefix ) {
@@ -79,9 +79,9 @@ function randomToken() {
 
 var search = initFromWprov( 'srpw1_' );
 search.didYouMean = uri.query.wprov &&
-	uri.query.wprov.substr( 0, search.wprovPrefix.length ) === search.wprovPrefix &&
-	didYouMeanList.indexOf( uri.query.wprov.substr( search.wprovPrefix.length ) ) >= 0 &&
-	uri.query.wprov.substr( search.wprovPrefix.length );
+	uri.query.wprov.slice( 0, search.wprovPrefix.length ) === search.wprovPrefix &&
+	didYouMeanList.indexOf( uri.query.wprov.slice( search.wprovPrefix.length ) ) >= 0 &&
+	uri.query.wprov.slice( search.wprovPrefix.length );
 
 var autoComplete = initFromWprov( 'acrw1_' );
 // with no position appended indicates the user submitted the
