@@ -2,9 +2,10 @@
  * Track mobile web ui interactions
  *
  * Launch task: https://phabricator.wikimedia.org/T220016
- * Schema: https://meta.wikimedia.org/wiki/Schema:MobileWebUIActionsTracking
+ * Schema: https://schema.wikimedia.org/#!/secondary/jsonschema/analytics/legacy/mobilewebuiactionstracking
  */
 var moduleConfig = require( './config.json' );
+var sampleSize = moduleConfig.mobileWebUIActionsTracking || 0;
 
 /**
  * Helper function to build comma-separated list of all enabled mobile modes
@@ -12,23 +13,13 @@ var moduleConfig = require( './config.json' );
  * @return {string[]}
  */
 function getModes() {
-	var mode = mw.config.get( 'wgMFMode', 'desktop' );
+	var mode = mw.config.get( 'wgMFMode' ) || 'desktop';
 	var modes = [ mode ];
-	if ( mode !== 'desktop' && mw.config.get( 'wgMFAmc', false ) ) {
+	if ( mode !== 'desktop' && mw.config.get( 'wgMFAmc' ) ) {
 		modes.push( 'amc' );
 	}
 	return modes;
 }
-
-var schemaMobileWebUIActionsTracking = new mw.eventLog.Schema(
-	'MobileWebUIActionsTracking',
-	moduleConfig.mobileWebUIActionsTracking || 0,
-	{
-		isAnon: mw.user.isAnon(),
-		editCountBucket: mw.config.get( 'wgUserEditCountBucket' ) || '0 edits',
-		modes: getModes().join( ',' )
-	}
-);
 
 /**
  * Log an event.
@@ -38,15 +29,22 @@ var schemaMobileWebUIActionsTracking = new mw.eventLog.Schema(
  * @param {string|null} destination If defined, where the interaction will take the user.
  */
 function logEvent( action, name, destination ) {
-	var analyticsEvent = {
+	var event = {
 		action: action,
 		name: name,
-		token: mw.user.sessionId()
+		modes: getModes().join( ',' ),
+		token: mw.user.sessionId(),
+		isAnon: mw.user.isAnon(),
+		editCountBucket: mw.config.get( 'wgUserEditCountBucket' ) || '0 edits'
 	};
 	if ( destination ) {
-		analyticsEvent.destination = destination;
+		event.destination = destination;
 	}
-	schemaMobileWebUIActionsTracking.log( analyticsEvent );
+	mw.track( 'event.MobileWebUIActionsTracking', event );
+}
+
+if ( !mw.eventLog.eventInSample( 1 / sampleSize ) ) {
+	return;
 }
 
 // Log the page load.

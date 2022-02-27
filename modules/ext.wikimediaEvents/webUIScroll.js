@@ -8,8 +8,8 @@
  *
  * Task: https://phabricator.wikimedia.org/T292586
  */
-var webUIScrollTrackingSamplingRate = require( './config.json' ).webUIScrollTrackingSamplingRate || 0;
-var webUIScrollTrackingTimeToWaitBeforeScrollUp = require( './config.json' ).webUIScrollTrackingTimeToWaitBeforeScrollUp || 0;
+var sampleRate = require( './config.json' ).webUIScrollTrackingSamplingRate || 0;
+var timeToWaitBeforeScrollUp = require( './config.json' ).webUIScrollTrackingTimeToWaitBeforeScrollUp || 0;
 var isMobile = mw.config.get( 'wgMFMode' );
 var waitBeforeScrollUp = true;
 var timer;
@@ -36,11 +36,11 @@ function log( action ) {
 
 // Watch for specific scroll events via hooks.
 mw.requestIdleCallback( function () {
-	var disabled = webUIScrollTrackingSamplingRate === 0;
+	var disabled = sampleRate === 0;
 	// Only initialize the instrument if config allows.
 	if ( disabled ||
 		( mw.user.isAnon() &&
-			!mw.eventLog.eventInSample( 1 / webUIScrollTrackingSamplingRate ) )
+			!mw.eventLog.eventInSample( 1 / sampleRate ) )
 	) {
 		return;
 	}
@@ -55,7 +55,7 @@ mw.requestIdleCallback( function () {
 			waitBeforeScrollUp = true;
 			timer = setTimeout( function () {
 				waitBeforeScrollUp = false;
-			}, webUIScrollTrackingTimeToWaitBeforeScrollUp );
+			}, timeToWaitBeforeScrollUp );
 		}
 		if ( data.context === 'scrolled-above-page-title' && !waitBeforeScrollUp ) {
 			log( data.action );
