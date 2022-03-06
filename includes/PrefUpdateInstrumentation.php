@@ -2,10 +2,10 @@
 
 namespace WikimediaEvents;
 
-use EventLogging;
 use ExtensionRegistry;
 use FormatJson;
 use MediaWiki\Extension\BetaFeatures\BetaFeatures;
+use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\User\UserIdentity;

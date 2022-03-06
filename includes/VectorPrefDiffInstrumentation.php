@@ -2,8 +2,8 @@
 
 namespace WikimediaEvents;
 
-use EventLogging;
 use HTMLForm;
+use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\MediaWikiServices;
 use MWCryptHash;
 use User;
