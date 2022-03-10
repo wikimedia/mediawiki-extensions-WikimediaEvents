@@ -536,14 +536,6 @@ class WikimediaEventsHooks {
 	 * @param OutputPage $out
 	 */
 	public static function onMakeGlobalVariablesScript( array &$vars, OutputPage $out ): void {
-		global $wgWMESearchRelevancePages;
-		if ( $vars['wgAction'] === 'view' ) {
-			$articleId = $out->getTitle()->getArticleID();
-			if ( isset( $wgWMESearchRelevancePages[$articleId] ) ) {
-				$vars['wgWMESearchRelevancePages'] = $wgWMESearchRelevancePages[$articleId];
-			}
-		}
-
 		$vars['wgWMESchemaEditAttemptStepOversample'] =
 			static::shouldSchemaEditAttemptStepOversample( $out->getContext() );
 

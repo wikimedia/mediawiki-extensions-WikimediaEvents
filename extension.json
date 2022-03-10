@@ -196,11 +196,6 @@
 		"WMEStatsdBaseUri": {
 			"value": false
 		},
-		"WMESearchRelevancePages": {
-			"value": {
-			},
-			"merge_strategy": "array_plus"
-		},
 		"WMEEditCampaigns": {
 			"value": []
 		},
