@@ -66,7 +66,6 @@
 				"WMDEBannerInteractions": "/analytics/legacy/wmdebannerinteractions/1.0.0",
 				"WMDEBannerSizeIssue": "/analytics/legacy/wmdebannersizeissue/1.0.0",
 				"WikidataCompletionSearchClicks": "/analytics/legacy/wikidatacompletionsearchclicks/1.0.0",
-				"UserFeedback": 18903446,
 				"Test": "/analytics/legacy/test/1.2.0",
 				"UniversalLanguageSelector": "/analytics/legacy/universallanguageselector/1.4.0"
 			}
