@@ -61,12 +61,24 @@ if ( !sampleSize || !mw.eventLog.eventInSample( 1 / sampleSize ) ) {
 $( function () {
 	logEvent( 'init' );
 	$( document )
+		// Track clicks to elements with `data-event-name`
+		// and children of elements that have the attribute
+		// i.e. user menu dropdown button, sticky header buttons, table of contents links
 		.on( 'click', function ( event ) {
-			// Track special links that have data-event-name associated
-			logEvent( 'click', event.target.getAttribute( 'data-event-name' ) );
+			var $closest = $( event.target ).closest( '[data-event-name]' );
+			if ( $closest.length ) {
+				logEvent( 'click', $closest.attr( 'data-event-name' ) );
+			}
 		} )
-		// Track links in nav element e.g. menus.
-		.on( 'click', 'nav a', function ( event ) {
-			logEvent( 'click', event.target.parentNode.getAttribute( 'id' ) );
+		// Track links in vector menus
+		// We can't use `nav a` as the selector to prevent extra events from being logged
+		// from the new TOC, which is a `nav` element
+		.on( 'click', '.vector-menu a', function ( event ) {
+			// Use currentTarget because this handler only runs for elements that match the selector
+			// https://api.jquery.com/on/#direct-and-delegated-events
+			var currTargetParent = event.currentTarget.parentNode;
+			if ( currTargetParent.getAttribute( 'id' ) ) {
+				logEvent( 'click', currTargetParent.getAttribute( 'id' ) );
+			}
 		} );
 } );
