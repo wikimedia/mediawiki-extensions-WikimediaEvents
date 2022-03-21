@@ -33,10 +33,12 @@ class PageSplitterHooks {
 	 * @param array &$headerItems
 	 */
 	public function onXAnalyticsSetHeader( OutputPage $out, array &$headerItems ): void {
-		if ( !$out->getTitle()->exists() ) {
+		$title = $out->getTitle();
+		if ( !$title || !$title->exists() ) {
 			return;
 		}
-		$pageId = $out->getTitle()->getArticleID();
+
+		$pageId = $title->getArticleID();
 
 		// T301584 Add max-snippet key-value pair for sampled pages only.
 		if ( $this->isSchemaTreatmentActiveForPageId( $pageId ) ) {
@@ -63,10 +65,11 @@ class PageSplitterHooks {
 	 * @param Skin &$skin
 	 */
 	public function onBeforePageDisplay( OutputPage &$out, Skin &$skin ) {
-		if ( !$out->getTitle()->exists() ) {
+		$title = $out->getTitle();
+		if ( !$title || !$title->exists() ) {
 			return;
 		}
-		if ( $this->isSchemaTreatmentActiveForPageId( $out->getTitle()->getArticleID() ) ) {
+		if ( $this->isSchemaTreatmentActiveForPageId( $title->getArticleID() ) ) {
 			// Note that if the section snippet A/B test improves organic search referrals,
 			// we should add the 'max-snippet' directive to the robots meta tag in core
 			// once the experiment is over and this code is removed from WME.
