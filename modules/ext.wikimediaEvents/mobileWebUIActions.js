@@ -59,7 +59,8 @@ $( document.body ).on( 'click', function ( event ) {
 		var destination = $closest.attr( 'href' );
 		if ( destination ) {
 			logEvent( 'click', $closest.attr( 'data-event-name' ), destination );
+		} else {
+			logEvent( 'click', $closest.attr( 'data-event-name' ) );
 		}
-		logEvent( 'click', $closest.attr( 'data-event-name' ) );
 	}
 } );
