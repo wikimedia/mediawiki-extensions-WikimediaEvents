@@ -54,10 +54,12 @@ mw.requestIdleCallback( function () {
 } );
 
 $( document.body ).on( 'click', function ( event ) {
-	var element = event.target;
-	var name = element.getAttribute( 'data-event-name' );
-	if ( name ) {
-		var destination = element.getAttribute( 'href' );
-		logEvent( 'click', name, destination );
+	var $closest = $( event.target ).closest( '[data-event-name]' );
+	if ( $closest.length ) {
+		var destination = $closest.attr( 'href' );
+		if ( destination ) {
+			logEvent( 'click', $closest.attr( 'data-event-name' ), destination );
+		}
+		logEvent( 'click', $closest.attr( 'data-event-name' ) );
 	}
 } );
