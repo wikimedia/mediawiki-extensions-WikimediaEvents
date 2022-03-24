@@ -324,6 +324,7 @@ class WikimediaEventsHooks {
 			$vars['desktopWebUIActionsTrackingOversampleLoggedInUsers'] =
 				$config->get( 'WMEDesktopWebUIActionsTrackingOversampleLoggedInUsers' );
 			$vars['webUIScrollTrackingSamplingRate'] = $config->get( 'WMEWebUIScrollTrackingSamplingRate' );
+			$vars['webUIScrollTrackingSamplingRateAnons'] = $config->get( 'WMEWebUIScrollTrackingSamplingRateAnons' );
 			$vars['webUIScrollTrackingTimeToWaitBeforeScrollUp'] =
 				$config->get( 'WMEWebUIScrollTrackingTimeToWaitBeforeScrollUp' );
 		}
