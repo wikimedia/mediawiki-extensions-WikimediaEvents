@@ -61,7 +61,7 @@ class WikimediaEventsHooks {
 	 * Insert a 'page_id' key with the page ID as value (if the request is for a page with a pageid)
 	 * Insert a 'ns' key with the namespace ID as value (if the request is for a valid title)
 	 * Insert a 'special' key with the resolved name of the special page (if the request is for a
-	 * special page)
+	 * special page).  If the name does not resolve, special is set to 'unknown' (see T304362).
 	 *
 	 * Add a 'loggedIn' key with the value of 1 if the user is logged in
 	 * @param OutputPage $out
@@ -79,9 +79,7 @@ class WikimediaEventsHooks {
 				list( $name, /* $subpage */ ) = MediaWikiServices::getInstance()->getSpecialPageFactory()
 					->resolveAlias( $title->getDBkey() );
 
-				if ( $name !== null ) {
-					$headerItems['special'] = $name;
-				}
+				$headerItems['special'] = $name ?? 'unknown';
 			}
 		}
 
