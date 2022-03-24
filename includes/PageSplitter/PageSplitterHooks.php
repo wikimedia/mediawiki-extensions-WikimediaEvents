@@ -10,6 +10,10 @@ use Skin;
  * Hooks used for PageSplitter-related logging
  */
 class PageSplitterHooks {
+	private const IS_CONTROL = 1;
+	private const IS_TREATMENT = 2;
+	private const IS_UNSAMPLED = 3;
+
 	/** @var Config */
 	private $config;
 
@@ -41,17 +45,13 @@ class PageSplitterHooks {
 		$pageId = $title->getArticleID();
 
 		// T301584 Add max-snippet key-value pair for sampled pages only.
-		if ( $this->isSchemaTreatmentActiveForPageId( $pageId ) ) {
+		$active = $this->getActiveInstrumentBucket( $pageId );
+		if ( $active === self::IS_TREATMENT ) {
 			// Sampled page is in the treatment group.
 			$headerItems['max-snippet'] = true;
-		} else {
-			$tester = $this->getPageSplitterInstrumentation();
-			$pageRandom = $this->getPageRandom( $pageId );
-
+		} elseif ( $active === self::IS_CONTROL ) {
 			// Sampled page is in the control group.
-			if ( $pageRandom !== null && $this->isPageIdSampled( $tester, $pageRandom ) ) {
-				$headerItems['max-snippet'] = false;
-			}
+			$headerItems['max-snippet'] = false;
 		}
 	}
 
@@ -69,7 +69,8 @@ class PageSplitterHooks {
 		if ( !$title || !$title->exists() ) {
 			return;
 		}
-		if ( $this->isSchemaTreatmentActiveForPageId( $title->getArticleID() ) ) {
+
+		if ( $this->getActiveInstrumentBucket( $title->getArticleID() ) === self::IS_TREATMENT ) {
 			// Note that if the section snippet A/B test improves organic search referrals,
 			// we should add the 'max-snippet' directive to the robots meta tag in core
 			// once the experiment is over and this code is removed from WME.
@@ -78,24 +79,26 @@ class PageSplitterHooks {
 	}
 
 	/**
+	 * Whether page is sampled, A/B test is active, and page is in the treatment bucket.
 	 * @param int $pageId
-	 *
-	 * @return bool True if page schema A/B test is active, page is sampled, and page is in the
-	 *              treatment bucket.
+	 * @return int One of IS_CONTROL, IS_TREATMENT or IS_UNSAMPLED
 	 */
-	private function isSchemaTreatmentActiveForPageId( int $pageId ) {
-		$tester = $this->getPageSplitterInstrumentation();
-		$pageRandom = $this->getPageRandom( $pageId );
+	private function getActiveInstrumentBucket( int $pageId ): int {
+		$instrument = $this->createInstrumentation();
+		$pageHash = $this->getPageHash( $pageId );
 
-		return $pageRandom !== null
-			&& $this->isPageIdSampled( $tester, $pageRandom )
-			&& $tester->getBucket( $pageRandom ) === $this->config->get( 'WMEPageSchemaSplitTestTreatment' );
+		if ( !$instrument->isSampled( $pageHash ) ) {
+			return self::IS_UNSAMPLED;
+		}
+		return (
+			$instrument->getBucket( $pageHash ) === $this->config->get( 'WMEPageSchemaSplitTestTreatment' )
+		) ? self::IS_TREATMENT : self::IS_CONTROL;
 	}
 
 	/**
 	 * @return PageSplitterInstrumentation
 	 */
-	private function getPageSplitterInstrumentation() {
+	private function createInstrumentation(): PageSplitterInstrumentation {
 		$samplingRatio = $this->config->get( 'WMEPageSchemaSplitTestSamplingRatio' );
 		$buckets = $this->config->get( 'WMEPageSchemaSplitTestBuckets' );
 		return new PageSplitterInstrumentation( $samplingRatio, $buckets );
@@ -103,19 +106,10 @@ class PageSplitterHooks {
 
 	/**
 	 * @param int $pageId
-	 * @return float|null
+	 * @return float
 	 */
-	private function getPageRandom( int $pageId ) {
-		$pageRandomLookup = new PageRandomGenerate();
-		return $pageRandomLookup->getPageRandom( $pageId );
-	}
-
-	/**
-	 * @param PageSplitterInstrumentation $tester
-	 * @param float $pageIdRandom
-	 * @return bool True if page is sampled.
-	 */
-	private function isPageIdSampled( PageSplitterInstrumentation $tester, float $pageIdRandom ) {
-		return $tester->isSampled( $pageIdRandom );
+	private function getPageHash( int $pageId ): float {
+		$lookup = new PageRandomGenerate();
+		return $lookup->getPageRandom( $pageId );
 	}
 }
