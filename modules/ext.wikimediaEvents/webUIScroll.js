@@ -9,6 +9,7 @@
  * Task: https://phabricator.wikimedia.org/T292586
  */
 var sampleRate = require( './config.json' ).webUIScrollTrackingSamplingRate || 0;
+var sampleRateAnons = require( './config.json' ).webUIScrollTrackingSamplingRateAnons || 0;
 var timeToWaitBeforeScrollUp = require( './config.json' ).webUIScrollTrackingTimeToWaitBeforeScrollUp || 0;
 var isMobile = mw.config.get( 'wgMFMode' );
 var waitBeforeScrollUp = true;
@@ -22,7 +23,7 @@ var timer;
 function log( action ) {
 	/* eslint-disable camelcase */
 	var data = {
-		$schema: '/analytics/mediawiki/web_ui_scroll/1.0.0',
+		$schema: '/analytics/mediawiki/web_ui_scroll/1.0.1',
 		web_session_id: mw.user.sessionId(),
 		page_id: mw.config.get( 'wgArticleId' ),
 		is_anon: mw.user.isAnon(),
@@ -34,32 +35,43 @@ function log( action ) {
 	mw.eventLog.submit( 'mediawiki.web_ui_scroll', data );
 }
 
+/**
+ * Take actions (wait or log event) based on event context.
+ *
+ * @param {Object} data associated with event
+ */
+function hookAction( data ) {
+	// The user is scrolling down so initiate a timer to set the variable flag which determines
+	// whether the scroll action should be logged (see T292586 and T303297).
+	if ( data.context.indexOf( 'scrolled-below-' ) === 0 ) {
+		waitBeforeScrollUp = true;
+		timer = setTimeout( function () {
+			waitBeforeScrollUp = false;
+		}, timeToWaitBeforeScrollUp );
+	}
+	if ( ( data.context.indexOf( 'scrolled-above-' ) === 0 ) &&
+		!waitBeforeScrollUp
+	) {
+		log( data.action );
+		clearTimeout( timer );
+	}
+}
+
 // Watch for specific scroll events via hooks.
 mw.requestIdleCallback( function () {
-	var disabled = sampleRate === 0;
+	var disabled = sampleRate === 0 && sampleRateAnons === 0;
 	// Only initialize the instrument if config allows.
 	if ( disabled ||
-		( mw.user.isAnon() &&
-			!mw.eventLog.eventInSample( 1 / sampleRate ) )
+		( !mw.user.isAnon() && !mw.eventLog.eventInSample( 1 / sampleRate ) ) ||
+		( mw.user.isAnon() && !mw.eventLog.eventInSample( 1 / sampleRateAnons ) )
 	) {
 		return;
 	}
 
 	// Check for scroll hooks and log scroll event when conditions are met (T292586).
 	// The data parameter should include a "context" key (and an "action" key if applicable)
-	// when firing corresponding hooks. See logScrollEvent() in scrollObserver.js in Vector.
-	mw.hook( 'vector.page_title_scroll' ).add( function ( data ) {
-		// The user is scrolling down so initiate a timer to set the variable flag which determines
-		// whether the scroll action should be logged (see T292586).
-		if ( data.context === 'scrolled-below-page-title' ) {
-			waitBeforeScrollUp = true;
-			timer = setTimeout( function () {
-				waitBeforeScrollUp = false;
-			}, timeToWaitBeforeScrollUp );
-		}
-		if ( data.context === 'scrolled-above-page-title' && !waitBeforeScrollUp ) {
-			log( data.action );
-			clearTimeout( timer );
-		}
-	} );
+	// when firing corresponding hooks. See fireScrollHook() in scrollObserver.js in Vector.
+	mw.hook( 'vector.page_title_scroll' ).add( hookAction );
+	// T303297 Log scroll event for table of contents scrolling.
+	mw.hook( 'vector.table_of_contents_scroll' ).add( hookAction );
 } );

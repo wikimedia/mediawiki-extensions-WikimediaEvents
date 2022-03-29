@@ -199,6 +199,9 @@
 		"WMEWebUIScrollTrackingSamplingRate": {
 			"value": 0
 		},
+		"WMEWebUIScrollTrackingSamplingRateAnons": {
+			"value": 0
+		},
 		"WMEWebUIScrollTrackingTimeToWaitBeforeScrollUp": {
 			"value": 0
 		},
