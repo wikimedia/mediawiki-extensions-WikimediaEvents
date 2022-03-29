@@ -3,7 +3,6 @@ require( './statsd.js' );
 require( './deprecate.js' );
 require( './clientError.js' );
 require( './sessionTick.js' );
-require( './ipAddressCopyAction.js' );
 require( './webABTestEnrollment.js' );
 require( './readingDepth.js' );
 
