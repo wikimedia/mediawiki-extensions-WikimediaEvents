@@ -3,15 +3,14 @@
 namespace WikimediaEvents\PageSplitter;
 
 /**
- * Return numeric hash of a page id as a float between 0 and 1.
- *
  * @license GPL-2.0-or-later
  */
 class PageRandomGenerate {
 
 	/**
-	 * @param int $pageId
+	 * Get hash of a page ID as a float between 0 and 1.
 	 *
+	 * @param int $pageId
 	 * @return float
 	 */
 	public function getPageRandom( int $pageId ): float {

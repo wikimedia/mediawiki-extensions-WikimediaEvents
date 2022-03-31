@@ -3,12 +3,24 @@
 namespace WikimediaEvents\PageSplitter;
 
 use Wikimedia\Assert\Assert;
-use Wikimedia\Assert\ParameterAssertionException;
 
 /**
- * Distributes a page across buckets with uniform probability and monotonous assignments. The
- * sampling ratio is independent of bucketing and may be used conventionally for controlling bucket
- * populations or also to perform staged rollouts. See unit tests for example usages.
+ * Deterministic sampling and bucketing based on a page IDs.
+ *
+ * The caller takes care of turning a page ID into a deterministic hash with
+ * uniform probability distribution (see PageRandomGenerate).
+ *
+ * Given an example page that is assigned 0.421 and 3 buckets (A, B, C), it works as follows:
+ *
+ * - The assigned float is scaled to cover the three buckets, in #scaledHash().
+ *   0.421 * 3 = 1.263
+ *
+ * - Each whole number represents a bucket. This case we're in bucket B.
+ *   A = 0.x, B = 1.x, C = 2.x
+ *
+ * - The fraction within each number represents the sampling, so if our sampling ratio
+ *   is 0.5, than x.00 to x.50 would be sampled, and x.50 to x.99 would be unsampled.
+ *   In this case we're 1.263 which is sampled, and in bucket B.
  *
  * @license GPL-2.0-or-later
  */
@@ -25,69 +37,57 @@ class PageSplitterInstrumentation {
 
 	/**
 	 * @param float $samplingRatio The sampling ratio, [0, 1].
-	 * @param array $buckets An array of bucket name strings. E.g., [ 'Control', 'Treatment' ].
-	 * Possibly empty if bucketing is unused.
-	 * Pages are bucketed in [0, .5) for control and [.5, 1) for treatment. If a page is sampled and
-	 * bucketed in treatment, it will contain the new schema changes. Otherwise, it will have no changes.
-	 *
-	 * @throws ParameterAssertionException
+	 * @param array $buckets An optional array of bucket name strings, e.g., `[ 'control', 'treatment' ]`.
 	 */
 	public function __construct( float $samplingRatio, array $buckets ) {
 		Assert::parameter(
 			$samplingRatio >= 0 && $samplingRatio <= 1,
 			'samplingRatio',
-			'Sampling ratio of "' . $samplingRatio . '; expected to be in the domain of [0, 1].'
+			'Sampling ratio must be in range [0, 1]'
 		);
 		$this->samplingRatio = $samplingRatio;
 		$this->buckets = $buckets;
 	}
 
 	/**
-	 * Usually called prior to getBucket(). May be called without getBucket() for staged rollouts:
+	 * Whether given page is in the sample.
 	 *
-	 * if ( $tester->isSampled( $pageRandom ) ) {
-	 * // Perform split test or just execute new risky code.
-	 * } else {
-	 * // Execute old stable code.
-	 * }
+	 * Should be called before getBucket().
 	 *
-	 * @param float $pageIdRandom A randomized float with hashed page.page_id.
+	 * @param float $pageHash
 	 * @return bool True if sampled, false if unsampled.
 	 */
-	public function isSampled( float $pageIdRandom ): bool {
+	public function isSampled( float $pageHash ): bool {
 		// Take the right of the decimal.
-		$sample = fmod( $this->scaledRandom( $pageIdRandom ), 1 );
+		$sample = fmod( $this->scaledHash( $pageHash ), 1 );
 		return $sample < $this->samplingRatio;
 	}
 
 	/**
-	 * A call to this function usually follows a call to isSampled(). E.g.:
-	 * $bucket = $tester->isSampled( $pageRandom ) ? $tester->getBucket( $pageRandom ) : null;
-	 * All inputs are bucketed regardless of sampling unless buckets is empty.
-	 * @param float $pageIdRandom A randomized float with page.page_id as seed.
-	 * @return string|null Bucket name or null if buckets is empty.
-	 * The result does not imply sampling.
+	 * Which bucket a given page is in.
+	 *
+	 * This does NOT imply sampling and should usually be called after isSampled().
+	 *
+	 * @param float $pageHash
+	 * @return string|null Bucket name or null if buckets are unused.
 	 */
-	public function getBucket( float $pageIdRandom ) {
+	public function getBucket( float $pageHash ): ?string {
 		if ( $this->buckets === [] ) {
 			return null;
 		}
 
-		// Take the left of the decimal. Floor (truncate) the scaled random number to
+		// Take the left of the decimal. Floor (truncate) the scaled number to
 		// [0, count( $buckets ) - 1] for use as an index.
-		$index = (int)$this->scaledRandom( $pageIdRandom );
+		$index = (int)$this->scaledHash( $pageHash );
 		return $this->buckets[ $index ];
 	}
 
 	/**
-	 * @param float $pageIdRandom A randomized float with hashed page.page_id.
-	 *
-	 * @return float A monotonic random number from [0, max( 1, count( buckets ) )). The integer
-	 *   component is the bucket when buckets is nonempty; the fractional component is the
-	 *   sampled rate.
+	 * @param float $pageHash
+	 * @return float Integer component is the bucket, fractional component is the sample rate.
 	 */
-	private function scaledRandom( float $pageIdRandom ): float {
-		return $pageIdRandom * max( 1, count( $this->buckets ) );
+	private function scaledHash( float $pageHash ): float {
+		return $pageHash * max( 1, count( $this->buckets ) );
 	}
 
 }

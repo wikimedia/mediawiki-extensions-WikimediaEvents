@@ -5,17 +5,19 @@ namespace WikimediaEvents\Tests;
 use MediaWikiUnitTestCase;
 use WikimediaEvents\PageSplitter\PageRandomGenerate;
 
+/**
+ * @covers \WikimediaEvents\PageSplitter\PageRandomGenerate
+ */
 class PageRandomLookupTest extends MediaWikiUnitTestCase {
 	/**
-	 * @covers \WikimediaEvents\PageSplitter\PageRandomGenerate::getPageRandom
-	 * @dataProvider providerGetPageRandomGenerate
+	 * @dataProvider provideGetPageRandom
 	 */
 	public function testGetPageRandom( $expected, $pageId ) {
 		$hashedPage = new PageRandomGenerate();
-		$this->assertEquals( $expected, $hashedPage->getPageRandom( $pageId ) );
+		$this->assertSame( $expected, $hashedPage->getPageRandom( $pageId ) );
 	}
 
-	public function providerGetPageRandomGenerate() {
+	public static function provideGetPageRandom() {
 		return [
 			'Valid: 1' => [ 0.925, 3 ],
 			'Valid: 10' => [ 0.203, 30 ],

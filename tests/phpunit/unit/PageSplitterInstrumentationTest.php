@@ -11,17 +11,15 @@ use WikimediaEvents\PageSplitter\PageSplitterInstrumentation;
  */
 class PageSplitterInstrumentationTest extends MediaWikiUnitTestCase {
 	/**
-	 * @dataProvider providerConstructInvalidStates
+	 * @dataProvider provideConstructorInvalidRatio
 	 */
-	public function testConstructInvalidStates( $samplingRatio, array $buckets ) {
+	public function testConstructorInvalidRatio( $samplingRatio, array $buckets ) {
 		$this->expectException( ParameterAssertionException::class );
-		$errorMessage = 'Bad value for parameter samplingRatio: Sampling ratio of "' . $samplingRatio;
-		$errorMessage .= '; expected to be in the domain of [0, 1].';
-		$this->expectExceptionMessage( $errorMessage );
+		$this->expectExceptionMessage( 'Sampling ratio must be in range [0, 1]' );
 		new PageSplitterInstrumentation( $samplingRatio, $buckets );
 	}
 
-	public function providerConstructInvalidStates() {
+	public static function provideConstructorInvalidRatio() {
 		return [
 			'Out of range: negative integer' => [ -1, [] ],
 			'Out of range: negative float' => [ -0.1, [] ],
@@ -31,15 +29,15 @@ class PageSplitterInstrumentationTest extends MediaWikiUnitTestCase {
 	}
 
 	/**
-	 * @dataProvider providerConstructValidStates
+	 * @dataProvider provideConstructValidArgs
 	 */
-	public function testConstructValidStates( $samplingRatio, array $buckets ) {
+	public function testConstructorValidArgs( $samplingRatio, array $buckets ) {
 		new PageSplitterInstrumentation( $samplingRatio, $buckets );
 		// Parameters are accepted without exceptions.
 		$this->addToAssertionCount( 1 );
 	}
 
-	public function providerConstructValidStates() {
+	public static function provideConstructValidArgs() {
 		return [
 			'Defaults' => [ 0, [] ],
 			'No sampling, A/B test' => [ 0, [ 'control', 'treatment' ] ],
@@ -51,68 +49,96 @@ class PageSplitterInstrumentationTest extends MediaWikiUnitTestCase {
 	}
 
 	/**
-	 * @dataProvider providerIsSample
+	 * @dataProvider provideSampledAndBucket
 	 */
-	public function testIsSampled( $expected, $samplingRatio, array $buckets, $pageRandom ) {
-		$subject = new PageSplitterInstrumentation( $samplingRatio, $buckets );
-		$this->assertEquals( $expected, $subject->isSampled( $pageRandom ) );
+	public function testSampledAndBucket(
+		float $ratio, array $buckets, float $page, bool $sampled, ?string $bucket
+	) {
+		$subject = new PageSplitterInstrumentation( $ratio, $buckets );
+		$this->assertEquals( $sampled, $subject->isSampled( $page ) );
+
+		$subject = new PageSplitterInstrumentation( $ratio, $buckets );
+		$this->assertEquals( $bucket, $subject->getBucket( $page ) );
 	}
 
-	public function providerIsSample() {
-		return [
-			'scaledRandom: 0, bucket: 0, sample: 0' => [ false, 0, [], 0 ],
-			'scaledRandom: 0.5, bucket: 0, sample: 0' => [ false, 0, [], 0.5 ],
-			'scaledRandom: 0, bucket: , sample: 0' => [ false, 0, [ 'control', 'treatment' ], 0 ],
-			'scaledRandom: 0.98, bucket: 0, sample: 0.98' => [ false, 0, [ 'control', 'treatment' ], 0.49 ],
-			'scaledRandom: 1.98; bucket: 1, sample: 0.98' => [ false, 0, [ 'control', 'treatment' ], 0.99 ],
-			'scaledRandom1: 0, bucket: 0, sample: 0' => [ true, 0.5, [], 0 ],
-			'scaledRandom: 0.5, bucket: 0, sample: 0.5' => [ false, 0.5, [], 0.5 ],
-			'scaledRandom: 0.99, bucket: 0, sample: 0.99' => [ false, 0.5, [], 0.99 ],
-			'scaledRandom2: 0, bucket: 0, sample: 0' => [ true, 1, [], 0 ],
-			'scaledRandom1: 0.5, bucket: 0, sample: 0.5' => [ true, 1, [], 0.5 ],
-			'scaledRandom1: 0.99, bucket: 0, sample: 0.99' => [ true, 1, [], 0.99 ],
-			'scaledRandom3: 0, bucket: 0, sample: 0' => [ true, 1, [ 'a', 'b', 'c' ], 0 ],
-			'scaledRandom2: 0.99, bucket: 0, sample: 0.99' => [ true, 1, [ 'a', 'b', 'c' ], 0.33 ],
-			'scaledRandom: 2.97, bucket: 2, sample: 0.97' => [ true, 1, [ 'a', 'b', 'c' ], 0.99 ],
-			'scaledRandom4: 0, bucket: 0, sample: 0' => [ true, 0.1, [ 'control', 'a', 'b', 'c' ], 0 ],
-			'scaledRandom: 0.096, bucket: 0, sample: 0.096' => [ true, 0.1, [ 'control', 'a', 'b', 'c' ], 0.024 ],
-			'scaledRandom: 0.10, bucket: 0, sample: 0.10' => [ false, 0.1, [ 'control', 'a', 'b', 'c' ], 0.025 ],
-			'scaledRandom: 3.96, bucket: 3, sample: 0.96' => [ false, 0.1, [ 'control', 'a', 'b', 'c' ], 0.99 ]
+	public static function provideSampledAndBucket() {
+		// No sampling
+		yield [
+			'ratio' => 0.0, 'buckets' => [],
+			'page' => 0.00, 'sampled' => false, 'bucket' => null
 		];
-	}
+		yield [
+			'ratio' => 0.0, 'buckets' => [],
+			'page' => 0.50, 'sampled' => false, 'bucket' => null
+		];
+		yield [
+			'ratio' => 0.0, 'buckets' => [ 'control', 'treatment' ],
+			'page' => 0.00, 'sampled' => false, 'bucket' => 'control'
+		];
+		yield [
+			'ratio' => 0.0, 'buckets' => [ 'control', 'treatment' ],
+			'page' => 0.49, 'sampled' => false, 'bucket' => 'control'
+		];
+		yield [
+			'ratio' => 0.0, 'buckets' => [ 'control', 'treatment' ],
+			'page' => 0.99 , 'sampled' => false, 'bucket' => 'treatment'
+		];
 
-	/**
-	 * @dataProvider providerGetBucket
-	 */
-	public function testGetBucket( $expected, $samplingRatio, array $buckets, $pageRandom ) {
-		$subject = new PageSplitterInstrumentation( $samplingRatio, $buckets );
-		$this->assertEquals( $expected, $subject->getBucket( $pageRandom ) );
-	}
+		// 50% sampling ratio
+		yield [
+			'ratio' => 0.5, 'buckets' => [],
+			'page' => 0.00, 'sampled' => true, 'bucket' => null
+		];
+		yield [
+			'ratio' => 0.5, 'buckets' => [],
+			'page' => 0.50, 'sampled' => false, 'bucket' => null
+		];
+		yield [
+			'ratio' => 0.5, 'buckets' => [],
+			'page' => 0.99, 'sampled' => false, 'bucket' => null
+		];
 
-	public function providerGetBucket() {
-		return [
-			'scaledRandom: 0, bucket: 0, sample: 0' => [ null, 0, [], 0 ],
-			'scaledRandom: 0, bucket: 0, sample: 0.99' => [ null, 0, [], 0.99 ],
-			'scaledRandom1: 0, bucket: 0, sample: 0' => [ 'enabled', 0, [ 'enabled' ], 0 ],
-			'scaledRandom1: 0, bucket: 0, sample: 0.99' => [ 'enabled', 0, [ 'enabled' ], 0.99 ],
-			'scaledRandom2: 0, bucket: 0, sample: 0' => [ 'control', 0, [ 'control', 'treatment' ], 0 ],
-			'scaledRandom: 0.98, bucket: 0, sample: 0.98' => [ 'control', 0, [ 'control', 'treatment' ], 0.49 ],
-			'scaledRandom: 1, bucket: 1, sample: 0' => [ 'treatment', 0, [ 'control', 'treatment' ], 0.5 ],
-			'scaledRandom: 1.98, bucket: 1, sample: 0.98' => [ 'treatment', 0, [ 'control', 'treatment' ], 0.99 ],
-			'scaledRandom3: 0, bucket: 0, sample: 0' => [ null, 0.5, [], 0 ],
-			'scaledRandom4: 0, bucket: 0, sample: 0' => [ null, 1, [], 0 ],
-			'scaledRandom5: 0, bucket: 0, sample: 0' => [ 'a', 1, [ 'a', 'b', 'c' ], 0 ],
-			'scaledRandom: 0.99, bucket: 0, sample: 0.99' => [ 'a', 1, [ 'a', 'b', 'c' ], 0.33 ],
-			'scaledRandom: 1.02, bucket: 1, sample: 0.02' => [ 'b', 1, [ 'a', 'b', 'c' ], 0.34 ],
-			'scaledRandom1: 1.98, bucket: 1, sample: 0.98' => [ 'b', 1, [ 'a', 'b', 'c' ], 0.66 ],
-			'scaledRandom: 2.01, bucket: 2, sample: 0.01' => [ 'c', 1, [ 'a', 'b', 'c' ], 0.67 ],
-			'scaledRandom: 2.97, bucket: 2, sample: 0.97' => [ 'c', 1, [ 'a', 'b', 'c' ], 0.99 ],
-			'scaledRandom6: 0, bucket: 0, sample: 0' => [ 'control', 0.1, [ 'control', 'a', 'b', 'c' ], 0 ],
-			'scaledRandom: 0.096, bucket: 0, sample: 0.096' => [ 'control', 0.1, [ 'control', 'a', 'b', 'c' ], 0.024 ],
-			'scaledRandom: 0.1, bucket: 0, sample: 0.1' => [ 'control', 0.1, [ 'control', 'a', 'b', 'c' ], 0.025 ],
-			'scaledRandom: 0.96, bucket: 0, sample: 0.96' => [ 'control', 0.1, [ 'control', 'a', 'b', 'c' ], 0.24 ],
-			'scaledRandom1: 1, bucket: 1, sample: 0' => [ 'a', 0.1, [ 'control', 'a', 'b', 'c' ], 0.25 ],
-			'scaledRandom: 3.96, bucket: 3, sample: 0.96' => [ 'c', 0.1, [ 'control', 'a', 'b', 'c' ], 0.99 ]
+		// 100% sampling ratio
+		yield [
+			'ratio' => 1.0, 'buckets' => [],
+			'page' => 0.00, 'sampled' => true, 'bucket' => null
+		];
+		yield [ 'ratio' => 1.0, 'buckets' => [],
+			'page' => 0.50, 'sampled' => true, 'bucket' => null
+		];
+		yield [
+			'ratio' => 1.0, 'buckets' => [],
+			'page' => 0.99, 'sampled' => true, 'bucket' => null
+		];
+		yield [
+			'ratio' => 1.0, 'buckets' => [ 'a', 'b', 'c' ],
+			'page' => 0.00, 'sampled' => true, 'bucket' => 'a'
+		];
+		yield [
+			'ratio' => 1.0, 'buckets' => [ 'a', 'b', 'c' ],
+			'page' => 0.33, 'sampled' => true, 'bucket' => 'a'
+		];
+		yield [
+			'ratio' => 1.0, 'buckets' => [ 'a', 'b', 'c' ],
+			'page' => 0.99, 'sampled' => true, 'bucket' => 'c'
+		];
+
+		// 10% sampling
+		yield [
+			'ratio' => 0.1, 'buckets' => [ 'control', 'a', 'b', 'c' ],
+			'page' => 0.00, 'sampled' => true, 'bucket' => 'control'
+		];
+		yield [
+			'ratio' => 0.1, 'buckets' => [ 'control', 'a', 'b', 'c' ],
+			'page' => 0.024, 'sampled' => true, 'bucket' => 'control'
+		];
+		yield [
+			'ratio' => 0.1, 'buckets' => [ 'control', 'a', 'b', 'c' ],
+			'page' => 0.025, 'sampled' => false, 'bucket' => 'control'
+		];
+		yield [
+			'ratio' => 0.1, 'buckets' => [ 'control', 'a', 'b', 'c' ],
+			'page' => 0.99, 'sampled' => false, 'bucket' => 'c'
 		];
 	}
 
