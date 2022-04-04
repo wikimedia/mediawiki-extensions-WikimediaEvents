@@ -251,5 +251,8 @@
 			"description": "The name of the bucket where pages see the new treatment. See https://phabricator.wikimedia.org/T301584 and associated tasks for detail."
 		}
 	},
+	"ServiceWiringFiles": [
+		"includes/ServiceWiring.php"
+	],
 	"manifest_version": 2
 }
