@@ -72,7 +72,7 @@ function logEvent( action, name ) {
 			skin: mw.config.get( 'skin' ),
 			editCountBucket: mw.config.get( 'wgUserEditCountBucket' ) || '0 edits',
 			isSidebarCollapsed: checkbox ? !checkbox.checked : false,
-			viewportSize: getUserViewportBucket(),
+			viewportSizeBucket: getUserViewportBucket(),
 			token: mw.user.sessionId()
 		};
 		if ( name ) {
