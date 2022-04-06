@@ -9,12 +9,12 @@ var sampleSize = config.desktopWebUIActionsTracking || 0;
 var overSampleLoggedInUsers = config.desktopWebUIActionsTrackingOversampleLoggedInUsers || false;
 var skinVersion;
 var VIEWPORT_BUCKETS = {
-	under320: '<320',
-	between320and719: '320-719',
-	between720and999: '720-999',
-	between1000and1199: '1000-1199',
-	between1200and2000: '1200-2000',
-	over2000: '>2000'
+	below320: '<320px',
+	between320and719: '320px-719px',
+	between720and999: '720px-999px',
+	between1000and1199: '1000px-1199px',
+	between1200and2000: '1200px-2000px',
+	over2000: '>2000px'
 };
 
 /**
