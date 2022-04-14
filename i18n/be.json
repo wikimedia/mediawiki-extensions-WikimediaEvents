@@ -1,9 +1,14 @@
 {
 	"@metadata": {
 		"authors": [
-			"Artsiom91"
+			"Artsiom91",
+			"Chadyka"
 		]
 	},
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Загрузка з іншага вікі-праекта («крос-вікі»)]]",
-	"tag-cross-wiki-upload-description": "Файлы, загружаныя з тэкставага і візуальнага рэдактараў іншых вікі-праектаў"
+	"tag-cross-wiki-upload-description": "Файлы, загружаныя з тэкставага і візуальнага рэдактараў іншых вікі-праектаў",
+	"wikimediaevents-humanrel-yes": "Так",
+	"wikimediaevents-humanrel-no": "Не",
+	"wikimediaevents-humanrel-unsure": "Я не ведаю",
+	"wikimediaevents-humanrel-privacy-statement": "Заява аб канфідэнцыяльнасці"
 }
