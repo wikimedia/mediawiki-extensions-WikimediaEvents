@@ -7,19 +7,5 @@
 			"Robby"
 		]
 	},
-	"wikimediaevents-desc": "{{desc|name=Wikimedia Events|url=https://www.mediawiki.org/wiki/Extension:WikimediaEvents}}",
-	"tag-cross-wiki-upload": "Tag on cross-wiki uploads",
-	"tag-cross-wiki-upload-description": "Description for the cross-wiki-upload tag.",
-	"tag-cross-wiki-upload-1": "{{notranslate}} Tag on cross-wiki uploads submitted using interface option 1.",
-	"tag-cross-wiki-upload-2": "{{notranslate}} Tag on cross-wiki uploads submitted using interface option 2.",
-	"tag-cross-wiki-upload-3": "{{notranslate}} Tag on cross-wiki uploads submitted using interface option 3.",
-	"tag-cross-wiki-upload-4": "{{notranslate}} Tag on cross-wiki uploads submitted using interface option 4.",
-	"wikimediaevents-humanrel-question-a": "Question posed to readers of article pages about the relevance of a search query to the article they are reading.",
-	"wikimediaevents-humanrel-question-b": "Question posed to readers of article pages about the relevance of a search query to the article they are reading.",
-	"wikimediaevents-humanrel-question-c": "Question posed to readers of article pages about the relevance of a search query to the article they are reading.",
-	"wikimediaevents-humanrel-question-d": "Question posed to readers of article pages about the relevance of a search query to the article they are reading.",
-	"wikimediaevents-humanrel-yes": "Positive answer to articles relevance to a search query.\n\nAppears with the question: {{msg-mw|wikimediaevents-humanrel-question-a}}\n\n{{Identical|Yes}}",
-	"wikimediaevents-humanrel-no": "Negative answer to articles relevance to a search query.\n\nAppears with the question: {{msg-mw|wikimediaevents-humanrel-question-a}}\n\n{{Identical|No}}",
-	"wikimediaevents-humanrel-unsure": "Indecisive answer to articles relevance to a search query.\n\nSee also: {{msg-mw|wikimediaevents-humanrel-question-a}}, {{msg-mw|wikimediaevents-humanrel-yes}}, {{msg-mw|wikimediaevents-humanrel-no}}",
-	"wikimediaevents-humanrel-privacy-statement": "Text for link to the survey privacy statement."
+	"wikimediaevents-desc": "{{desc|name=Wikimedia Events|url=https://www.mediawiki.org/wiki/Extension:WikimediaEvents}}"
 }

@@ -4,19 +4,5 @@
 			"Ori Livneh"
 		]
 	},
-	"wikimediaevents-desc": "Logs Wikimedia-specific events using EventLogging",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Cross-wiki upload]]",
-	"tag-cross-wiki-upload-description": "Files uploaded from inside the wikitext and visual editors on other wikis",
-	"tag-cross-wiki-upload-1": "-",
-	"tag-cross-wiki-upload-2": "-",
-	"tag-cross-wiki-upload-3": "-",
-	"tag-cross-wiki-upload-4": "-",
-	"wikimediaevents-humanrel-question-a": "Would you click on this page when searching for '$1'?",
-	"wikimediaevents-humanrel-question-b": "If you searched for '$1', would this article be a good result?",
-	"wikimediaevents-humanrel-question-c": "If you searched for '$1', would this article be relevant?",
-	"wikimediaevents-humanrel-question-d": "If someone searched for '$1', would they want to read this article?",
-	"wikimediaevents-humanrel-yes": "Yes",
-	"wikimediaevents-humanrel-no": "No",
-	"wikimediaevents-humanrel-unsure": "I don't know",
-	"wikimediaevents-humanrel-privacy-statement": "Privacy Statement"
+	"wikimediaevents-desc": "Logs Wikimedia-specific events using EventLogging"
 }
