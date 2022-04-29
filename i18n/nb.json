@@ -4,15 +4,5 @@
 			"Jon Harald Søby"
 		]
 	},
-	"wikimediaevents-desc": "Logger Wikimedia-spesifikke hendelser med EventLogging",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Krysswikiopplasting]]",
-	"tag-cross-wiki-upload-description": "Filer som lastes opp fra wikiteksteditoren og den visuelle editoren på andre wikier",
-	"wikimediaevents-humanrel-question-a": "Ville du klikke på denne siden om du søkte på «$1»?",
-	"wikimediaevents-humanrel-question-b": "Om du søkte på «$1», ville denne artikkelen være et bra resultat?",
-	"wikimediaevents-humanrel-question-c": "Om du søkte på «$1», ville denne artikkelen være relevant?",
-	"wikimediaevents-humanrel-question-d": "Om noen søkte på «$1», ville de ønske å lese denne artikkelen?",
-	"wikimediaevents-humanrel-yes": "Ja",
-	"wikimediaevents-humanrel-no": "Nei",
-	"wikimediaevents-humanrel-unsure": "Jeg vet ikke",
-	"wikimediaevents-humanrel-privacy-statement": "Personvernserklæring"
+	"wikimediaevents-desc": "Logger Wikimedia-spesifikke hendelser med EventLogging"
 }

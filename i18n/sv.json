@@ -9,15 +9,5 @@
 			"WikiPhoenix"
 		]
 	},
-	"wikimediaevents-desc": "Loggar Wikimedia-specifika händelser med hjälp av EventLogging",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Uppladdning över flera wikier]]",
-	"tag-cross-wiki-upload-description": "Filer som laddades upp från wikitext-redigeraren och den visuella redigeraren på andra wikier",
-	"wikimediaevents-humanrel-question-a": "Skulle du vilja klicka på denna sida när du söker efter \"$1\"?",
-	"wikimediaevents-humanrel-question-b": "Om du sökte efter \"$1\", skulle denna artikel vara ett bra resultat?",
-	"wikimediaevents-humanrel-question-c": "Om du sökte efter \"$1\", skulle denna artikel vara relevant?",
-	"wikimediaevents-humanrel-question-d": "Om någon sökte efter \"$1\", skulle de vilja läsa denna artikel?",
-	"wikimediaevents-humanrel-yes": "Ja",
-	"wikimediaevents-humanrel-no": "Nej",
-	"wikimediaevents-humanrel-unsure": "Jag vet inte",
-	"wikimediaevents-humanrel-privacy-statement": "Integritetspolicy"
+	"wikimediaevents-desc": "Loggar Wikimedia-specifika händelser med hjälp av EventLogging"
 }

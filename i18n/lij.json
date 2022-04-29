@@ -4,15 +4,5 @@
 			"Giromin Cangiaxo"
 		]
 	},
-	"wikimediaevents-desc": "Registra di eventi speciffichi Wikimedia dœuviando EventLogging",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Caregamento inter-wiki]]",
-	"tag-cross-wiki-upload-description": "File caregæ da-i editor wikitesto e vixoâ in scê atre wiki",
-	"wikimediaevents-humanrel-question-a": "Sercando $1 ti-a clichiesci sta paggina?",
-	"wikimediaevents-humanrel-question-b": "Se t'hæ sercou $1, sta voxe chie a l'aniæ ben comme rezultou?",
-	"wikimediaevents-humanrel-question-c": "Se t'hæ sercou $1, sta voxe chie a-o saiæ pertinente?",
-	"wikimediaevents-humanrel-question-d": "Se quarchedun serchesse $1, ghe l'avieivan coæ de leze sta voxe chie?",
-	"wikimediaevents-humanrel-yes": "Sci",
-	"wikimediaevents-humanrel-no": "No",
-	"wikimediaevents-humanrel-unsure": "No-o so",
-	"wikimediaevents-humanrel-privacy-statement": "Deciarassion in sciâ Risservatessa"
+	"wikimediaevents-desc": "Registra di eventi speciffichi Wikimedia dœuviando EventLogging"
 }

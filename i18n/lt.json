@@ -6,9 +6,5 @@
 			"Manvydasz"
 		]
 	},
-	"wikimediaevents-desc": "Žurnalas Wikimedia specifinių įvykių, naudojant EventLogging",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Tarp-vikinis įkėlimas]]",
-	"tag-cross-wiki-upload-description": "Failai įkelti naudojant kitų vikių vikiteksto ir vizualius redaktorius",
-	"wikimediaevents-humanrel-yes": "Taip",
-	"wikimediaevents-humanrel-no": "Ne"
+	"wikimediaevents-desc": "Žurnalas Wikimedia specifinių įvykių, naudojant EventLogging"
 }

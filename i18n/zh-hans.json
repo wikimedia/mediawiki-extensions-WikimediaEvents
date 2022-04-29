@@ -7,15 +7,5 @@
 			"VulpesVulpes825"
 		]
 	},
-	"wikimediaevents-desc": "使用EventLogging的维基媒体特定事件日志",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|跨wiki上传]]",
-	"tag-cross-wiki-upload-description": "在其他wiki上使用wikitext和可视化编辑器上传的文件",
-	"wikimediaevents-humanrel-question-a": "当您搜索“$1”时，您会点击此页面么？",
-	"wikimediaevents-humanrel-question-b": "如果您搜索“$1”，该条目会是好结果么？",
-	"wikimediaevents-humanrel-question-c": "如果您搜索“$1”，该条目相关么？",
-	"wikimediaevents-humanrel-question-d": "如果有人搜索“$1”，这个人希望阅读该条目么？",
-	"wikimediaevents-humanrel-yes": "是",
-	"wikimediaevents-humanrel-no": "否",
-	"wikimediaevents-humanrel-unsure": "我不知道",
-	"wikimediaevents-humanrel-privacy-statement": "隐私声明"
+	"wikimediaevents-desc": "使用EventLogging的维基媒体特定事件日志"
 }

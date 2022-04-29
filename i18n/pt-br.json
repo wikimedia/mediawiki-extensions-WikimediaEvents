@@ -8,15 +8,5 @@
 			"TheEduGobi"
 		]
 	},
-	"wikimediaevents-desc": "Registra eventos específicos da Wikimedia usando o EventLogging",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Envio interwiki]]",
-	"tag-cross-wiki-upload-description": "Arquivos enviados de dentro do wikitexto e de editores visuais em outras wikis",
-	"wikimediaevents-humanrel-question-a": "Você clicaria nessa página ao pesquisar por ‘$1’?",
-	"wikimediaevents-humanrel-question-b": "Se estivesse à procura de ‘$1’, este artigo seria um bom resultado?",
-	"wikimediaevents-humanrel-question-c": "Se tivesse pesquisado por ‘$1’, este artigo seria relevante?",
-	"wikimediaevents-humanrel-question-d": "Se alguém pesquisasse por ‘$1’, quereria ler este artigo?",
-	"wikimediaevents-humanrel-yes": "Sim",
-	"wikimediaevents-humanrel-no": "Não",
-	"wikimediaevents-humanrel-unsure": "Não sei",
-	"wikimediaevents-humanrel-privacy-statement": "Declaração de Privacidade"
+	"wikimediaevents-desc": "Registra eventos específicos da Wikimedia usando o EventLogging"
 }

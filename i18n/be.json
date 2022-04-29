@@ -5,15 +5,5 @@
 			"Chadyka"
 		]
 	},
-	"wikimediaevents-desc": "Запісвае падзеі, якія патрэбныя Вікімедыі, у журналы з дапамогай пашырэння EventLogging",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Загрузка з іншага вікі-праекта («крос-вікі»)]]",
-	"tag-cross-wiki-upload-description": "Файлы, загружаныя з тэкставага і візуальнага рэдактараў іншых вікі-праектаў",
-	"wikimediaevents-humanrel-question-a": "Ці націснулі б вы на гэтую старонку пры пошуку «$1»?",
-	"wikimediaevents-humanrel-question-b": "Калі б вы шукалі «$1», ці быў бы гэты артыкул добрым вынікам?",
-	"wikimediaevents-humanrel-question-c": "Калі б вы шукалі «$1», ці быў бы гэты артыкул дарэчным?",
-	"wikimediaevents-humanrel-question-d": "Калі б хтосьці шукаў «$1», ці захацеў бы ён прачытаць гэты артыкул?",
-	"wikimediaevents-humanrel-yes": "Так",
-	"wikimediaevents-humanrel-no": "Не",
-	"wikimediaevents-humanrel-unsure": "Я не ведаю",
-	"wikimediaevents-humanrel-privacy-statement": "Заява аб канфідэнцыяльнасці"
+	"wikimediaevents-desc": "Запісвае падзеі, якія патрэбныя Вікімедыі, у журналы з дапамогай пашырэння EventLogging"
 }

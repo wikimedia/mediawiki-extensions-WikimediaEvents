@@ -8,15 +8,5 @@
 			"Sjoerddebruin"
 		]
 	},
-	"wikimediaevents-desc": "Logboeken voor Wikimediaspecifieke gebeurtenissen die EventLogging gebruiken",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Upload vanaf een andere wiki]]",
-	"tag-cross-wiki-upload-description": "Bestanden geüpload vanuit de visuele tekstverwerker in andere wiki's",
-	"wikimediaevents-humanrel-question-a": "Zou u op deze pagina klikken als u op zoek was naar '$1'?",
-	"wikimediaevents-humanrel-question-b": "Als u '$1' zou zoeken, zou dit artikel een goed resultaat zijn?",
-	"wikimediaevents-humanrel-question-c": "Als u '$1' zou zoeken, zou dit artikel relevant zijn?",
-	"wikimediaevents-humanrel-question-d": "Als iemand '$1' zou zoeken, zou men dit artikel wensen te lezen?",
-	"wikimediaevents-humanrel-yes": "Ja",
-	"wikimediaevents-humanrel-no": "Nee",
-	"wikimediaevents-humanrel-unsure": "Ik weet het niet",
-	"wikimediaevents-humanrel-privacy-statement": "Privacyverklaring"
+	"wikimediaevents-desc": "Logboeken voor Wikimediaspecifieke gebeurtenissen die EventLogging gebruiken"
 }

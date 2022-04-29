@@ -5,15 +5,5 @@
 			"Tgr"
 		]
 	},
-	"wikimediaevents-desc": "Wikimédia-specifikus eseményeket naplóz az EventLogging segítségével",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Wikiközi feltöltés]]",
-	"tag-cross-wiki-upload-description": "Fájlok, amiket egy másik wiki wikikód-szerkesztőjéből vagy vizuális szerkesztőjéből töltöttek fel",
-	"wikimediaevents-humanrel-question-a": "Rákattintanál erre az oldalra, ha a(z) „$1” kifejezésre keresnél?",
-	"wikimediaevents-humanrel-question-b": "Ha a(z) „$1” kifejezésre keresnél, jó találat lenne ez a szócikk?",
-	"wikimediaevents-humanrel-question-c": "Ha a „$1” kifejezésre keresnél, lényeges találat lenne ez a szócikk?",
-	"wikimediaevents-humanrel-question-d": "Ha valaki a „$1” kifejezésre keresne, el akarná olvasni ezt a szócikket?",
-	"wikimediaevents-humanrel-yes": "Igen",
-	"wikimediaevents-humanrel-no": "Nem",
-	"wikimediaevents-humanrel-unsure": "Nem tudom",
-	"wikimediaevents-humanrel-privacy-statement": "Adatvédelmi nyilatkozat"
+	"wikimediaevents-desc": "Wikimédia-specifikus eseményeket naplóz az EventLogging segítségével"
 }

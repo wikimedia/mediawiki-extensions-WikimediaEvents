@@ -7,15 +7,5 @@
 			"Reza1615"
 		]
 	},
-	"wikimediaevents-desc": "واردکردن رویدادهای به‌خصوص ویکی‌مدیا با استفاده از EventLogging",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|بارگذاری بین ویکی]]",
-	"tag-cross-wiki-upload-description": "پرونده‌های بارگذاری شده از درون ویکی‌متن و ویرایشگر دیداری در سایر ویکی‌ها",
-	"wikimediaevents-humanrel-question-a": "آیا شما در هنگام جستجوی «$1» به این صفحه کلیک می‌کنید",
-	"wikimediaevents-humanrel-question-b": "اگر برای «$1» جستجو کرده‌اید، آیا این یک نتیجه معقول است؟",
-	"wikimediaevents-humanrel-question-c": "اگر برای «$1» کرده بودید، آیا این مقاله مرتبط بود؟",
-	"wikimediaevents-humanrel-question-d": "اگر شخصی برای «$1» جستجو کرده‌باشد، آیا علاقه‌ای به خواندن این مقاله دارد؟",
-	"wikimediaevents-humanrel-yes": "بله",
-	"wikimediaevents-humanrel-no": "خیر",
-	"wikimediaevents-humanrel-unsure": "نمی‌دانم",
-	"wikimediaevents-humanrel-privacy-statement": "سیاست محرمانگی"
+	"wikimediaevents-desc": "واردکردن رویدادهای به‌خصوص ویکی‌مدیا با استفاده از EventLogging"
 }

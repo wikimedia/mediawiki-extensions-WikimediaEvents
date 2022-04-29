@@ -7,15 +7,5 @@
 			"Violetanka"
 		]
 	},
-	"wikimediaevents-desc": "EventLogging kullanarak Wikimedia'ya özel olayları günlüğe kaydeder",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Vikiarası yükleme]]",
-	"tag-cross-wiki-upload-description": "Vikimetinin içinden yüklenen dosyalar ve diğer vikilerdeki görsel editörler",
-	"wikimediaevents-humanrel-question-a": "'$1' ararken bu sayfaya tıklar mısın?",
-	"wikimediaevents-humanrel-question-b": "'$1' için aradıysanız, bu madde iyi bir sonuç olur mu?",
-	"wikimediaevents-humanrel-question-c": "'$1' için aradıysanız, bu madde alakalı olur mu?",
-	"wikimediaevents-humanrel-question-d": "Birisi '$1' için arama yaptıysa, bu maddeyi okumak ister mi?",
-	"wikimediaevents-humanrel-yes": "Evet",
-	"wikimediaevents-humanrel-no": "Hayır",
-	"wikimediaevents-humanrel-unsure": "Bilmiyorum",
-	"wikimediaevents-humanrel-privacy-statement": "Gizlilik Beyanı"
+	"wikimediaevents-desc": "EventLogging kullanarak Wikimedia'ya özel olayları günlüğe kaydeder"
 }

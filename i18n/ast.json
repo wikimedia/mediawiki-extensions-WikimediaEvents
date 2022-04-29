@@ -4,15 +4,5 @@
 			"Xuacu"
 		]
 	},
-	"wikimediaevents-desc": "Rexistra socesos específicos de Wikimedia usando EventLogging",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Xubida ente wikis]]",
-	"tag-cross-wiki-upload-description": "Ficheros xubíos dende dientro del testu wiki y los editores visuales a otres wikis",
-	"wikimediaevents-humanrel-question-a": "¿Fadríes click nesta páxina si tas guetando '$1'?",
-	"wikimediaevents-humanrel-question-b": "Si guetasti '$1', ¿sedría un bon resultáu esti artículu?",
-	"wikimediaevents-humanrel-question-c": "Si guetasti '$1', ¿sedría relevante esti artículu?",
-	"wikimediaevents-humanrel-question-d": "Si dalguién gueta '$1', ¿quedría lleer esti artículu?",
-	"wikimediaevents-humanrel-yes": "Sí",
-	"wikimediaevents-humanrel-no": "Non",
-	"wikimediaevents-humanrel-unsure": "Nun sé",
-	"wikimediaevents-humanrel-privacy-statement": "Declaración d'intimidá"
+	"wikimediaevents-desc": "Rexistra socesos específicos de Wikimedia usando EventLogging"
 }

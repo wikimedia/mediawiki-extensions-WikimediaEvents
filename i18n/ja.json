@@ -7,15 +7,5 @@
 			"Sujiniku"
 		]
 	},
-	"wikimediaevents-desc": "ウィキメディア特有のイベントを、EventLogging を使用して記録する",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|ウィキ間アップロード]]",
-	"tag-cross-wiki-upload-description": "他ウィキからアップロードしたファイルで、出処はウィキテキストの中ならびにビジュアルエディター内",
-	"wikimediaevents-humanrel-question-a": "「$1」を検索する場合、このページをクリックしますか？",
-	"wikimediaevents-humanrel-question-b": "もし「$1'」を検索中でしたら、この記事はお役に立ちそうですか？",
-	"wikimediaevents-humanrel-question-c": "もし「$1」を検索中でしたら、この記事は関係がありそうですか？",
-	"wikimediaevents-humanrel-question-d": "もし「$1」を検索中の人がいたら、このページを読みたいと思うでしょうか？",
-	"wikimediaevents-humanrel-yes": "はい",
-	"wikimediaevents-humanrel-no": "いいえ",
-	"wikimediaevents-humanrel-unsure": "わかりません",
-	"wikimediaevents-humanrel-privacy-statement": "個人情報について"
+	"wikimediaevents-desc": "ウィキメディア特有のイベントを、EventLogging を使用して記録する"
 }

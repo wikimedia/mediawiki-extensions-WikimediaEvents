@@ -4,15 +4,5 @@
 			"Salvemm el lombard"
 		]
 	},
-	"wikimediaevents-desc": "Registra di event specifich Wikimedia cont el doprà EventLogging",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Caregament infra 'n wiki e l'alter]]",
-	"tag-cross-wiki-upload-description": "Fail caregad di editor wikitest e visual in su alter wiki",
-	"wikimediaevents-humanrel-question-a": "Se ti te fudesset 'dree a cerca $1 te clicarisset in su quella pafina chì?",
-	"wikimediaevents-humanrel-question-b": "Se ti te cercasset $1, quella vos chì la sariss on risultad bono?",
-	"wikimediaevents-humanrel-question-c": "Se ti te cercasset $1, te penset che quella vos chì la sia riguardanta?",
-	"wikimediaevents-humanrel-question-d": "Semai che un quaivun el cercass $1, el vorariss lensger quella vos chì?",
-	"wikimediaevents-humanrel-yes": "Si",
-	"wikimediaevents-humanrel-no": "Nò",
-	"wikimediaevents-humanrel-unsure": "El so minga",
-	"wikimediaevents-humanrel-privacy-statement": "Deciarazzion sora la riservatezza"
+	"wikimediaevents-desc": "Registra di event specifich Wikimedia cont el doprà EventLogging"
 }

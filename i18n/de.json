@@ -5,15 +5,5 @@
 			"Metalhead64"
 		]
 	},
-	"wikimediaevents-desc": "Protokolliert wikimediaspezifische Ereignisse mit EventLogging",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Wikiübergreifender Upload]]",
-	"tag-cross-wiki-upload-description": "Dateien, die von innerhalb des Wikitext- und visuellen Editors auf anderen Wikis hochgeladen wurden.",
-	"wikimediaevents-humanrel-question-a": "Würdest du beim Suchen nach „$1“ diese Seite anklicken?",
-	"wikimediaevents-humanrel-question-b": "Falls du nach „$1“ gesucht hast, wäre dieser Artikel ein gutes Ergebnis?",
-	"wikimediaevents-humanrel-question-c": "Falls du nach „$1“ gesucht hast, wäre dieser Artikel relevant?",
-	"wikimediaevents-humanrel-question-d": "Falls jemand nach „$1“ gesucht hat, würden sie diesen Artikel lesen wollen?",
-	"wikimediaevents-humanrel-yes": "Ja",
-	"wikimediaevents-humanrel-no": "Nein",
-	"wikimediaevents-humanrel-unsure": "Ich weiß es nicht",
-	"wikimediaevents-humanrel-privacy-statement": "Datenschutzerklärung"
+	"wikimediaevents-desc": "Protokolliert wikimediaspezifische Ereignisse mit EventLogging"
 }

@@ -10,15 +10,5 @@
 			"MarcoAurelio"
 		]
 	},
-	"wikimediaevents-desc": "Registra eventos específicos de Wikimedia mediante EventLogging",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Importaciones interwiki]]",
-	"tag-cross-wiki-upload-description": "Archivos subidos desde dentro de los editores visual y de de wikitexto en otros wikis",
-	"wikimediaevents-humanrel-question-a": "¿Pulsarías en esta página si estuvieras buscando «$1»?",
-	"wikimediaevents-humanrel-question-b": "Si estuvieras buscando «$1», ¿este artículo sería un buen resultado?",
-	"wikimediaevents-humanrel-question-c": "Si estuvieras buscando «$1», ¿este artículo sería relevante?",
-	"wikimediaevents-humanrel-question-d": "Si alguien estuviera buscando «$1», ¿querría leer este artículo?",
-	"wikimediaevents-humanrel-yes": "Sí",
-	"wikimediaevents-humanrel-no": "No",
-	"wikimediaevents-humanrel-unsure": "No sé",
-	"wikimediaevents-humanrel-privacy-statement": "Declaración de privacidad"
+	"wikimediaevents-desc": "Registra eventos específicos de Wikimedia mediante EventLogging"
 }
