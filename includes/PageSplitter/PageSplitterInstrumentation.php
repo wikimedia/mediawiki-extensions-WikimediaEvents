@@ -79,6 +79,11 @@ class PageSplitterInstrumentation {
 		// Take the left of the decimal. Floor (truncate) the scaled number to
 		// [0, count( $buckets ) - 1] for use as an index.
 		$index = (int)$this->scaledHash( $pageHash );
+		// For the case when scaledHash returns a float that rounds up to the next int,
+		// check that the index is within bounds of the buckets array count.
+		if ( $index >= count( $this->buckets ) ) {
+			$index--;
+		}
 		return $this->buckets[ $index ];
 	}
 
