@@ -74,6 +74,7 @@ function logEvent( action, name ) {
 			isSidebarCollapsed: checkbox ? !checkbox.checked : false,
 			viewportSizeBucket: getUserViewportBucket(),
 			pageNamespace: mw.config.get( 'wgNamespaceNumber' ),
+			pageToken: mw.user.getPageviewToken(),
 			token: mw.user.sessionId()
 		};
 		if ( name ) {

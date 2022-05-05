@@ -35,6 +35,7 @@ function logEvent( action, name, destination ) {
 		modes: getModes().join( ',' ),
 		pageNamespace: mw.config.get( 'wgNamespaceNumber' ),
 		token: mw.user.sessionId(),
+		pageToken: mw.user.getPageviewToken(),
 		isAnon: mw.user.isAnon(),
 		editCountBucket: mw.config.get( 'wgUserEditCountBucket' ) || '0 edits'
 	};
