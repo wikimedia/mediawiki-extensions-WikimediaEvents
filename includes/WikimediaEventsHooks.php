@@ -311,7 +311,6 @@ class WikimediaEventsHooks {
 		$vars['schemaEditAttemptStepSamplingRate'] = $config->get( 'WMESchemaEditAttemptStepSamplingRate' );
 		$vars['wikidataCompletionSearchClicks'] = $config->get( 'WMEWikidataCompletionSearchClicks' );
 		$vars['sessionTick'] = $config->get( 'WMESessionTick' );
-		$vars['ipAddressCopyActionEnabled'] = $config->get( 'WMEIPAddressCopyActionEnabled' );
 		$vars['readingDepthSamplingRate'] = $config->get( 'WMEReadingDepthSamplingRate' );
 
 		$skin = $context->getSkin();

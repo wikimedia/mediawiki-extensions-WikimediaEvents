@@ -100,7 +100,6 @@
 				"clientError.js",
 				"sessionTick.js",
 				"webABTestEnrollment.js",
-				"ipAddressCopyAction.js",
 				"webUIScroll.js",
 				"readingDepth.js",
 				{
@@ -176,13 +175,9 @@
 			"tests/qunit/ext.wikimediaEvents/index.js",
 			"tests/qunit/ext.wikimediaEvents/clientError.test.js",
 			"modules/ext.wikimediaEvents/clientError.js",
-			"tests/qunit/ext.wikimediaEvents/ipAddressCopyAction.test.js",
-			"modules/ext.wikimediaEvents/ipAddressCopyAction.js",
 			{
 				"name": "modules/ext.wikimediaEvents/config.json",
-				"content": {
-					"ipAddressCopyActionEnabled": true
-				}
+				"content": {}
 			}
 		]
 	},
@@ -229,10 +224,6 @@
 		"WMEVectorPrefDiffSalt": {
 			"value": null,
 			"description": "@var string Used as a salt in VectorPrefDiffInstrumentation to hash the user id. Set this in `wmf-config/PrivateSettings`."
-		},
-		"WMEIPAddressCopyActionEnabled": {
-			"value": false,
-			"description": "Whether the Anti-Harassment Tools team's \"IP address copy action\" instrument is enabled. See https://phabricator.wikimedia.org/T273021 and associated tasks for detail."
 		},
 		"WMEPageSchemaSplitTestSamplingRatio": {
 			"value": 0,
