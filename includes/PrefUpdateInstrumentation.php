@@ -86,6 +86,8 @@ class PrefUpdateInstrumentation {
 		// Editing team
 		'discussiontools-betaenable' => self::VALUE_BETA_FEATURE,
 		'betafeatures-auto-enroll'  => self::VALUE_WELLKNOWN_SHORT,
+		'discussiontools-topicsubscription' => self::VALUE_WELLKNOWN_SHORT,
+		'discussiontools-autotopicsub' => self::VALUE_WELLKNOWN_SHORT,
 
 		// AHT
 		'echo-notifications-blacklist' => self::VALUE_NEWLINE_COUNT,
