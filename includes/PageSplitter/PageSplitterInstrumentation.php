@@ -76,20 +76,14 @@ class PageSplitterInstrumentation {
 			return null;
 		}
 
-		// Take the left of the decimal. Floor (truncate) the scaled number to
-		// [0, count( $buckets ) - 1] for use as an index.
+		// Get the bucket index (int is akin to floor/truncate, but as int instead of float)
 		$index = (int)$this->scaledHash( $pageHash );
-		// For the case when scaledHash returns a float that rounds up to the next int,
-		// check that the index is within bounds of the buckets array count.
-		if ( $index >= count( $this->buckets ) ) {
-			$index--;
-		}
 		return $this->buckets[ $index ];
 	}
 
 	/**
 	 * @param float $pageHash
-	 * @return float Integer component is the bucket, fractional component is the sample rate.
+	 * @return float Integer component is the bucket index (from 0 to count-1), fractional component is the sample rate.
 	 */
 	private function scaledHash( float $pageHash ): float {
 		return $pageHash * max( 1, count( $this->buckets ) );

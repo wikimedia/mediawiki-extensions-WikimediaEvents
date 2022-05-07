@@ -8,14 +8,13 @@ namespace WikimediaEvents\PageSplitter;
 class PageRandomGenerate {
 
 	/**
-	 * Get hash of a page ID as a float between 0 and 1.
+	 * Get hash of a page ID as a float between 0.0 (inclusive) and 1.0 (non-inclusive).
 	 *
 	 * @param int $pageId
 	 * @return float
 	 */
 	public function getPageRandom( int $pageId ): float {
-		$random = intval( substr( md5( (string)$pageId ), 0, 6 ), 16 ) / 16777216;
-		return round( $random, 3 );
+		return intval( substr( md5( (string)$pageId ), 0, 6 ), 16 ) / ( 0xffffff + 1 );
 	}
 
 }
