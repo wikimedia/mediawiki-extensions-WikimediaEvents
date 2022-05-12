@@ -14,7 +14,10 @@ class PageRandomLookupTest extends MediaWikiUnitTestCase {
 	 */
 	public function testGetPageRandom( $expected, $pageId ) {
 		$hashedPage = new PageRandomGenerate();
-		$this->assertSame( $expected, $hashedPage->getPageRandom( $pageId ) );
+		$actual = $hashedPage->getPageRandom( $pageId );
+		// Truncate for easier testing
+		$actualTrunc = (float)sprintf( '%.3f', $actual );
+		$this->assertSame( $expected, $actualTrunc );
 	}
 
 	public static function provideGetPageRandom() {
