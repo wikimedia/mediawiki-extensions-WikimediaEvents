@@ -6,6 +6,16 @@
 'use strict';
 
 /**
+ * Check if user's group contains bot.
+ *
+ * @return {boolean}
+ */
+function isUserBot() {
+	var userGroups = mw.config.get( 'wgUserGroups', [] );
+	return userGroups.indexOf( 'bot' ) !== -1;
+}
+
+/**
  * Log the A/B test initialization event.
  *
  * @param {Object} data event info for logging
@@ -13,11 +23,13 @@
 function logEvent( data ) {
 	/* eslint-disable camelcase */
 	var event = {
-		$schema: '/analytics/mediawiki/web_ab_test_enrollment/1.0.0',
+		$schema: '/analytics/mediawiki/web_ab_test_enrollment/1.0.1',
 		web_session_id: mw.user.sessionId(),
 		wiki: mw.config.get( 'wgDBname' ),
 		group: data.group,
-		experiment_name: data.experimentName
+		experiment_name: data.experimentName,
+		is_anon: mw.user.isAnon(),
+		is_bot: isUserBot()
 	};
 	/* eslint-enable camelcase */
 
