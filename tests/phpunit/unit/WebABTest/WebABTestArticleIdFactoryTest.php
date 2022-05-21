@@ -83,6 +83,6 @@ class WebABTestArticleIdFactoryTest extends \MediaWikiUnitTestCase {
 			$context
 		);
 		$bucket = $ab->getBucket();
-		$this->assertSame( $bucket, $expectedBucket );
+		$this->assertSame( $expectedBucket, $bucket );
 	}
 }
