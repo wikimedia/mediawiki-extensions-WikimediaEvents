@@ -3,6 +3,7 @@
  *
  * Launch task: https://phabricator.wikimedia.org/T250282
  * Schema: https://schema.wikimedia.org/#!/secondary/jsonschema/analytics/legacy/desktopwebuiactionstracking
+ * Metrics Platform events: web.ui.init, web.ui.click
  */
 var config = require( './config.json' );
 var sampleSize = config.desktopWebUIActionsTracking || 0;
@@ -81,6 +82,23 @@ function logEvent( action, name ) {
 			data.name = name;
 		}
 		mw.eventLog.logEvent( 'DesktopWebUIActionsTracking', data );
+
+		// T281761: Also log via the Metrics Platform:
+		var eventName = 'web.ui.' + action;
+
+		/* eslint-disable camelcase */
+		var customData = {
+			skin_version: skinVersion,
+			is_sidebar_collapsed: checkbox ? !checkbox.checked : false,
+			viewport_size_bucket: getUserViewportBucket()
+		};
+
+		if ( name ) {
+			customData.el_id = name;
+		}
+		/* eslint-enable camelcase */
+
+		mw.eventLog.dispatch( eventName, customData );
 	}
 }
 
