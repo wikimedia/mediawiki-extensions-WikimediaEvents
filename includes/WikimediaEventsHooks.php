@@ -12,6 +12,8 @@ use IContextSource;
 use MediaWiki;
 use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\ResourceLoader as RL;
+use MediaWiki\ResourceLoader\ResourceLoader;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Storage\EditResult;
 use MediaWiki\User\UserIdentity;
@@ -19,9 +21,6 @@ use MobileContext;
 use OutputPage;
 use RecentChange;
 use RequestContext;
-use ResourceLoader;
-use ResourceLoaderContext;
-use ResourceLoaderFilePath;
 use SearchResultSet;
 use Skin;
 use Title;
@@ -300,11 +299,11 @@ class WikimediaEventsHooks {
 	/**
 	 * Callback for ext.wikimediaEvents virtual config.json file.
 	 *
-	 * @param ResourceLoaderContext $context
+	 * @param RL\Context $context
 	 * @param Config $config
 	 * @return array
 	 */
-	public static function getModuleConfig( ResourceLoaderContext $context, Config $config ) {
+	public static function getModuleConfig( RL\Context $context, Config $config ) {
 		$vars = [];
 		$vars['clientErrorIntakeURL'] = $config->get( 'WMEClientErrorIntakeURL' );
 		$vars['statsdBaseUri'] = $config->get( 'WMEStatsdBaseUri' );
@@ -332,12 +331,12 @@ class WikimediaEventsHooks {
 	/**
 	 * Callback for dynamic source files, for conditional loading based on the current skin.
 	 *
-	 * @param ResourceLoaderContext $context
+	 * @param RL\Context $context
 	 * @param Config $config
 	 * @param string $param callback param - corresponds to the file name to conditionally load
-	 * @return ResourceLoaderFilePath|string
+	 * @return RL\FilePath|string
 	 */
-	public static function getModuleFile( ResourceLoaderContext $context, Config $config, $param ) {
+	public static function getModuleFile( RL\Context $context, Config $config, $param ) {
 		$skin = $context->getSkin();
 
 		switch ( $skin ) {
@@ -348,21 +347,21 @@ class WikimediaEventsHooks {
 					case 'searchSatisfaction':
 					case 'universalLanguageSelector':
 					case 'webUIScroll':
-						return new ResourceLoaderFilePath( $param . '.js' );
+						return new RL\FilePath( $param . '.js' );
 					default:
 						return '';
 				}
 			case 'minerva':
 				switch ( $param ) {
 					case 'mobileWebUIActions':
-						return new ResourceLoaderFilePath( $param . '.js' );
+						return new RL\FilePath( $param . '.js' );
 					default:
 						return '';
 				}
 			default:
 				switch ( $param ) {
 					case 'searchSatisfaction':
-						return new ResourceLoaderFilePath( $param . '.js' );
+						return new RL\FilePath( $param . '.js' );
 					default:
 						return '';
 				}
