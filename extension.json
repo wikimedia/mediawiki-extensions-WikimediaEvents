@@ -94,7 +94,6 @@
 			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents",
 			"packageFiles": [
 				"index.js",
-				"events.js",
 				"statsd.js",
 				"deprecate.js",
 				"clientError.js",

@@ -31,15 +31,6 @@ Documentation at <https://wikitech.wikimedia.org/wiki/Graphite#statsv>.
 * Files: searchSatisfaction.js
 * Contact: https://www.mediawiki.org/wiki/Wikimedia_Search_Platform
 
-## WMF-specific event logging
-
-* Since: June 2016
-* Files: events.js
-* Contact: Product Infrastructure team
-
-Proxies the mw-track topic `wikimedia.event.*` to `event.*`.
-Background at <https://phabricator.wikimedia.org/T138659>.
-
 ## Reading depth
 
 * Since: November 2021

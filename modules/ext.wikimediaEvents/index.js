@@ -1,4 +1,3 @@
-require( './events.js' );
 require( './statsd.js' );
 require( './deprecate.js' );
 require( './clientError.js' );
