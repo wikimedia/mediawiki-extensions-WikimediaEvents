@@ -1,8 +1,9 @@
 /*!
- * Track mobile web ui interactions
+ * Track mobile web UI interactions
  *
  * Launch task: https://phabricator.wikimedia.org/T220016
  * Schema: https://schema.wikimedia.org/#!/secondary/jsonschema/analytics/legacy/mobilewebuiactionstracking
+ * Metrics Platform events: web.ui.init, web.ui.click
  */
 var moduleConfig = require( './config.json' );
 var sampleSize = moduleConfig.mobileWebUIActionsTracking || 0;
@@ -29,10 +30,11 @@ function getModes() {
  * @param {string|null} destination If defined, where the interaction will take the user.
  */
 function logEvent( action, name, destination ) {
+	var modes = getModes().join( ',' );
 	var event = {
 		action: action,
 		name: name,
-		modes: getModes().join( ',' ),
+		modes: modes,
 		pageNamespace: mw.config.get( 'wgNamespaceNumber' ),
 		token: mw.user.sessionId(),
 		pageToken: mw.user.getPageviewToken(),
@@ -43,6 +45,27 @@ function logEvent( action, name, destination ) {
 		event.destination = destination;
 	}
 	mw.track( 'event.MobileWebUIActionsTracking', event );
+
+	// T281761: Also log via the Metrics Platform:
+	var eventName = 'web.ui.' + action;
+
+	/* eslint-disable camelcase */
+	var customData = {
+		modes: modes
+	};
+
+	// When action is "init", name looks like "ns=". Fortunately, the Metrics Platform client can
+	// capture the namespace of the current page for us.
+	if ( action !== 'init' ) {
+		customData.el_id = name;
+	}
+
+	if ( destination ) {
+		customData.destination = destination;
+	}
+	/* eslint-enable camelcase */
+
+	mw.eventLog.dispatch( eventName, customData );
 }
 
 if ( !mw.eventLog.eventInSample( 1 / sampleSize ) ) {
