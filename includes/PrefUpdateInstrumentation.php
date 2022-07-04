@@ -105,6 +105,11 @@ class PrefUpdateInstrumentation {
 		'usecodemirror' => self::VALUE_WELLKNOWN_SHORT,
 		'popups' => self::VALUE_WELLKNOWN_SHORT,
 		'popupsreferencepreviews' => self::VALUE_BETA_FEATURE,
+
+		// Structured Data team
+		'echo-subscriptions-web-image-suggestions' => self::VALUE_WELLKNOWN_SHORT,
+		'echo-subscriptions-email-image-suggestions' => self::VALUE_WELLKNOWN_SHORT,
+		'echo-subscriptions-push-image-suggestions' => self::VALUE_WELLKNOWN_SHORT,
 	];
 
 	/**
