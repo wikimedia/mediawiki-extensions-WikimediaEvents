@@ -408,7 +408,7 @@ function log( intakeURL, descriptor ) {
 function install( intakeURL ) {
 	// Capture errors which were logged manually via
 	// mw.errorLogger.logError( <error>, <topic> )
-	[ 'error.vue', 'error.growthexperiments', 'error.visualeditor' ].forEach( function ( topic ) {
+	[ 'error.vue', 'error.growthexperiments', 'error.visualeditor', 'error.pagetriage' ].forEach( function ( topic ) {
 		mw.trackSubscribe( topic, function ( _, error ) {
 			var descriptor = processErrorInstance( error );
 
