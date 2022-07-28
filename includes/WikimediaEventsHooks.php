@@ -280,7 +280,7 @@ class WikimediaEventsHooks {
 	 * @param string $skinName Current skin name
 	 */
 	public static function onResourceLoaderGetConfigVars( &$vars, $skinName ): void {
-		global $wgWMESchemaEditAttemptStepSamplingRate;
+		global $wgWMESchemaEditAttemptStepSamplingRate, $wgWMESchemaVisualEditorFeatureUseSamplingRate;
 
 		// WARNING: Do not add new entries here.
 		//
@@ -289,11 +289,16 @@ class WikimediaEventsHooks {
 		// For new variables you need to access in a JS module, use a virtual 'config.json' file.
 		// See <https://www.mediawiki.org/wiki/ResourceLoader/Package_modules>
 		//
-		// TODO: wgWMESchemaEditAttemptStepSamplingRate is preserved here for now because it is
-		//  consumed by multiple downstream clients. These clients should each be updated to use
-		//  virtual config, and this should be removed.
+		// TODO: wgWMESchemaEditAttemptStepSamplingRate and
+		//  wgWMESchemaVisualEditorFeatureUseSamplingRate are preserved here for now because they
+		//  are consumed by the DiscussionTools, MobileFrontend, VisualEditor, and WikiEditor
+		//  extensions. As of July 2022, DiscussionTools is the only extension that uses package
+		//  files. The MobileFrontend, VisualEditor, and WikiEditor extensions should be updated
+		//  to use package files so that these variables can be exported via a virtual file and
+		//  this hook handler removed.
 		//
 		$vars['wgWMESchemaEditAttemptStepSamplingRate'] = $wgWMESchemaEditAttemptStepSamplingRate;
+		$vars['wgWMESchemaVisualEditorFeatureUseSamplingRate'] = $wgWMESchemaVisualEditorFeatureUseSamplingRate;
 	}
 
 	/**
