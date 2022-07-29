@@ -311,7 +311,8 @@ class WikimediaEventsHooks {
 		$vars['wikidataCompletionSearchClicks'] = $config->get( 'WMEWikidataCompletionSearchClicks' );
 		$vars['sessionTick'] = $config->get( 'WMESessionTick' );
 		$vars['readingDepthSamplingRate'] = $config->get( 'WMEReadingDepthSamplingRate' );
-
+		$vars['newPHPSamplingRate'] = $config->get( 'WMENewPHPSamplingRate' );
+		$vars['newPHPVersion'] = $config->get( 'WMENewPHPVersion' );
 		$skin = $context->getSkin();
 		if ( $skin === 'minerva' ) {
 			$vars['mobileWebUIActionsTracking'] = $config->get( 'WMEMobileWebUIActionsTracking' );
