@@ -12,7 +12,6 @@ use MediaWiki\User\UserIdentity;
 use MWTimestamp;
 use RequestContext;
 use RuntimeException;
-use User;
 use UserBucketProvider;
 
 /**
@@ -167,7 +166,6 @@ class PrefUpdateInstrumentation {
 			// often uses integers and booleans, whereas the stored format often uses
 			// strings (e.g. "" vs false)
 			if ( $prevValue != $optValue ) {
-				$user = MediaWikiServices::getInstance()->getUserFactory()->newFromUserIdentity( $user );
 				$event = self::createPrefUpdateEvent( $user, $optName, $optValue, $now );
 				if ( $event !== false ) {
 					EventLogging::logEvent( 'PrefUpdate', -1, $event );
@@ -179,13 +177,13 @@ class PrefUpdateInstrumentation {
 	/**
 	 * Format a changed user preference as a PrefUpdate event, or false to send none.
 	 *
-	 * @param User $user
+	 * @param UserIdentity $user
 	 * @param string $optName
 	 * @param string $optValue
 	 * @param string $now
 	 * @return false|array
 	 */
-	private static function createPrefUpdateEvent( User $user, $optName, $optValue, $now ) {
+	private static function createPrefUpdateEvent( UserIdentity $user, $optName, $optValue, $now ) {
 		$trackType = self::PROPERTY_TRACKLIST[$optName] ?? null;
 		if ( $trackType === null ) {
 			// Not meant to be tracked.
