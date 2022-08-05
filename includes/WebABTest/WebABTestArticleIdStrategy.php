@@ -4,11 +4,11 @@ namespace WikimediaEvents\WebABTest;
 
 use Title;
 use WebRequest;
-use WikimediaEvents\PageSplitter\PageRandomGenerate;
+use WikimediaEvents\PageSplitter\PageHashGenerate;
 use WikimediaEvents\PageSplitter\PageSplitterInstrumentation;
 
 /**
- * Integrates with PageSplitterInstrumentation and PageRandomGenerate to sample
+ * Integrates with PageSplitterInstrumentation and PageHashGenerate to sample
  * and bucket based on article id. Bucket can be overriden with a query param
  * via the $overrideName param.
  */
@@ -41,9 +41,9 @@ final class WebABTestArticleIdStrategy {
 	private $pageSplitterInstrumentation;
 
 	/**
-	 * @var PageRandomGenerate
+	 * @var PageHashGenerate
 	 */
-	private $pageRandomGenerate;
+	private $PageHashGenerate;
 
 	/**
 	 * @param string[] $buckets An array of bucket name strings. E.g., ['control',
@@ -53,7 +53,7 @@ final class WebABTestArticleIdStrategy {
 	 * @param WebRequest $request
 	 * @param string $overrideName
 	 * @param PageSplitterInstrumentation $pageSplitterInstrumentation
-	 * @param PageRandomGenerate $pageRandomGenerate
+	 * @param PageHashGenerate $PageHashGenerate
 	 */
 	public function __construct(
 		array $buckets,
@@ -61,14 +61,14 @@ final class WebABTestArticleIdStrategy {
 		WebRequest $request,
 		string $overrideName,
 		PageSplitterInstrumentation $pageSplitterInstrumentation,
-		PageRandomGenerate $pageRandomGenerate
+		PageHashGenerate $PageHashGenerate
 	) {
 		$this->buckets = $buckets;
 		$this->title = $title;
 		$this->request = $request;
 		$this->overrideName = $overrideName;
 		$this->pageSplitterInstrumentation = $pageSplitterInstrumentation;
-		$this->pageRandomGenerate = $pageRandomGenerate;
+		$this->PageHashGenerate = $PageHashGenerate;
 	}
 
 	/**
@@ -82,12 +82,12 @@ final class WebABTestArticleIdStrategy {
 			return $this->buckets[ (int)$queryParam ] ?? null;
 		}
 
-		$pageRandom = $this->pageRandomGenerate->getPageRandom( $this->title->getArticleID() );
+		$pageHash = $this->PageHashGenerate->getPageHash( $this->title->getArticleID() );
 
-		if ( !$this->pageSplitterInstrumentation->isSampled( $pageRandom ) ) {
+		if ( !$this->pageSplitterInstrumentation->isSampled( $pageHash ) ) {
 			return self::EXCLUDED_BUCKET_NAME;
 		}
 
-		return $this->pageSplitterInstrumentation->getBucket( $pageRandom );
+		return $this->pageSplitterInstrumentation->getBucket( $pageHash );
 	}
 }

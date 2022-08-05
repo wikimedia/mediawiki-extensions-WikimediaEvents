@@ -8,7 +8,7 @@ use Wikimedia\Assert\Assert;
  * Deterministic sampling and bucketing based on a page IDs.
  *
  * The caller takes care of turning a page ID into a deterministic hash with
- * uniform probability distribution (see PageRandomGenerate).
+ * uniform probability distribution (see PageHashGenerate).
  *
  * Given an example page that is assigned 0.421 and 3 buckets (A, B, C), it works as follows:
  *
