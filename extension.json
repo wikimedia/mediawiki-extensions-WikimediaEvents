@@ -22,6 +22,12 @@
 		"WikimediaEvents\\Tests\\": "tests/phpunit/"
 	},
 	"HookHandlers": {
+		"BlockMetricsHooks": {
+			"class": "WikimediaEvents\\BlockMetrics\\BlockMetricsHooks",
+			"services": [
+				"UserFactory"
+			]
+		},
 		"PageSplitterHooks": {
 			"class": "WikimediaEvents\\PageSplitter\\PageSplitterHooks",
 			"services": [
@@ -56,7 +62,8 @@
 		"ResourceLoaderRegisterModules": "WikimediaEvents\\WikimediaEventsHooks::onResourceLoaderRegisterModules",
 		"RevisionRecordInserted": "WikimediaEvents\\WikimediaEventsHooks::onRevisionRecordInserted",
 		"MakeGlobalVariablesScript": "WikimediaEvents\\WikimediaEventsHooks::onMakeGlobalVariablesScript",
-		"SpecialMuteSubmit": "WikimediaEvents\\WikimediaEventsHooks::onSpecialMuteSubmit"
+		"SpecialMuteSubmit": "WikimediaEvents\\WikimediaEventsHooks::onSpecialMuteSubmit",
+		"PermissionErrorAudit": "BlockMetricsHooks"
 	},
 	"MessagesDirs": {
 		"WikimediaEvents": [
