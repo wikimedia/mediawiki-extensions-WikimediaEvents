@@ -6,7 +6,7 @@
  * - 2022 revision, https://phabricator.wikimedia.org/T311388.
  */
 
-function ensureCookie() {
+function phpEngine() {
 	var moduleConfig = require( './config.json' );
 	var version = moduleConfig.newPHPVersion;
 	if ( !version ) {
@@ -35,5 +35,7 @@ function ensureCookie() {
 		$.removeCookie( 'PHP_ENGINE', { path: '/' } );
 	}
 }
-// No need to block page rendering with this, defer execution to idle times
-mw.requestIdleCallback( ensureCookie );
+
+// Defer to idle time to avoid blocking page load with cookie logic
+// that affects future page loads only
+mw.requestIdleCallback( phpEngine );
