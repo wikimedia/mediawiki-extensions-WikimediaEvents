@@ -651,10 +651,10 @@ class WikimediaEventsHooks {
 		}
 
 		DeferredUpdates::addCallableUpdate( static function () use ( $event ) {
-			// NOTE! The 'SpecialMuteSubmit' event was migrated to EventGate, and is no longer
-			// using Meta-Wiki EventLogging schema.  This revision_id is actually overridden by
-			// WikimediaEvent's EventLoggingSchemas attribute in extension.json.
-			EventLogging::logEvent( 'SpecialMuteSubmit', 19265572, $event );
+			// NOTE: The 'SpecialMuteSubmit' event was migrated to the Event Platform, and is
+			//  no longer using the legacy EventLogging schema from metawiki. $revId is actually
+			//  overridden by the EventLoggingSchemas extension attribute in extension.json.
+			EventLogging::logEvent( 'SpecialMuteSubmit', -1, $event );
 		} );
 	}
 }
