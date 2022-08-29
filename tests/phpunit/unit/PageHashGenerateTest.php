@@ -3,24 +3,24 @@
 namespace WikimediaEvents\Tests;
 
 use MediaWikiUnitTestCase;
-use WikimediaEvents\PageSplitter\PageRandomGenerate;
+use WikimediaEvents\PageSplitter\PageHashGenerate;
 
 /**
- * @covers \WikimediaEvents\PageSplitter\PageRandomGenerate
+ * @covers \WikimediaEvents\PageSplitter\PageHashGenerate
  */
-class PageRandomLookupTest extends MediaWikiUnitTestCase {
+class PageHashGenerateTest extends MediaWikiUnitTestCase {
 	/**
-	 * @dataProvider provideGetPageRandom
+	 * @dataProvider provideGetPageHash
 	 */
-	public function testGetPageRandom( $expected, $pageId ) {
-		$hashedPage = new PageRandomGenerate();
-		$actual = $hashedPage->getPageRandom( $pageId );
+	public function testGetPageHash( $expected, $pageId ) {
+		$hashedPage = new PageHashGenerate();
+		$actual = $hashedPage->getPageHash( $pageId );
 		// Truncate for easier testing
 		$actualTrunc = (float)sprintf( '%.3f', $actual );
 		$this->assertSame( $expected, $actualTrunc );
 	}
 
-	public static function provideGetPageRandom() {
+	public static function provideGetPageHash(): array {
 		return [
 			'Valid: 1' => [ 0.925, 3 ],
 			'Valid: 10' => [ 0.203, 30 ],

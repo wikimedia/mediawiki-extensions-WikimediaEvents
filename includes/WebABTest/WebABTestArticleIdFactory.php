@@ -3,7 +3,7 @@
 namespace WikimediaEvents\WebABTest;
 
 use IContextSource;
-use WikimediaEvents\PageSplitter\PageRandomGenerate;
+use WikimediaEvents\PageSplitter\PageHashGenerate;
 use WikimediaEvents\PageSplitter\PageSplitterInstrumentation;
 
 /**
@@ -53,7 +53,7 @@ final class WebABTestArticleIdFactory {
 			$request,
 			$overrideName,
 			new PageSplitterInstrumentation( $samplingRatio, $buckets ),
-			new PageRandomGenerate()
+			new PageHashGenerate()
 		);
 	}
 }

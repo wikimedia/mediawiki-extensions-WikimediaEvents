@@ -109,7 +109,7 @@ class PageSplitterHooks {
 	 * @return float
 	 */
 	private function getPageHash( int $pageId ): float {
-		$lookup = new PageRandomGenerate();
-		return $lookup->getPageRandom( $pageId );
+		$lookup = new PageHashGenerate();
+		return $lookup->getPageHash( $pageId );
 	}
 }

@@ -4,7 +4,7 @@ namespace WikimediaEvents\Tests;
 
 use Title;
 use WebRequest;
-use WikimediaEvents\PageSplitter\PageRandomGenerate;
+use WikimediaEvents\PageSplitter\PageHashGenerate;
 use WikimediaEvents\PageSplitter\PageSplitterInstrumentation;
 use WikimediaEvents\WebABTest\WebABTestArticleIdStrategy;
 
@@ -80,8 +80,8 @@ class WebABTestArticleIdStrategyTest extends \MediaWikiUnitTestCase {
 		$pageSplitterInstrumentation->method( 'getBucket' )->willReturn( $pageSplitterInstrumentationValue );
 		$pageSplitterInstrumentation->method( 'isSampled' )->willReturn( $pageSplitterInstrumentationIsSampledValue );
 
-		$pageRandomGenerate = $this->createMock( PageRandomGenerate::class );
-		$pageRandomGenerate->method( 'getPageRandom', 0.5 );
+		$PageHashGenerate = $this->createMock( PageHashGenerate::class );
+		$PageHashGenerate->method( 'getPageHash', 0.5 );
 
 		$ab = new WebABTestArticleIdStrategy(
 			[ 'control', 'treatment' ],
@@ -89,7 +89,7 @@ class WebABTestArticleIdStrategyTest extends \MediaWikiUnitTestCase {
 			$request,
 			'queryOverride',
 			$pageSplitterInstrumentation,
-			$pageRandomGenerate
+			$PageHashGenerate
 		);
 
 		$bucket = $ab->getBucket();
