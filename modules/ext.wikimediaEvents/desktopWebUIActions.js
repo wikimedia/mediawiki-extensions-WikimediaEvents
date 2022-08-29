@@ -120,6 +120,11 @@ if ( !sampleSize || !mw.eventLog.eventInSample( 1 / sampleSize ) ) {
 	return;
 }
 
+mw.trackSubscribe( 'webuiactions_log.', function ( topic, value ) {
+	// e.g. webuiactions_log.click value=event-name
+	logEvent( topic.slice( 'webuiactions_log.'.length ), value );
+} );
+
 // Log the page load when <body> available.
 $( function () {
 	logEvent( 'init' );
