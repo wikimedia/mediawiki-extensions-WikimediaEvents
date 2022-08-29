@@ -212,6 +212,10 @@
 		"WMESchemaEditAttemptStepSamplingRate": {
 			"value": "0.0625"
 		},
+		"WMESchemaVisualEditorFeatureUseSamplingRate": {
+			"value": "0.0625",
+			"description": "The default sampling rate for the VisualEditorFeatureUse instruments. This should only ever differ from WMESchemaEditAttemptStepSamplingRate (see above) when that is set to 1. The instruments themselves are defined in the DiscussionTools, MobileFrontend, and VisualEditor extensions. See https://phabricator.wikimedia.org/T312016 for detail."
+		},
 		"WMEWikidataCompletionSearchClicks": {
 			"value": []
 		},
