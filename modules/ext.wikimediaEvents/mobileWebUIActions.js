@@ -39,6 +39,7 @@ function logEvent( action, name, destination ) {
 		token: mw.user.sessionId(),
 		pageToken: mw.user.getPageviewToken(),
 		isAnon: mw.user.isAnon(),
+		userGroups: mw.config.get( 'wgUserGroups' ).join( ',' ),
 		editCountBucket: mw.config.get( 'wgUserEditCountBucket' ) || '0 edits'
 	};
 	if ( destination ) {
