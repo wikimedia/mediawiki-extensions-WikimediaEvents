@@ -7,5 +7,9 @@
 			"Robby"
 		]
 	},
-	"wikimediaevents-desc": "{{desc|name=Wikimedia Events|url=https://www.mediawiki.org/wiki/Extension:WikimediaEvents}}"
+	"wikimediaevents-desc": "{{desc|name=Wikimedia Events|url=https://www.mediawiki.org/wiki/Extension:WikimediaEvents}}",
+	"apihelp-wikimediaeventsblockededit-summary": "{{doc-apihelp-summary|wikimediaeventsblockededit}}",
+	"apihelp-wikimediaeventsblockededit-param-page": "{{doc-apihelp-param|wikimediaeventsblockededit|page}}",
+	"apihelp-wikimediaeventsblockededit-param-interface": "{{doc-apihelp-param|wikimediaeventsblockededit|interface}}",
+	"apihelp-wikimediaeventsblockededit-param-platform": "{{doc-apihelp-param|wikimediaeventsblockededit|platform}}"
 }

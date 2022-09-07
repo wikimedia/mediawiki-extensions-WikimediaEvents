@@ -28,6 +28,12 @@
 				"UserFactory"
 			]
 		},
+		"EditPageHooks": {
+			"class": "WikimediaEvents\\EditPage\\EditPageHooks",
+			"services": [
+				"PermissionManager"
+			]
+		},
 		"PageSplitterHooks": {
 			"class": "WikimediaEvents\\PageSplitter\\PageSplitterHooks",
 			"services": [
@@ -63,7 +69,15 @@
 		"RevisionRecordInserted": "WikimediaEvents\\WikimediaEventsHooks::onRevisionRecordInserted",
 		"MakeGlobalVariablesScript": "WikimediaEvents\\WikimediaEventsHooks::onMakeGlobalVariablesScript",
 		"SpecialMuteSubmit": "WikimediaEvents\\WikimediaEventsHooks::onSpecialMuteSubmit",
-		"PermissionErrorAudit": "BlockMetricsHooks"
+		"PermissionErrorAudit": "BlockMetricsHooks",
+		"EditPage::showReadOnlyForm:initial": "EditPageHooks"
+	},
+	"APIModules": {
+		"wikimediaeventsblockededit": {
+			"class": "WikimediaEvents\\ApiWikimediaEventsBlockedEdit",
+			"services": [
+			]
+		}
 	},
 	"MessagesDirs": {
 		"WikimediaEvents": [
@@ -109,6 +123,7 @@
 				"webUIScroll.js",
 				"readingDepth.js",
 				"phpEngine.js",
+				"blockedEdit.js",
 				{
 					"name": "searchSatisfaction.js",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",

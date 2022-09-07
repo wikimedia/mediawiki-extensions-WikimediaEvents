@@ -104,3 +104,9 @@ Migrated from the UniversalLanguageSwitcher extension. Details at
 * Contact: SRE serviceops
 
 More details at <https://phabricator.wikimedia.org/T311388>
+
+## Blocked edit attempts
+
+* Since: September 2022
+* Files: blockedEdit.js
+* Contact: Editing
