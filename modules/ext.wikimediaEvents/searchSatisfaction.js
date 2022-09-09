@@ -338,13 +338,6 @@ function genLogEventFn( source, session, sourceExtraData ) {
 		// See https://phabricator.wikimedia.org/T256100 for detail.
 		if ( [ 'vector', 'vector-2022' ].indexOf( String( skin ) ) > -1 ) {
 			evt.skinVersion = document.body.classList.contains( 'skin-vector-legacy' ) ? 'legacy' : 'latest';
-
-			if ( document.querySelector( '#p-search .wvui-input' ) ) {
-
-				// Use the extraParams field as the subTest field is expected to be the current
-				// wiki's DB name (i.e. mw.config.get( 'wgDBname' )) if it's set.
-				evt.extraParams = evt.extraParams ? evt.extraParams + ';WVUI' : 'WVUI';
-			}
 		}
 
 		// add any action specific data
