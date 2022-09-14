@@ -98,7 +98,7 @@ class BlockMetricsHooks implements PermissionErrorAuditHook {
 					$expiry = wfTimestamp( TS_ISO_8601, $rawExpiry );
 				}
 				$event = [
-					'$schema' => '/analytics/mediawiki/accountcreation/block/1.0.0',
+					'$schema' => '/analytics/mediawiki/accountcreation/block/2.0.0',
 					'block_id' => json_encode( $block->getIdentifier() ),
 					// @phan-suppress-next-line PhanTypeMismatchDimFetchNullable
 					'block_type' => Block::BLOCK_TYPES[ $block->getType() ] ?? 'other',
