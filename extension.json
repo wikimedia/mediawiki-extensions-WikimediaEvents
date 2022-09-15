@@ -79,7 +79,6 @@
 				"PrefUpdate": "/analytics/legacy/prefupdate/1.0.0",
 				"SearchSatisfaction": "/analytics/legacy/searchsatisfaction/1.4.0",
 				"SpecialMuteSubmit": "/analytics/legacy/specialmutesubmit/1.0.0",
-				"ChangesListFilterGrouping": 17008168,
 				"MobileWebUIActionsTracking": "/analytics/legacy/mobilewebuiactionstracking/1.3.0",
 				"WMDEBannerEvents": "/analytics/legacy/wmdebannerevents/1.0.0",
 				"WMDEBannerInteractions": "/analytics/legacy/wmdebannerinteractions/1.0.0",
