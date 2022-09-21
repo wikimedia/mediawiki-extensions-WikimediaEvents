@@ -25,7 +25,8 @@
 		"BlockMetricsHooks": {
 			"class": "WikimediaEvents\\BlockMetrics\\BlockMetricsHooks",
 			"services": [
-				"UserFactory"
+				"UserFactory",
+				"EventBus.EventFactory"
 			]
 		},
 		"PageSplitterHooks": {

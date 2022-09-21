@@ -3,6 +3,7 @@
 namespace WikimediaEvents\BlockMetrics;
 
 use MediaWiki\Block\Block;
+use MediaWiki\Extension\EventBus\EventFactory;
 use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\Linker\LinkTarget;
 use MediaWiki\Logger\LoggerFactory;
@@ -18,16 +19,24 @@ use RequestContext;
  */
 class BlockMetricsHooks implements PermissionErrorAuditHook {
 
+	public const SCHEMA = '/analytics/mediawiki/accountcreation/block/4.0.0';
+
 	/** @var UserFactory */
 	private $userFactory;
 
+	/** @var EventFactory */
+	private $eventFactory;
+
 	/**
 	 * @param UserFactory $userFactory
+	 * @param EventFactory $eventFactory
 	 */
 	public function __construct(
-		UserFactory $userFactory
+		UserFactory $userFactory,
+		EventFactory $eventFactory
 	) {
 		$this->userFactory = $userFactory;
+		$this->eventFactory = $eventFactory;
 	}
 
 	/** @inheritDoc */
@@ -98,7 +107,7 @@ class BlockMetricsHooks implements PermissionErrorAuditHook {
 					$expiry = wfTimestamp( TS_ISO_8601, $rawExpiry );
 				}
 				$event = [
-					'$schema' => '/analytics/mediawiki/accountcreation/block/3.0.0',
+					'$schema' => self::SCHEMA,
 					'block_id' => json_encode( $block->getIdentifier() ),
 					// @phan-suppress-next-line PhanTypeMismatchDimFetchNullable
 					'block_type' => Block::BLOCK_TYPES[ $block->getType() ] ?? 'other',
@@ -113,7 +122,8 @@ class BlockMetricsHooks implements PermissionErrorAuditHook {
 					'user_ip' => $user->getRequest()->getIP(),
 					'is_api' => $isApi,
 				];
-				EventLogging::submit( 'mediawiki.accountcreation_block', $event );
+				$event += $this->eventFactory->createMediaWikiCommonAttrs( $user );
+				$this->submitEvent( 'mediawiki.accountcreation_block', $event );
 			} else {
 				LoggerFactory::getInstance( 'WikimediaEvents' )->warning( 'Could not find block', [
 					'errorKeys' => implode( ',', array_map( static function ( Message $msg ) {
@@ -122,6 +132,16 @@ class BlockMetricsHooks implements PermissionErrorAuditHook {
 				] );
 			}
 		}
+	}
+
+	/**
+	 * PHPUnit test helper that allows mocking out the EventLogging dependency.
+	 * @param string $streamName
+	 * @param array $event
+	 * @return void
+	 */
+	protected function submitEvent( string $streamName, array $event ): void {
+		EventLogging::submit( $streamName, $event );
 	}
 
 }
