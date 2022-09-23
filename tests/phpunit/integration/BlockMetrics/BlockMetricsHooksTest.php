@@ -46,7 +46,6 @@ class BlockMetricsHooksTest extends MediaWikiIntegrationTestCase {
 				'block_expiry' => 'infinity',
 				'block_scope' => 'local',
 				'error_message_keys' => [ 'blockedtext' ],
-				'is_api' => false,
 				'performer' => [
 					'user_text' => $user->getName(),
 					'user_id' => $user->getId(),
