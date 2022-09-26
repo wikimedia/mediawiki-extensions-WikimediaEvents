@@ -359,7 +359,8 @@ function shouldLog( descriptor ) {
  * @param {ErrorDescriptor} descriptor
  */
 function log( intakeURL, descriptor ) {
-	var host = location.host,
+	var errorContext,
+		host = location.host,
 		protocol = location.protocol,
 		search = location.search,
 		hash = location.hash,
@@ -371,6 +372,22 @@ function log( intakeURL, descriptor ) {
 			protocol + '//' + host + mw.util.getUrl( 'Special:' + canonicalName ) + search + hash :
 			location.href;
 
+	// Extra data that can be specified as-needed. Note that the values must always be strings.
+	errorContext = {
+		wiki: mw.config.get( 'wgWikiID', '' ),
+		version: mw.config.get( 'wgVersion', '' ),
+		skin: mw.config.get( 'skin', '' ),
+		action: mw.config.get( 'wgAction', '' ),
+		// eslint-disable-next-line camelcase
+		is_logged_in: String( !mw.user.isAnon() ),
+		namespace: mw.config.get( 'wgCanonicalNamespace', '' ),
+		debug: String( !!mw.config.get( 'debug', 0 ) )
+	};
+	if ( canonicalName ) {
+		// eslint-disable-next-line camelcase
+		errorContext.special_page = canonicalName;
+	}
+
 	navigator.sendBeacon( intakeURL, JSON.stringify( {
 		meta: {
 			// Name of the stream
@@ -379,7 +396,7 @@ function log( intakeURL, descriptor ) {
 			domain: location.hostname
 		},
 		// Schema used to validate events
-		$schema: '/mediawiki/client/error/1.0.0',
+		$schema: '/mediawiki/client/error/2.0.0',
 		// Name of the error constructor
 		// eslint-disable-next-line camelcase
 		error_class: descriptor.errorClass,
@@ -393,9 +410,9 @@ function log( intakeURL, descriptor ) {
 		// Normalized stack trace string
 		// We log undefined rather than empty string (consistent with file_url) to allow for filtering.
 		// eslint-disable-next-line camelcase
-		stack_trace: descriptor.stackTrace || 'undefined'
-		// Tags that can be specified as-needed
-		// tags: {}
+		stack_trace: descriptor.stackTrace || 'undefined',
+		// eslint-disable-next-line camelcase
+		error_context: errorContext
 	} ) );
 }
 
@@ -434,10 +451,12 @@ function install( intakeURL ) {
 	} );
 }
 
+// Functionally this file is self-contained, but export some methods for testing.
 module.exports = {
 	getNormalizedStackTraceLines: getNormalizedStackTraceLines,
 	processErrorInstance: processErrorInstance,
-	processErrorLoggerObject: processErrorLoggerObject
+	processErrorLoggerObject: processErrorLoggerObject,
+	log: log
 };
 
 if ( !window.QUnit &&

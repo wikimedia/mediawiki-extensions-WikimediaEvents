@@ -3,5 +3,8 @@
 	"extends": [
 		"../../modules/.eslintrc.json",
 		"wikimedia/qunit"
-	]
+	],
+	"globals": {
+		"sinon": "readonly"
+	}
 }
