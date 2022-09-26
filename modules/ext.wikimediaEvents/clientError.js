@@ -194,18 +194,24 @@ function shouldIgnoreFileUrl( fileUrl ) {
 /**
  * Parses out an error descriptor from the error's stack trace.
  *
- * @param {Mixed} error
+ * @param {Error|Mixed} error The error that was caught. In theory an Error object, but it's
+ *   not strictly impossible for something else to end up here.
  * @return {ErrorDescriptor?} If the error can be parsed, then an `ErrorDescriptor` object;
  *  otherwise, `null`
  */
 function processErrorInstance( error ) {
-	// The 'stack' property is non-standard, so we check.
-	// In some browsers it will be undefined, and in some
-	// it may be an object, etc.
 	var stackTraceLines,
 		firstLine, parts,
 		fileUrlParts, fileUrl;
 
+	// Safety check: this method is bound to the 'error.*' mw.track prefix which is
+	// fairly generic so conflicts might occur. Also, mw.errorLogger.logError() does
+	// not attempt to verify that it was called with an Error, and the global error
+	// handler will pass any value that was thrown, which is not restricted in
+	// Javascript. Silently ignore unexpected data types.
+	// Also ignore errors with no 'stack' property, which might not be present in some
+	// uncommon browsers. Filtering out those events helps to reduce the noise of
+	// exotic errors from fringe browsers.
 	if ( !error || !( error instanceof Error ) || !error.stack ) {
 		return null;
 	}
@@ -357,8 +363,9 @@ function shouldLog( descriptor ) {
  *
  * @param {string} intakeURL The URL of the EventGate instance
  * @param {ErrorDescriptor} descriptor
+ * @param {string} [component] The component which logged this error
  */
-function log( intakeURL, descriptor ) {
+function log( intakeURL, descriptor, component ) {
 	var errorContext,
 		host = location.host,
 		protocol = location.protocol,
@@ -374,6 +381,7 @@ function log( intakeURL, descriptor ) {
 
 	// Extra data that can be specified as-needed. Note that the values must always be strings.
 	errorContext = {
+		component: component || 'unknown',
 		wiki: mw.config.get( 'wgWikiID', '' ),
 		version: mw.config.get( 'wgVersion', '' ),
 		skin: mw.config.get( 'skin', '' ),
@@ -425,14 +433,20 @@ function log( intakeURL, descriptor ) {
 function install( intakeURL ) {
 	// Capture errors which were logged manually via
 	// mw.errorLogger.logError( <error>, <topic> )
-	[ 'error.vue', 'error.growthexperiments', 'error.visualeditor', 'error.pagetriage' ].forEach( function ( topic ) {
-		mw.trackSubscribe( topic, function ( _, error ) {
-			var descriptor = processErrorInstance( error );
+	mw.trackSubscribe( 'error.', function ( topic, error ) {
+		var component, descriptor;
 
-			if ( shouldLog( descriptor ) ) {
-				log( intakeURL, descriptor );
-			}
-		} );
+		if ( topic === 'error.uncaught' ) {
+			// Will be logged via global.error.
+			return;
+		}
+
+		component = topic.replace( /^error\./, '' );
+		descriptor = processErrorInstance( error );
+
+		if ( shouldLog( descriptor ) ) {
+			log( intakeURL, descriptor, component );
+		}
 	} );
 
 	// We capture unhandled Javascript errors by subscribing to the
