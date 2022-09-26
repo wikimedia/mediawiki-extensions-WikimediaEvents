@@ -367,6 +367,7 @@ function shouldLog( descriptor ) {
  */
 function log( intakeURL, descriptor, component ) {
 	var errorContext,
+		gadgets = '',
 		host = location.host,
 		protocol = location.protocol,
 		search = location.search,
@@ -398,6 +399,14 @@ function log( intakeURL, descriptor, component ) {
 	if ( canonicalName ) {
 		// eslint-disable-next-line camelcase
 		errorContext.special_page = canonicalName;
+	}
+	gadgets = mw.loader.getModuleNames().filter( function ( module ) {
+		return module.match( /^ext\.gadget\./ ) && mw.loader.getState( module ) !== 'registered';
+	} ).map( function ( module ) {
+		return module.replace( /^ext\.gadget\./, '' );
+	} ).join( ',' );
+	if ( gadgets ) {
+		errorContext.gadgets = gadgets;
 	}
 
 	navigator.sendBeacon( intakeURL, JSON.stringify( {
