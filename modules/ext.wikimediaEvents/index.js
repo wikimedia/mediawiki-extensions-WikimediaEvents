@@ -5,6 +5,7 @@ require( './sessionTick.js' );
 require( './webABTestEnrollment.js' );
 require( './readingDepth.js' );
 require( './phpEngine.js' );
+require( './blockedEdit.js' );
 
 var skin = mw.config.get( 'skin' );
 if ( skin === 'minerva' ) {

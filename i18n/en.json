@@ -4,5 +4,9 @@
 			"Ori Livneh"
 		]
 	},
-	"wikimediaevents-desc": "Logs Wikimedia-specific events using EventLogging"
+	"wikimediaevents-desc": "Logs Wikimedia-specific events using EventLogging",
+	"apihelp-wikimediaeventsblockededit-summary": "Log information about blocked edit attempts",
+	"apihelp-wikimediaeventsblockededit-param-page": "A page on which an edit attempt was made",
+	"apihelp-wikimediaeventsblockededit-param-interface": "The interface which was used to edit",
+	"apihelp-wikimediaeventsblockededit-param-platform": "The platform which was used to edit"
 }
