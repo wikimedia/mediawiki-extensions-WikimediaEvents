@@ -5,5 +5,9 @@
 			"Metalhead64"
 		]
 	},
-	"wikimediaevents-desc": "Protokolliert wikimediaspezifische Ereignisse mit EventLogging"
+	"wikimediaevents-desc": "Protokolliert wikimediaspezifische Ereignisse mit EventLogging",
+	"apihelp-wikimediaeventsblockededit-summary": "Protokollierung von Informationen über blockierte Bearbeitungsversuche",
+	"apihelp-wikimediaeventsblockededit-param-page": "Eine Seite, auf der ein Bearbeitungsversuch unternommen wurde",
+	"apihelp-wikimediaeventsblockededit-param-interface": "Die Schnittstelle, die zum Bearbeiten verwendet wurde",
+	"apihelp-wikimediaeventsblockededit-param-platform": "Die Plattform, die zum Bearbeiten verwendet wurde"
 }
