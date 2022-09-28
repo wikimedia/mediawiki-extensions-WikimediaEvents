@@ -649,8 +649,6 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 
 	/**
 	 * @dataProvider somethingProvider
-	 * @param array $actions
-	 * @param array $expectedEvents
 	 */
 	public function testSomething( array $actions, array $expectedEvents ) {
 		$logPosition = $this->getEventLogPosition();

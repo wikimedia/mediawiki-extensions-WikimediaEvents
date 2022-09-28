@@ -206,7 +206,7 @@ class WikimediaEventsHooks {
 		$user = User::newFromIdentity( $userIdentity );
 
 		// Anonymous users and bots don't count (sorry!)
-		if ( $user->isAnon() || $user->isAllowed( 'bot' ) ) {
+		if ( !$user->isRegistered() || $user->isAllowed( 'bot' ) ) {
 			return;
 		}
 
@@ -619,7 +619,7 @@ class WikimediaEventsHooks {
 
 		// If an anon user clicks on the banner and doesn't yet have a session cookie then
 		// add a session cookie and log the click.
-		if ( !$hasCampaignCookie && $hasCampaignQuery && $user->isAnon() ) {
+		if ( !$hasCampaignCookie && $hasCampaignQuery && !$user->isRegistered() ) {
 			$request->response()->setCookie( $cookieName, $campaign, null );
 			wfDebugLog( 'WMDE', "$campaign - 1 - Banner click by anon user without cookie" );
 		}
@@ -630,7 +630,7 @@ class WikimediaEventsHooks {
 		if (
 			!$hasCampaignQuery &&
 			$hasCampaignCookie &&
-			$user->isAnon() &&
+			!$user->isRegistered() &&
 			$title->isSpecial( 'CreateAccount' )
 		) {
 			$request->setVal( 'campaign', $campaign );
