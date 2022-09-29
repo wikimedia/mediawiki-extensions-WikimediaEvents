@@ -4,5 +4,9 @@
 			"Bjankuloski06"
 		]
 	},
-	"wikimediaevents-desc": "Заведува викимедиски настани со EventLogging"
+	"wikimediaevents-desc": "Заведува викимедиски настани со EventLogging",
+	"apihelp-wikimediaeventsblockededit-summary": "Заведувај информации во дневникот за блокирани обиди за најава",
+	"apihelp-wikimediaeventsblockededit-param-page": "Страница на која е направен обидот за уредување",
+	"apihelp-wikimediaeventsblockededit-param-interface": "Посредникот употребен при уредувањето",
+	"apihelp-wikimediaeventsblockededit-param-platform": "Подлогата употребен при уредувањето"
 }

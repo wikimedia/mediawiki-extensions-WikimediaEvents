@@ -4,5 +4,9 @@
 			"Eleassar"
 		]
 	},
-	"wikimediaevents-desc": "Beleženje dogodkov Wikimedie z EventLogging"
+	"wikimediaevents-desc": "Beleženje dogodkov Wikimedie z EventLogging",
+	"apihelp-wikimediaeventsblockededit-summary": "Beleženje podatkov o poskusih blokiranega urejanja",
+	"apihelp-wikimediaeventsblockededit-param-page": "Stran, na kateri je bil izveden poskus urejanja",
+	"apihelp-wikimediaeventsblockededit-param-interface": "Vmesnik, ki je bil uporabljen za urejanje",
+	"apihelp-wikimediaeventsblockededit-param-platform": "Platforma, ki je bila uporabljena za urejanje"
 }

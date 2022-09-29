@@ -15,5 +15,9 @@
 			"Wladek92"
 		]
 	},
-	"wikimediaevents-desc": "Trace les événements spécifiques à Wikimédia en utilisant EventLogging"
+	"wikimediaevents-desc": "Trace les événements spécifiques à Wikimédia en utilisant EventLogging",
+	"apihelp-wikimediaeventsblockededit-summary": "Tracer les informations sur les tentatives de modification bloquées",
+	"apihelp-wikimediaeventsblockededit-param-page": "Une page sur laquelle une tentative de modification a été faite",
+	"apihelp-wikimediaeventsblockededit-param-interface": "L’interface qui a été utilisée pour modifier",
+	"apihelp-wikimediaeventsblockededit-param-platform": "La plateforme qui a été utilisée pour modifier"
 }

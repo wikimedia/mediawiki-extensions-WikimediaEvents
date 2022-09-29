@@ -6,5 +6,9 @@
 			"Yona b"
 		]
 	},
-	"wikimediaevents-desc": "רישום ביומן של אירועים ייחודיים לוויקימדיה באמצעות EventLogging"
+	"wikimediaevents-desc": "רישום ביומן של אירועים ייחודיים לוויקימדיה באמצעות EventLogging",
+	"apihelp-wikimediaeventsblockededit-summary": "רישום מידע על ניסיונות עריכה בזמן חסימה",
+	"apihelp-wikimediaeventsblockededit-param-page": "דף שבו נעשה ניסיון עריכה",
+	"apihelp-wikimediaeventsblockededit-param-interface": "הממשק ששימש לעריכה",
+	"apihelp-wikimediaeventsblockededit-param-platform": "הפלטפורמה ששימשה לעריכה"
 }
