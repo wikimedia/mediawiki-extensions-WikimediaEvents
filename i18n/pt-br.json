@@ -8,5 +8,9 @@
 			"TheEduGobi"
 		]
 	},
-	"wikimediaevents-desc": "Registra eventos específicos da Wikimedia usando o EventLogging"
+	"wikimediaevents-desc": "Registra eventos específicos da Wikimedia usando o EventLogging",
+	"apihelp-wikimediaeventsblockededit-summary": "Informações do registo sobre tentativas de edição bloqueadas",
+	"apihelp-wikimediaeventsblockededit-param-page": "Uma página na qual foi feita uma tentativa de edição",
+	"apihelp-wikimediaeventsblockededit-param-interface": "A interface que foi usada para editar",
+	"apihelp-wikimediaeventsblockededit-param-platform": "A plataforma que foi usada para editar"
 }
