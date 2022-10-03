@@ -4,5 +4,6 @@
 			"Jon Harald Søby"
 		]
 	},
-	"wikimediaevents-desc": "Logger Wikimedia-spesifikke hendelser med EventLogging"
+	"wikimediaevents-desc": "Logger Wikimedia-spesifikke hendelser med EventLogging",
+	"apihelp-wikimediaeventsblockededit-param-interface": "Grensesnittet som ble brukt for å redigere"
 }
