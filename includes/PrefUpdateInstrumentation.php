@@ -109,6 +109,9 @@ class PrefUpdateInstrumentation {
 		'echo-subscriptions-web-image-suggestions' => self::VALUE_WELLKNOWN_SHORT,
 		'echo-subscriptions-email-image-suggestions' => self::VALUE_WELLKNOWN_SHORT,
 		'echo-subscriptions-push-image-suggestions' => self::VALUE_WELLKNOWN_SHORT,
+
+		// Search Preview
+		'searchpreview' => self::VALUE_WELLKNOWN_SHORT,
 	];
 
 	/**
