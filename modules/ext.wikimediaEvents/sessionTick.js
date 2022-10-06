@@ -47,7 +47,9 @@ var moduleConfig = require( './config.json' ),
 	// Should represent the most ticks that could be sent at once
 	tickLimit = Math.ceil( RESET_MS / TICK_MS ),
 	// Whether the browser supports the 'passive' event listener option.
-	supportsPassive = 0;
+	supportsPassive = 0,
+	// Whether the browser supports localStorage.
+	supportsLocalStorage = false;
 
 /**
  * Detect support for EventListenerOptions and set 'supportsPassive' flag.
@@ -64,6 +66,22 @@ function detectPassiveEventListenerSupport() {
 		} );
 		window.addEventListener( 'testPassiveOption', noop, options );
 		window.removeEventListener( 'testPassiveOption', noop, options );
+	} catch ( e ) {
+		// Silently fail.
+	}
+}
+
+/**
+ * Detect support for localStorage.
+ *
+ * See https://phabricator.wikimedia.org/T295619 for additional detail.
+ */
+function detectLocalStorageSupport() {
+	try {
+		localStorage.setItem( 'localStorageSupport', '1' );
+		localStorage.removeItem( 'localStorageSupport' );
+
+		supportsLocalStorage = true;
 	} catch ( e ) {
 		// Silently fail.
 	}
@@ -156,9 +174,7 @@ function regulator() {
  * Handle 'sessionReset' and 'sessionTick' events from mw.track()
  */
 function instrument() {
-	var tickCount = 'wmE-sessionTickTickCount',
-		userGroups = mw.config.get( 'wgUserGroups' ),
-		userIsDataQATester = Array.isArray( userGroups ) && userGroups.indexOf( 'data-qa' ) > -1;
+	var tickCount = 'wmE-sessionTickTickCount';
 
 	mw.trackSubscribe( 'sessionReset', function () {
 		mw.cookie.set( tickCount, 0 );
@@ -177,8 +193,7 @@ function instrument() {
 			mw.eventLog.submit( 'mediawiki.client.session_tick', {
 				$schema: '/analytics/session_tick/2.0.0',
 				tick: count + n,
-				// TODO: Remove after data QA is complete. (T276515)
-				test: userIsDataQATester ? { qa: 1 } : undefined
+				test: !supportsLocalStorage ? { supportsLocalStorage: 0 } : undefined
 			} );
 		}
 	} );
@@ -192,6 +207,9 @@ if ( enabled && document.hidden !== undefined ) {
 
 	// Sets the 'supportsPassive' flag.
 	detectPassiveEventListenerSupport();
+
+	// Sets the 'supportsLocalStorage' flag.
+	detectLocalStorageSupport();
 
 	// Only enable for browsers that support passive event listeners.
 	// See: T274264, T248987//
