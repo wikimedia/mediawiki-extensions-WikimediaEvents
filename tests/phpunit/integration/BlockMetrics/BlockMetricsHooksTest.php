@@ -5,7 +5,6 @@ namespace WikimediaEvents\Tests;
 use MediaWiki\Block\DatabaseBlock;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWikiIntegrationTestCase;
-use PHPUnit\Framework\Constraint\ArraySubset;
 use Title;
 use WikimediaEvents\BlockMetrics\BlockMetricsHooks;
 
@@ -38,23 +37,29 @@ class BlockMetricsHooksTest extends MediaWikiIntegrationTestCase {
 			->getMock();
 		$blockMetricsHooks->expects( $this->once() )
 			->method( 'submitEvent' )
-			->with( 'mediawiki.accountcreation_block', new ArraySubset( [
-				'$schema' => BlockMetricsHooks::SCHEMA,
-				'database' => $this->db->getDBname(),
-				'block_id' => json_encode( $block->getId() ),
-				'block_type' => 'user',
-				'block_expiry' => 'infinity',
-				'block_scope' => 'local',
-				'error_message_keys' => [ 'blockedtext' ],
-				'performer' => [
-					'user_text' => $user->getName(),
-					'user_id' => $user->getId(),
-					'user_groups' => [ '*', 'user' ],
-					'user_is_bot' => false,
-					'user_edit_count' => 0,
-				],
-				'user_ip' => '127.0.0.1',
-			], true ) );
+			->willReturnCallback( function ( string $streamName, array $event ) use ( $block, $user ) {
+				$this->assertSame( 'mediawiki.accountcreation_block', $streamName );
+				$this->assertArraySubmapSame(
+					[
+						'$schema' => BlockMetricsHooks::SCHEMA,
+						'database' => $this->db->getDBname(),
+						'block_id' => json_encode( $block->getId() ),
+						'block_type' => 'user',
+						'block_expiry' => 'infinity',
+						'block_scope' => 'local',
+						'error_message_keys' => [ 'blockedtext' ],
+						'performer' => [
+							'user_text' => $user->getName(),
+							'user_id' => $user->getId(),
+							'user_groups' => [ '*', 'user' ],
+							'user_is_bot' => false,
+							'user_edit_count' => 0,
+						],
+						'user_ip' => '127.0.0.1',
+					],
+					$event
+				);
+			} );
 		$blockMetricsHooks->onPermissionErrorAudit( Title::newMainPage(), $user, 'createaccount',
 			PermissionManager::RIGOR_SECURE, [ 'blockedtext' ] );
 	}
