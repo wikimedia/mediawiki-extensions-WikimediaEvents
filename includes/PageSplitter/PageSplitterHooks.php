@@ -3,8 +3,6 @@
 namespace WikimediaEvents\PageSplitter;
 
 use Config;
-use OutputPage;
-use Skin;
 
 /**
  * Hooks used for PageSplitter-related logging
@@ -22,60 +20,6 @@ class PageSplitterHooks {
 	 */
 	public function __construct( Config $config ) {
 		$this->config = $config;
-	}
-
-	/**
-	 * On XAnalyticsSetHeader
-	 *
-	 * When adding new headers here please update the docs:
-	 * https://wikitech.wikimedia.org/wiki/X-Analytics
-	 *
-	 * Insert a 'max-snippet' key with a boolean value if the requested page is bucketed within the control or
-	 * treatment group of an experiment. Unsampled pages should not have this key-value pair added.
-	 *
-	 * @param OutputPage $out
-	 * @param array &$headerItems
-	 */
-	public function onXAnalyticsSetHeader( OutputPage $out, array &$headerItems ): void {
-		$title = $out->getTitle();
-		if ( !$title || !$title->exists() ) {
-			return;
-		}
-
-		$pageId = $title->getArticleID();
-
-		// T301584 Add max-snippet key-value pair for sampled pages only.
-		$active = $this->getActiveInstrumentBucket( $pageId );
-		if ( $active === self::IS_TREATMENT ) {
-			// Sampled page is in the treatment group.
-			$headerItems['max-snippet'] = true;
-		} elseif ( $active === self::IS_CONTROL ) {
-			// Sampled page is in the control group.
-			$headerItems['max-snippet'] = false;
-		}
-	}
-
-	/**
-	 * BeforePageDisplay hook handler
-	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/BeforePageDisplay
-	 *
-	 * Append robots meta tag to the output page.
-	 *
-	 * @param OutputPage &$out
-	 * @param Skin &$skin
-	 */
-	public function onBeforePageDisplay( OutputPage &$out, Skin &$skin ) {
-		$title = $out->getTitle();
-		if ( !$title || !$title->exists() ) {
-			return;
-		}
-
-		if ( $this->getActiveInstrumentBucket( $title->getArticleID() ) === self::IS_TREATMENT ) {
-			// Note that if the section snippet A/B test improves organic search referrals,
-			// we should add the 'max-snippet' directive to the robots meta tag in core
-			// once the experiment is over and this code is removed from WME.
-			$out->setRobotsOptions( [ 'max-snippet' => 400 ] );
-		}
 	}
 
 	/**
