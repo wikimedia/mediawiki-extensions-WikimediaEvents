@@ -34,20 +34,11 @@
 			"services": [
 				"PermissionManager"
 			]
-		},
-		"PageSplitterHooks": {
-			"class": "WikimediaEvents\\PageSplitter\\PageSplitterHooks",
-			"services": [
-				"MainConfig"
-			]
 		}
 	},
 	"Hooks": {
 		"BeforeInitialize": "WikimediaEvents\\WikimediaEventsHooks::onBeforeInitializeWMDECampaign",
-		"BeforePageDisplay": [
-			"WikimediaEvents\\WikimediaEventsHooks::onBeforePageDisplay",
-			"PageSplitterHooks"
-		],
+		"BeforePageDisplay": "WikimediaEvents\\WikimediaEventsHooks::onBeforePageDisplay",
 		"PageSaveComplete": "WikimediaEvents\\WikimediaEventsHooks::onPageSaveComplete",
 		"PreferencesFormPreSave": "WikimediaEvents\\VectorPrefDiffInstrumentation::onPreferencesFormPreSave",
 		"SaveUserOptions": "WikimediaEvents\\PrefUpdateInstrumentation::onSaveUserOptions",
@@ -56,10 +47,7 @@
 		"ResourceLoaderGetConfigVars": "WikimediaEvents\\WikimediaEventsHooks::onResourceLoaderGetConfigVars",
 		"ListDefinedTags": "WikimediaEvents\\WikimediaEventsHooks::onListDefinedTags",
 		"ChangeTagsListActive": "WikimediaEvents\\WikimediaEventsHooks::onChangeTagsListActive",
-		"XAnalyticsSetHeader": [
-			"WikimediaEvents\\WikimediaEventsHooks::onXAnalyticsSetHeader",
-			"PageSplitterHooks"
-		],
+		"XAnalyticsSetHeader": "WikimediaEvents\\WikimediaEventsHooks::onXAnalyticsSetHeader",
 		"SpecialSearchGoResult": "WikimediaEvents\\WikimediaEventsHooks::onSpecialSearchGoResult",
 		"SpecialSearchResults": "WikimediaEvents\\WikimediaEventsHooks::onSpecialSearchResults",
 		"RecentChange_save": [
