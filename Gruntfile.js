@@ -12,7 +12,8 @@ module.exports = function ( grunt ) {
 			},
 			all: [
 				'**/*.{js,json}',
-				'!{vendor,node_modules}/**'
+				'!{vendor,node_modules}/**',
+				'!devserver/statsd/statsd.config.js'
 			]
 		},
 		banana: {
