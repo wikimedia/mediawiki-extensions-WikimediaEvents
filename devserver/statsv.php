@@ -8,19 +8,21 @@
  * @author Sam Smith <phuedx@wikimedia.org>
  */
 
-$STATSD_HOSTNAME = getenv( 'STATSD_HOSTNAME' );
-$STATSD_PORT = intval( getenv( 'STATSD_PORT' ) ) ?? 8125;
-
 $path = $_SERVER['PHP_SELF'];
 $query = $_SERVER['QUERY_STRING'];
 
-if ( $path !== '/beacon/statsv' ) {
-	http_response_code( 404 /* Not Found */ );
-
-	return;
+/**
+ * @param string $str
+ */
+function wfLog( string $str ): void {
+	file_put_contents( 'php://stdout', "$str\n" );
 }
 
-$socket = socket_create( AF_INET, SOCK_DGRAM, SOL_UDP );
+if ( $path !== '/beacon/statsv' ) {
+	http_response_code( 404 /* Not Found */ );
+	wfLog( "ERROR: Reject request to $path" );
+	return;
+}
 
 parse_str( $query, $metrics );
 
@@ -32,14 +34,7 @@ foreach ( $metrics as $bucket => $valueType ) {
 
 	$message = "{$bucket}:{$value}|{$type}";
 
-	socket_sendto(
-		$socket,
-		$message,
-		strlen( $message ),
-		0,
-		$STATSD_HOSTNAME,
-		$STATSD_PORT
-	);
+	wfLog( "DEBUG: $message" );
 }
 
-http_response_code( 204, /* No Content */ );
+http_response_code( 204 /* No Content */ );
