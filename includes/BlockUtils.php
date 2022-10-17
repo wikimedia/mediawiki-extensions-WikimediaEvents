@@ -98,7 +98,7 @@ class BlockUtils {
 			'block_scope' => $local ? 'local' : 'global',
 			'platform' => $platform,
 			'interface' => $interface,
-			'country_code' => self::getCountryCode() ?? 'Unknown',
+			'country_code' => self::getCountryCode() ?: 'Unknown',
 			// http.client_ip is handled by eventgate-wikimedia
 			'database' => $wgDBname,
 			'page_id' => $title->getId(),
@@ -115,11 +115,11 @@ class BlockUtils {
 	/**
 	 * Determine the current country via geoip if available
 	 *
-	 * @return string|null
+	 * @return string|false
 	 */
 	private static function getCountryCode() {
 		$request = RequestContext::getMain()->getRequest();
-		$country = null;
+		$country = false;
 		// Use the GeoIP cookie if available.
 		$geoip = $request->getCookie( 'GeoIP', '' );
 		if ( $geoip ) {
