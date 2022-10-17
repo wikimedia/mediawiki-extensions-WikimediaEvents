@@ -5,7 +5,6 @@ namespace WikimediaEvents;
 use ActorMigration;
 use Config;
 use DeferredUpdates;
-use EditPage;
 use ExtensionRegistry;
 use Hooks;
 use IContextSource;
@@ -248,28 +247,6 @@ class WikimediaEventsHooks {
 				] );
 			}
 		} );
-	}
-
-	/**
-	 * Logs edit conflicts with the EditConflict schema.
-	 *
-	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/EditPageBeforeConflictDiff
-	 * @see https://meta.wikimedia.org/wiki/Schema:EditConflict
-	 * @param EditPage $editPage
-	 * @param OutputPage &$out
-	 */
-	public static function onEditPageBeforeConflictDiff( EditPage $editPage, &$out ): void {
-		$user = $out->getUser();
-		$title = $out->getTitle();
-
-		EventLogging::logEvent( 'EditConflict', 8860941, [
-			'userId' => $user->getId(),
-			'userText' => $user->getName(),
-			'pageId' => $title->getArticleID(),
-			'namespace' => $title->getNamespace(),
-			'title' => $title->getDBkey(),
-			'revId' => (int)$title->getLatestRevID(),
-		] );
 	}
 
 	/**
