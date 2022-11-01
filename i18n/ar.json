@@ -8,5 +8,9 @@
 			"زكريا"
 		]
 	},
-	"wikimediaevents-desc": "يسجل الأحداث المتعلقة بويكيميديا باستخدام EventLogging"
+	"wikimediaevents-desc": "يسجل الأحداث المتعلقة بويكيميديا باستخدام EventLogging",
+	"apihelp-wikimediaeventsblockededit-summary": "معلومات تسجيل حول محاولات التحرير المحظورة",
+	"apihelp-wikimediaeventsblockededit-param-page": "صفحة تم إجراء محاولة تحرير عليها",
+	"apihelp-wikimediaeventsblockededit-param-interface": "الواجهة التي تم استخدامها للتحرير",
+	"apihelp-wikimediaeventsblockededit-param-platform": "المنصة التي تم استخدامها للتحرير"
 }
