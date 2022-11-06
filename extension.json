@@ -12,7 +12,8 @@
 	"requires": {
 		"MediaWiki": ">= 1.38.0",
 		"extensions": {
-			"EventLogging": "*"
+			"EventLogging": "*",
+			"EventBus": "*"
 		}
 	},
 	"AutoloadNamespaces": {
