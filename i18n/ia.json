@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"authors": [
+			"McDutchie"
+		]
+	},
+	"wikimediaevents-desc": "Registra eventos specific a Wikimedia usante EventLogging.",
+	"apihelp-wikimediaeventsblockededit-summary": "Registra information sur tentativas de modification blocate.",
+	"apihelp-wikimediaeventsblockededit-param-page": "Un pagina sur le qual un tentativa de modification esseva facite.",
+	"apihelp-wikimediaeventsblockededit-param-interface": "Le interfacie que esseva usate pro modificar.",
+	"apihelp-wikimediaeventsblockededit-param-platform": "Le platteforma que esseva usate pro modificar."
+}
