@@ -125,6 +125,49 @@ mw.trackSubscribe( 'webuiactions_log.', function ( topic, value ) {
 	logEvent( topic.slice( 'webuiactions_log.'.length ), value );
 } );
 
+/**
+ * Derives an event name value for a link which has no data-event-name
+ * data attribute using the following checks:
+ * 1) Finds the closest link that matches the '.vector-menu a' selector.
+ *    If none, returns null.
+ * 2) Checks if the link is inside a `vector-pinnable-element`.
+ *    If so an event name is created with a suffix that includes the name of the
+ *    feature and ".pinned" or ".unpinned" depending on the current state.
+ * 4) If not, uses the targets elements ID attribute.
+ * 5) If parent has no ID element this will return null.
+ *
+ * Note: this code runs in both Vector skins, and the pinned or unpinned
+ * class will always be absent in legacy Vector.
+ *
+ * @param {jQuery} $target
+ * @return {string|null}
+ */
+function getMenuLinkEventName( $target ) {
+	var $closestLink = $target.closest( '.vector-menu a' );
+	var closestLink = $closestLink[ 0 ];
+	if ( !closestLink ) {
+		return null;
+	}
+	var linkListItem = closestLink.parentNode;
+	if ( !linkListItem ) {
+		return;
+	}
+	var id = linkListItem.getAttribute( 'id' );
+	var pinnableElement = $closestLink.closest( '.vector-pinnable-element' )[ 0 ];
+	var pinnableElementHeader = pinnableElement ? pinnableElement.querySelector( '.vector-pinnable-header' ) : null;
+
+	// Note not all pinnable-elements have a header so check both.
+	if ( id && pinnableElement && pinnableElementHeader ) {
+		var featureName = pinnableElementHeader.dataset.name || 'unknown';
+		var pinned = pinnableElementHeader.classList.contains( 'vector-pinnable-header-pinned' ) ?
+			'.pinned' :
+			'.unpinned';
+		return id + '.' + featureName + pinned;
+	} else {
+		return id;
+	}
+}
+
 // Log the page load when <body> available.
 $( function () {
 	logEvent( 'init' );
@@ -133,20 +176,15 @@ $( function () {
 		// and children of elements that have the attribute
 		// i.e. user menu dropdown button, sticky header buttons, table of contents links
 		.on( 'click', function ( event ) {
-			var $closest = $( event.target ).closest( '[data-event-name]' );
+			var $target = $( event.target );
+			var $closest = $target.closest( '[data-event-name]' );
 			if ( $closest.length ) {
 				logEvent( 'click', $closest.attr( 'data-event-name' ) );
-			}
-		} )
-		// Track links in vector menus
-		// We can't use `nav a` as the selector to prevent extra events from being logged
-		// from the new TOC, which is a `nav` element
-		.on( 'click', '.vector-menu a', function ( event ) {
-			// Use currentTarget because this handler only runs for elements that match the selector
-			// https://api.jquery.com/on/#direct-and-delegated-events
-			var currTargetParent = event.currentTarget.parentNode;
-			if ( currTargetParent.getAttribute( 'id' ) ) {
-				logEvent( 'click', currTargetParent.getAttribute( 'id' ) );
+			} else {
+				var eventName = getMenuLinkEventName( $target );
+				if ( eventName ) {
+					logEvent( 'click', eventName );
+				}
 			}
 		} );
 } );
