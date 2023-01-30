@@ -394,7 +394,12 @@ function log( intakeURL, descriptor, component ) {
 		// T265096 - record when a banner was shown. Might be a hint to catch errors originating
 		// in banner code, which is otherwise difficult to diagnose.
 		// eslint-disable-next-line camelcase
-		banner_shown: String( mw.centralNotice && mw.centralNotice.isBannerShown() || false )
+		banner_shown: String( (
+			mw.centralNotice &&
+			// T319498: mw.centralNotice.isBannerShown might or might not exist
+			mw.centralNotice.isBannerShown &&
+			mw.centralNotice.isBannerShown()
+		) || false )
 	};
 	if ( canonicalName ) {
 		// eslint-disable-next-line camelcase
