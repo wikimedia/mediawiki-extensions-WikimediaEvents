@@ -9,5 +9,9 @@
 			"Sunny00217"
 		]
 	},
-	"wikimediaevents-desc": "EventLogging 的維基媒體特定事件記錄"
+	"wikimediaevents-desc": "EventLogging 的維基媒體特定事件記錄",
+	"apihelp-wikimediaeventsblockededit-summary": "有關禁止編輯嘗試的日誌資訊",
+	"apihelp-wikimediaeventsblockededit-param-page": "嘗試做出編輯的頁面",
+	"apihelp-wikimediaeventsblockededit-param-interface": "用於編輯的介面",
+	"apihelp-wikimediaeventsblockededit-param-platform": "用於編輯的平台"
 }
