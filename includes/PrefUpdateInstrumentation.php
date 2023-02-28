@@ -171,7 +171,13 @@ class PrefUpdateInstrumentation {
 			if ( $prevValue != $optValue ) {
 				$event = self::createPrefUpdateEvent( $user, $optName, $optValue, $now );
 				if ( $event !== false ) {
-					EventLogging::logEvent( 'PrefUpdate', -1, $event );
+					EventLogging::submit(
+						'eventlogging_PrefUpdate',
+						[
+							'$schema' => '/analytics/legacy/prefupdate/1.0.0',
+							'event' => $event,
+						]
+					);
 				}
 			}
 		}
