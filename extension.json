@@ -57,7 +57,6 @@
 		"ResourceLoaderRegisterModules": "WikimediaEvents\\WikimediaEventsHooks::onResourceLoaderRegisterModules",
 		"RevisionRecordInserted": "WikimediaEvents\\WikimediaEventsHooks::onRevisionRecordInserted",
 		"MakeGlobalVariablesScript": "WikimediaEvents\\WikimediaEventsHooks::onMakeGlobalVariablesScript",
-		"SpecialMuteSubmit": "WikimediaEvents\\WikimediaEventsHooks::onSpecialMuteSubmit",
 		"PermissionErrorAudit": "BlockMetricsHooks",
 		"EditPage::showReadOnlyForm:initial": "EditPageHooks"
 	},

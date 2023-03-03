@@ -614,29 +614,4 @@ class WikimediaEventsHooks {
 			wfDebugLog( 'WMDE', "$campaign - 2 - Inject campaign value on CreateAccount" );
 		}
 	}
-
-	/**
-	 * Log user's selection on SpecialMute form via EventLogging
-	 *
-	 * @param array $data
-	 */
-	public static function onSpecialMuteSubmit( $data ): void {
-		$event = [];
-		if ( isset( $data['email-blacklist'] ) ) {
-			$event['emailsBefore'] = $data['email-blacklist']['before'];
-			$event['emailsAfter'] = $data['email-blacklist']['after'];
-		}
-
-		if ( isset( $data['echo-notifications-blacklist'] ) ) {
-			$event['notificationsBefore'] = $data['echo-notifications-blacklist']['before'];
-			$event['notificationsAfter'] = $data['echo-notifications-blacklist']['after'];
-		}
-
-		DeferredUpdates::addCallableUpdate( static function () use ( $event ) {
-			// NOTE: The 'SpecialMuteSubmit' event was migrated to the Event Platform, and is
-			//  no longer using the legacy EventLogging schema from metawiki. $revId is actually
-			//  overridden by the EventLoggingSchemas extension attribute in extension.json.
-			EventLogging::logEvent( 'SpecialMuteSubmit', -1, $event );
-		} );
-	}
 }
