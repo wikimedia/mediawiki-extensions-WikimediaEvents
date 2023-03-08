@@ -119,3 +119,11 @@ More details at <https://phabricator.wikimedia.org/T311388>
 
 Previously maintained in VisualEditor and other extensions since 2014.
 Moved here in <https://phabricator.wikimedia.org/T332438>.
+
+## Special:Diff interactions
+
+* Since: March 2023
+* Files: specialDiff.js
+* Contact: Moderator Tools
+
+More details at <https://phabricator.wikimedia.org/T326214>

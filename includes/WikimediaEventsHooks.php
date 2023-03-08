@@ -46,6 +46,14 @@ class WikimediaEventsHooks {
 			// If we are in Wikibase Repo, load Wikibase module
 			$out->addModules( 'ext.wikimediaEvents.wikibase' );
 		}
+
+		$namespace = $out->getTitle()->getNamespace();
+		$isDiff = $out->getRequest()->getCheck( 'diff' );
+
+		if ( $namespace === -1 || $isDiff ) {
+			// If this is a special page or a diff, load specialPages module
+			$out->addModules( 'ext.wikimediaEvents.specialPages' );
+		}
 	}
 
 	/**
