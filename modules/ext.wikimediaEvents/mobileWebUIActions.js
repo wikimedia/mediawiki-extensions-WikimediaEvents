@@ -78,13 +78,13 @@ mw.trackSubscribe( 'webuiactions_log.', function ( topic, value ) {
 	logEvent( topic.slice( 'webuiactions_log.'.length ), value );
 } );
 
-// Log the page load.
 mw.requestIdleCallback( function () {
+	// Log the page load.
 	// ns= allows us to tell the namespace this occurred in.
 	logEvent( 'init', 'ns=' + mw.config.get( 'wgNamespaceNumber' ) );
 } );
 
-$( document.body ).on( 'click', function ( event ) {
+$( document ).on( 'click', function ( event ) {
 	var $closest = $( event.target ).closest( '[data-event-name]' );
 	if ( $closest.length ) {
 		var destination = $closest.attr( 'href' );

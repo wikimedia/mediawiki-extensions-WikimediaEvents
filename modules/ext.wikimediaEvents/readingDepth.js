@@ -150,26 +150,25 @@ function resume() {
  *  schema Schema:ReadingDepth
  */
 function logEvent( action ) {
-	var
-		domInteractive = getDomInteractive(),
-		firstPaint = getFirstPaint(),
-		pageLength = mw.config.get( 'wgWMEPageLength', -1 ),
-		isMobile = mw.config.get( 'wgMFMode' ),
+	var domInteractive = getDomInteractive();
+	var firstPaint = getFirstPaint();
+	var pageLength = mw.config.get( 'wgWMEPageLength', -1 );
+	var isMobile = mw.config.get( 'wgMFMode' );
 
-		/* eslint-disable camelcase */
-		data = $.extend( {}, EVENT, {
-			action: action,
-			dom_interactive_time: domInteractive ?
-				Math.round( domInteractive ) :
-				undefined,
-			first_paint_time: firstPaint ?
-				Math.round( firstPaint ) :
-				undefined,
-			visibility_listeners_time: Math.round( visibilityListenersAdded ),
-			page_length: pageLength,
-			access_method: isMobile ? 'mobile web' : 'desktop'
-		}, eventData );
-		/* eslint-enable camelcase */
+	/* eslint-disable camelcase */
+	var data = $.extend( {}, EVENT, {
+		action: action,
+		dom_interactive_time: domInteractive ?
+			Math.round( domInteractive ) :
+			undefined,
+		first_paint_time: firstPaint ?
+			Math.round( firstPaint ) :
+			undefined,
+		visibility_listeners_time: Math.round( visibilityListenersAdded ),
+		page_length: pageLength,
+		access_method: isMobile ? 'mobile web' : 'desktop'
+	}, eventData );
+	/* eslint-enable camelcase */
 
 	if ( action === 'pageUnloaded' ) {
 		/* eslint-disable camelcase */
@@ -178,8 +177,8 @@ function logEvent( action ) {
 		/* eslint-enable camelcase */
 	}
 
-	mw.eventLog.submit( 'mediawiki.reading_depth', data );
 	// mw.track replaced with mw.eventLog
+	mw.eventLog.submit( 'mediawiki.reading_depth', data );
 }
 
 /**
@@ -245,7 +244,7 @@ function enableTracking() {
 			session_token: sessionId
 		};
 		/* eslint-enable camelcase */
-		addEventListener( 'beforeunload', onBeforeUnload );
+		window.addEventListener( 'beforeunload', onBeforeUnload );
 		onLoad();
 	}
 }

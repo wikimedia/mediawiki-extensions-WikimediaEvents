@@ -26,7 +26,6 @@ var VIEWPORT_BUCKETS = {
  * @return {string} VIEWPORT_BUCKETS
  */
 function getUserViewportBucket() {
-
 	if ( window.innerWidth > 2000 ) {
 		return VIEWPORT_BUCKETS.over2000;
 	}
@@ -152,7 +151,7 @@ function getMenuLinkEventName( $target ) {
 	if ( !linkListItem ) {
 		return;
 	}
-	var id = linkListItem.getAttribute( 'id' );
+	var id = linkListItem.id;
 	var pinnableElement = $closestLink.closest( '.vector-pinnable-element' )[ 0 ];
 	var pinnableElementHeader = pinnableElement ? pinnableElement.querySelector( '.vector-pinnable-header' ) : null;
 
@@ -168,7 +167,8 @@ function getMenuLinkEventName( $target ) {
 	}
 }
 
-// Log the page load when <body> available.
+// Wait for DOM ready because logEvent() requires
+// knowing sidebar state and body classes.
 $( function () {
 	logEvent( 'init' );
 	$( document )

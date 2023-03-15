@@ -10,7 +10,7 @@ require( './blockedEdit.js' );
 var skin = mw.config.get( 'skin' );
 if ( skin === 'minerva' ) {
 	require( './mobileWebUIActions.js' );
-} else if ( [ 'vector', 'vector-2022' ].indexOf( String( skin ) ) > -1 ) {
+} else if ( skin === 'vector-2022' || skin === 'vector' ) {
 	require( './searchSatisfaction.js' );
 	require( './desktopWebUIActions.js' );
 	require( './universalLanguageSelector.js' );
