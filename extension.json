@@ -155,7 +155,8 @@
 			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.specialPages",
 			"packageFiles": [
 				"index.js",
-				"specialDiff.js"
+				"specialDiff.js",
+				"specialMobileDiff.js"
 			],
 			"dependencies": [
 				"ext.eventLogging"

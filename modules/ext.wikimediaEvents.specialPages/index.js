@@ -5,4 +5,9 @@ if ( skin === 'vector-2022' || skin === 'vector' ) {
 	if ( isDiffPage ) {
 		require( './specialDiff.js' );
 	}
+} else if ( skin === 'minerva' ) {
+	const isMobileDiffPage = ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'MobileDiff' );
+	if ( isMobileDiffPage ) {
+		require( './specialMobileDiff.js' );
+	}
 }

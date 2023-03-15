@@ -135,3 +135,11 @@ Moved here in <https://phabricator.wikimedia.org/T332438>.
 * Contact: Moderator Tools
 
 More details at <https://phabricator.wikimedia.org/T326214>
+
+## Special:MobileDiff interactions
+
+* Since: May 2023
+* Files: specialMobileDiff.js
+* Contact: Moderator Tools
+
+More details at <https://phabricator.wikimedia.org/T326216>
