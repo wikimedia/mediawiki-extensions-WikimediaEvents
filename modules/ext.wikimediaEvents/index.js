@@ -18,3 +18,5 @@ if ( skin === 'minerva' ) {
 } else {
 	require( './searchSatisfaction.js' );
 }
+
+require( './editAttemptStep.js' );

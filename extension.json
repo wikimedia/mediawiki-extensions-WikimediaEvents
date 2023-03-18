@@ -44,7 +44,6 @@
 		"PreferencesFormPreSave": "WikimediaEvents\\VectorPrefDiffInstrumentation::onPreferencesFormPreSave",
 		"SaveUserOptions": "WikimediaEvents\\PrefUpdateInstrumentation::onSaveUserOptions",
 		"ArticleViewHeader": "WikimediaEvents\\WikimediaEventsHooks::onArticleViewHeader",
-		"ResourceLoaderGetConfigVars": "WikimediaEvents\\WikimediaEventsHooks::onResourceLoaderGetConfigVars",
 		"ListDefinedTags": "WikimediaEvents\\WikimediaEventsHooks::onListDefinedTags",
 		"ChangeTagsListActive": "WikimediaEvents\\WikimediaEventsHooks::onChangeTagsListActive",
 		"XAnalyticsSetHeader": "WikimediaEvents\\WikimediaEventsHooks::onXAnalyticsSetHeader",
@@ -129,12 +128,14 @@
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
 					"callbackParam": "universalLanguageSelector"
 				},
+				"editAttemptStep.js",
 				{
 					"name": "config.json",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleConfig"
 				}
 			],
 			"dependencies": [
+				"web2017-polyfills",
 				"ext.eventLogging",
 				"mediawiki.user",
 				"mediawiki.cookie",
@@ -221,7 +222,18 @@
 		},
 		"WMESchemaVisualEditorFeatureUseSamplingRate": {
 			"value": "0.0625",
-			"description": "The default sampling rate for the VisualEditorFeatureUse instruments. This should only ever differ from WMESchemaEditAttemptStepSamplingRate (see above) when that is set to 1. The instruments themselves are defined in the DiscussionTools, MobileFrontend, and VisualEditor extensions. See https://phabricator.wikimedia.org/T312016 for detail."
+			"description": "The default sampling rate for the VisualEditorFeatureUse instruments. This should only ever differ from the rate above when that is set to 1. See https://phabricator.wikimedia.org/T312016 for detail."
+		},
+		"DTSchemaEditAttemptStepSamplingRate": {
+			"value": 0,
+			"description": "Rate at which to sample DiscussionTools sessions for instrumentation; overrides the rate above if set to any number other than 0"
+		},
+		"DTSchemaEditAttemptStepOversample": {
+			"value": false,
+			"description": "Oversample EditAttemptStep logging for DiscussionTools sessions; distinct from rate tuning, as it'll flag the events as being oversampled"
+		},
+		"MFSchemaEditAttemptStepOversample": {
+			"value": false
 		},
 		"WMEWikidataCompletionSearchClicks": {
 			"value": []

@@ -10,5 +10,10 @@
 	},
 	"env": {
 		"commonjs": true
+	},
+	"settings": {
+		"polyfills": [
+			"URL"
+		]
 	}
 }

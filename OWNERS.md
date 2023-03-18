@@ -110,3 +110,12 @@ More details at <https://phabricator.wikimedia.org/T311388>
 * Since: September 2022
 * Files: blockedEdit.js
 * Contact: Editing
+
+## EditAttemptStep and VisualEditorFeatureUse event logging
+
+* Since: March 2023
+* Files: editAttemptStep.js
+* Contact: Editing
+
+Previously maintained in VisualEditor and other extensions since 2014.
+Moved here in <https://phabricator.wikimedia.org/T332438>.

@@ -185,35 +185,6 @@ class WikimediaEventsHooks {
 	}
 
 	/**
-	 * Set static (not request-specific) JS configuration variables
-	 *
-	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/ResourceLoaderGetConfigVars
-	 * @param array &$vars Array of `mw.config` variables to export side-wide
-	 * @param string $skinName Current skin name
-	 */
-	public static function onResourceLoaderGetConfigVars( &$vars, $skinName ): void {
-		global $wgWMESchemaEditAttemptStepSamplingRate, $wgWMESchemaVisualEditorFeatureUseSamplingRate;
-
-		// WARNING: Do not add new entries here.
-		//
-		// This legacy mechanism is suboptimial for performance and code quality.
-		//
-		// For new variables you need to access in a JS module, use a virtual 'config.json' file.
-		// See <https://www.mediawiki.org/wiki/ResourceLoader/Package_modules>
-		//
-		// TODO: wgWMESchemaEditAttemptStepSamplingRate and
-		//  wgWMESchemaVisualEditorFeatureUseSamplingRate are preserved here for now because they
-		//  are consumed by the DiscussionTools, MobileFrontend, VisualEditor, and WikiEditor
-		//  extensions. As of July 2022, DiscussionTools is the only extension that uses package
-		//  files. The MobileFrontend, VisualEditor, and WikiEditor extensions should be updated
-		//  to use package files so that these variables can be exported via a virtual file and
-		//  this hook handler removed.
-		//
-		$vars['wgWMESchemaEditAttemptStepSamplingRate'] = $wgWMESchemaEditAttemptStepSamplingRate;
-		$vars['wgWMESchemaVisualEditorFeatureUseSamplingRate'] = $wgWMESchemaVisualEditorFeatureUseSamplingRate;
-	}
-
-	/**
 	 * Callback for ext.wikimediaEvents virtual config.json file.
 	 *
 	 * @param RL\Context $context
@@ -224,7 +195,6 @@ class WikimediaEventsHooks {
 		$vars = [];
 		$vars['clientErrorIntakeURL'] = $config->get( 'WMEClientErrorIntakeURL' );
 		$vars['statsdBaseUri'] = $config->get( 'WMEStatsdBaseUri' );
-		$vars['schemaEditAttemptStepSamplingRate'] = $config->get( 'WMESchemaEditAttemptStepSamplingRate' );
 		$vars['wikidataCompletionSearchClicks'] = $config->get( 'WMEWikidataCompletionSearchClicks' );
 		$vars['sessionTick'] = $config->get( 'WMESessionTick' );
 		$vars['readingDepthSamplingRate'] = $config->get( 'WMEReadingDepthSamplingRate' );
@@ -242,6 +212,18 @@ class WikimediaEventsHooks {
 			$vars['webUIScrollTrackingTimeToWaitBeforeScrollUp'] =
 				$config->get( 'WMEWebUIScrollTrackingTimeToWaitBeforeScrollUp' );
 		}
+
+		// editAttemptStep.js
+		$vars['WMESchemaEditAttemptStepSamplingRate'] =
+			$config->get( 'WMESchemaEditAttemptStepSamplingRate' );
+		$vars['WMESchemaVisualEditorFeatureUseSamplingRate'] =
+			$config->get( 'WMESchemaVisualEditorFeatureUseSamplingRate' );
+		$vars['DTSchemaEditAttemptStepSamplingRate'] =
+			$config->get( 'DTSchemaEditAttemptStepSamplingRate' );
+		$vars['DTSchemaEditAttemptStepOversample'] =
+			$config->get( 'DTSchemaEditAttemptStepOversample' );
+		$vars['MFSchemaEditAttemptStepOversample'] =
+			$config->get( 'MFSchemaEditAttemptStepOversample' );
 
 		return $vars;
 	}
