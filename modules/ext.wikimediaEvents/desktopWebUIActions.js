@@ -125,6 +125,31 @@ mw.trackSubscribe( 'webuiactions_log.', function ( topic, value ) {
 } );
 
 /**
+ * Checks if the feature is enabled.
+ *
+ * @param {string} name
+ * @return {boolean}
+ */
+function isVectorFeatureEnabled( name ) {
+	return document.documentElement.classList.contains( getEnabledClass( name, true ) );
+}
+
+/**
+ * Get name of feature class.
+ *
+ * @param {string} name
+ * @param {boolean} featureEnabled
+ * @return {string}
+ */
+function getEnabledClass( name, featureEnabled ) {
+	var className = 'vector-feature-' + name + '-';
+	if ( featureEnabled ) {
+		className += 'enabled';
+	}
+	return className;
+}
+
+/**
  * Derives an event name value for a link which has no data-event-name
  * data attribute using the following checks:
  * 1) Finds the closest link that matches the '.vector-menu a' selector.
@@ -151,17 +176,31 @@ function getMenuLinkEventName( $target ) {
 	if ( !linkListItem ) {
 		return;
 	}
+	/**
+	 * T332612: Makes TOC heading clicks in unpinned state fire a
+	 * generic event because tracking the section a user is reading
+	 * within an article doesn't fall within the list of exceptions
+	 * in the WMF Privacy Policy and thus isn't allowed.
+	 * Source: See "Information Related to Your Use of the Wikimedia Sites"
+	 * in https://foundation.wikimedia.org/wiki/Policy:Privacy_policy.
+	 * NOTE: In pinned state, TOC heading clicks already fire generic event
+	 * called 'ui.sidebar-toc'
+	 */
 	var id = linkListItem.id;
+	if ( id.indexOf( 'toc' ) !== -1 ) {
+		// Replaces TOC heading ID with a generic prefix called 'toc-heading'.
+		id = id.slice( 0, id.indexOf( 'toc-' ) ) + 'toc-heading';
+	}
 	var pinnableElement = $closestLink.closest( '.vector-pinnable-element' )[ 0 ];
 	var pinnableElementHeader = pinnableElement ? pinnableElement.querySelector( '.vector-pinnable-header' ) : null;
 
 	// Note not all pinnable-elements have a header so check both.
 	if ( id && pinnableElement && pinnableElementHeader ) {
-		var featureName = pinnableElementHeader.dataset.name || 'unknown';
-		var pinned = pinnableElementHeader.classList.contains( 'vector-pinnable-header-pinned' ) ?
-			'.pinned' :
-			'.unpinned';
-		return id + '.' + featureName + pinned;
+		var featureName = pinnableElementHeader.dataset.name || pinnableElementHeader.dataset.featureName || 'unknown';
+		var pinnedState = isVectorFeatureEnabled( featureName ) ?
+			'-enabled' :
+			'-disabled';
+		return id + '.' + featureName + pinnedState;
 	} else {
 		return id;
 	}
