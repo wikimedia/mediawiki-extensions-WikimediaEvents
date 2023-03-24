@@ -2,14 +2,12 @@
 
 namespace WikimediaEvents;
 
-use ActorMigration;
 use Config;
 use DeferredUpdates;
 use ExtensionRegistry;
 use Hooks;
 use IContextSource;
 use MediaWiki;
-use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\ResourceLoader as RL;
 use MediaWiki\ResourceLoader\ResourceLoader;
@@ -184,69 +182,6 @@ class WikimediaEventsHooks {
 				}
 			}
 		);
-	}
-
-	/**
-	 * Log and update statistics whenever an editor reaches the active editor
-	 * threshold for this month.
-	 *
-	 * @see https://meta.wikimedia.org/wiki/Schema:EditorActivation
-	 * @see https://www.mediawiki.org/wiki/Analytics/Metric_definitions#Active_editor
-	 *
-	 * @param RevisionRecord $revRecord
-	 */
-	public static function onRevisionRecordInserted( RevisionRecord $revRecord ): void {
-		// Only mainspace edits qualify
-		if ( !$revRecord->getPageAsLinkTarget()->inNamespace( NS_MAIN ) ) {
-			return;
-		}
-
-		$userIdentity = $revRecord->getUser( RevisionRecord::RAW );
-		$user = User::newFromIdentity( $userIdentity );
-
-		// Anonymous users and bots don't count (sorry!)
-		if ( !$user->isRegistered() || $user->isAllowed( 'bot' ) ) {
-			return;
-		}
-
-		// Check if this is the user's fifth mainspace edit this month.
-		// If it is, then this editor has just made the cut as an active
-		// editor for this wiki for this month.
-		DeferredUpdates::addCallableUpdate( static function () use ( $user ) {
-			$db = wfGetDB( DB_PRIMARY );
-			$revWhere = ActorMigration::newMigration()->getWhere( $db, 'rev_user', $user );
-			$since = $db->addQuotes( $db->timestamp( date( 'Ym' ) . '00000000' ) );
-			$numMainspaceEditsThisMonth = 0;
-
-			foreach ( $revWhere['orconds'] as $key => $cond ) {
-				$tsField = $key === 'actor' ? 'revactor_timestamp' : 'rev_timestamp';
-				$numMainspaceEditsThisMonth += $db->selectRowCount(
-					[ 'revision', 'page' ] + $revWhere['tables'],
-					'1',
-					[
-						$cond,
-						$tsField . ' >= ' . $since,
-						'page_namespace'   => NS_MAIN,
-					],
-					__FILE__ . ':' . __LINE__,
-					[ 'LIMIT' => 6 - $numMainspaceEditsThisMonth ],
-					[ 'page' => [ 'INNER JOIN', 'rev_page = page_id' ] ] + $revWhere['joins']
-				);
-				if ( $numMainspaceEditsThisMonth >= 6 ) {
-					break;
-				}
-			}
-
-			if ( $numMainspaceEditsThisMonth === 5 ) {
-				$month = date( 'm-Y' );
-				MediaWikiServices::getInstance()
-					->getStatsdDataFactory()->increment( 'editor.activation.' . $month );
-				EventLogging::logEvent( 'EditorActivation', 14208837, [
-					'userId' => $user->getId(),
-					'month'  => $month,
-				] );
-			}
-		} );
 	}
 
 	/**
