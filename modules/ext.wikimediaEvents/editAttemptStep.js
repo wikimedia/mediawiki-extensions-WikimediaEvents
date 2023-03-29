@@ -167,6 +167,7 @@ function computeDuration( action, event, timeStamp ) {
 				case 'switchwithout':
 				case 'switchnochange':
 				case 'abandon':
+				case 'pageupdate':
 					return timeStamp - timing.ready;
 				case 'abandonMidsave':
 					return timeStamp - timing.saveAttempt;
