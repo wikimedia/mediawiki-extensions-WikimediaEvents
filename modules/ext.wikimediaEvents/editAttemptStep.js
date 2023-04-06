@@ -45,6 +45,11 @@ function handleFirstEvent() {
 		// T249944 may someday change this to not hang from MobileFrontend
 		platform: mw.config.get( 'wgMFMode' ) !== null ? 'phone' : 'desktop'
 	};
+
+	// If 'editAttemptStep' events are being logged (indicated by this function being called),
+	// also log 'visualEditorFeatureUse' events, otherwise don't. This avoids unwanted logging
+	// from other features that use VE internally, such as ContentTranslation. (T334157)
+	mw.trackSubscribe( 'visualEditorFeatureUse', visualEditorFeatureUseHandler );
 }
 
 var firstInitDone = false;
@@ -271,7 +276,13 @@ var schemaEditAttemptStep = new mw.eventLog.Schema(
 	}
 );
 
-mw.trackSubscribe( 'editAttemptStep', function editAttemptStep( topic, data ) {
+/**
+ * Handler for 'editAttemptStep' events.
+ *
+ * @param {string} topic
+ * @param {Object} data
+ */
+function editAttemptStepHandler( topic, data ) {
 	// Convert mode='source'/'visual' to interface name (only used by VisualEditor)
 	if ( data && data.mode ) {
 		data.editor_interface = data.mode === 'source' ? 'wikitext-2017' : 'visualeditor';
@@ -384,7 +395,7 @@ mw.trackSubscribe( 'editAttemptStep', function editAttemptStep( topic, data ) {
 		// T309013: Also log via the Metrics Platform:
 		logEditViaMetricsPlatform( data, actionPrefix );
 	}
-} );
+}
 
 /**
  * Feature use schema
@@ -401,11 +412,14 @@ var schemaVisualEditorFeatureUse = new mw.eventLog.Schema(
 	}
 );
 
-mw.trackSubscribe( 'visualEditorFeatureUse', function visualEditorFeatureUse( topic, data ) {
-	if ( !session ) {
-		handleFirstEvent();
-	}
-
+/**
+ * Handler for 'visualEditorFeatureUse' events. Only enabled if 'editAttemptStep' events are being
+ * logged.
+ *
+ * @param {string} topic
+ * @param {Object} data
+ */
+function visualEditorFeatureUseHandler( topic, data ) {
 	var event = {
 		feature: data.feature,
 		action: data.action,
@@ -451,4 +465,6 @@ mw.trackSubscribe( 'visualEditorFeatureUse', function visualEditorFeatureUse( to
 			session.editor_interface = changedEditorInterface;
 		}
 	}
-} );
+}
+
+mw.trackSubscribe( 'editAttemptStep', editAttemptStepHandler );
