@@ -131,22 +131,8 @@ mw.trackSubscribe( 'webuiactions_log.', function ( topic, value ) {
  * @return {boolean}
  */
 function isVectorFeatureEnabled( name ) {
-	return document.documentElement.classList.contains( getEnabledClass( name, true ) );
-}
-
-/**
- * Get name of feature class.
- *
- * @param {string} name
- * @param {boolean} featureEnabled
- * @return {string}
- */
-function getEnabledClass( name, featureEnabled ) {
-	var className = 'vector-feature-' + name + '-';
-	if ( featureEnabled ) {
-		className += 'enabled';
-	}
-	return className;
+	var className = 'vector-feature-' + name + '-enabled';
+	return document.documentElement.classList.contains( className );
 }
 
 /**
