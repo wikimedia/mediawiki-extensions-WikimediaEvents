@@ -267,6 +267,7 @@ var schemaEditAttemptStep = new mw.eventLog.Schema(
 		// eslint-disable-next-line no-jquery/no-global-selector
 		revision_id: mw.config.get( 'wgRevisionId' ) || +$( 'input[name=parentRevId]' ).val() || 0,
 		user_id: mw.user.getId(),
+		user_is_temp: mw.user.isTemp(),
 		user_class: mw.user.isAnon() ? 'IP' : undefined,
 		user_editcount: mw.config.get( 'wgUserEditCount', 0 ),
 		mw_version: mw.config.get( 'wgVersion' ),
@@ -408,6 +409,7 @@ var schemaVisualEditorFeatureUse = new mw.eventLog.Schema(
 	// defaults:
 	{
 		user_id: mw.user.getId(),
+		user_is_temp: mw.user.isTemp(),
 		user_editcount: mw.config.get( 'wgUserEditCount', 0 )
 	}
 );
