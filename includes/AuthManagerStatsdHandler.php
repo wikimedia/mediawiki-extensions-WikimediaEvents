@@ -25,10 +25,10 @@
 namespace WikimediaEvents;
 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\WikiMap\WikiMap;
 use Monolog\Handler\AbstractHandler;
 use Status;
 use StatusValue;
-use WikiMap;
 
 /**
  * Counts authentication-related log events (those sent to the 'authevents'

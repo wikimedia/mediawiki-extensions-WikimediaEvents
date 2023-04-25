@@ -14,6 +14,7 @@ use MediaWiki\ResourceLoader\ResourceLoader;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Storage\EditResult;
 use MediaWiki\User\UserIdentity;
+use MediaWiki\WikiMap\WikiMap;
 use MobileContext;
 use OutputPage;
 use RecentChange;
@@ -23,7 +24,6 @@ use Skin;
 use Title;
 use User;
 use WebRequest;
-use WikiMap;
 use WikiPage;
 
 /**
