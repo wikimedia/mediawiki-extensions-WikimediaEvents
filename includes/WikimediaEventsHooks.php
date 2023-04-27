@@ -449,7 +449,7 @@ class WikimediaEventsHooks {
 	public static function shouldSchemaEditAttemptStepOversample( IContextSource $context ) {
 		// The editingStatsOversample request parameter can trigger oversampling
 		$shouldOversample = $context->getRequest()->getBool( 'editingStatsOversample' );
-		Hooks::run(
+		MediaWikiServices::getInstance()->getHookContainer()->run(
 			'WikimediaEventsShouldSchemaEditAttemptStepOversample',
 			[ $context, &$shouldOversample ]
 		);
