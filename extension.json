@@ -108,6 +108,7 @@
 				"readingDepth.js",
 				"phpEngine.js",
 				"blockedEdit.js",
+				"networkProbe.js",
 				{
 					"name": "searchSatisfaction.js",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
@@ -185,6 +186,19 @@
 			"targets": [
 				"desktop",
 				"mobile"
+			]
+		},
+		"ext.wikimediaEvents.networkprobe": {
+			"localBasePath": "modules/ext.wikimediaEvents.networkprobe",
+			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.networkprobe",
+			"packageFiles": [
+				"init.js",
+				"recipe.js",
+				"probenet.js"
+			],
+			"dependencies": [
+				"ext.eventLogging",
+				"mediawiki.cookie"
 			]
 		}
 	},
