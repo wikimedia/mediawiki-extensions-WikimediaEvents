@@ -5,7 +5,6 @@ namespace WikimediaEvents;
 use Config;
 use DeferredUpdates;
 use ExtensionRegistry;
-use Hooks;
 use IContextSource;
 use MediaWiki;
 use MediaWiki\MediaWikiServices;
