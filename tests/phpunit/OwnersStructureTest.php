@@ -70,6 +70,7 @@ class OwnersStructureTest extends \PHPUnit\Framework\TestCase {
 					case 'remoteExtPath':
 					case 'dependencies':
 					case 'targets':
+					case 'es6':
 						// ignore
 						break;
 					default:

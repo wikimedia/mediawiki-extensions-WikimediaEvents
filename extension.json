@@ -148,6 +148,22 @@
 				"mobile"
 			]
 		},
+		"ext.wikimediaEvents.specialPages": {
+			"es6": true,
+			"localBasePath": "modules/ext.wikimediaEvents.specialPages",
+			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.specialPages",
+			"packageFiles": [
+				"index.js",
+				"specialDiff.js"
+			],
+			"dependencies": [
+				"ext.eventLogging"
+			],
+			"targets": [
+				"desktop",
+				"mobile"
+			]
+		},
 		"ext.wikimediaEvents.wikibase": {
 			"localBasePath": "modules/ext.wikimediaEvents.wikibase",
 			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.wikibase",
