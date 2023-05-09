@@ -2,7 +2,7 @@
 /* eslint-disable camelcase */
 'use strict';
 
-const clientError = require( '../../../modules/ext.wikimediaEvents/clientError.js' );
+const clientError = require( 'ext.wikimediaEvents/clientError.js' );
 
 QUnit.module( 'ext.wikimediaEvents/clientError', QUnit.newMwEnvironment() );
 

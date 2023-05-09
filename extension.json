@@ -208,16 +208,13 @@
 		"remoteExtPath": "WikimediaEvents/modules"
 	},
 	"QUnitTestModule": {
-		"localBasePath": "",
-		"remoteExtPath": "WikimediaEvents/",
-		"packageFiles": [
-			"tests/qunit/ext.wikimediaEvents/index.js",
-			"tests/qunit/ext.wikimediaEvents/clientError.test.js",
-			"modules/ext.wikimediaEvents/clientError.js",
-			{
-				"name": "modules/ext.wikimediaEvents/config.json",
-				"content": {}
-			}
+		"localBasePath": "tests/qunit/ext.wikimediaEvents/",
+		"remoteExtPath": "WikimediaEvents/tests/qunit/ext.wikimediaEvents/",
+		"scripts": [
+			"clientError.test.js"
+		],
+		"dependencies": [
+			"ext.wikimediaEvents"
 		]
 	},
 	"config": {
