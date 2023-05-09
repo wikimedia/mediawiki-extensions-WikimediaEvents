@@ -1,10 +1,4 @@
 {
 	"root": true,
-	"extends": [
-		"../../modules/.eslintrc.json",
-		"wikimedia/qunit"
-	],
-	"globals": {
-		"sinon": "readonly"
-	}
+	"extends": "wikimedia/mediawiki-qunit"
 }

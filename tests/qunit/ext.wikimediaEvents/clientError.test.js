@@ -1,13 +1,14 @@
 /* eslint-env qunit */
+/* eslint-disable camelcase */
 'use strict';
 
-var clientError = require( '../../../modules/ext.wikimediaEvents/clientError.js' );
+const clientError = require( '../../../modules/ext.wikimediaEvents/clientError.js' );
 
-QUnit.module( 'ext.wikimediaEvents/clientError' );
+QUnit.module( 'ext.wikimediaEvents/clientError', QUnit.newMwEnvironment() );
 
 QUnit.test( 'processErrorLoggerObject', function ( assert ) {
-	var expected, actual,
-		error = new Error( 'foo' );
+	const error = new Error( 'foo' );
+	let expected, actual;
 
 	assert.strictEqual( clientError.processErrorLoggerObject( null ), null );
 
@@ -46,39 +47,27 @@ QUnit.test( 'processErrorLoggerObject', function ( assert ) {
 } );
 
 QUnit.test( 'processErrorInstance', function ( assert ) {
-	var errorWithoutStack = new Error( 'foo' ),
-		error = new Error( 'bar' ),
-		expected, actual, actualFileUrl;
+	const errorWithoutStack = new Error( 'foo' );
+	const error = new Error( 'bar' );
 
 	assert.strictEqual( clientError.processErrorInstance( null ), null );
-
-	// ---
-
 	assert.strictEqual( clientError.processErrorInstance( {} ), null );
 
-	// ---
-
 	errorWithoutStack.stack = null;
-
 	assert.strictEqual( clientError.processErrorInstance( errorWithoutStack ), null );
 
-	// ---
-
-	expected = {
+	const expected = {
 		errorClass: 'Error',
 		errorMessage: 'bar',
 		stackTrace: clientError.getNormalizedStackTraceLines( error.stack ).join( '\n' ),
 		errorObject: error
 	};
-
-	actual = clientError.processErrorInstance( error );
-
-	actualFileUrl = actual.fileUrl;
+	const actual = clientError.processErrorInstance( error );
+	const actualFileUrl = actual.fileUrl;
 	delete actual.fileUrl;
-
 	assert.propEqual( actual, expected );
 
-	var uri = null;
+	let uri = null;
 	try {
 		uri = new mw.Uri( actualFileUrl, { strictMode: true } );
 	} catch ( e ) {}
@@ -86,12 +75,10 @@ QUnit.test( 'processErrorInstance', function ( assert ) {
 } );
 
 QUnit.test( 'log', function ( assert ) {
-	var data, sendBeacon;
-
-	sendBeacon = this.sandbox.mock( navigator ).expects( 'sendBeacon' )
+	const sendBeacon = this.sandbox.mock( navigator ).expects( 'sendBeacon' )
 		.once()
 		.withArgs( 'http://example.com/' );
-	this.sandbox.stub( mw.config, 'values', {
+	mw.config.set( {
 		wgWikiID: 'somewiki',
 		wgVersion: '1.2.3',
 		skin: 'vector',
@@ -100,9 +87,8 @@ QUnit.test( 'log', function ( assert ) {
 		wgCanonicalSpecialPageName: 'Blank',
 		debug: 0
 	} );
-	this.sandbox.stub( mw, 'user', { isAnon: sinon.stub() } );
-	this.sandbox.stub( mw, 'util', { getUrl: sinon.stub() } );
-	mw.user.isAnon.returns( false );
+	const isAnon = this.sandbox.stub( mw.user, 'isAnon' );
+	isAnon.returns( false );
 
 	clientError.log( 'http://example.com/', {
 		errorClass: 'Error',
@@ -112,17 +98,21 @@ QUnit.test( 'log', function ( assert ) {
 		errorObject: new Error( 'bar' )
 	} );
 
-	data = JSON.parse( sendBeacon.firstCall.args[ 1 ] );
-	assert.strictEqual( data.error_class, 'Error' );
-	assert.strictEqual( data.message, 'bar' );
-	assert.strictEqual( data.file_url, 'http://localhost:8080/wiki/Bar' );
-	assert.strictEqual( data.stack_trace, 'foo' );
-	assert.strictEqual( data.error_context.wiki, 'somewiki' );
-	assert.strictEqual( data.error_context.version, '1.2.3' );
-	assert.strictEqual( data.error_context.skin, 'vector' );
-	assert.strictEqual( data.error_context.action, 'view' );
-	assert.strictEqual( data.error_context.is_logged_in, 'true' );
-	assert.strictEqual( data.error_context.namespace, 'Special' );
-	assert.strictEqual( data.error_context.debug, 'false' );
-	assert.strictEqual( data.error_context.special_page, 'Blank' );
+	const data = JSON.parse( sendBeacon.firstCall.args[ 1 ] );
+	assert.propContains( data, {
+		error_class: 'Error',
+		message: 'bar',
+		file_url: 'http://localhost:8080/wiki/Bar',
+		stack_trace: 'foo',
+		error_context: {
+			wiki: 'somewiki',
+			version: '1.2.3',
+			skin: 'vector',
+			action: 'view',
+			is_logged_in: 'true',
+			namespace: 'Special',
+			debug: 'false',
+			special_page: 'Blank'
+		}
+	} );
 } );
