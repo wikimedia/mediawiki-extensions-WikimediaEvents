@@ -5,5 +5,8 @@
 		]
 	},
 	"wikimediaevents-desc": "Logger Wikimedia-spesifikke hendelser med EventLogging",
-	"apihelp-wikimediaeventsblockededit-param-interface": "Grensesnittet som ble brukt for å redigere"
+	"apihelp-wikimediaeventsblockededit-summary": "Logg informasjon om blokkerte redigeringsforsøk",
+	"apihelp-wikimediaeventsblockededit-param-page": "En side et redigeringsforsøk ble gjort på",
+	"apihelp-wikimediaeventsblockededit-param-interface": "Grensesnittet som ble brukt for å redigere",
+	"apihelp-wikimediaeventsblockededit-param-platform": "Plattformen som ble brukt til å redigere"
 }
