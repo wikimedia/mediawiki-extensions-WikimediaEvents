@@ -5,15 +5,8 @@
  */
 'use strict';
 
-/**
- * Check if user's group contains bot.
- *
- * @return {boolean}
- */
-function isUserBot() {
-	var userGroups = mw.config.get( 'wgUserGroups' ) || [];
-	return userGroups.indexOf( 'bot' ) !== -1;
-}
+// Require the isUserBot object from webCommon.js
+const webCommon = require( './webCommon.js' );
 
 /**
  * Log the A/B test initialization event.
@@ -22,15 +15,15 @@ function isUserBot() {
  */
 function logEvent( data ) {
 	/* eslint-disable camelcase */
-	var event = {
+	const event = Object.assign( {}, webCommon(), {
 		$schema: '/analytics/mediawiki/web_ab_test_enrollment/1.0.1',
 		web_session_id: mw.user.sessionId(),
-		wiki: mw.config.get( 'wgDBname' ),
 		group: data.group,
 		experiment_name: data.experimentName,
-		is_anon: mw.user.isAnon(),
-		is_bot: isUserBot()
-	};
+		is_anon: mw.user.isAnon()
+	} );
+	// Temporarily remove skin until schema is updated to 1.0.2.
+	delete event.skin;
 	/* eslint-enable camelcase */
 
 	mw.eventLog.submit( 'mediawiki.web_ab_test_enrollment', event );

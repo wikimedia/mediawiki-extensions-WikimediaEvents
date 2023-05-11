@@ -15,6 +15,8 @@ var isMobile = mw.config.get( 'wgMFMode' );
 var waitBeforeScrollUp = true;
 var timer;
 
+// Require the isUserBot object from webCommon.js
+const webCommon = require( './webCommon.js' );
 /**
  * Emit an EventLogging event with schema 'Scroll'.
  *
@@ -22,14 +24,14 @@ var timer;
  */
 function log( action ) {
 	/* eslint-disable camelcase */
-	var data = {
-		$schema: '/analytics/mediawiki/web_ui_scroll/1.0.1',
+	const data = Object.assign( {}, webCommon(), {
+		$schema: '/analytics/mediawiki/web_ui_scroll/1.0.2',
 		web_session_id: mw.user.sessionId(),
 		page_id: mw.config.get( 'wgArticleId' ),
 		is_anon: mw.user.isAnon(),
 		action: action,
 		access_method: isMobile ? 'mobile web' : 'desktop'
-	};
+	} );
 	/* eslint-enable camelcase */
 
 	mw.eventLog.submit( 'mediawiki.web_ui_scroll', data );

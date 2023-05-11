@@ -63,6 +63,14 @@ Details at <https://phabricator.wikimedia.org/T220016>.
 
 Details at <https://phabricator.wikimedia.org/T292587>.
 
+## CommonJS for Web
+
+* Since: May 2023
+* Files: webCommon.js
+* Contact: Readers Web
+
+Details at <https://phabricator.wikimedia.org/T335309>.
+
 ## Scroll-tracking for Vector
 
 * Since: October 2021

@@ -103,6 +103,7 @@
 				"clientError.js",
 				"sessionTick.js",
 				"webABTestEnrollment.js",
+				"webCommon.js",
 				"webUIScroll.js",
 				"readingDepth.js",
 				"phpEngine.js",
