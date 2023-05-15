@@ -331,9 +331,9 @@ class WikimediaEventsHooks {
 	 * @param SearchResultSet $textMatches
 	 */
 	public static function onSpecialSearchResults( $term, $titleMatches, $textMatches ): void {
-		global $wgOut;
+		$out = RequestContext::getMain()->getOutput();
 
-		$wgOut->addJsConfigVars( [
+		$out->addJsConfigVars( [
 			'wgIsSearchResultPage' => true,
 		] );
 	}
