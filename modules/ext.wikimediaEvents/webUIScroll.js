@@ -8,12 +8,12 @@
  *
  * Task: https://phabricator.wikimedia.org/T292586
  */
-var sampleRate = require( './config.json' ).webUIScrollTrackingSamplingRate || 0;
-var sampleRateAnons = require( './config.json' ).webUIScrollTrackingSamplingRateAnons || 0;
-var timeToWaitBeforeScrollUp = require( './config.json' ).webUIScrollTrackingTimeToWaitBeforeScrollUp || 0;
-var isMobile = mw.config.get( 'wgMFMode' );
-var waitBeforeScrollUp = true;
-var timer;
+const sampleRate = require( './config.json' ).webUIScrollTrackingSamplingRate || 0;
+const sampleRateAnons = require( './config.json' ).webUIScrollTrackingSamplingRateAnons || 0;
+const timeToWaitBeforeScrollUp = require( './config.json' ).webUIScrollTrackingTimeToWaitBeforeScrollUp || 0;
+const isMobile = mw.config.get( 'wgMFMode' );
+let waitBeforeScrollUp = true;
+let timer;
 
 // Require the isUserBot object from webCommon.js
 const webCommon = require( './webCommon.js' );
@@ -61,7 +61,7 @@ function hookAction( data ) {
 
 // Watch for specific scroll events via hooks.
 mw.requestIdleCallback( function () {
-	var disabled = sampleRate === 0 && sampleRateAnons === 0;
+	const disabled = sampleRate === 0 && sampleRateAnons === 0;
 	// Only initialize the instrument if config allows.
 	if ( disabled ||
 		( !mw.user.isAnon() && !mw.eventLog.eventInSample( 1 / sampleRate ) ) ||

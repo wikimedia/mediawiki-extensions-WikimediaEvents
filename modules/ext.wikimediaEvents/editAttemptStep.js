@@ -3,7 +3,7 @@
 /*!
  * EditAttemptStep and VisualEditorFeatureUse event logging
  */
-var config = require( './config.json' );
+const config = require( './config.json' );
 
 const webCommon = require( './webCommon.js' );
 // Many EditAttemptStep event properties are in snake_case for historical reasons
@@ -12,14 +12,14 @@ const webCommon = require( './webCommon.js' );
 // Stores data common to all events in an editing session
 // (from opening an editor to saving or cancelling the edit).
 // Defined in handleFirstEvent().
-var session;
+let session;
 
 // Sample rates depend on the editor. These defaults are for WikiEditor, which doesn't emit an init
 // event (it emits it server-side). Rates for other editors may be changed in handleInitEvent().
-var easSampleRate = config.WMESchemaEditAttemptStepSamplingRate;
-var easOversample = mw.config.get( 'wgWMESchemaEditAttemptStepOversample' );
-var vefuSampleRate = config.WMESchemaVisualEditorFeatureUseSamplingRate;
-var vefuOversample = easOversample;
+let easSampleRate = config.WMESchemaEditAttemptStepSamplingRate;
+let easOversample = mw.config.get( 'wgWMESchemaEditAttemptStepOversample' );
+let vefuSampleRate = config.WMESchemaVisualEditorFeatureUseSamplingRate;
+let vefuOversample = easOversample;
 
 /**
  * Initialize data we need to log events.
@@ -39,7 +39,8 @@ function handleFirstEvent() {
 			$( '#editingStatsId' ).val() ||
 			mw.user.generateRandomSessionId(),
 
-		// Editor mode ('visualeditor', 'wikitext-2017', 'wikitext'), should be defined in an init event
+		// Editor mode ('visualeditor', 'wikitext-2017', 'wikitext'),
+		// should be defined in an init event
 		editor_interface: null,
 		// Editor being used ('page', 'discussiontools'), should be defined in an init event
 		integration: null,
@@ -53,7 +54,7 @@ function handleFirstEvent() {
 	mw.trackSubscribe( 'visualEditorFeatureUse', visualEditorFeatureUseHandler );
 }
 
-var firstInitDone = false;
+let firstInitDone = false;
 /**
  * Update the rolling session properties from an init event, so that subsequent events don't need to
  * duplicate them. Also initialize sample rates depending on editor_interface/integration/platform.
@@ -131,7 +132,7 @@ $.ajaxPrefilter( function ( options ) {
 } );
 
 // If set, output details to the browser console instead of recording events.
-var trackdebug = new URL( location.href ).searchParams.has( 'trackdebug' );
+const trackdebug = new URL( location.href ).searchParams.has( 'trackdebug' );
 
 // Output to the browser console.
 function log() {
@@ -140,7 +141,7 @@ function log() {
 }
 
 // Compute duration of a step, relative to previously logged event.
-var timing = {};
+let timing = {};
 function computeDuration( action, event, timeStamp ) {
 	if ( event.timing !== undefined ) {
 		return event.timing;
@@ -194,7 +195,7 @@ function addABTestData( data, addToken ) {
 		data.bucket = mw.config.get( 'wgDiscussionToolsABTestBucket' );
 	}
 	if ( mw.user.isAnon() && addToken ) {
-		var token = mw.cookie.get( 'DTABid', '' );
+		const token = mw.cookie.get( 'DTABid', '' );
 		if ( token ) {
 			data.anonymous_user_token = token;
 		}
@@ -220,7 +221,7 @@ function inSample( samplingRate ) {
  * @param {string} actionPrefix
  */
 function logEditViaMetricsPlatform( data, actionPrefix ) {
-	var prefix;
+	let prefix;
 	if ( session.integration === 'discussiontools' ) {
 		prefix = 'eas.dt.';
 	} else if ( session.platform === 'phone' && session.integration === 'page' ) {
@@ -230,9 +231,9 @@ function logEditViaMetricsPlatform( data, actionPrefix ) {
 	} else {
 		prefix = 'eas.wt.';
 	}
-	var eventName = prefix + actionPrefix;
+	const eventName = prefix + actionPrefix;
 
-	var customData = $.extend( {}, data );
+	const customData = $.extend( {}, data );
 
 	// Provided in eventName instead
 	delete customData.action;
@@ -256,7 +257,7 @@ function logEditViaMetricsPlatform( data, actionPrefix ) {
  * Edit schema
  * https://meta.wikimedia.org/wiki/Schema:EditAttemptStep
  */
-var schemaEditAttemptStep = new mw.eventLog.Schema(
+const schemaEditAttemptStep = new mw.eventLog.Schema(
 	'EditAttemptStep',
 	// Sample rates depend on the editor, so they are set in .log() calls instead of here
 	0,
@@ -300,7 +301,7 @@ function editAttemptStepHandler( topic, data ) {
 		handleInitEvent( data );
 	}
 
-	var actionPrefixMap = {
+	const actionPrefixMap = {
 		firstChange: 'first_change',
 		saveIntent: 'save_intent',
 		saveAttempt: 'save_attempt',
@@ -308,8 +309,8 @@ function editAttemptStepHandler( topic, data ) {
 		saveFailure: 'save_failure'
 	};
 
-	var actionPrefix = actionPrefixMap[ data.action ] || data.action;
-	var timeStamp = mw.now();
+	const actionPrefix = actionPrefixMap[ data.action ] || data.action;
+	const timeStamp = mw.now();
 
 	// Fill in abort type based on previous events (only used by VisualEditor)
 	if (
@@ -341,7 +342,7 @@ function editAttemptStepHandler( topic, data ) {
 	if ( data.action === 'init' || data.action === 'abort' ) {
 		data[ actionPrefix + '_mechanism' ] = data.mechanism;
 	}
-	var duration = 0;
+	let duration = 0;
 	if ( data.action !== 'init' ) {
 		// Schema actually does have an init_timing field, but we don't want to
 		// store it because it's not meaningful.
@@ -403,7 +404,7 @@ function editAttemptStepHandler( topic, data ) {
  * Feature use schema
  * https://meta.wikimedia.org/wiki/Schema:VisualEditorFeatureUse
  */
-var schemaVisualEditorFeatureUse = new mw.eventLog.Schema(
+const schemaVisualEditorFeatureUse = new mw.eventLog.Schema(
 	'VisualEditorFeatureUse',
 	// Sample rates depend on the editor, so they are set in .log() calls instead of here
 	0,
@@ -423,7 +424,7 @@ var schemaVisualEditorFeatureUse = new mw.eventLog.Schema(
  * @param {Object} data
  */
 function visualEditorFeatureUseHandler( topic, data ) {
-	var event = Object.assign( {}, webCommon(), {
+	const event = Object.assign( {}, webCommon(), {
 		feature: data.feature,
 		action: data.action,
 		editor_interface: data.editor_interface || session.editor_interface,
@@ -441,9 +442,9 @@ function visualEditorFeatureUseHandler( topic, data ) {
 		schemaVisualEditorFeatureUse.log( event, vefuOversample ? 1 : vefuSampleRate );
 
 		// T309602: Also log via the Metrics Platform:
-		var eventName = 'vefu.' + data.action;
+		const eventName = 'vefu.' + data.action;
 
-		var customData = {
+		const customData = {
 			feature: data.feature,
 			editing_session_id: session.editing_session_id,
 			editor_interface: data.editor_interface || session.editor_interface,
@@ -454,7 +455,7 @@ function visualEditorFeatureUseHandler( topic, data ) {
 	}
 
 	if ( data.feature === 'editor-switch' ) {
-		var editorSwitchMap = {
+		const editorSwitchMap = {
 			'visual-desktop': 'visualeditor',
 			'source-nwe-desktop': 'wikitext-2017',
 			'source-desktop': 'wikitext',
@@ -462,7 +463,7 @@ function visualEditorFeatureUseHandler( topic, data ) {
 			// source-nwe-mobile conspicuously missing
 			'source-mobile': 'wikitext'
 		};
-		var changedEditorInterface = editorSwitchMap[ data.action ];
+		const changedEditorInterface = editorSwitchMap[ data.action ];
 		// We may also log events that don't result in an editor mode being changed
 		if ( changedEditorInterface ) {
 			session.editor_interface = changedEditorInterface;

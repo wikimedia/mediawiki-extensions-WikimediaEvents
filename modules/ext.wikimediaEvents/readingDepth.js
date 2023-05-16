@@ -7,19 +7,19 @@
  * @see https://schema.wikimedia.org/repositories//secondary/jsonschema/analytics/mediawiki/web_ui_reading_depth/current.yaml
  */
 
-var localConfig = require( './config.json' );
-var skin = mw.config.get( 'skin' );
-var ignoredSkins = [ 'cologneblue', 'modern', 'monobook', 'timeless' ];
-var eventData = {};
-var msPaused = 0;
-var SCHEMA_NAME = 'ReadingDepth';
-var DEFAULT_SAMPLE_GROUP = 'default_sample';
+const localConfig = require( './config.json' );
+const skin = mw.config.get( 'skin' );
+const ignoredSkins = [ 'cologneblue', 'modern', 'monobook', 'timeless' ];
+const eventData = {};
+let msPaused = 0;
+const SCHEMA_NAME = 'ReadingDepth';
+const DEFAULT_SAMPLE_GROUP = 'default_sample';
 
-var trackingIsEnabled;
-var pausedAt;
-var sessionId;
-var visibilityListenersAdded;
-var EVENT;
+let trackingIsEnabled;
+let pausedAt;
+let sessionId;
+let visibilityListenersAdded;
+let EVENT;
 
 /**
  * Checks whether the UA supports the Performance API.
@@ -59,7 +59,7 @@ if ( !checkCapability() ) {
  * @return {boolean}
  */
 function isInSample( samplingRate ) {
-	var bucket = mw.experiments.getBucket( {
+	const bucket = mw.experiments.getBucket( {
 		name: 'WME.' + SCHEMA_NAME,
 		enabled: true,
 		buckets: {
@@ -78,7 +78,7 @@ function isInSample( samplingRate ) {
  *  report domInteractive.
  */
 function getDomInteractive() {
-	var navigationEntries = performance.getEntriesByType( 'navigation' );
+	const navigationEntries = performance.getEntriesByType( 'navigation' );
 
 	if ( navigationEntries.length ) {
 		return navigationEntries[ 0 ].domInteractive;
@@ -95,7 +95,7 @@ function getDomInteractive() {
  *  report first paint time.
  */
 function getFirstPaint() {
-	var paintEntries = performance.getEntriesByType( 'paint' );
+	const paintEntries = performance.getEntriesByType( 'paint' );
 
 	if ( paintEntries.length ) {
 		return paintEntries[ 0 ].startTime;
@@ -150,13 +150,13 @@ function resume() {
  *  schema Schema:ReadingDepth
  */
 function logEvent( action ) {
-	var domInteractive = getDomInteractive();
-	var firstPaint = getFirstPaint();
-	var pageLength = mw.config.get( 'wgWMEPageLength', -1 );
-	var isMobile = mw.config.get( 'wgMFMode' );
+	const domInteractive = getDomInteractive();
+	const firstPaint = getFirstPaint();
+	const pageLength = mw.config.get( 'wgWMEPageLength', -1 );
+	const isMobile = mw.config.get( 'wgMFMode' );
 
 	/* eslint-disable camelcase */
-	var data = $.extend( {}, EVENT, {
+	const data = $.extend( {}, EVENT, {
 		action: action,
 		dom_interactive_time: domInteractive ?
 			Math.round( domInteractive ) :

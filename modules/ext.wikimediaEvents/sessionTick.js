@@ -33,32 +33,33 @@
  * becoming active will cause a new session to begin. Pages that were inactive
  * remain inactive.
  */
-var moduleConfig = require( './config.json' ),
-	enabled = moduleConfig.sessionTick,
+const moduleConfig = require( './config.json' );
+const enabled = moduleConfig.sessionTick;
 
-	// Milliseconds between ticks
-	TICK_MS = 60000,
-	// Milliseconds before the page tries to idle and check for activity.
-	IDLE_MS = 100000,
-	// Milliseconds after the page has become idle when the session will be reset.
-	RESET_MS = 1800000,
-	// Milliseconds before an activity will be recorded again.
-	DEBOUNCE_MS = 5000,
-	// Should represent the most ticks that could be sent at once
-	tickLimit = Math.ceil( RESET_MS / TICK_MS ),
-	// Whether the browser supports the 'passive' event listener option.
-	supportsPassive = 0,
-	// Whether the browser supports localStorage.
-	supportsLocalStorage = false;
+// Milliseconds between ticks
+const TICK_MS = 60000;
+// Milliseconds before the page tries to idle and check for activity.
+const IDLE_MS = 100000;
+// Milliseconds after the page has become idle when the session will be reset.
+const RESET_MS = 1800000;
+// Milliseconds before an activity will be recorded again.
+const DEBOUNCE_MS = 5000;
+// Should represent the most ticks that could be sent at once
+const tickLimit = Math.ceil( RESET_MS / TICK_MS );
+
+// Whether the browser supports the 'passive' event listener option.
+let supportsPassive = 0;
+// Whether the browser supports localStorage.
+let supportsLocalStorage = false;
 
 /**
  * Detect support for EventListenerOptions and set 'supportsPassive' flag.
  * See: https://dom.spec.whatwg.org/#dictdef-addeventlisteneroptions
  */
 function detectPassiveEventListenerSupport() {
-	var noop = function () {};
+	const noop = function () {};
 	try {
-		var options = Object.defineProperty( {}, 'passive', {
+		const options = Object.defineProperty( {}, 'passive', {
 			get: function () {
 				supportsPassive = 1;
 				return false;
@@ -91,14 +92,13 @@ function detectLocalStorageSupport() {
  * Publish 'sessionReset' and 'sessionTick' events to mw.track()
  */
 function regulator() {
-	var
-		lastTickTime = 'wmE-sessionTickLastTickTime',
-		tickTimeout = null,
-		idleTimeout = null,
-		debounceTimeout = null;
+	const lastTickTime = 'wmE-sessionTickLastTickTime';
+	let tickTimeout = null;
+	let idleTimeout = null;
+	let debounceTimeout = null;
 
 	function run() {
-		var
+		const
 			now = Date.now(),
 			gap = now - ( Number( mw.cookie.get( lastTickTime ) ) || 0 );
 
@@ -174,14 +174,14 @@ function regulator() {
  * Handle 'sessionReset' and 'sessionTick' events from mw.track()
  */
 function instrument() {
-	var tickCount = 'wmE-sessionTickTickCount';
+	const tickCount = 'wmE-sessionTickTickCount';
 
 	mw.trackSubscribe( 'sessionReset', function () {
 		mw.cookie.set( tickCount, 0 );
 	} );
 
 	mw.trackSubscribe( 'sessionTick', function ( _, n ) {
-		var count = ( Number( mw.cookie.get( tickCount ) ) || 0 );
+		const count = ( Number( mw.cookie.get( tickCount ) ) || 0 );
 
 		if ( n > tickLimit ) {
 			throw new Error( 'Session ticks exceed limit' );

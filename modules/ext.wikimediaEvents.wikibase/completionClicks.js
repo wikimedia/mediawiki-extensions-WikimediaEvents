@@ -23,16 +23,16 @@
  */
 /* eslint-disable no-underscore-dangle, no-jquery/no-global-selector */
 'use strict';
-var pageToken,
-	testBuckets = {},
-	searchSessionStarted = false;
+const testBuckets = {};
+let pageToken;
+let searchSessionStarted = false;
 
 function makeSamplingRate( context, language, config ) {
-	var rates = {};
-	var valid = false;
-	for ( var name in config ) {
-		var bucket = config[ name ];
-		var rate = bucket.samplingRate;
+	const rates = {};
+	let valid = false;
+	for ( const name in config ) {
+		const bucket = config[ name ];
+		const rate = bucket.samplingRate;
 		if (
 			rate > 0 &&
 			( !bucket.context || bucket.context === context ) &&
@@ -59,16 +59,16 @@ function initAB( context, language ) {
 	 *  context: context name to limit bucket to
 	 *  language: language code to limit bucket to
 	 */
-	var bucketOverride = mw.util.getParamValue( 'wikidataCompletionSearchClicksBucket' ),
-		moduleConfig = require( './config.json' ),
-		config = moduleConfig.wikidataCompletionSearchClicks || {},
-		buckets = config.buckets || {},
-		bucketName = bucketOverride || mw.experiments.getBucket( {
-			name: 'WikidataCompletionSearchClicks',
-			enabled: config.enabled === true,
-			buckets: makeSamplingRate( context, language, buckets )
-		}, pageToken ),
-		bucket = buckets[ bucketName ] || {};
+	const bucketOverride = mw.util.getParamValue( 'wikidataCompletionSearchClicksBucket' );
+	const moduleConfig = require( './config.json' );
+	const config = moduleConfig.wikidataCompletionSearchClicks || {};
+	const buckets = config.buckets || {};
+	const bucketName = bucketOverride || mw.experiments.getBucket( {
+		name: 'WikidataCompletionSearchClicks',
+		enabled: config.enabled === true,
+		buckets: makeSamplingRate( context, language, buckets )
+	}, pageToken );
+	const bucket = buckets[ bucketName ] || {};
 	return {
 		name: bucketName,
 		searchApiParameters: bucket.searchApiParameters || {},
@@ -77,7 +77,7 @@ function initAB( context, language ) {
 }
 
 function getTestBucket( context, language ) {
-	var key = context + '-' + language;
+	const key = context + '-' + language;
 	if ( !testBuckets[ key ] ) {
 		if ( !pageToken ) {
 			pageToken = mw.user.generateRandomSessionId();
@@ -88,7 +88,7 @@ function getTestBucket( context, language ) {
 }
 
 function logEvent( action, context, language, data ) {
-	var testBucket = getTestBucket( context, language );
+	const testBucket = getTestBucket( context, language );
 	// TODO: Not logging isn't ideal as it skips the eventlogging debug
 	// reporting. Not sure how to let someone force themselves into a bucket
 	// for testing, but ensure they don't end up in the reported stats.
@@ -108,15 +108,15 @@ function logEvent( action, context, language, data ) {
 }
 
 function logClickEvent( event, entityId ) {
-	var $selector = $( event.target ),
-		searchData = $selector.data( 'entityselector' ),
-		suggestions = searchData._cache.suggestions,
-		clickIndex = null,
-		clickPage = null,
-		// eslint-disable-next-line no-jquery/no-map-util
-		resultIds = $.map( suggestions, function ( item ) {
-			return item.pageid;
-		} ).join( ',' );
+	let clickIndex = null;
+	let clickPage = null;
+	const $selector = $( event.target );
+	const searchData = $selector.data( 'entityselector' );
+	const suggestions = searchData._cache.suggestions;
+	// eslint-disable-next-line no-jquery/no-map-util
+	const resultIds = $.map( suggestions, function ( item ) {
+		return item.pageid;
+	} ).join( ',' );
 
 	if ( !suggestions || suggestions.length < 2 || !searchData._term ) {
 		// Do not track events where there was no real choice
@@ -156,7 +156,8 @@ function logSessionStartEvent( context, language, searchTerm ) {
 }
 
 mw.hook( 'wikibase.entityselector.search.api-parameters' ).add( function ( data ) {
-	var $entityview, testBucket = getTestBucket( data.type, data.language );
+	let $entityview;
+	const testBucket = getTestBucket( data.type, data.language );
 	if ( testBucket.searchApiParameters ) {
 		$.extend( data, testBucket.searchApiParameters );
 	}
@@ -174,7 +175,7 @@ mw.hook( 'wikibase.entityselector.search.api-parameters' ).add( function ( data 
 mw.hook( 'wikibase.entityPage.entityView.rendered' ).add( function () {
 	// TODO: .wikibase-entityview doesn't exist on non-entity pages, such
 	// as Main Page, so no events are logged there.
-	var $entityview = $( '.wikibase-entityview' );
+	const $entityview = $( '.wikibase-entityview' );
 	if ( $entityview.length ) {
 		$entityview.on( 'entityselectorselected.entitysearch', function ( event, entityId ) {
 			searchSessionStarted = false;

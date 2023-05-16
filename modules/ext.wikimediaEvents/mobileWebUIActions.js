@@ -5,8 +5,8 @@
  * Schema: https://schema.wikimedia.org/#!/secondary/jsonschema/analytics/legacy/mobilewebuiactionstracking
  * Metrics Platform events: web.ui.init, web.ui.click
  */
-var moduleConfig = require( './config.json' );
-var sampleSize = moduleConfig.mobileWebUIActionsTracking || 0;
+const moduleConfig = require( './config.json' );
+const sampleSize = moduleConfig.mobileWebUIActionsTracking || 0;
 
 /**
  * Helper function to build comma-separated list of all enabled mobile modes
@@ -14,8 +14,8 @@ var sampleSize = moduleConfig.mobileWebUIActionsTracking || 0;
  * @return {string[]}
  */
 function getModes() {
-	var mode = mw.config.get( 'wgMFMode' ) || 'desktop';
-	var modes = [ mode ];
+	const mode = mw.config.get( 'wgMFMode' ) || 'desktop';
+	const modes = [ mode ];
 	if ( mode !== 'desktop' && mw.config.get( 'wgMFAmc' ) ) {
 		modes.push( 'amc' );
 	}
@@ -30,8 +30,8 @@ function getModes() {
  * @param {string|null} destination If defined, where the interaction will take the user.
  */
 function logEvent( action, name, destination ) {
-	var modes = getModes().join( ',' );
-	var event = {
+	const modes = getModes().join( ',' );
+	const event = {
 		action: action,
 		name: name,
 		modes: modes,
@@ -48,10 +48,10 @@ function logEvent( action, name, destination ) {
 	mw.track( 'event.MobileWebUIActionsTracking', event );
 
 	// T281761: Also log via the Metrics Platform:
-	var eventName = 'web.ui.' + action;
+	const eventName = 'web.ui.' + action;
 
 	/* eslint-disable camelcase */
-	var customData = {
+	const customData = {
 		modes: modes
 	};
 
@@ -85,9 +85,9 @@ mw.requestIdleCallback( function () {
 } );
 
 $( document ).on( 'click', function ( event ) {
-	var $closest = $( event.target ).closest( '[data-event-name]' );
+	const $closest = $( event.target ).closest( '[data-event-name]' );
 	if ( $closest.length ) {
-		var destination = $closest.attr( 'href' );
+		const destination = $closest.attr( 'href' );
 		if ( destination ) {
 			logEvent( 'click', $closest.attr( 'data-event-name' ), destination );
 		} else {

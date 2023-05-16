@@ -5,78 +5,78 @@
  * Launch task: https://phabricator.wikimedia.org/T235189
  */
 /* eslint-disable max-len */
-var moduleConfig = require( './config.json' ),
-	// Only log up to this many errors per page (T259371)
-	errorLimit = 5,
-	errorCount = 0,
+const moduleConfig = require( './config.json' );
+// Only log up to this many errors per page (T259371)
+const errorLimit = 5;
+let errorCount = 0;
 
-	// Browser stack trace strings are usually provided on the Error object,
-	// and render each stack frame on its own line, e.g.:
-	//
-	// WebKit browsers:
-	//      "at foo (http://w.org/ex.js:11:22)"
-	//
-	// Gecko browsers:
-	//      "foo@http://w.org/ex.js:11:22"
-	//
-	// The format is not standardized, but the two given above predominate,
-	// reflecting the two major browser engine lineages:
-	//
-	//          WebKit              Gecko
-	//          /   \                 |
-	//      Safari  Chrome          Firefox
-	//              /  |  \
-	//             /   |   \
-	//      Opera 12+ Edge Brave
-	//
-	// Given below are regular expressions that extract the "function name" and
-	// "location" portions of such strings.
-	//
-	// For the examples above, a successful match would yield:
-	//
-	//      [ "foo", "http://w.org/ex.js:11:22" ]
-	//
-	// This pair can then be re-composed into a new string with whatever format is desired.
-	//
-	//                 begin        end
-	//                 non-capture  non-capture
-	//                 group        group
-	//                     |         |
-	//                    /|\       /|
-	regexWebKit = /^\s*at (?:(.*?)\()?(.*?:\d+:\d+)\)?\s*$/i,
-	//             - --       --- --   ----------- --- - -
-	//            / /         /    |        |       |  |  \___
-	//  line start /      group 1, |        |       |  |      \
-	//            /       function |     group 2,   |  any     line
-	//         any # of   name     |   url:line:col |  # of    end
-	//         spaces     (maybe   |                |  spaces
-	//                     empty)  |                |
-	//                             |                |
-	//                          literal          literal
-	//                            '('              ')'
-	//                                        (or nothing)
-	//
-	//          begin                               end
-	//          outer                               outer
-	//          non-capture                         non-capture
-	//          group                               group
-	//              \__    begin        end            |
-	//                 |   inner        inner          |
-	//                 |   non-capture  non-capture    |
-	//                 |   group        group          |
-	//                 |       |         |  ___________|
-	//                /|\     /|\       /| /|
-	regexGecko = /^\s*(?:(.*?)(?:\(.*?\))?@)?(.*:\d+:\d+)\s*$/i;
-	//            - --    ---    -- - --  -   ----------  - -
-	//           /  /      /      | |  \_  \_      |      |_ \__ line
-	//  line start /   group 1,   | |    |   | group 2,     |    end
-	//            /    function   | args |   | url:line:col |
-	//       any # of  name       |      |   |              |
-	//       spaces    (maybe     |      | literal         any
-	//                 empty)     |      |  '@'            # of
-	//                            |      |                 spaces
-	//                         literal  literal
-	//                           '('      ')'
+// Browser stack trace strings are usually provided on the Error object,
+// and render each stack frame on its own line, e.g.:
+//
+// WebKit browsers:
+//      "at foo (http://w.org/ex.js:11:22)"
+//
+// Gecko browsers:
+//      "foo@http://w.org/ex.js:11:22"
+//
+// The format is not standardized, but the two given above predominate,
+// reflecting the two major browser engine lineages:
+//
+//          WebKit              Gecko
+//          /   \                 |
+//      Safari  Chrome          Firefox
+//              /  |  \
+//             /   |   \
+//      Opera 12+ Edge Brave
+//
+// Given below are regular expressions that extract the "function name" and
+// "location" portions of such strings.
+//
+// For the examples above, a successful match would yield:
+//
+//      [ "foo", "http://w.org/ex.js:11:22" ]
+//
+// This pair can then be re-composed into a new string with whatever format is desired.
+//
+//                 begin        end
+//                 non-capture  non-capture
+//                 group        group
+//                     |         |
+//                    /|\       /|
+const regexWebKit = /^\s*at (?:(.*?)\()?(.*?:\d+:\d+)\)?\s*$/i;
+//             - --       --- --   ----------- --- - -
+//            / /         /    |        |       |  |  \___
+//  line start /      group 1, |        |       |  |      \
+//            /       function |     group 2,   |  any     line
+//         any # of   name     |   url:line:col |  # of    end
+//         spaces     (maybe   |                |  spaces
+//                     empty)  |                |
+//                             |                |
+//                          literal          literal
+//                            '('              ')'
+//                                        (or nothing)
+//
+//          begin                               end
+//          outer                               outer
+//          non-capture                         non-capture
+//          group                               group
+//              \__    begin        end            |
+//                 |   inner        inner          |
+//                 |   non-capture  non-capture    |
+//                 |   group        group          |
+//                 |       |         |  ___________|
+//                /|\     /|\       /| /|
+const regexGecko = /^\s*(?:(.*?)(?:\(.*?\))?@)?(.*:\d+:\d+)\s*$/i;
+//            - --    ---    -- - --  -   ----------  - -
+//           /  /      /      | |  \_  \_      |      |_ \__ line
+//  line start /   group 1,   | |    |   | group 2,     |    end
+//            /    function   | args |   | url:line:col |
+//       any # of  name       |      |   |              |
+//       spaces    (maybe     |      | literal         any
+//                 empty)     |      |  '@'            # of
+//                            |      |                 spaces
+//                         literal  literal
+//                           '('      ')'
 
 /**
  * @typedef ErrorDescriptor
@@ -99,10 +99,10 @@ var moduleConfig = require( './config.json' ),
  * @return {string[]} Normalized lines of the stack trace
  */
 function getNormalizedStackTraceLines( str ) {
-	var result = [],
-		lines = str.split( '\n' ),
-		parts,
-		i;
+	const result = [];
+	const lines = str.split( '\n' );
+	let parts;
+	let i;
 
 	for ( i = 0; i < lines.length; i++ ) {
 		// Try to boil each line of the stack trace string down to a function and
@@ -200,10 +200,6 @@ function shouldIgnoreFileUrl( fileUrl ) {
  *  otherwise, `null`
  */
 function processErrorInstance( error ) {
-	var stackTraceLines,
-		firstLine, parts,
-		fileUrlParts, fileUrl;
-
 	// Safety check: this method is bound to the 'error.*' mw.track prefix which is
 	// fairly generic so conflicts might occur. Also, mw.errorLogger.logError() does
 	// not attempt to verify that it was called with an Error, and the global error
@@ -216,25 +212,25 @@ function processErrorInstance( error ) {
 		return null;
 	}
 
-	stackTraceLines = getNormalizedStackTraceLines( String( error.stack ) );
+	const stackTraceLines = getNormalizedStackTraceLines( String( error.stack ) );
 
 	if ( !stackTraceLines.length ) {
 		return null;
 	}
 
-	firstLine = stackTraceLines[ 0 ];
+	const firstLine = stackTraceLines[ 0 ];
 
 	// getStackTraceLines returns lines in the form
 	//
 	//     at [funcName]  fileUrl:lineNo:colNo
 	//
 	// and we want to extract fileUrl.
-	parts = firstLine.split( ' ' );
-	fileUrlParts = parts[ parts.length - 1 ].split( ':' );
+	const parts = firstLine.split( ' ' );
+	const fileUrlParts = parts[ parts.length - 1 ].split( ':' );
 
 	// If the URL contains a port (or another unencoded ":" character?), then we need to
 	// reconstruct it from the remaining parts.
-	fileUrl = fileUrlParts.slice( 0, -2 ).join( ':' );
+	const fileUrl = fileUrlParts.slice( 0, -2 ).join( ':' );
 
 	return {
 		errorClass: error.constructor.name,
@@ -262,15 +258,12 @@ function normalizeErrorMessage( message ) {
  * @return {ErrorDescriptor|null}
  */
 function processErrorLoggerObject( errorLoggerObject ) {
-	var errorObject,
-		stackTrace;
-
 	if ( !errorLoggerObject ) {
 		return null;
 	}
 
-	errorObject = errorLoggerObject.errorObject;
-	stackTrace = errorObject && errorObject.stack ?
+	const errorObject = errorLoggerObject.errorObject;
+	const stackTrace = errorObject && errorObject.stack ?
 		getNormalizedStackTraceLines( errorObject.stack ).join( '\n' ) :
 		'';
 
@@ -366,22 +359,21 @@ function shouldLog( descriptor ) {
  * @param {string} [component] The component which logged this error
  */
 function log( intakeURL, descriptor, component ) {
-	var errorContext,
-		gadgets = '',
-		host = location.host,
-		protocol = location.protocol,
-		search = location.search,
-		hash = location.hash,
-		canonicalName = mw.config.get( 'wgCanonicalSpecialPageName' ),
-		url = canonicalName ?
-			// T266504: Rewrites URL to canonical name to allow grouping.
-			// note: if URL is in form `<host>/w/index.php?title=Spécial:Préférences` this will be converted to
-			// "<host>/wiki/Special:Preferences?title=Sp%C3%A9cial:Pr%C3%A9f%C3%A9rences"
-			protocol + '//' + host + mw.util.getUrl( 'Special:' + canonicalName ) + search + hash :
-			location.href;
+	let gadgets = '';
+	const host = location.host;
+	const protocol = location.protocol;
+	const search = location.search;
+	const hash = location.hash;
+	const canonicalName = mw.config.get( 'wgCanonicalSpecialPageName' );
+	const url = canonicalName ?
+		// T266504: Rewrites URL to canonical name to allow grouping.
+		// note: if URL is in form `<host>/w/index.php?title=Spécial:Préférences` this will be converted to
+		// "<host>/wiki/Special:Preferences?title=Sp%C3%A9cial:Pr%C3%A9f%C3%A9rences"
+		protocol + '//' + host + mw.util.getUrl( 'Special:' + canonicalName ) + search + hash :
+		location.href;
 
 	// Extra data that can be specified as-needed. Note that the values must always be strings.
-	errorContext = {
+	const errorContext = {
 		component: component || 'unknown',
 		wiki: mw.config.get( 'wgWikiID', '' ),
 		version: mw.config.get( 'wgVersion', '' ),
@@ -452,15 +444,13 @@ function install( intakeURL ) {
 	// Capture errors which were logged manually via
 	// mw.errorLogger.logError( <error>, <topic> )
 	mw.trackSubscribe( 'error.', function ( topic, error ) {
-		var component, descriptor;
-
 		if ( topic === 'error.uncaught' ) {
 			// Will be logged via global.error.
 			return;
 		}
 
-		component = topic.replace( /^error\./, '' );
-		descriptor = processErrorInstance( error );
+		const component = topic.replace( /^error\./, '' );
+		const descriptor = processErrorInstance( error );
 
 		if ( shouldLog( descriptor ) ) {
 			log( intakeURL, descriptor, component );
@@ -475,7 +465,7 @@ function install( intakeURL ) {
 	// window.onerror events and producing equivalent messages to
 	// the 'global.error' topic.
 	mw.trackSubscribe( 'global.error', function ( _, obj ) {
-		var descriptor = processErrorLoggerObject( obj );
+		const descriptor = processErrorLoggerObject( obj );
 
 		if ( shouldLog( descriptor ) ) {
 			log( intakeURL, descriptor );

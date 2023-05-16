@@ -7,8 +7,8 @@
  */
 
 function phpEngine() {
-	var moduleConfig = require( './config.json' );
-	var version = moduleConfig.newPHPVersion;
+	const moduleConfig = require( './config.json' );
+	const version = moduleConfig.newPHPVersion;
 	if ( !version ) {
 		// No-op if a "new" PHP version is not yet (or no longer) defined.
 		// Optimization: Avoid cookie I/O for removal here,
@@ -16,8 +16,8 @@ function phpEngine() {
 		return;
 	}
 
-	var hasCookie = $.cookie( 'PHP_ENGINE' ) !== null;
-	var inSample = mw.eventLog.sessionInSample( moduleConfig.newPHPSamplingRate );
+	const hasCookie = $.cookie( 'PHP_ENGINE' ) !== null;
+	const inSample = mw.eventLog.sessionInSample( moduleConfig.newPHPSamplingRate );
 
 	// Ensure the PHP_ENGINE cookie is at the desired version.
 	// In order for reductions in sampling rate to take immediate effect,

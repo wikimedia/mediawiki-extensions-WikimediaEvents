@@ -28,9 +28,9 @@
 // See also Stephane Bisson's implementation in WikimediaEvents/ext.wikimediaEvents/InukaPageView.js
 // and associated collaborative design/discussion at https://gerrit.wikimedia.org/r/c/mediawiki/extensions/WikimediaEvents/+/551259.
 
-var startedAt = mw.now(),
-	hiddenAt = null,
-	timeHidden = 0;
+const startedAt = mw.now();
+let hiddenAt = null;
+let timeHidden = 0;
 
 function onHide() {
 	if ( !hiddenAt ) {
@@ -47,8 +47,8 @@ function onShow() {
 
 // ---
 
-var skin = mw.config.get( 'skin' ),
-	skinVersion;
+const skin = mw.config.get( 'skin' );
+let skinVersion;
 
 /**
  * @return {string|null} If the user is using the Vector skin, then `'legacy'` or `'latest'`;
@@ -103,7 +103,7 @@ function log( event ) {
 		skinVersion: getSkinVersion()
 	}, event );
 
-	var userEditBucket = mw.config.get( 'wgUserEditCountBucket' );
+	const userEditBucket = mw.config.get( 'wgUserEditCountBucket' );
 	if ( userEditBucket ) {
 		event.userEditBucket = userEditBucket;
 	}
@@ -130,8 +130,8 @@ function ulsSettingsOpen( context ) {
  *  dialog
  */
 function ulsCompactLanguageLinksOpen( $trigger ) {
-	var context = 'other';
-	var isVector = [ 'vector', 'vector-2022' ].indexOf( String( skin ) ) > -1;
+	let context = 'other';
+	const isVector = [ 'vector', 'vector-2022' ].indexOf( String( skin ) ) > -1;
 	if ( isVector && $trigger.is( '#p-lang-btn-checkbox' ) ) {
 		context = 'header';
 	} else if ( isVector && $trigger.is( '#p-lang-btn-sticky-header' ) ) {
@@ -205,7 +205,7 @@ function imeMoreLanguages() {
  * @param {string} [source] symbolic name for source
  */
 function interfaceLanguageChange( language, source ) {
-	var logParams = {
+	const logParams = {
 		action: 'language-change',
 		context: source || 'interface',
 		selectedInterfaceLanguage: language,
@@ -239,7 +239,7 @@ function interfaceMoreLanguages() {
  * @param {string} font
  */
 function fontChange( context, language, font ) {
-	var logParams = {
+	const logParams = {
 		action: 'font-change',
 		context: context
 	};

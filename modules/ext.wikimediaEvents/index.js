@@ -7,7 +7,7 @@ require( './readingDepth.js' );
 require( './phpEngine.js' );
 require( './blockedEdit.js' );
 
-var skin = mw.config.get( 'skin' );
+const skin = mw.config.get( 'skin' );
 if ( skin === 'minerva' ) {
 	require( './mobileWebUIActions.js' );
 } else if ( skin === 'vector-2022' || skin === 'vector' ) {

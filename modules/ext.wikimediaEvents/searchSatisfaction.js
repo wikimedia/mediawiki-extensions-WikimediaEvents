@@ -24,28 +24,28 @@
 /* eslint-disable max-len, no-shadow, no-jquery/no-global-selector */
 'use strict';
 
-var session;
-var hasOwn = Object.prototype.hasOwnProperty;
-var isSearchResultPage = mw.config.get( 'wgIsSearchResultPage' );
-var uri = ( function () {
+let session;
+const hasOwn = Object.prototype.hasOwnProperty;
+const isSearchResultPage = mw.config.get( 'wgIsSearchResultPage' );
+const uri = ( function () {
 	try {
 		return new mw.Uri( location.href );
 	} catch ( e ) {
 		return null;
 	}
 }() );
-var checkinTimes = [ 10, 20, 30, 40, 50, 60, 90, 120, 150, 180, 210, 240, 300, 360, 420 ];
-var lastScrollTop = 0;
-var articleId = mw.config.get( 'wgArticleId' );
+const checkinTimes = [ 10, 20, 30, 40, 50, 60, 90, 120, 150, 180, 210, 240, 300, 360, 420 ];
+let lastScrollTop = 0;
+const articleId = mw.config.get( 'wgArticleId' );
 // map from dym wprov values to eventlogging inputLocation values
-var didYouMeanMap = {
+const didYouMeanMap = {
 	dym1: 'dym-suggest',
 	dymr1: 'dym-rewritten',
 	dymo1: 'dym-original'
 };
 // some browsers (IE11) can't do Object.keys, so manually maintain the list
-var didYouMeanList = [ 'dym1', 'dymr1', 'dymo1' ];
-var skin = mw.config.get( 'skin' );
+const didYouMeanList = [ 'dym1', 'dymr1', 'dymo1' ];
+const skin = mw.config.get( 'skin' );
 
 // bail out if the URI could not be created
 if ( uri === null ) {
@@ -59,7 +59,7 @@ function extractResultPosition( uri, wprovPrefix ) {
 }
 
 function initFromWprov( wprovPrefix ) {
-	var res = {
+	const res = {
 		wprovPrefix: wprovPrefix,
 		resultPosition: extractResultPosition( uri, wprovPrefix )
 	};
@@ -77,13 +77,13 @@ function randomToken() {
 	return mw.user.generateRandomSessionId() + Date.now().toString( 36 );
 }
 
-var search = initFromWprov( 'srpw1_' );
+const search = initFromWprov( 'srpw1_' );
 search.didYouMean = uri.query.wprov &&
 	uri.query.wprov.slice( 0, search.wprovPrefix.length ) === search.wprovPrefix &&
 	didYouMeanList.indexOf( uri.query.wprov.slice( search.wprovPrefix.length ) ) >= 0 &&
 	uri.query.wprov.slice( search.wprovPrefix.length );
 
-var autoComplete = initFromWprov( 'acrw1_' );
+const autoComplete = initFromWprov( 'acrw1_' );
 // with no position appended indicates the user submitted the
 // autocomplete form.
 autoComplete.cameFromAutocomplete = uri.query.wprov === 'acrw1';
@@ -99,12 +99,12 @@ if ( window.history.replaceState && uri.query.wprov ) {
  */
 function SessionState() {
 	// currently loaded state
-	var state = {},
-		storageNamespace = 'wmE-sS-',
-		// persistent state keys that have a lifetime. unlisted
-		// keys are not persisted between page loads.
-		ttl = 10 * 60 * 1000,
-		persist = [ 'sessionId', 'subTest' ];
+	let state = {};
+	const storageNamespace = 'wmE-sS-';
+	// persistent state keys that have a lifetime. unlisted
+	// keys are not persisted between page loads.
+	const ttl = 10 * 60 * 1000;
+	const persist = [ 'sessionId', 'subTest' ];
 
 	/**
 	 * Generates a cache key specific to this session and key type.
@@ -174,7 +174,7 @@ function SessionState() {
 			return;
 		}
 
-		var subTest = session.get( 'subTest' );
+		let subTest = session.get( 'subTest' );
 		// null means we didn't store anything yet, pending means another
 		// page load tried but hasn't set the value.
 		if ( subTest === null || subTest === 'pending' ) {
@@ -218,7 +218,7 @@ function SessionState() {
 	}
 
 	this.isActive = function () {
-		var end = +mw.storage.get( key( '__EndTime__' ) );
+		const end = +mw.storage.get( key( '__EndTime__' ) );
 		return end > Date.now() && this.get( 'sessionId' ) !== null;
 	};
 
@@ -256,12 +256,12 @@ function SessionState() {
  * @private
  */
 function interval( checkinTimes, fn ) {
-	var visibleTimeout = require( 'mediawiki.visibleTimeout' ),
-		checkin = checkinTimes.shift(),
-		timeout = checkin;
+	const visibleTimeout = require( 'mediawiki.visibleTimeout' );
+	let checkin = checkinTimes.shift();
+	let timeout = checkin;
 
 	function action() {
-		var current = checkin;
+		const current = checkin;
 		fn( current );
 
 		checkin = checkinTimes.shift();
@@ -276,39 +276,39 @@ function interval( checkinTimes, fn ) {
 
 function genLogEventFn( source, session, sourceExtraData ) {
 	return function ( action, extraData ) {
-		var subTest, scrollTop = $( window ).scrollTop(),
-			evt = {
-				// searchResultPage, visitPage, checkin, click or iwclick
-				action: action,
-				// source of the action, either search or autocomplete
-				source: source,
-				// identifies a single user performing searches within
-				// a limited time span.
-				searchSessionId: session.get( 'sessionId' ),
-				// used to correlate actions that happen on the same
-				// page. Otherwise a user opening multiple search results
-				// in tabs would make their events overlap and the dwell
-				// time per page uncertain.
-				pageViewId: session.get( 'pageViewId' ),
-				// identifies if a user has scrolled the page since the
-				// last event
-				scroll: scrollTop !== lastScrollTop,
-				// mediawiki session id to correlate with other schemas,
-				// such as QuickSurvey
-				// TODO: Is this still used? Can it be removed to restore
-				// the separation between sessions?
-				mwSessionId: mw.user.sessionId(),
-				// unique event identifier to filter duplicate events. In
-				// testing these primarily come from browsers without
-				// sendBeacon using our extended event log implementation.
-				// Depending on speed of the network the request may or may
-				// not get completed before page unload
-				uniqueId: randomToken(),
-				// reports the inverse sampling rate when this was taken. Currently
-				// no sampling is being done.
-				// TODO: Current downstream processing expects this, deprecate?
-				sampleMultiplier: 1.0
-			};
+		const scrollTop = $( window ).scrollTop();
+		const evt = {
+			// searchResultPage, visitPage, checkin, click or iwclick
+			action: action,
+			// source of the action, either search or autocomplete
+			source: source,
+			// identifies a single user performing searches within
+			// a limited time span.
+			searchSessionId: session.get( 'sessionId' ),
+			// used to correlate actions that happen on the same
+			// page. Otherwise a user opening multiple search results
+			// in tabs would make their events overlap and the dwell
+			// time per page uncertain.
+			pageViewId: session.get( 'pageViewId' ),
+			// identifies if a user has scrolled the page since the
+			// last event
+			scroll: scrollTop !== lastScrollTop,
+			// mediawiki session id to correlate with other schemas,
+			// such as QuickSurvey
+			// TODO: Is this still used? Can it be removed to restore
+			// the separation between sessions?
+			mwSessionId: mw.user.sessionId(),
+			// unique event identifier to filter duplicate events. In
+			// testing these primarily come from browsers without
+			// sendBeacon using our extended event log implementation.
+			// Depending on speed of the network the request may or may
+			// not get completed before page unload
+			uniqueId: randomToken(),
+			// reports the inverse sampling rate when this was taken. Currently
+			// no sampling is being done.
+			// TODO: Current downstream processing expects this, deprecate?
+			sampleMultiplier: 1.0
+		};
 
 		// Allow checkin events to fire after the session closes, as those
 		// are still meaningful.
@@ -318,7 +318,7 @@ function genLogEventFn( source, session, sourceExtraData ) {
 
 		lastScrollTop = scrollTop;
 
-		subTest = session.get( 'subTest' );
+		const subTest = session.get( 'subTest' );
 		// Schema expects no subTest value to be provided when no test is active.
 		if ( subTest !== 'inactive' ) {
 			evt.subTest = subTest;
@@ -355,20 +355,20 @@ function genLogEventFn( source, session, sourceExtraData ) {
 
 function genAttachWprov( value ) {
 	return function () {
-		var uri = new mw.Uri( this.href );
+		const uri = new mw.Uri( this.href );
 		uri.query.wprov = value;
 		this.href = uri.toString();
 	};
 }
 
 function createVisitPageEvent() {
-	var evt = {
+	const evt = {
 		position: search.resultPosition
 	};
 
 	// Attach helpfull information for tieing together various events in the backend
 	try {
-		var referrer = new mw.Uri( document.referrer );
+		const referrer = new mw.Uri( document.referrer );
 		if ( referrer.query.searchToken ) {
 			evt.searchToken = referrer.query.searchToken;
 		}
@@ -391,13 +391,13 @@ function createVisitPageEvent() {
 }
 
 function createSerpEvent() {
-	var serpExtras = {
+	const serpExtras = {
 		offset: $( '.results-info' ).data( 'mw-num-results-offset' )
 	};
 
 	// Track which sister wiki results were shown in the sidebar and in what order
 	if ( $( '#mw-interwiki-results > .iw-results' ).length ) {
-		var iwResultSet = [];
+		const iwResultSet = [];
 		$( 'li.iw-resultset' ).each( function () {
 			iwResultSet.push( {
 				source: $( this ).data( 'iw-resultset-source' ),
@@ -419,7 +419,7 @@ function createSerpEvent() {
 		serpExtras.teamDraft = mw.config.get( 'wgCirrusSearchTeamDraft' );
 	}
 
-	var params = {
+	const params = {
 		query: mw.config.get( 'searchTerm' ),
 		hitsReturned: $( '.results-info' ).data( 'mw-num-results-total' ),
 		extraParams: JSON.stringify( serpExtras )
@@ -455,8 +455,8 @@ function createSerpEvent() {
  * @param {SessionState} session
  */
 function setupSearchTest( session ) {
-	var logEvent = ( function () {
-		var params = {};
+	const logEvent = ( function () {
+		const params = {};
 		if ( mw.config.get( 'wgCirrusSearchRequestSetToken' ) ) {
 			params.searchToken = mw.config.get( 'wgCirrusSearchRequestSetToken' );
 		}
@@ -490,21 +490,21 @@ function setupSearchTest( session ) {
 			'click',
 			'.mw-search-result a, #mw-search-DYM-suggestion, #mw-search-DYM-original, #mw-search-DYM-rewritten',
 			function ( evt ) {
-				var wprov,
-					// Sometimes the click event is on a span inside the anchor
-					$target = $( evt.target ).closest( 'a' ),
-					// Distinguish between standard 'on-wiki' results, and interwiki results that point
-					// to another language
-					clickType = $target.closest( '.mw-search-result' ).find( 'a.extiw' ).length > 0 ?
-						'iwclick' :
-						'click',
-					params = {
-						// Only the primary anchor has the data-serp-pos attribute, but we
-						// might be updating a sub-link like a section.
-						position: $target.closest( '.mw-search-result' )
-							.find( '[data-serp-pos]' )
-							.data( 'serp-pos' )
-					};
+				let wprov;
+				// Sometimes the click event is on a span inside the anchor
+				const $target = $( evt.target ).closest( 'a' );
+				// Distinguish between standard 'on-wiki' results, and interwiki results that point
+				// to another language
+				const clickType = $target.closest( '.mw-search-result' ).find( 'a.extiw' ).length > 0 ?
+					'iwclick' :
+					'click';
+				const params = {
+					// Only the primary anchor has the data-serp-pos attribute, but we
+					// might be updating a sub-link like a section.
+					position: $target.closest( '.mw-search-result' )
+						.find( '[data-serp-pos]' )
+						.data( 'serp-pos' )
+				};
 
 				if ( params.position !== undefined ) {
 					wprov = params.position;
@@ -532,8 +532,8 @@ function setupSearchTest( session ) {
 			'click',
 			'.iw-result__title a, .iw-result__mini-gallery a, .iw-result__footer a',
 			function ( evt ) {
-				var $target = $( evt.target ).closest( 'a' ),
-					href = $target.attr( 'href' ) || '';
+				const $target = $( evt.target ).closest( 'a' );
+				const href = $target.attr( 'href' ) || '';
 
 				logEvent( 'ssclick', {
 					// This is a little bit of a lie, it's actually the
@@ -565,69 +565,69 @@ function setupSearchTest( session ) {
  * @param {SessionState} session
  */
 function setupAutocompleteTest( session ) {
-	var lastSearchId,
-		logEvent = genLogEventFn( 'autocomplete', session, {} ),
-		autocompleteStart = null,
-		track = function ( topic, data ) {
-			var $wprov, params;
+	let lastSearchId;
+	let autocompleteStart = null;
+	const logEvent = genLogEventFn( 'autocomplete', session, {} );
+	const track = function ( topic, data ) {
+		let $wprov, params;
 
-			if ( data.action === 'session-start' ) {
-				autocompleteStart = Date.now();
-			} else if ( data.action === 'impression-results' ) {
-				// When a new search is performed reset the session lifetime.
-				session.refresh();
+		if ( data.action === 'session-start' ) {
+			autocompleteStart = Date.now();
+		} else if ( data.action === 'impression-results' ) {
+			// When a new search is performed reset the session lifetime.
+			session.refresh();
 
-				// run every time an autocomplete result is shown
-				params = {
-					hitsReturned: data.numberOfResults,
-					query: data.query,
-					inputLocation: data.inputLocation,
-					autocompleteType: data.resultSetType
-				};
-				if ( data.searchId ) {
-					params.searchToken = data.searchId;
-					lastSearchId = data.searchId;
+			// run every time an autocomplete result is shown
+			params = {
+				hitsReturned: data.numberOfResults,
+				query: data.query,
+				inputLocation: data.inputLocation,
+				autocompleteType: data.resultSetType
+			};
+			if ( data.searchId ) {
+				params.searchToken = data.searchId;
+				lastSearchId = data.searchId;
+			} else {
+				lastSearchId = null;
+			}
+			if ( autocompleteStart !== null ) {
+				params.msToDisplayResults = Math.round( Date.now() - autocompleteStart );
+			}
+			logEvent( 'searchResultPage', params );
+		} else if ( data.action === 'render-one' ) {
+			// run when rendering anchors for suggestion results. Attaches a wprov
+			// to the link so we know when the user arrives they came from autocomplete
+			// and what position they clicked.
+			data.formData.linkParams.wprov = autoComplete.wprovPrefix + data.index;
+		} else if ( data.action === 'submit-form' || data.action === 'click-result' ) {
+			params = {
+				position: data.index
+			};
+			// There isn't a strict guarantee this is correct due to
+			// races, but is hopefully close enough.
+			if ( lastSearchId ) {
+				params.searchToken = lastSearchId;
+			}
+			logEvent( 'click', params );
+
+			if ( data.action === 'submit-form' ) {
+				// Click index needs to be detected from wprov form field. Note that
+				// it might not exist if the user hasn't highlighted anything yet.
+				// @todo this should only trigger when the user is selecting a search
+				// result and not when they search for something the user typed
+				$wprov = data.$form.find( 'input[name=wprov]' );
+				if ( $wprov.length ) {
+					$wprov.val( autoComplete.wprovPrefix + data.index );
 				} else {
-					lastSearchId = null;
-				}
-				if ( autocompleteStart !== null ) {
-					params.msToDisplayResults = Math.round( Date.now() - autocompleteStart );
-				}
-				logEvent( 'searchResultPage', params );
-			} else if ( data.action === 'render-one' ) {
-				// run when rendering anchors for suggestion results. Attaches a wprov
-				// to the link so we know when the user arrives they came from autocomplete
-				// and what position they clicked.
-				data.formData.linkParams.wprov = autoComplete.wprovPrefix + data.index;
-			} else if ( data.action === 'submit-form' || data.action === 'click-result' ) {
-				params = {
-					position: data.index
-				};
-				// There isn't a strict guarantee this is correct due to
-				// races, but is hopefully close enough.
-				if ( lastSearchId ) {
-					params.searchToken = lastSearchId;
-				}
-				logEvent( 'click', params );
-
-				if ( data.action === 'submit-form' ) {
-					// Click index needs to be detected from wprov form field. Note that
-					// it might not exist if the user hasn't highlighted anything yet.
-					// @todo this should only trigger when the user is selecting a search
-					// result and not when they search for something the user typed
-					$wprov = data.$form.find( 'input[name=wprov]' );
-					if ( $wprov.length ) {
-						$wprov.val( autoComplete.wprovPrefix + data.index );
-					} else {
-						$wprov = $( '<input>' ).attr( {
-							type: 'hidden',
-							name: 'wprov',
-							value: autoComplete.wprovPrefix + data.index
-						} ).appendTo( data.$form );
-					}
+					$wprov = $( '<input>' ).attr( {
+						type: 'hidden',
+						name: 'wprov',
+						value: autoComplete.wprovPrefix + data.index
+					} ).appendTo( data.$form );
 				}
 			}
-		};
+		}
+	};
 
 	if ( autoComplete.cameFromSearch ) {
 		// @todo should this still fire if autocomplete sent the user
@@ -656,7 +656,7 @@ function setupAutocompleteTest( session ) {
  * @return {Function}
  */
 function atMostOnce( fn ) {
-	var called = false;
+	let called = false;
 	return function () {
 		if ( !called ) {
 			fn.apply( this, arguments );
@@ -688,7 +688,7 @@ if ( isSearchResultPage || search.cameFromSearch ) {
 
 // Autocomplete satisfaction tracking
 $( function () {
-	var initialize = atMostOnce( function () {
+	const initialize = atMostOnce( function () {
 		setup( setupAutocompleteTest );
 	} );
 

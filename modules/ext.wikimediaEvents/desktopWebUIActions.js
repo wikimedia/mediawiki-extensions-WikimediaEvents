@@ -5,11 +5,11 @@
  * Schema: https://schema.wikimedia.org/#!/secondary/jsonschema/analytics/legacy/desktopwebuiactionstracking
  * Metrics Platform events: web.ui.init, web.ui.click
  */
-var config = require( './config.json' );
-var sampleSize = config.desktopWebUIActionsTracking || 0;
-var overSampleLoggedInUsers = config.desktopWebUIActionsTrackingOversampleLoggedInUsers || false;
-var skinVersion;
-var VIEWPORT_BUCKETS = {
+const config = require( './config.json' );
+let sampleSize = config.desktopWebUIActionsTracking || 0;
+const overSampleLoggedInUsers = config.desktopWebUIActionsTrackingOversampleLoggedInUsers || false;
+let skinVersion;
+const VIEWPORT_BUCKETS = {
 	below320: '<320px',
 	between320and719: '320px-719px',
 	between720and999: '720px-999px',
@@ -57,14 +57,14 @@ function getUserViewportBucket() {
  * @param {string} [name]
  */
 function logEvent( action, name ) {
-	var checkbox = document.getElementById( 'mw-sidebar-checkbox' );
+	const checkbox = document.getElementById( 'mw-sidebar-checkbox' );
 
 	if ( !skinVersion ) {
 		skinVersion = document.body.classList.contains( 'skin-vector-legacy' ) ?
 			1 : 2;
 	}
 	if ( name || action === 'init' ) {
-		var data = {
+		const data = {
 			action: action,
 			isAnon: mw.user.isAnon(),
 			// Ideally this would use an mw.config value but this will do for now
@@ -83,10 +83,10 @@ function logEvent( action, name ) {
 		mw.eventLog.logEvent( 'DesktopWebUIActionsTracking', data );
 
 		// T281761: Also log via the Metrics Platform:
-		var eventName = 'web.ui.' + action;
+		const eventName = 'web.ui.' + action;
 
 		/* eslint-disable camelcase */
-		var customData = {
+		const customData = {
 			skin_version: skinVersion,
 			is_sidebar_collapsed: checkbox ? !checkbox.checked : false,
 			viewport_size_bucket: getUserViewportBucket()
@@ -131,7 +131,7 @@ mw.trackSubscribe( 'webuiactions_log.', function ( topic, value ) {
  * @return {boolean}
  */
 function isVectorFeatureEnabled( name ) {
-	var className = 'vector-feature-' + name + '-enabled';
+	const className = 'vector-feature-' + name + '-enabled';
 	return document.documentElement.classList.contains( className );
 }
 
@@ -153,12 +153,12 @@ function isVectorFeatureEnabled( name ) {
  * @return {string|null}
  */
 function getMenuLinkEventName( $target ) {
-	var $closestLink = $target.closest( '.vector-menu a' );
-	var closestLink = $closestLink[ 0 ];
+	const $closestLink = $target.closest( '.vector-menu a' );
+	const closestLink = $closestLink[ 0 ];
 	if ( !closestLink ) {
 		return null;
 	}
-	var linkListItem = closestLink.parentNode;
+	const linkListItem = closestLink.parentNode;
 	if ( !linkListItem ) {
 		return;
 	}
@@ -172,18 +172,18 @@ function getMenuLinkEventName( $target ) {
 	 * NOTE: In pinned state, TOC heading clicks already fire generic event
 	 * called 'ui.sidebar-toc'
 	 */
-	var id = linkListItem.id;
+	let id = linkListItem.id;
 	if ( id.indexOf( 'toc' ) !== -1 ) {
 		// Replaces TOC heading ID with a generic prefix called 'toc-heading'.
 		id = id.slice( 0, id.indexOf( 'toc-' ) ) + 'toc-heading';
 	}
-	var pinnableElement = $closestLink.closest( '.vector-pinnable-element' )[ 0 ];
-	var pinnableElementHeader = pinnableElement ? pinnableElement.querySelector( '.vector-pinnable-header' ) : null;
+	const pinnableElement = $closestLink.closest( '.vector-pinnable-element' )[ 0 ];
+	const pinnableElementHeader = pinnableElement ? pinnableElement.querySelector( '.vector-pinnable-header' ) : null;
 
 	// Note not all pinnable-elements have a header so check both.
 	if ( id && pinnableElement && pinnableElementHeader ) {
-		var featureName = pinnableElementHeader.dataset.name || pinnableElementHeader.dataset.featureName || 'unknown';
-		var pinnedState = isVectorFeatureEnabled( featureName ) ?
+		const featureName = pinnableElementHeader.dataset.name || pinnableElementHeader.dataset.featureName || 'unknown';
+		const pinnedState = isVectorFeatureEnabled( featureName ) ?
 			'-enabled' :
 			'-disabled';
 		return id + '.' + featureName + pinnedState;
@@ -201,12 +201,12 @@ $( function () {
 		// and children of elements that have the attribute
 		// i.e. user menu dropdown button, sticky header buttons, table of contents links
 		.on( 'click', function ( event ) {
-			var $target = $( event.target );
-			var $closest = $target.closest( '[data-event-name]' );
+			const $target = $( event.target );
+			const $closest = $target.closest( '[data-event-name]' );
 			if ( $closest.length ) {
 				logEvent( 'click', $closest.attr( 'data-event-name' ) );
 			} else {
-				var eventName = getMenuLinkEventName( $target );
+				const eventName = getMenuLinkEventName( $target );
 				if ( eventName ) {
 					logEvent( 'click', eventName );
 				}
