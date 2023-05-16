@@ -5,6 +5,7 @@
  */
 var config = require( './config.json' );
 
+const webCommon = require( './webCommon.js' );
 // Many EditAttemptStep event properties are in snake_case for historical reasons
 /* eslint-disable camelcase */
 
@@ -386,7 +387,7 @@ function editAttemptStepHandler( topic, data ) {
 
 	addABTestData( data, true );
 
-	data = $.extend( {}, session, data );
+	data = Object.assign( {}, webCommon(), session, data );
 
 	if ( trackdebug ) {
 		log( topic + '.' + data.action, duration + 'ms', data, schemaEditAttemptStep.defaults );
@@ -422,7 +423,7 @@ var schemaVisualEditorFeatureUse = new mw.eventLog.Schema(
  * @param {Object} data
  */
 function visualEditorFeatureUseHandler( topic, data ) {
-	var event = {
+	var event = Object.assign( {}, webCommon(), {
 		feature: data.feature,
 		action: data.action,
 		editor_interface: data.editor_interface || session.editor_interface,
@@ -430,7 +431,7 @@ function visualEditorFeatureUseHandler( topic, data ) {
 		platform: data.platform || session.platform,
 		editingSessionId: session.editing_session_id,
 		is_oversample: !inSample( vefuSampleRate )
-	};
+	} );
 
 	addABTestData( event );
 

@@ -16,14 +16,12 @@ const webCommon = require( './webCommon.js' );
 function logEvent( data ) {
 	/* eslint-disable camelcase */
 	const event = Object.assign( {}, webCommon(), {
-		$schema: '/analytics/mediawiki/web_ab_test_enrollment/1.0.1',
+		$schema: '/analytics/mediawiki/web_ab_test_enrollment/1.0.2',
 		web_session_id: mw.user.sessionId(),
 		group: data.group,
 		experiment_name: data.experimentName,
 		is_anon: mw.user.isAnon()
 	} );
-	// Temporarily remove skin until schema is updated to 1.0.2.
-	delete event.skin;
 	/* eslint-enable camelcase */
 
 	mw.eventLog.submit( 'mediawiki.web_ab_test_enrollment', event );

@@ -25,7 +25,7 @@ const webCommon = require( './webCommon.js' );
 function log( action ) {
 	/* eslint-disable camelcase */
 	const data = Object.assign( {}, webCommon(), {
-		$schema: '/analytics/mediawiki/web_ui_scroll/1.0.2',
+		$schema: '/analytics/mediawiki/web_ui_scroll/1.0.3',
 		web_session_id: mw.user.sessionId(),
 		page_id: mw.config.get( 'wgArticleId' ),
 		is_anon: mw.user.isAnon(),

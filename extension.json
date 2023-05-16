@@ -73,7 +73,7 @@
 		"EventLogging": {
 			"Schemas": {
 				"DesktopWebUIActionsTracking": "/analytics/legacy/desktopwebuiactionstracking/1.4.0",
-				"EditAttemptStep": "/analytics/legacy/editattemptstep/1.4.0",
+				"EditAttemptStep": "/analytics/legacy/editattemptstep/1.4.1",
 				"VisualEditorFeatureUse": "/analytics/legacy/visualeditorfeatureuse/1.1.0",
 				"SearchSatisfaction": "/analytics/legacy/searchsatisfaction/1.4.0",
 				"SpecialMuteSubmit": "/analytics/legacy/specialmutesubmit/1.0.0",
