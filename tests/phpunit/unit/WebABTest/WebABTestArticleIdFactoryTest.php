@@ -2,7 +2,7 @@
 
 namespace WikimediaEvents\Tests;
 
-use FauxRequest;
+use MediaWiki\Request\FauxRequest;
 use RequestContext;
 use Title;
 use WikimediaEvents\PageSplitter\PageSplitterInstrumentation;
