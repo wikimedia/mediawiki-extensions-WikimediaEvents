@@ -31,7 +31,7 @@ class WebABTestArticleIdFactoryTest extends \MediaWikiUnitTestCase {
 		$this->assertEquals( [ 'control', 'treatment' ], $buckets );
 	}
 
-	public function provideT307019() {
+	public static function provideT307019() {
 		return [
 			[ 1, 'treatment' ],
 			[ 1012765, 'control' ],

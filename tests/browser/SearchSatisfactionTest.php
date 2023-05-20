@@ -116,17 +116,17 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		if ( !$initializedSuggester ) {
 			// The autocomplete tests expect nothing more than 'Main Page' to exist, so
 			// no other setup is necessary.
-			$this->apiCall( [ 'action' => 'cirrus-suggest-index' ] );
+			self::apiCall( [ 'action' => 'cirrus-suggest-index' ] );
 			$initializedSuggester = true;
 		}
 	}
 
-	public function somethingProvider() {
+	public static function somethingProvider() {
 		return [
 			"full text search click through" => [
 				[
-					$this->visitPage( "Special:Search?search=main" ),
-					$this->clickSearchResult( 0 ),
+					self::visitPage( "Special:Search?search=main" ),
+					self::clickSearchResult( 0 ),
 				],
 				[
 					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
@@ -136,8 +136,8 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			],
 			"full text search ctrl-click through" => [
 				[
-					$this->visitPage( "Special:Search?search=main" ),
-					$this->ctrlClickSearchResult( 0 ),
+					self::visitPage( "Special:Search?search=main" ),
+					self::ctrlClickSearchResult( 0 ),
 				],
 				[
 					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
@@ -147,12 +147,12 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			],
 			"full text search click through, back, click different result" => [
 				[
-					$this->ensurePage( 'Something else', 'contains the word main in the content' ),
-					$this->visitPage( "Special:Search?search=main" ),
-					$this->clickSearchResult( 0 ),
-					$this->sleep( 2 ),
-					$this->clickBackButton(),
-					$this->clickSearchResult( 1 ),
+					self::ensurePage( 'Something else', 'contains the word main in the content' ),
+					self::visitPage( "Special:Search?search=main" ),
+					self::clickSearchResult( 0 ),
+					self::sleep( 2 ),
+					self::clickBackButton(),
+					self::clickSearchResult( 1 ),
 				],
 				[
 					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
@@ -165,9 +165,9 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			],
 			"full text search redirect click through" => [
 				[
-					$this->ensurePage( "Redirect", "#REDIRECT [[Main Page]]" ),
-					$this->visitPage( "Special:Search?search=redirect&fulltext=1" ),
-					$this->clickRedirectSearchResult( 0 ),
+					self::ensurePage( "Redirect", "#REDIRECT [[Main Page]]" ),
+					self::visitPage( "Special:Search?search=redirect&fulltext=1" ),
+					self::clickRedirectSearchResult( 0 ),
 				],
 				[
 					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
@@ -177,9 +177,9 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			],
 			"full text search redirect ctrl-click through" => [
 				[
-					$this->ensurePage( "Redirect", "#REDIRECT [[Main Page]]" ),
-					$this->visitPage( "Special:Search?search=redirect&fulltext=1" ),
-					$this->ctrlClickRedirectSearchResult( 0 ),
+					self::ensurePage( "Redirect", "#REDIRECT [[Main Page]]" ),
+					self::visitPage( "Special:Search?search=redirect&fulltext=1" ),
+					self::ctrlClickRedirectSearchResult( 0 ),
 				],
 				[
 					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
@@ -189,9 +189,9 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			],
 			"full text search alt title click through" => [
 				[
-					$this->ensurePage( 'With Headings', "Something\n==Role==\nmore content" ),
-					$this->visitPage( "Special:Search?search=role" ),
-					$this->clickAltTitleSearchResult( 0 ),
+					self::ensurePage( 'With Headings', "Something\n==Role==\nmore content" ),
+					self::visitPage( "Special:Search?search=role" ),
+					self::clickAltTitleSearchResult( 0 ),
 				],
 				[
 					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
@@ -201,9 +201,9 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			],
 			"full text search alt title ctrl-click through" => [
 				[
-					$this->ensurePage( 'With Headings', "Something\n==Role==\nmore content" ),
-					$this->visitPage( "Special:Search?search=role" ),
-					$this->ctrlClickAltTitleSearchResult( 0 ),
+					self::ensurePage( 'With Headings', "Something\n==Role==\nmore content" ),
+					self::visitPage( "Special:Search?search=role" ),
+					self::ctrlClickAltTitleSearchResult( 0 ),
 				],
 				[
 					[ 'action' => 'searchResultPage', 'source' => 'fulltext', 'position' => null ],
@@ -214,10 +214,10 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			"skin autocomplete click through" => [
 				// actions
 				[
-					$this->visitPage( "Main_Page" ),
-					$this->typeIntoSkinAutocomplete( "main" ),
-					$this->waitForSkinAutocomplete(),
-					$this->clickSkinAutocompleteResult( 0 ),
+					self::visitPage( "Main_Page" ),
+					self::typeIntoSkinAutocomplete( "main" ),
+					self::waitForSkinAutocomplete(),
+					self::clickSkinAutocompleteResult( 0 ),
 				],
 				// expected events
 				[
@@ -229,10 +229,10 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			"skin autocomplete via enter key" => [
 				// actions
 				[
-					$this->visitPage( "Main_Page" ),
-					$this->typeIntoSkinAutocomplete( "main" ),
-					$this->waitForSkinAutocomplete(),
-					$this->typeIntoSkinAutocomplete( "\n" ),
+					self::visitPage( "Main_Page" ),
+					self::typeIntoSkinAutocomplete( "main" ),
+					self::waitForSkinAutocomplete(),
+					self::typeIntoSkinAutocomplete( "\n" ),
 				],
 				// expected events
 				[
@@ -245,13 +245,13 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			"skin autocomplete via click on 'containing...'" => [
 				// actions
 				[
-					$this->visitPage( "Main_Page" ),
+					self::visitPage( "Main_Page" ),
 					// For reasons outside our control the 'containing' link doesn't
 					// show up the first time we type, we have to do it twice.
-					$this->typeIntoSkinAutocomplete( "ma" ),
-					$this->typeIntoSkinAutocomplete( "in" ),
-					$this->waitForSkinAutocomplete(),
-					$this->clickSkinAutocompleteContaining(),
+					self::typeIntoSkinAutocomplete( "ma" ),
+					self::typeIntoSkinAutocomplete( "in" ),
+					self::waitForSkinAutocomplete(),
+					self::clickSkinAutocompleteContaining(),
 				],
 				// expected events
 				[
@@ -265,11 +265,11 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			"skin autocomplete via arrow up and enter on 'containing...'" => [
 				// actions
 				[
-					$this->visitPage( "Main_Page" ),
-					$this->typeIntoSkinAutocomplete( "ma" ),
-					$this->typeIntoSkinAutocomplete( "in" ),
-					$this->waitForSkinAutocomplete(),
-					$this->typeIntoSkinAutocomplete( WebDriverKeys::ARROW_UP . "\n" ),
+					self::visitPage( "Main_Page" ),
+					self::typeIntoSkinAutocomplete( "ma" ),
+					self::typeIntoSkinAutocomplete( "in" ),
+					self::waitForSkinAutocomplete(),
+					self::typeIntoSkinAutocomplete( WebDriverKeys::ARROW_UP . "\n" ),
 				],
 				// expected events
 				[
@@ -283,10 +283,10 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			"skin autocomplete via arrow down and enter" => [
 				// actions
 				[
-					$this->visitPage( "Main_Page" ),
-					$this->typeIntoSkinAutocomplete( "main" ),
-					$this->waitForSkinAutocomplete(),
-					$this->typeIntoSkinAutocomplete( WebDriverKeys::ARROW_DOWN . "\n" ),
+					self::visitPage( "Main_Page" ),
+					self::typeIntoSkinAutocomplete( "main" ),
+					self::waitForSkinAutocomplete(),
+					self::typeIntoSkinAutocomplete( WebDriverKeys::ARROW_DOWN . "\n" ),
 				],
 				// expected events
 				[
@@ -298,11 +298,11 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			"skin autocomplete via arrow down and magnifying glass" => [
 				// actions
 				[
-					$this->visitPage( "Main_Page" ),
-					$this->typeIntoSkinAutocomplete( "main" ),
-					$this->waitForSkinAutocomplete(),
-					$this->typeIntoSkinAutocomplete( WebDriverKeys::ARROW_DOWN ),
-					$this->clickMagnifyingGlass(),
+					self::visitPage( "Main_Page" ),
+					self::typeIntoSkinAutocomplete( "main" ),
+					self::waitForSkinAutocomplete(),
+					self::typeIntoSkinAutocomplete( WebDriverKeys::ARROW_DOWN ),
+					self::clickMagnifyingGlass(),
 				],
 				// expected events
 				[
@@ -314,10 +314,10 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			"skin autocomplete via typed exact match and enter" => [
 				// actions
 				[
-					$this->visitPage( "Main_Page" ),
-					$this->typeIntoSkinAutocomplete( "Main Page" ),
-					$this->waitForSkinAutocomplete(),
-					$this->typeIntoSkinAutocomplete( "\n" ),
+					self::visitPage( "Main_Page" ),
+					self::typeIntoSkinAutocomplete( "Main Page" ),
+					self::waitForSkinAutocomplete(),
+					self::typeIntoSkinAutocomplete( "\n" ),
 				],
 				// expected events
 				[
@@ -329,12 +329,12 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			"skin autocomplete via typed exact match and magnifying glass" => [
 				// actions
 				[
-					$this->visitPage( "Main_Page" ),
-					$this->typeIntoSkinAutocomplete( "Main Page" ),
+					self::visitPage( "Main_Page" ),
+					self::typeIntoSkinAutocomplete( "Main Page" ),
 					// the user might not do this, but it makes the test more reliable
 					// to guarantee the SERP event comes in.
-					$this->waitForSkinAutocomplete(),
-					$this->clickMagnifyingGlass(),
+					self::waitForSkinAutocomplete(),
+					self::clickMagnifyingGlass(),
 				],
 				// expected events
 				[
@@ -347,16 +347,16 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 				'wait for results, and press enter' => [
 				// actions
 				[
-					$this->visitPage( "Main_Page" ),
-					$this->typeIntoSkinAutocomplete( "Main Page" ),
-					$this->waitForSkinAutocomplete(),
-					$this->typeIntoSkinAutocomplete(
+					self::visitPage( "Main_Page" ),
+					self::typeIntoSkinAutocomplete( "Main Page" ),
+					self::waitForSkinAutocomplete(),
+					self::typeIntoSkinAutocomplete(
 						WebDriverKeys::ARROW_DOWN .
 						str_repeat( WebDriverKeys::BACKSPACE, 4 ) .
 						"page"
 					),
-					$this->waitForSkinAutocomplete(),
-					$this->typeIntoSkinAutocomplete( "\n" ),
+					self::waitForSkinAutocomplete(),
+					self::typeIntoSkinAutocomplete( "\n" ),
 				],
 				// expected events
 				[
@@ -369,16 +369,16 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			'skin autocomplete selecting via down arrow, editing to title match, and press enter' => [
 				// actions
 				[
-					$this->visitPage( "Main_Page" ),
-					$this->typeIntoSkinAutocomplete( "Main Page" ),
-					$this->waitForSkinAutocomplete(),
-					$this->typeIntoSkinAutocomplete(
+					self::visitPage( "Main_Page" ),
+					self::typeIntoSkinAutocomplete( "Main Page" ),
+					self::waitForSkinAutocomplete(),
+					self::typeIntoSkinAutocomplete(
 						WebDriverKeys::ARROW_DOWN .
 						str_repeat( WebDriverKeys::BACKSPACE, 4 ) .
 						"page"
 					),
-					$this->waitForSkinAutocomplete(),
-					$this->typeIntoSkinAutocomplete( "\n" ),
+					self::waitForSkinAutocomplete(),
+					self::typeIntoSkinAutocomplete( "\n" ),
 				],
 				// expected events
 				[
@@ -391,13 +391,13 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			'skin autocomplete selecting via down arrow, editing to non-title match, and press enter' => [
 				// actions
 				[
-					$this->visitPage( "Main_Page" ),
-					$this->typeIntoSkinAutocomplete( "Main Page" ),
-					$this->waitForSkinAutocomplete(),
-					$this->typeIntoSkinAutocomplete( WebDriverKeys::ARROW_DOWN ),
-					$this->typeIntoSkinAutocomplete( str_repeat( WebDriverKeys::BACKSPACE, 4 ) ),
-					$this->waitForSkinAutocomplete(),
-					$this->typeIntoSkinAutocomplete( "\n" ),
+					self::visitPage( "Main_Page" ),
+					self::typeIntoSkinAutocomplete( "Main Page" ),
+					self::waitForSkinAutocomplete(),
+					self::typeIntoSkinAutocomplete( WebDriverKeys::ARROW_DOWN ),
+					self::typeIntoSkinAutocomplete( str_repeat( WebDriverKeys::BACKSPACE, 4 ) ),
+					self::waitForSkinAutocomplete(),
+					self::typeIntoSkinAutocomplete( "\n" ),
 				],
 				// expected events
 				[
@@ -412,12 +412,12 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 				'and click magnifying glass' => [
 				// actions
 				[
-					$this->visitPage( "Main_Page" ),
-					$this->typeIntoSkinAutocomplete( "Main Page" ),
-					$this->waitForSkinAutocomplete(),
-					$this->typeIntoSkinAutocomplete( WebDriverKeys::ARROW_DOWN ),
-					$this->typeIntoSkinAutocomplete( str_repeat( WebDriverKeys::BACKSPACE, 4 ) ),
-					$this->clickMagnifyingGlass(),
+					self::visitPage( "Main_Page" ),
+					self::typeIntoSkinAutocomplete( "Main Page" ),
+					self::waitForSkinAutocomplete(),
+					self::typeIntoSkinAutocomplete( WebDriverKeys::ARROW_DOWN ),
+					self::typeIntoSkinAutocomplete( str_repeat( WebDriverKeys::BACKSPACE, 4 ) ),
+					self::clickMagnifyingGlass(),
 				],
 				// expected events
 				[
@@ -431,12 +431,12 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 				'and click magnifying glass' => [
 				// actions
 				[
-					$this->visitPage( "Main_Page" ),
-					$this->typeIntoSkinAutocomplete( "Main Page" ),
-					$this->waitForSkinAutocomplete(),
-					$this->typeIntoSkinAutocomplete( WebDriverKeys::ARROW_DOWN ),
-					$this->typeIntoSkinAutocomplete( str_repeat( WebDriverKeys::BACKSPACE, 4 ) . "page" ),
-					$this->clickMagnifyingGlass(),
+					self::visitPage( "Main_Page" ),
+					self::typeIntoSkinAutocomplete( "Main Page" ),
+					self::waitForSkinAutocomplete(),
+					self::typeIntoSkinAutocomplete( WebDriverKeys::ARROW_DOWN ),
+					self::typeIntoSkinAutocomplete( str_repeat( WebDriverKeys::BACKSPACE, 4 ) . "page" ),
+					self::clickMagnifyingGlass(),
 				],
 				// expected events
 				[
@@ -450,12 +450,12 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			'full text search click the "did you mean" rewritten result' => [
 				// actions
 				[
-					$this->visitPage( "Special:Search?search=mani%20page" ),
+					self::visitPage( "Special:Search?search=mani%20page" ),
 					// if the button is clicked too quickly the event doesn't fire because
 					// js hasn't loaded.
-					$this->sleep( 2 ),
-					$this->clickDidYouMeanRewritten(),
-					$this->sleep( 2 ),
+					self::sleep( 2 ),
+					self::clickDidYouMeanRewritten(),
+					self::sleep( 2 ),
 				],
 				// expected events
 				[
@@ -468,12 +468,12 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			'full text search click the "did you mean" original result' => [
 				// actions
 				[
-					$this->visitPage( "Special:Search?search=mani%20page" ),
+					self::visitPage( "Special:Search?search=mani%20page" ),
 					// if the button is clicked too quickly the event doesn't fire because
 					// js hasn't loaded.
-					$this->sleep( 2 ),
-					$this->clickDidYouMeanOriginal(),
-					$this->sleep( 2 ),
+					self::sleep( 2 ),
+					self::clickDidYouMeanOriginal(),
+					self::sleep( 2 ),
 				],
 				// expected events
 				[
@@ -487,12 +487,12 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			'full text search click the "did you mean" suggestion result' => [
 				// actions
 				[
-					$this->ensurePage( "Misspelled", "main paeg" ),
-					$this->visitPage( "Special:Search?search=main%20paeg" ),
+					self::ensurePage( "Misspelled", "main paeg" ),
+					self::visitPage( "Special:Search?search=main%20paeg" ),
 					// if the button is clicked too quickly the event doesn't fire because
 					// js hasn't loaded.
-					$this->sleep( 2 ),
-					$this->clickDidYouMeanSuggestion(),
+					self::sleep( 2 ),
+					self::clickDidYouMeanSuggestion(),
 				],
 				// expected events
 				[
@@ -506,10 +506,10 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			'Special:Search bar type then enter' => [
 				// actions
 				[
-					$this->visitPage( 'Special:Search' ),
-					$this->typeIntoSearchAutocomplete( "main" ),
-					$this->waitForSearchAutocomplete(),
-					$this->typeIntoSearchAutocomplete( "\n" ),
+					self::visitPage( 'Special:Search' ),
+					self::typeIntoSearchAutocomplete( "main" ),
+					self::waitForSearchAutocomplete(),
+					self::typeIntoSearchAutocomplete( "\n" ),
 				],
 				// expected events
 				[
@@ -522,10 +522,10 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			'Special:Search bar type, arrow down, enter' => [
 				// actions
 				[
-					$this->visitPage( 'Special:Search' ),
-					$this->typeIntoSearchAutocomplete( "main" ),
-					$this->waitForSearchAutocomplete(),
-					$this->typeIntoSearchAutocomplete( WebDriverKeys::ARROW_DOWN . "\n" ),
+					self::visitPage( 'Special:Search' ),
+					self::typeIntoSearchAutocomplete( "main" ),
+					self::waitForSearchAutocomplete(),
+					self::typeIntoSearchAutocomplete( WebDriverKeys::ARROW_DOWN . "\n" ),
 				],
 				// expected events
 				[
@@ -538,10 +538,10 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			'Special:Search bar type, click result with mouse' => [
 				// actions
 				[
-					$this->visitPage( 'Special:Search' ),
-					$this->typeIntoSearchAutocomplete( 'main' ),
-					$this->waitForSearchAutocomplete(),
-					$this->clickSearchAutocompleteResult( 0 ),
+					self::visitPage( 'Special:Search' ),
+					self::typeIntoSearchAutocomplete( 'main' ),
+					self::waitForSearchAutocomplete(),
+					self::clickSearchAutocompleteResult( 0 ),
 				],
 				// expected events
 				[
@@ -554,8 +554,8 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			'full text search ctrl-click for new tab' => [
 				// actions
 				[
-					$this->visitPage( 'Special:Search?search=main' ),
-					$this->ctrlClickSearchResult( 0 ),
+					self::visitPage( 'Special:Search?search=main' ),
+					self::ctrlClickSearchResult( 0 ),
 				],
 				// expected events
 				[
@@ -567,10 +567,10 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			'skin autocomplete ctrl-click result for new tab' => [
 				// actions
 				[
-					$this->visitPage( 'Special:Search' ),
-					$this->typeIntoSkinAutocomplete( 'main' ),
-					$this->waitForSkinAutocomplete(),
-					$this->ctrlClickSkinAutocompleteResult( 0 ),
+					self::visitPage( 'Special:Search' ),
+					self::typeIntoSkinAutocomplete( 'main' ),
+					self::waitForSkinAutocomplete(),
+					self::ctrlClickSkinAutocompleteResult( 0 ),
 				],
 				// expected events
 				[
@@ -582,11 +582,11 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			'skin autocomplete arrow down and ctrl-click result for new tab' => [
 				// actions
 				[
-					$this->visitPage( 'Special:Search' ),
-					$this->typeIntoSkinAutocomplete( 'main' ),
-					$this->waitForSkinAutocomplete(),
-					$this->typeIntoSkinAutocomplete( WebDriverKeys::ARROW_DOWN ),
-					$this->ctrlClickSkinAutocompleteResult( 0 ),
+					self::visitPage( 'Special:Search' ),
+					self::typeIntoSkinAutocomplete( 'main' ),
+					self::waitForSkinAutocomplete(),
+					self::typeIntoSkinAutocomplete( WebDriverKeys::ARROW_DOWN ),
+					self::ctrlClickSkinAutocompleteResult( 0 ),
 				],
 				// expected events
 				[
@@ -600,10 +600,10 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			'Special:Search autocomplete ctrl-click result' => [
 				// actions
 				[
-					$this->visitPage( 'Special:Search' ),
-					$this->typeIntoSearchAutocomplete( 'main ' ),
-					$this->waitForSearchAutocomplete(),
-					$this->ctrlClickSearchAutocompleteResult( 0 ),
+					self::visitPage( 'Special:Search' ),
+					self::typeIntoSearchAutocomplete( 'main ' ),
+					self::waitForSearchAutocomplete(),
+					self::ctrlClickSearchAutocompleteResult( 0 ),
 				],
 				// expected events
 				[
@@ -616,10 +616,10 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			'skin autocomplete non-exact match ctrl-click magnifying glass for new tab' => [
 				// actions
 				[
-					$this->visitPage( 'Main_Page' ),
-					$this->typeIntoSkinAutocomplete( 'main' ),
-					$this->waitForSkinAutocomplete(),
-					$this->ctrlClickMagnifyingGlass(),
+					self::visitPage( 'Main_Page' ),
+					self::typeIntoSkinAutocomplete( 'main' ),
+					self::waitForSkinAutocomplete(),
+					self::ctrlClickMagnifyingGlass(),
 				],
 				// expected events
 				[
@@ -632,10 +632,10 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 			'skin autocomplete exact match ctrl-click magnifying glass for new tab' => [
 				// actions
 				[
-					$this->visitPage( 'Main_Page' ),
-					$this->typeIntoSkinAutocomplete( 'main page' ),
-					$this->waitForSkinAutocomplete(),
-					$this->ctrlClickMagnifyingGlass(),
+					self::visitPage( 'Main_Page' ),
+					self::typeIntoSkinAutocomplete( 'main page' ),
+					self::waitForSkinAutocomplete(),
+					self::ctrlClickMagnifyingGlass(),
 				],
 				// expected events
 				[
@@ -766,13 +766,13 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	 * @param string $url
 	 * @return callable
 	 */
-	protected function visitPage( $url ) {
+	protected static function visitPage( $url ) {
 		return static function ( $webDriver ) use ( $url ) {
 			$webDriver->get( self::$mwBaseUrl . $url );
 		};
 	}
 
-	protected function waitForSkinAutocomplete() {
+	protected static function waitForSkinAutocomplete() {
 		return static function ( $webDriver ) {
 			$webDriver->wait()->until(
 				WebDriverExpectedCondition::presenceOfElementLocated(
@@ -782,14 +782,14 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		};
 	}
 
-	protected function typeIntoSkinAutocomplete( $chars ) {
+	protected static function typeIntoSkinAutocomplete( $chars ) {
 		return static function ( $webDriver ) use ( $chars ) {
 			sleep( 1 );
 			$webDriver->findElement( WebDriverBy::id( 'searchInput' ) )->sendKeys( $chars );
 		};
 	}
 
-	protected function clickSkinAutocompleteResult( $position ) {
+	protected static function clickSkinAutocompleteResult( $position ) {
 		return static function ( $webDriver ) use ( $position ) {
 			$webDriver->findElement(
 				WebDriverBy::cssSelector( ".suggestions-result[rel='$position']" )
@@ -797,15 +797,15 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		};
 	}
 
-	protected function ctrlClickSkinAutocompleteResult( $position ) {
-		return function ( $webDriver ) use ( $position ) {
+	protected static function ctrlClickSkinAutocompleteResult( $position ) {
+		return static function ( $webDriver ) use ( $position ) {
 			self::ctrlClick( $webDriver, WebDriverBy::cssSelector(
 				".suggestions-result[rel='$position']"
 			) );
 		};
 	}
 
-	protected function waitForSearchAutocomplete() {
+	protected static function waitForSearchAutocomplete() {
 		return static function ( $webDriver ) {
 			$webDriver->wait()->until(
 				WebDriverExpectedCondition::presenceOfElementLocated(
@@ -815,7 +815,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		};
 	}
 
-	protected function typeIntoSearchAutocomplete( $chars ) {
+	protected static function typeIntoSearchAutocomplete( $chars ) {
 		return static function ( $webDriver ) use ( $chars ) {
 			$webDriver->findElement( WebDriverBy::cssSelector(
 				'#searchText input.oo-ui-inputWidget-input'
@@ -828,7 +828,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	 * search engine has a suggestion for a better query
 	 * @return callable
 	 */
-	protected function clickDidYouMeanSuggestion() {
+	protected static function clickDidYouMeanSuggestion() {
 		return static function ( $webDriver ) {
 			$webDriver->findElement( WebDriverBy::cssSelector(
 				'#mw-search-DYM-suggestion'
@@ -842,7 +842,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	 * a new did you mean.
 	 * @return callable
 	 */
-	protected function clickDidYouMeanRewritten() {
+	protected static function clickDidYouMeanRewritten() {
 		return static function ( $webDriver ) {
 			$webDriver->findElement( WebDriverBy::cssSelector(
 				'#mw-search-DYM-rewritten'
@@ -856,7 +856,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	 * it being rewritten.
 	 * @return callable
 	 */
-	protected function clickDidYouMeanOriginal() {
+	protected static function clickDidYouMeanOriginal() {
 		return static function ( $webDriver ) {
 			$webDriver->findElement( WebDriverBy::cssSelector(
 				'#mw-search-DYM-original'
@@ -864,25 +864,25 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		};
 	}
 
-	protected function clickSearchAutocompleteResult( $position ) {
+	protected static function clickSearchAutocompleteResult( $position ) {
 		$position += 1;
-		return function ( $webDriver ) use ( $position ) {
+		return static function ( $webDriver ) use ( $position ) {
 			$webDriver->findElement(
 				self::byExtendedCss( ".mw-widget-searchWidget-menu a:nth-of-type($position)" )
 			)->click();
 		};
 	}
 
-	protected function ctrlClickSearchAutocompleteResult( $position ) {
+	protected static function ctrlClickSearchAutocompleteResult( $position ) {
 		$position += 1;
-		return function ( $webDriver ) use ( $position ) {
+		return static function ( $webDriver ) use ( $position ) {
 			self::ctrlClick( $webDriver, self::byExtendedCss(
 				".mw-widget-searchWidget-menu a:nth-of-type($position)"
 			) );
 		};
 	}
 
-	protected function clickSearchResult( $position ) {
+	protected static function clickSearchResult( $position ) {
 		return static function ( $webDriver ) use ( $position ) {
 			$webDriver->findElement(
 				WebDriverBy::cssSelector( "*[data-serp-pos='$position']" )
@@ -890,15 +890,15 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		};
 	}
 
-	protected function ctrlClickSearchResult( $position ) {
-		return function ( $webDriver ) use ( $position ) {
+	protected static function ctrlClickSearchResult( $position ) {
+		return static function ( $webDriver ) use ( $position ) {
 			self::ctrlClick( $webDriver, WebDriverBy::cssSelector(
 				"*[data-serp-pos='$position']"
 			) );
 		};
 	}
 
-	protected function clickRedirectSearchResult( $position ) {
+	protected static function clickRedirectSearchResult( $position ) {
 		return static function ( $webDriver ) use ( $position ) {
 			$webDriver->findElement( WebDriverBy::cssSelector(
 				"*[data-serp-pos='$position'] ~ span a.mw-redirect"
@@ -906,15 +906,15 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		};
 	}
 
-	protected function ctrlClickRedirectSearchResult( $position ) {
-		return function ( $webDriver ) use ( $position ) {
+	protected static function ctrlClickRedirectSearchResult( $position ) {
+		return static function ( $webDriver ) use ( $position ) {
 			self::ctrlClick( $webDriver, WebDriverBy::cssSelector(
 				"*[data-serp-pos='$position'] ~ span a.mw-redirect"
 			) );
 		};
 	}
 
-	protected function clickAltTitleSearchResult( $position ) {
+	protected static function clickAltTitleSearchResult( $position ) {
 		return static function ( $webDriver ) use ( $position ) {
 			$webDriver->findElement( WebDriverBy::cssSelector(
 				"[data-serp-pos='$position'] ~ span.searchalttitle a"
@@ -922,15 +922,15 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		};
 	}
 
-	protected function ctrlClickAltTitleSearchResult( $position ) {
-		return function ( $webDriver ) use ( $position ) {
+	protected static function ctrlClickAltTitleSearchResult( $position ) {
+		return static function ( $webDriver ) use ( $position ) {
 			self::ctrlClick( $webDriver, WebDriverBy::cssSelector(
 				"[data-serp-pos='$position'] ~ span.searchalttitle a"
 			) );
 		};
 	}
 
-	protected function clickSkinAutocompleteContaining() {
+	protected static function clickSkinAutocompleteContaining() {
 		return static function ( $webDriver ) {
 			$label = WebDriverBy::cssSelector( '.suggestions-special .special-label' );
 			// If the first autocomplete query is in-flight this might not have been
@@ -944,7 +944,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		};
 	}
 
-	protected function clickMagnifyingGlass() {
+	protected static function clickMagnifyingGlass() {
 		return static function ( $webDriver ) {
 			$webDriver->findElement(
 				WebDriverBy::id( 'searchButton' )
@@ -952,27 +952,27 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		};
 	}
 
-	protected function ctrlClickMagnifyingGlass() {
-		return function ( $webDriver ) {
+	protected static function ctrlClickMagnifyingGlass() {
+		return static function ( $webDriver ) {
 			self::ctrlClick( $webDriver, WebDriverBy::id( 'searchButton' ) );
 		};
 	}
 
-	protected function clickBackButton() {
+	protected static function clickBackButton() {
 		return static function ( $webDriver ) {
 			$webDriver->navigate()->back();
 		};
 	}
 
-	protected function sleep( $length ) {
+	protected static function sleep( $length ) {
 		return static function () use ( $length ) {
 			sleep( $length );
 		};
 	}
 
-	protected function getContent( $title ) {
+	protected static function getContent( $title ) {
 		$url = 'http://localhost:8080/w/api.php';
-		$response = $this->apiCall( [
+		$response = self::apiCall( [
 			'titles' => $title,
 			'action' => 'query',
 			'prop' => 'revisions',
@@ -990,24 +990,24 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		return $rev['content'];
 	}
 
-	protected function ensurePage( $title, $content ) {
+	protected static function ensurePage( $title, $content ) {
 		static $seen = [];
-		return function () use ( $title, $content, &$seen ) {
+		return static function () use ( $title, $content, &$seen ) {
 			// makes bold assumption title/content will always match
 			if ( isset( $seen[$title] ) ) {
 				return;
 			}
 			$seen[$title] = true;
 
-			$currentContent = $this->getContent( $title );
+			$currentContent = self::getContent( $title );
 			if ( trim( $content ) === trim( $currentContent ) ) {
 				return;
 			}
-			$response = $this->apiCall( [
+			$response = self::apiCall( [
 				'action' => 'query',
 				'meta' => 'tokens',
 			] );
-			$response = $this->apiCall( [], [
+			$response = self::apiCall( [], [
 				'action' => 'edit',
 				'title' => $title,
 				'text' => $content,
@@ -1019,7 +1019,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		};
 	}
 
-	protected function apiCall( array $params, $postData = null ) {
+	protected static function apiCall( array $params, $postData = null ) {
 		if ( $postData ) {
 			$context = stream_context_create( [
 				'http' => [

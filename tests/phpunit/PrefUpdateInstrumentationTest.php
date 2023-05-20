@@ -19,13 +19,10 @@ class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 		$this->setMwGlobals( 'wgDefaultSkin', 'fallback' );
 	}
 
-	public function providePrefUpdate() {
-		$user = $this->createMock( User::class );
-		$user->method( 'getId' )->willReturn( 4 );
+	public static function providePrefUpdate() {
+		yield 'Enable foo' => [ 'foo', '1', false ];
 
-		yield 'Enable foo' => [ $user, 'foo', '1', false ];
-
-		yield 'Set Minerva skin' => [ $user, 'skin', 'minerva', [
+		yield 'Set Minerva skin' => [ 'skin', 'minerva', [
 			'version' => '2',
 			'userId' => 4,
 			'saveTimestamp' => '20110401080000',
@@ -35,7 +32,7 @@ class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 			'bucketedUserEditCount' => '5-99 edits',
 		] ];
 
-		yield 'Set default skin' => [ $user, 'skin', 'fallback', [
+		yield 'Set default skin' => [ 'skin', 'fallback', [
 			'version' => '2',
 			'userId' => 4,
 			'saveTimestamp' => '20110401080000',
@@ -45,7 +42,7 @@ class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 			'bucketedUserEditCount' => '5-99 edits',
 		] ];
 
-		yield 'Set new VectorSkinVersion' => [ $user, 'VectorSkinVersion', '2', [
+		yield 'Set new VectorSkinVersion' => [ 'VectorSkinVersion', '2', [
 			'version' => '2',
 			'userId' => 4,
 			'saveTimestamp' => '20110401080000',
@@ -55,7 +52,7 @@ class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 			'bucketedUserEditCount' => '5-99 edits',
 		] ];
 
-		yield 'Add to email-blacklist' => [ $user, 'email-blacklist', "31\n4\n159", [
+		yield 'Add to email-blacklist' => [ 'email-blacklist', "31\n4\n159", [
 			'version' => '2',
 			'userId' => 4,
 			'saveTimestamp' => '20110401080000',
@@ -65,7 +62,7 @@ class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 			'bucketedUserEditCount' => '5-99 edits',
 		] ];
 
-		yield 'Clear email-blacklist' => [ $user, 'email-blacklist', "", [
+		yield 'Clear email-blacklist' => [ 'email-blacklist', "", [
 			'version' => '2',
 			'userId' => 4,
 			'saveTimestamp' => '20110401080000',
@@ -79,7 +76,9 @@ class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 	/**
 	 * @dataProvider providePrefUpdate
 	 */
-	public function testCreatePrefUpdateEvent( $user, $name, $value, $expect ) {
+	public function testCreatePrefUpdateEvent( $name, $value, $expect ) {
+		$user = $this->createMock( User::class );
+		$user->method( 'getId' )->willReturn( 4 );
 		$userEditTracker = $this->createMock( UserEditTracker::class );
 		$userEditTracker->method( 'getUserEditCount' )
 			->willReturn( 42 );
@@ -93,10 +92,8 @@ class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function providePrefUpdateError() {
-		$user = $this->createMock( User::class );
-
-		yield 'Store bogus skin value' => [ $user, 'skin', str_repeat( 'x', 100 ), false,
+	public static function providePrefUpdateError() {
+		yield 'Store bogus skin value' => [ 'skin', str_repeat( 'x', 100 ), false,
 			'Unexpected value for skin'
 		];
 	}
@@ -104,7 +101,8 @@ class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 	/**
 	 * @dataProvider providePrefUpdateError
 	 */
-	public function testPrefUpdateError( $user, $name, $value, $expect, $error ) {
+	public function testPrefUpdateError( $name, $value, $expect, $error ) {
+		$user = $this->createMock( User::class );
 		$prefUpdate = TestingAccessWrapper::newFromClass( PrefUpdateInstrumentation::class );
 
 		$this->assertSame(

@@ -31,7 +31,7 @@ class AuthManagerStatsdHandlerTest extends MediaWikiIntegrationTestCase {
 		$handler->handle( $record );
 	}
 
-	public function provideHandle() {
+	public static function provideHandle() {
 		$multiStatus = Status::newGood();
 		$multiStatus->fatal( 'foo' );
 		$multiStatus->fatal( 'bar' );

@@ -62,16 +62,13 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 		return $user;
 	}
 
-	public function providePrefDiff() {
-		$user = $this->createUser();
-
+	public static function providePrefDiff() {
 		yield 'From vector1 to vector2' => [
 			[
 				'skin' => 'vector',
 				'VectorSkinVersion' => '2',
 			],
-			$this->createFormWithDefaultValues( 'vector', true, false ),
-			$user,
+			[ 'vector', true, false ],
 			[
 				'initial_state' => 'vector1',
 				'final_state' => 'vector2',
@@ -84,8 +81,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'vector',
 				'VectorSkinVersion' => '1',
 			],
-			$this->createFormWithDefaultValues( 'vector', false, false ),
-			$user,
+			[ 'vector', false, false ],
 			[
 				'initial_state' => 'vector2',
 				'final_state' => 'vector1',
@@ -98,8 +94,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'minerva',
 				'VectorSkinVersion' => '1',
 			],
-			$this->createFormWithDefaultValues( 'vector', true, false ),
-			$user,
+			[ 'vector', true, false ],
 			[
 				'initial_state' => 'vector1',
 				'final_state' => 'minerva',
@@ -112,8 +107,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'vector',
 				'VectorSkinVersion' => '1',
 			],
-			$this->createFormWithDefaultValues( 'minerva', true, false ),
-			$user,
+			[ 'minerva', true, false ],
 			[
 				'initial_state' => 'minerva',
 				'final_state' => 'vector1',
@@ -126,8 +120,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'minerva',
 				'VectorSkinVersion' => '2',
 			],
-			$this->createFormWithDefaultValues( 'vector', false, false ),
-			$user,
+			[ 'vector', false, false ],
 			[
 				'initial_state' => 'vector2',
 				'final_state' => 'minerva',
@@ -140,8 +133,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'vector',
 				'VectorSkinVersion' => '2',
 			],
-			$this->createFormWithDefaultValues( 'minerva', false, false ),
-			$user,
+			[ 'minerva', false, false ],
 			[
 				'initial_state' => 'minerva',
 				'final_state' => 'vector2',
@@ -154,16 +146,14 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'timeless',
 				'VectorSkinVersion' => '1',
 			],
-			$this->createFormWithDefaultValues( 'minerva', true, false ),
-			$user,
+			[ 'minerva', true, false ],
 			null
 		];
 
 		yield 'when `skin` field not present' => [
 			[
 			],
-			$this->createFormWithDefaultValues( 'minerva', true, false ),
-			$user,
+			[ 'minerva', true, false ],
 			null
 		];
 
@@ -171,8 +161,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 			[
 				'skin' => 'timeless'
 			],
-			$this->createFormWithDefaultValues( 'minerva', true, false ),
-			$user,
+			[ 'minerva', true, false ],
 			null
 		];
 		yield 'when `VectorSkinVersion` field is false' => [
@@ -180,8 +169,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'vector',
 				'VectorSkinVersion' => false
 			],
-			$this->createFormWithDefaultValues( 'minerva', true, false ),
-			$user,
+			[ 'minerva', true, false ],
 			[
 				'initial_state' => 'minerva',
 				'final_state' => 'vector2',
@@ -193,8 +181,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'vector',
 				'VectorSkinVersion' => true
 			],
-			$this->createFormWithDefaultValues( 'minerva', true, false ),
-			$user,
+			[ 'minerva', true, false ],
 			[
 				'initial_state' => 'minerva',
 				'final_state' => 'vector1',
@@ -206,8 +193,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'vector-2022',
 				'VectorSkinVersion' => true
 			],
-			$this->createFormWithDefaultValues( 'vector', true, true ),
-			$user,
+			[ 'vector', true, true ],
 			[
 				'initial_state' => 'vector1',
 				'final_state' => 'vector2',
@@ -219,8 +205,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'vector',
 				'VectorSkinVersion' => true
 			],
-			$this->createFormWithDefaultValues( 'vector-2022', true, true ),
-			$user,
+			[ 'vector-2022', true, true ],
 			[
 				'initial_state' => 'vector2',
 				'final_state' => 'vector1',
@@ -232,8 +217,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'minerva',
 				'VectorSkinVersion' => true
 			],
-			$this->createFormWithDefaultValues( 'vector-2022', true, true ),
-			$user,
+			[ 'vector-2022', true, true ],
 			[
 				'initial_state' => 'vector2',
 				'final_state' => 'minerva',
@@ -245,8 +229,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'vector-2022',
 				'VectorSkinVersion' => true
 			],
-			$this->createFormWithDefaultValues( 'minerva', true, true ),
-			$user,
+			[ 'minerva', true, true ],
 			[
 				'initial_state' => 'minerva',
 				'final_state' => 'vector2',
@@ -258,8 +241,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'minerva',
 				'VectorSkinVersion' => true
 			],
-			$this->createFormWithDefaultValues( 'vector', true, true ),
-			$user,
+			[ 'vector', true, true ],
 			[
 				'initial_state' => 'vector1',
 				'final_state' => 'minerva',
@@ -271,8 +253,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'vector',
 				'VectorSkinVersion' => true
 			],
-			$this->createFormWithDefaultValues( 'minerva', true, true ),
-			$user,
+			[ 'minerva', true, true ],
 			[
 				'initial_state' => 'minerva',
 				'final_state' => 'vector1',
@@ -284,8 +265,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 				'skin' => 'timeless',
 				'VectorSkinVersion' => true
 			],
-			$this->createFormWithDefaultValues( 'minerva', true, true ),
-			$user,
+			[ 'minerva', true, true ],
 			null
 		];
 	}
@@ -314,8 +294,10 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @dataProvider providePrefDiff
 	 */
-	public function testCreateEventIfNecessary( $formData, $form, $user, $expect ) {
+	public function testCreateEventIfNecessary( $formData, $mockFormValues, $expect ) {
 		$this->setMwGlobals( 'wgWMEVectorPrefDiffSalt', 'secret' );
+		$user = $this->createUser();
+		$form = $this->createFormWithDefaultValues( ...$mockFormValues );
 		$userEditTracker = $this->createMock( UserEditTracker::class );
 		$userEditTracker->method( 'getUserEditCount' )
 			->willReturn( 42 );

@@ -13,7 +13,7 @@ use WikimediaEvents\WebABTest\WebABTestArticleIdStrategy;
  */
 class WebABTestArticleIdStrategyTest extends \MediaWikiUnitTestCase {
 
-	public function provideGetBucketData() {
+	public static function provideGetBucketData() {
 		return [
 			[
 				// query param value
