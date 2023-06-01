@@ -47,6 +47,22 @@ Details at <https://phabricator.wikimedia.org/T294777>.
 
 Details at <https://phabricator.wikimedia.org/T196186>.
 
+## Network Probe File
+
+* Since: April 2023
+* Files: networkProbe.js
+* Contact: Infrastructure Foundations
+
+Details at <https://phabricator.wikimedia.org/T332024>.
+
+## Network Probe Module
+
+* Since: April 2023
+* Files: init.js, probenet.js, recipe.js
+* Contact: Infrastructure Foundations
+
+Details at <https://phabricator.wikimedia.org/T332024>.
+
 ## Click-tracking for Vector and Minerva
 
 * Since: July 2019

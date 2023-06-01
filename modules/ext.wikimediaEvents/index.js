@@ -20,3 +20,4 @@ if ( skin === 'minerva' ) {
 }
 
 require( './editAttemptStep.js' );
+require( './networkProbe.js' );

@@ -1,0 +1,380 @@
+/* eslint-disable camelcase */
+
+// Library Name   :   Probenet
+// Repo           :   https://gitlab.wikimedia.org/repos/sre/probnet
+// Pending        :   serial probes, resolver mapping
+
+class Probenet {
+	// Constructor of Probenet
+	constructor() {
+		// Function to make requests to targets
+		// Using FetchAPI by default to make requests to targets
+		this.loader = this.loadUsingFetch;
+
+		// Function to handle logs
+		// Disabling logging by default
+		this.logger = () => {};
+
+		// Object containing information about the probe to be done
+		this.recipe = null;
+
+		// The URL to load the recipe from
+		this.recipeUrl = null;
+
+		// Map containing target_name keys and target_url values
+		this.targets = null;
+
+		// Map containing target_name keys and pulse result values
+		this.targetData = null;
+	}
+
+	// Method to set the URL of the recipe
+	setRecipeUrl( recipeUrl ) {
+		this.recipe = null;
+		this.recipeUrl = recipeUrl;
+		this.targets = null;
+		this.targetData = null;
+	}
+
+	// Method to set the json recipe
+	setRecipeJson( recipeJson ) {
+		this.recipe = recipeJson;
+		this.recipeUrl = null;
+		this.targets = null;
+		this.targetData = null;
+	}
+
+	// Method to use FetchAPI for making requests
+	useFetch() {
+		this.loader = this.loadUsingFetch;
+	}
+
+	// Method to use XMLHttpRequest for making requests
+	useXHR() {
+		this.loader = this.loadUsingXHR;
+	}
+
+	// Method to set logger function
+	setLogger( logger ) {
+		this.logger = logger;
+	}
+
+	// Method to run the actual probe
+	// The report will be generated and passed to onComplete callback function
+	runProbe( onComplete ) {
+		return new Promise( ( resolve, reject ) => {
+			// Checking if user has provided any recipe
+			if ( !this.recipe && !this.recipeUrl ) {
+				reject( 'No recipe found!' );
+				return;
+			}
+
+			// Fetching the recipe if user has provided URL of the recipe
+			// and starting the probe
+			this.fetchRecipe().then(
+				() => {
+					// Handling probes based on recipe_type
+					if ( this.recipe.type === 'http_get' ) {
+						return this.probeHttpGet();
+					} else {
+						reject( 'Unsupported recipe!' );
+						return;
+					}
+				}
+			).then(
+				( report ) => {
+					this.targetData = null;
+					onComplete( report );
+				}
+			);
+		} );
+	}
+
+	// Method to fetch the recipe from the URL
+	fetchRecipe() {
+		return new Promise( ( resolve ) => {
+			if ( this.recipe ) {
+				if ( !this.targets || !this.targetData ) {
+					this.setupRecipe();
+				}
+				resolve();
+				return;
+			}
+
+			fetch( this.recipeUrl ).then(
+				( response ) => response.json()
+			).then(
+				( data ) => {
+					this.recipe = data;
+					if ( !this.targets || !this.targetData ) {
+						this.setupRecipe();
+					}
+					resolve();
+				}
+			);
+		} );
+	}
+
+	// Method to set up the recipe, populate targets and targetData
+	setupRecipe() {
+		this.targets = new Map();
+		for ( const target of this.recipe.targets ) {
+			this.targets.set(
+				target.name,
+				target.target
+			);
+		}
+
+		this.targetData = new Map();
+		for ( const target of this.recipe.targets ) {
+			this.targetData.set(
+				target.name,
+				[]
+			);
+		}
+	}
+
+	// 'http_get' makes an HTTP GET request to the target
+	probeHttpGet() {
+		return new Promise( ( resolve ) => {
+			const pulses = this.recipe.pulses;
+
+			// Repeat the probe multiple times
+			this.probeHttpGetPulse( pulses ).then( () => {
+				// Generate the report
+				const report = this.generateReport();
+				resolve( report );
+			} );
+		} );
+	}
+
+	probeHttpGetPulse( pulses ) {
+		return new Promise( ( resolve, reject ) => {
+			if ( pulses <= 0 ) {
+				resolve();
+				return;
+			}
+
+			const pulse_number = this.recipe.pulses - pulses;
+			const pulse_delay = this.recipe.pulse_delay;
+			const serial_probe_condition = this.recipe.serial_probe === undefined;
+			const serial_probe = serial_probe_condition ? false : this.recipe.serial_probe;
+			const targets = Array.from( this.targets.keys() );
+
+			// Shuffle targets to randomize bias towards first target
+			this.shuffleArray( targets );
+
+			const probes = [];
+
+			for ( const target of targets ) {
+				probes.push( this.probeHttpGetTarget( target, pulse_number ) );
+
+				// Wait for current request to complete for serial probes
+				if ( serial_probe ) {
+					reject( 'serial_probe is not supported!' );
+					return;
+				}
+			}
+
+			// Wait for all probes to finish
+			Promise.all( probes ).then( () => {
+				// Wait for pulse_delay
+				this.delay( pulse_delay ).then(
+					() => this.probeHttpGetPulse( pulses - 1 )
+				).then(
+					() => resolve()
+				);
+			} );
+		} );
+	}
+
+	// Make HTTP Get request to target
+	probeHttpGetTarget( target, pulse_number ) {
+		return new Promise( ( resolve, reject ) => {
+			let target_url = new URL( this.targets.get( target ) );
+			let pulse_identifier;
+
+			const url_metadata_condition = this.recipe.url_metadata === undefined;
+			const url_metadata = url_metadata_condition ? false : this.recipe.url_metadata;
+			if ( url_metadata ) {
+				pulse_identifier = this.generateIdentifier( 24 );
+				target_url = this.add_url_metadata( target_url, pulse_identifier, pulse_number );
+			}
+
+			const pulse_timeout = this.recipe.pulse_timeout;
+			const request = this.loader( target_url );
+			const timeout = this.delay_rej( pulse_timeout );
+			try {
+				Promise.race( [ request, timeout ] ).then( () => {
+					this.handleProbeResult( target, pulse_identifier, pulse_number );
+					resolve();
+				} ).catch( () => {
+					reject();
+				} );
+			} catch ( error ) {
+				reject();
+			}
+		} );
+	}
+
+	// Load request using FetchAPI
+	loadUsingFetch( target_url ) {
+		return new Promise( ( resolve ) => {
+			fetch( target_url ).then(
+				( response ) => response.blob()
+			).then( () => {
+				resolve();
+			} );
+		} );
+	}
+
+	// Load request using XHR
+	loadUsingXHR( target_url ) {
+		return new Promise( ( resolve ) => {
+			const xhr = new XMLHttpRequest();
+			xhr.open( 'GET', target_url, true );
+			xhr.onreadystatechange = () => {
+				switch ( xhr.readyState ) {
+					case 4:
+						resolve();
+						break;
+				}
+			};
+			xhr.send();
+		} );
+	}
+
+	// Add probe data to targetData
+	handleProbeResult( target, pulse_identifier, pulse_number ) {
+		let target_url = this.targets.get( target );
+
+		const url_metadata_condition = this.recipe.url_metadata === undefined;
+		const url_metadata = url_metadata_condition ? false : this.recipe.url_metadata;
+		if ( url_metadata ) {
+			target_url = this.add_url_metadata( target_url, pulse_identifier, pulse_number );
+		}
+
+		const probe_results = performance.getEntriesByName( target_url );
+		const probe_result = probe_results[ probe_results.length - 1 ];
+		const probe_data = this.extractProbeData( probe_result, pulse_identifier, pulse_number );
+		this.targetData.get( target ).push( probe_data );
+	}
+
+	// Extract data from probe_result
+	extractProbeData( probe_result, pulse_identifier, pulse_number ) {
+		const startTime = probe_result.startTime;
+		const redirectStart = probe_result.redirectStart;
+		const redirectEnd = probe_result.redirectEnd;
+		const domainLookupStart = probe_result.domainLookupStart;
+		const domainLookupEnd = probe_result.domainLookupEnd;
+		const connectStart = probe_result.connectStart;
+		const secureConnectionStart = probe_result.secureConnectionStart;
+		const connectEnd = probe_result.connectEnd;
+		const requestStart = probe_result.requestStart;
+		const responseStart = probe_result.responseStart;
+		const responseEnd = probe_result.responseEnd;
+
+		const redirect_time = Math.round( redirectStart - redirectEnd );
+		const dns_time = Math.round( domainLookupEnd - domainLookupStart );
+		const tcp_time = Math.round( secureConnectionStart - connectStart );
+		const tls_time = Math.round( connectEnd - secureConnectionStart );
+		const request_time = Math.round( responseStart - requestStart );
+		const response_time = Math.round( responseEnd - responseStart );
+
+		const ttfb = Math.round( responseStart - startTime );
+		const duration = Math.round( probe_result.duration );
+		const status = Math.round( probe_result.responseStatus );
+		const transfer_bytes = Math.round( probe_result.encodedBodySize );
+		const actual_bytes = Math.round( probe_result.decodedBodySize );
+
+		const probe_data = {
+			redirect_time_ms: redirect_time,
+			dns_time_ms: dns_time,
+			tcp_time_ms: tcp_time,
+			tls_time_ms: tls_time,
+			request_time_ms: request_time,
+			response_time_ms: response_time,
+			ttfb_ms: ttfb,
+			duration_ms: duration,
+			status_code: status,
+			transfer_bytes: transfer_bytes,
+			actual_bytes: actual_bytes
+		};
+
+		const url_metadata_condition = this.recipe.url_metadata === undefined;
+		const url_metadata = url_metadata_condition ? false : this.recipe.url_metadata;
+		if ( url_metadata ) {
+			probe_data.pulse_identifier = pulse_identifier;
+			probe_data.pulse_number = pulse_number;
+		}
+
+		return probe_data;
+	}
+
+	// Function to generate report after all probes are completed
+	generateReport() {
+		const report = {};
+		report.recipe_name = this.recipe.name;
+		report.recipe_type = this.recipe.type;
+
+		// Pass context from recipe to report
+		report.ctx = this.recipe.ctx;
+
+		report.reports = [];
+		for ( const [ name, target ] of this.targets ) {
+			const target_data = {};
+			target_data.target_name = name;
+			target_data.target_url = target;
+			target_data.pulses = this.targetData.get( name );
+			report.reports.push( target_data );
+		}
+
+		return report;
+	}
+
+	// Function to add metadata to url
+	add_url_metadata( target_url, pulse_identifier, pulse_number ) {
+		const url = new URL( target_url );
+		url.searchParams.set( 'pulse_identifier', pulse_identifier );
+		url.searchParams.set( 'pulse_number', pulse_number );
+		return url.toString();
+	}
+
+	// Helper function to generate a random identifier
+	generateIdentifier( length ) {
+		const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+		let identifier = '';
+		for ( let i = 0; i < length; i++ ) {
+			const randomIndex = Math.floor( Math.random() * characters.length );
+			identifier += characters.charAt( randomIndex );
+		}
+		return identifier;
+	}
+
+	// Helper function to shuffle array
+	shuffleArray( array ) {
+		for ( let i = array.length - 1; i > 0; i-- ) {
+			const j = Math.floor( Math.random() * ( i + 1 ) );
+			const temp = array[ i ];
+			array[ i ] = array[ j ];
+			array[ j ] = temp;
+		}
+	}
+
+	// Helper function to delay execution
+	delay( ms ) {
+		return new Promise( ( resolve ) => {
+			setTimeout( resolve, ms );
+		} );
+	}
+
+	// Helper function to delay execution and raise an exception
+	delay_rej( ms ) {
+		return new Promise( ( resolve, reject ) => {
+			setTimeout( reject, ms );
+		} );
+	}
+}
+
+// Exporting Probenet module
+module.exports = Probenet;
