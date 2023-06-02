@@ -197,7 +197,7 @@ class Probenet {
 			const url_metadata_condition = this.recipe.url_metadata === undefined;
 			const url_metadata = url_metadata_condition ? false : this.recipe.url_metadata;
 			if ( url_metadata ) {
-				pulse_identifier = this.generateIdentifier( 24 );
+				pulse_identifier = this.generateIdentifier( target, pulse_number );
 				target_url = this.add_url_metadata( target_url, pulse_identifier, pulse_number );
 			}
 
@@ -341,13 +341,10 @@ class Probenet {
 	}
 
 	// Helper function to generate a random identifier
-	generateIdentifier( length ) {
-		const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-		let identifier = '';
-		for ( let i = 0; i < length; i++ ) {
-			const randomIndex = Math.floor( Math.random() * characters.length );
-			identifier += characters.charAt( randomIndex );
-		}
+	// WikimediaEvents specific implementation of generateIdentifier
+	generateIdentifier( target, pulse_number ) {
+		const token = mw.user.getPageviewToken();
+		const identifier = `${token}_${target}_${pulse_number}`;
 		return identifier;
 	}
 
