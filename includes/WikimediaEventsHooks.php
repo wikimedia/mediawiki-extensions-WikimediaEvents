@@ -23,6 +23,7 @@ use Skin;
 use Title;
 use User;
 use WebRequest;
+use WikimediaEvents\Hooks\HookRunner;
 use WikiPage;
 
 /**
@@ -456,10 +457,8 @@ class WikimediaEventsHooks {
 	public static function shouldSchemaEditAttemptStepOversample( IContextSource $context ) {
 		// The editingStatsOversample request parameter can trigger oversampling
 		$shouldOversample = $context->getRequest()->getBool( 'editingStatsOversample' );
-		MediaWikiServices::getInstance()->getHookContainer()->run(
-			'WikimediaEventsShouldSchemaEditAttemptStepOversample',
-			[ $context, &$shouldOversample ]
-		);
+		( new HookRunner( MediaWikiServices::getInstance()->getHookContainer() ) )
+			->onWikimediaEventsShouldSchemaEditAttemptStepOversample( $context, $shouldOversample );
 		return $shouldOversample;
 	}
 
