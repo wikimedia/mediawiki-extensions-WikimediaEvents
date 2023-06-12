@@ -283,9 +283,9 @@ class Probenet {
 
 		const ttfb = Math.round( responseStart - startTime );
 		const duration = Math.round( probe_result.duration );
-		const status = Math.round( probe_result.responseStatus );
 		const transfer_bytes = Math.round( probe_result.encodedBodySize );
 		const actual_bytes = Math.round( probe_result.decodedBodySize );
+		const status = Math.round( probe_result.responseStatus );
 
 		const probe_data = {
 			redirect_time_ms: redirect_time,
@@ -300,6 +300,15 @@ class Probenet {
 			transfer_bytes: transfer_bytes,
 			actual_bytes: actual_bytes
 		};
+
+		// For some reports, status is set to null instead of an actual status code.
+		// This raises validation errors that causes some alarms to trigger.
+		// The reason for such strange behaviour is not known as of now.
+		// For now we are skipping status_code if status is null
+		// See: https://phabricator.wikimedia.org/T334417#8922560
+		if ( status !== null ) {
+			probe_data.status_code = status;
+		}
 
 		const url_metadata_condition = this.recipe.url_metadata === undefined;
 		const url_metadata = url_metadata_condition ? false : this.recipe.url_metadata;
