@@ -296,17 +296,17 @@ class Probenet {
 			response_time_ms: response_time,
 			ttfb_ms: ttfb,
 			duration_ms: duration,
-			status_code: status,
 			transfer_bytes: transfer_bytes,
 			actual_bytes: actual_bytes
 		};
 
-		// For some reports, status is set to null instead of an actual status code.
-		// This raises validation errors that causes some alarms to trigger.
+		// For some reports, status is set to NaN instead of an actual status code.
+		// NaN becomes null after JSON serialisation.
+		// This causes validation errors that cause some alarms to trigger.
 		// The reason for such strange behaviour is not known as of now.
-		// For now we are skipping status_code if status is null
+		// For now we are skipping status_code if status is NaN
 		// See: https://phabricator.wikimedia.org/T334417#8922560
-		if ( status !== null ) {
+		if ( !isNaN( status ) ) {
 			probe_data.status_code = status;
 		}
 
