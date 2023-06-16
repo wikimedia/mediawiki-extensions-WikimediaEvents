@@ -32,8 +32,12 @@ function scrapeDiffEventName( target ) {
 					eventName = 'user_link';
 					return true;
 				case 'mw-thanks-thank-link':
-					eventName = 'thank';
-					return true;
+					// Ensure this is a confirmed thank
+					if ( linkClasses.search( 'jquery-confirmable-button-yes' ) > -1 ) {
+						eventName = 'thank';
+						return true;
+					}
+					return false;
 				default:
 					return false;
 			}

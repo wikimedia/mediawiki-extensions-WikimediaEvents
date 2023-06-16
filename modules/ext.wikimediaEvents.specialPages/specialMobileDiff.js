@@ -45,7 +45,7 @@ $( function () {
 	document.addEventListener( 'click', function ( event ) {
 		const eventName = scrapeDiffEventName( event.target );
 		if ( eventName ) {
-			mw.eventLog.dispatch( `specialMobileDiff.click.${eventName}` );
+			mw.eventLog.dispatch( `specialDiff.click.${eventName}` );
 		}
 	} );
 } );
