@@ -1,8 +1,7 @@
 /* eslint-disable camelcase */
 
 // Library Name   :   Probenet
-// Repo           :   https://gitlab.wikimedia.org/repos/sre/probnet
-// Pending        :   serial probes, resolver mapping
+// Repo           :   https://gitlab.wikimedia.org/repos/sre/probenet
 
 class Probenet {
 	// Constructor of Probenet
@@ -283,9 +282,9 @@ class Probenet {
 
 		const ttfb = Math.round( responseStart - startTime );
 		const duration = Math.round( probe_result.duration );
+		const status = Math.round( probe_result.responseStatus );
 		const transfer_bytes = Math.round( probe_result.encodedBodySize );
 		const actual_bytes = Math.round( probe_result.decodedBodySize );
-		const status = Math.round( probe_result.responseStatus );
 
 		const probe_data = {
 			redirect_time_ms: redirect_time,
@@ -296,18 +295,20 @@ class Probenet {
 			response_time_ms: response_time,
 			ttfb_ms: ttfb,
 			duration_ms: duration,
+			status_code: status,
 			transfer_bytes: transfer_bytes,
 			actual_bytes: actual_bytes
 		};
 
-		// For some reports, status is set to NaN instead of an actual status code.
+		// Some of the properties can be undefined in some browsers
+		// Math.round( undefined ) returns NaN
 		// NaN becomes null after JSON serialisation.
-		// This causes validation errors that cause some alarms to trigger.
-		// The reason for such strange behaviour is not known as of now.
-		// For now we are skipping status_code if status is NaN
-		// See: https://phabricator.wikimedia.org/T334417#8922560
-		if ( !isNaN( status ) ) {
-			probe_data.status_code = status;
+		// This causes validation errors that cause some alarms to trigger
+		// See: https://phabricator.wikimedia.org/T334417#8958498
+		for ( const parameter in probe_data ) {
+			if ( isNaN( probe_data[ parameter ] ) ) {
+				delete probe_data[ parameter ];
+			}
 		}
 
 		const url_metadata_condition = this.recipe.url_metadata === undefined;
