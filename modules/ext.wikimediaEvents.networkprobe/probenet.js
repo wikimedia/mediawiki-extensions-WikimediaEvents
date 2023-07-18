@@ -261,55 +261,32 @@ class Probenet {
 
 	// Extract data from probe_result
 	extractProbeData( probe_result, pulse_identifier, pulse_number ) {
-		const startTime = probe_result.startTime;
-		const redirectStart = probe_result.redirectStart;
-		const redirectEnd = probe_result.redirectEnd;
-		const domainLookupStart = probe_result.domainLookupStart;
-		const domainLookupEnd = probe_result.domainLookupEnd;
-		const connectStart = probe_result.connectStart;
-		const secureConnectionStart = probe_result.secureConnectionStart;
-		const connectEnd = probe_result.connectEnd;
-		const requestStart = probe_result.requestStart;
-		const responseStart = probe_result.responseStart;
-		const responseEnd = probe_result.responseEnd;
+		const probe_data = [
+			[ 'redirect_time_ms', probe_result.redirectStart - probe_result.redirectEnd ],
+			[ 'dns_time_ms', probe_result.domainLookupEnd - probe_result.domainLookupStart ],
+			[ 'tcp_time_ms', probe_result.secureConnectionStart - probe_result.connectStart ],
+			[ 'tls_time_ms', probe_result.connectEnd - probe_result.secureConnectionStart ],
+			[ 'request_time_ms', probe_result.responseStart - probe_result.requestStart ],
+			[ 'response_time_ms', probe_result.responseEnd - probe_result.responseStart ],
+			[ 'ttfb_ms', probe_result.responseStart - probe_result.startTime ],
+			[ 'duration_ms', probe_result.duration ],
+			[ 'status_code', probe_result.responseStatus ],
+			[ 'transfer_bytes', probe_result.encodedBodySize ],
+			[ 'actual_bytes', probe_result.decodedBodySize ]
+		].reduce( function ( prev, cur ) {
+			const value = Math.round( cur[ 1 ] );
 
-		const redirect_time = Math.round( redirectStart - redirectEnd );
-		const dns_time = Math.round( domainLookupEnd - domainLookupStart );
-		const tcp_time = Math.round( secureConnectionStart - connectStart );
-		const tls_time = Math.round( connectEnd - secureConnectionStart );
-		const request_time = Math.round( responseStart - requestStart );
-		const response_time = Math.round( responseEnd - responseStart );
-
-		const ttfb = Math.round( responseStart - startTime );
-		const duration = Math.round( probe_result.duration );
-		const status = Math.round( probe_result.responseStatus );
-		const transfer_bytes = Math.round( probe_result.encodedBodySize );
-		const actual_bytes = Math.round( probe_result.decodedBodySize );
-
-		const probe_data = {
-			redirect_time_ms: redirect_time,
-			dns_time_ms: dns_time,
-			tcp_time_ms: tcp_time,
-			tls_time_ms: tls_time,
-			request_time_ms: request_time,
-			response_time_ms: response_time,
-			ttfb_ms: ttfb,
-			duration_ms: duration,
-			status_code: status,
-			transfer_bytes: transfer_bytes,
-			actual_bytes: actual_bytes
-		};
-
-		// Some of the properties can be undefined in some browsers
-		// Math.round( undefined ) returns NaN
-		// NaN becomes null after JSON serialisation.
-		// This causes validation errors that cause some alarms to trigger
-		// See: https://phabricator.wikimedia.org/T334417#8958498
-		for ( const parameter in probe_data ) {
-			if ( isNaN( probe_data[ parameter ] ) ) {
-				delete probe_data[ parameter ];
+			// Some of the properties can be undefined in some browsers
+			// Math.round( undefined ) returns NaN
+			// NaN becomes null after JSON serialisation.
+			// This causes validation errors that cause some alarms to trigger
+			// See: https://phabricator.wikimedia.org/T334417#8958498
+			if ( !isNaN( value ) ) {
+				prev[ cur[ 0 ] ] = value;
 			}
-		}
+
+			return prev;
+		}, {} );
 
 		const url_metadata_condition = this.recipe.url_metadata === undefined;
 		const url_metadata = url_metadata_condition ? false : this.recipe.url_metadata;
