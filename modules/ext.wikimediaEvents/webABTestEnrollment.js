@@ -16,7 +16,7 @@ const webCommon = require( './webCommon.js' );
 function logEvent( data ) {
 	/* eslint-disable camelcase */
 	const event = Object.assign( {}, webCommon(), {
-		$schema: '/analytics/mediawiki/web_ab_test_enrollment/1.0.2',
+		$schema: '/analytics/mediawiki/web_ab_test_enrollment/2.0.0',
 		web_session_id: mw.user.sessionId(),
 		group: data.group,
 		experiment_name: data.experimentName,
