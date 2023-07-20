@@ -261,7 +261,8 @@ class Probenet {
 
 	// Extract data from probe_result
 	extractProbeData( probe_result, pulse_identifier, pulse_number ) {
-		const probe_data = [
+		const probe_data = {};
+		[
 			[ 'redirect_time_ms', probe_result.redirectStart - probe_result.redirectEnd ],
 			[ 'dns_time_ms', probe_result.domainLookupEnd - probe_result.domainLookupStart ],
 			[ 'tcp_time_ms', probe_result.secureConnectionStart - probe_result.connectStart ],
@@ -273,20 +274,16 @@ class Probenet {
 			[ 'status_code', probe_result.responseStatus ],
 			[ 'transfer_bytes', probe_result.encodedBodySize ],
 			[ 'actual_bytes', probe_result.decodedBodySize ]
-		].reduce( function ( prev, cur ) {
-			const value = Math.round( cur[ 1 ] );
-
+		].forEach( function ( [ key, value ] ) {
 			// Some of the properties can be undefined in some browsers
-			// Math.round( undefined ) returns NaN
+			// ( undefined - 42 ) returns NaN.
 			// NaN becomes null after JSON serialisation.
 			// This causes validation errors that cause some alarms to trigger
 			// See: https://phabricator.wikimedia.org/T334417#8958498
-			if ( !isNaN( value ) ) {
-				prev[ cur[ 0 ] ] = value;
+			if ( value !== undefined && !isNaN( value ) ) {
+				probe_data[ key ] = Math.round( value );
 			}
-
-			return prev;
-		}, {} );
+		} );
 
 		const url_metadata_condition = this.recipe.url_metadata === undefined;
 		const url_metadata = url_metadata_condition ? false : this.recipe.url_metadata;
