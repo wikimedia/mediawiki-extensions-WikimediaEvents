@@ -1,12 +1,12 @@
-# Code ownership for components of WikimediaEvents
+# Code ownership for instruments in WikimediaEvents
 
-The code in this repository is loaded globally for all users of Wikipedia and other public
-Wikimedia Foundation wikis. Including for all page types, namespaces, skins, and devices.
+The code in this repository is loaded globally for all users of Wikipedia and other public Wikimedia
+Foundation wikis. Including for all page types, namespaces, skins, and devices.
 
-Shipping code here comes at a cost, and it is important that campaigns leave a trace
-to contact owners. This way, if optimisations are proposed, there is a way to contact
-for code review, and to routinely evaluate whether gathered data is still actively being
-used and providing value so as to free up budget for other teams to deploy campaigns.
+Shipping code comes at a cost. It is important that campaigns leave a trace to contact their owners
+so that, if optimisations are proposed, there is a way to contact them for code review, and also to
+routinely evaluate whether gathered data is still actively being used and providing value to free up
+budget for other teams to deploy campaigns.
 
 ## mw-js-deprecate
 
@@ -47,18 +47,10 @@ Details at <https://phabricator.wikimedia.org/T294777>.
 
 Details at <https://phabricator.wikimedia.org/T196186>.
 
-## Network Probe File
+## Network Probe
 
 * Since: April 2023
-* Files: networkProbe.js
-* Contact: Infrastructure Foundations
-
-Details at <https://phabricator.wikimedia.org/T332024>.
-
-## Network Probe Module
-
-* Since: April 2023
-* Files: init.js, probenet.js, recipe.js
+* Files: init.js, probenet.js, recipe.js, networkProbe.js
 * Contact: Infrastructure Foundations
 
 Details at <https://phabricator.wikimedia.org/T332024>.
@@ -99,7 +91,7 @@ Details at <https://phabricator.wikimedia.org/T292586>.
 
 * Since: February 2020
 * Files: clientError.js
-* Contact: Product Infrastructure
+* Contact: Data Products
 
 Details at <https://phabricator.wikimedia.org/T235189>.
 
@@ -107,7 +99,7 @@ Details at <https://phabricator.wikimedia.org/T235189>.
 
 * Since: June 2020
 * Files: sessionTick.js
-* Contact: Product Infrastructure
+* Contact: Data Products
 
 Details at <https://phabricator.wikimedia.org/T248987>.
 
@@ -119,7 +111,6 @@ Details at <https://phabricator.wikimedia.org/T248987>.
 
 Migrated from the UniversalLanguageSwitcher extension. Details at
 <https://phabricator.wikimedia.org/T275894>.
-
 
 ## Select PHP versions for the backend
 
@@ -147,15 +138,8 @@ Moved here in <https://phabricator.wikimedia.org/T332438>.
 ## Special:Diff interactions
 
 * Since: March 2023
-* Files: specialDiff.js
+* Files: specialDiff.js, specialMobileDiff.js
 * Contact: Moderator Tools
 
-More details at <https://phabricator.wikimedia.org/T326214>
-
-## Special:MobileDiff interactions
-
-* Since: May 2023
-* Files: specialMobileDiff.js
-* Contact: Moderator Tools
-
-More details at <https://phabricator.wikimedia.org/T326216>
+More details at <https://phabricator.wikimedia.org/T326214> and
+<https://phabricator.wikimedia.org/T326216>.
