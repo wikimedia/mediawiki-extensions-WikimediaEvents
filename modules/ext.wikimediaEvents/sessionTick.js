@@ -2,9 +2,9 @@
  * Determine the length of a user session.
  *
  * Given an origin, a session is the longest interval during which, for any
- * n minute subinterval, at least one page from the origin is active.
+ * N minute subinterval, at least one page from the origin is active.
  *
- * Here, this value n is RESET_MS.
+ * Here, this value N is RESET_MS.
  *
  * A page is "inactive" if it is either
  *  1. hidden
@@ -45,23 +45,25 @@ const RESET_MS = 1800000;
 // Milliseconds before an activity will be recorded again.
 const DEBOUNCE_MS = 5000;
 // Should represent the most ticks that could be sent at once
-const tickLimit = Math.ceil( RESET_MS / TICK_MS );
+const TICK_LIMIT = Math.ceil( RESET_MS / TICK_MS );
 
-// Whether the browser supports the 'passive' event listener option.
-let supportsPassive = 0;
+const KEY_LAST_TIME = 'wmE-sessionTickLastTickTime';
+const KEY_COUNT = 'wmE-sessionTickTickCount';
+
 // Whether the browser supports localStorage.
-let supportsLocalStorage = false;
+let supportsLocalStorage;
 
 /**
  * Detect support for EventListenerOptions and set 'supportsPassive' flag.
  * See: https://dom.spec.whatwg.org/#dictdef-addeventlisteneroptions
  */
 function detectPassiveEventListenerSupport() {
+	let supportsPassive = false;
 	const noop = function () {};
 	try {
 		const options = Object.defineProperty( {}, 'passive', {
 			get: function () {
-				supportsPassive = 1;
+				supportsPassive = true;
 				return false;
 			}
 		} );
@@ -70,6 +72,7 @@ function detectPassiveEventListenerSupport() {
 	} catch ( e ) {
 		// Silently fail.
 	}
+	return supportsPassive;
 }
 
 /**
@@ -81,34 +84,74 @@ function detectLocalStorageSupport() {
 	try {
 		localStorage.setItem( 'localStorageSupport', '1' );
 		localStorage.removeItem( 'localStorageSupport' );
-
-		supportsLocalStorage = true;
+		return true;
 	} catch ( e ) {
 		// Silently fail.
+	}
+	return false;
+}
+
+/**
+ * Publish 'sessionReset' event to mw.track().
+ *
+ * This is allows EventLogging to periodically reset the
+ * value returneed by `mw.eventLog.id.getSessionId`, which
+ * other events make use of.
+ */
+function sessionReset() {
+	mw.cookie.set( KEY_COUNT, 0 );
+	mw.track( 'sessionReset', 1 );
+}
+
+function sessionTick( incr ) {
+	if ( incr > TICK_LIMIT ) {
+		throw new Error( 'Session ticks exceed limit' );
+	}
+
+	const count = ( Number( mw.cookie.get( KEY_COUNT ) ) || 0 );
+	mw.cookie.set( KEY_COUNT, count + incr );
+
+	while ( incr-- > 0 ) {
+		mw.eventLog.submit( 'mediawiki.client.session_tick', {
+			$schema: '/analytics/session_tick/2.0.0',
+			tick: count + incr,
+			test: !supportsLocalStorage ? { supportsLocalStorage: 0 } : undefined
+		} );
 	}
 }
 
 /**
- * Publish 'sessionReset' and 'sessionTick' events to mw.track()
+ * How the instrumentation works:
+ *
+ * 1. Listen for activity, such as click and scroll events.
+ *
+ * 2. Upon any activity, ignore the next 5 seconds (DEBOUNCE_MS),
+ *    and then call run().
+ *
+ * 3. In run(), we read data from cookies (which can be changed by other tabs),
+ *    and if it's our first time here, or if it's been more than 1 minute (TICK_MS),
+ *    we update the data and send an event beacon to the server.
+ *
+ * Generally, this means we read data at most once every 5 seconds,
+ * and save data at most once every 1 minute.
  */
 function regulator() {
-	const lastTickTime = 'wmE-sessionTickLastTickTime';
 	let tickTimeout = null;
 	let idleTimeout = null;
 	let debounceTimeout = null;
 
 	function run() {
-		const
-			now = Date.now(),
-			gap = now - ( Number( mw.cookie.get( lastTickTime ) ) || 0 );
+		const now = Date.now();
+		const gap = now - ( Number( mw.cookie.get( KEY_LAST_TIME ) ) || 0 );
 
 		if ( gap > RESET_MS ) {
-			mw.cookie.set( lastTickTime, now );
-			mw.track( 'sessionReset', 1 );
-			mw.track( 'sessionTick', 1 ); // Tick once to start
+			mw.cookie.set( KEY_LAST_TIME, now );
+			sessionReset();
+			// Tick once to start
+			sessionTick( 1 );
 		} else if ( gap > TICK_MS ) {
-			mw.cookie.set( lastTickTime, now - ( gap % TICK_MS ) );
-			mw.track( 'sessionTick', Math.floor( gap / TICK_MS ) );
+			mw.cookie.set( KEY_LAST_TIME, now - ( gap % TICK_MS ) );
+			sessionTick( Math.floor( gap / TICK_MS ) );
 		}
 
 		tickTimeout = setTimeout( run, TICK_MS );
@@ -136,10 +179,10 @@ function regulator() {
 				clearTimeout( debounceTimeout );
 				debounceTimeout = null;
 			}, DEBOUNCE_MS );
-			//
-			// Call setActive only after the next frame paints, because
-			// it may perform (relatively) expensive cookie I/O.
-			//
+
+			// Optimization: Avoid hurting mouse/keyboard responsiveness.
+			// This is called from event handlers. Delay setActive and its
+			// (relatively) expensive storage I/O cost until the next frame.
 			mw.requestIdleCallback( setActive );
 		}
 	}
@@ -170,58 +213,15 @@ function regulator() {
 	onVisibilitychange();
 }
 
-/**
- * Handle 'sessionReset' and 'sessionTick' events from mw.track()
- */
-function instrument() {
-	const tickCount = 'wmE-sessionTickTickCount';
+// Only enable when:
+// - the feature is enabled,
+// - the browser supports the Page Visibility API,
+// - the browser supports passive event listeners (T274264, T248987).
+if ( enabled && document.hidden !== undefined && detectPassiveEventListenerSupport() ) {
 
-	mw.trackSubscribe( 'sessionReset', function () {
-		mw.cookie.set( tickCount, 0 );
-	} );
+	supportsLocalStorage = detectLocalStorageSupport();
 
-	mw.trackSubscribe( 'sessionTick', function ( _, n ) {
-		const count = ( Number( mw.cookie.get( tickCount ) ) || 0 );
-
-		if ( n > tickLimit ) {
-			throw new Error( 'Session ticks exceed limit' );
-		}
-
-		mw.cookie.set( tickCount, count + n );
-
-		while ( n-- > 0 ) {
-			mw.eventLog.submit( 'mediawiki.client.session_tick', {
-				$schema: '/analytics/session_tick/2.0.0',
-				tick: count + n,
-				test: !supportsLocalStorage ? { supportsLocalStorage: 0 } : undefined
-			} );
-		}
-	} );
-}
-
-//
-// If the module has been enabled, and the browser supports the
-// Page Visibility API.
-//
-if ( enabled && document.hidden !== undefined ) {
-
-	// Sets the 'supportsPassive' flag.
-	detectPassiveEventListenerSupport();
-
-	// Sets the 'supportsLocalStorage' flag.
-	detectLocalStorageSupport();
-
-	// Only enable for browsers that support passive event listeners.
-	// See: T274264, T248987//
-	if ( supportsPassive === 1 ) {
-		//
-		// Prevents the cookie I/O along these code paths from
-		// slowing down the initial paint and other critical
-		// tasks at page load.
-		//
-		mw.requestIdleCallback( function () {
-			regulator();
-			instrument();
-		} );
-	}
+	// Optimization: Avoid slowing down initial paint and page load time.
+	// Delay storage I/O cost during module execution.
+	mw.requestIdleCallback( regulator );
 }
