@@ -186,6 +186,7 @@ function shouldIgnoreFileUrl( fileUrl ) {
 		fileUrl.indexOf( 'jar:' ) === 0 ||
 		// from Windows file system.
 		fileUrl.indexOf( 'C:\\' ) === 0 ||
+		fileUrl.indexOf( 'chrome://' ) === 0 ||
 		fileUrl.indexOf( 'chrome-extension://' ) === 0 ||
 		fileUrl.indexOf( 'safari-extension://' ) === 0 ||
 		fileUrl.indexOf( 'moz-extension://' ) === 0;
