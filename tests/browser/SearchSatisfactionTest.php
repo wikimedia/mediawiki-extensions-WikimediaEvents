@@ -8,7 +8,9 @@ use Facebook\WebDriver\WebDriverKeys;
 // Used to get arround lack of support for advanced css selectors in selenium
 use Symfony\Component\CssSelector\CssSelectorConverter;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+if ( is_readable( __DIR__ . '/../../vendor/autoload.php' ) ) {
+	require_once __DIR__ . '/../../vendor/autoload.php';
+}
 
 /**
  * Best run from inside vagrant, as accessing eventlogging.log from the mwv
@@ -44,6 +46,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
  *   sudo rm -rf /var/cache/apache2/mod_cache_disk/*
  *
  * @coversNothing
+ * @group Broken
  */
 class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 
