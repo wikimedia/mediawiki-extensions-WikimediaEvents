@@ -253,6 +253,7 @@ class WikimediaEventsHooks {
 				switch ( $param ) {
 					case 'desktopWebUIActions':
 					case 'searchSatisfaction':
+					case 'searchSli':
 					case 'universalLanguageSelector':
 					case 'webUIScroll':
 						return new RL\FilePath( $param . '.js' );
@@ -269,6 +270,7 @@ class WikimediaEventsHooks {
 			default:
 				switch ( $param ) {
 					case 'searchSatisfaction':
+					case 'searchSli':
 						return new RL\FilePath( $param . '.js' );
 					default:
 						return '';
