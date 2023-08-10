@@ -10,6 +10,9 @@ const moduleConfig = require( './config.json' );
 const errorLimit = 5;
 let errorCount = 0;
 
+// T343944: Temporary investigation
+const wasMwUtilReady2 = ( mw.util !== undefined && typeof $.fn.updateTooltipAccessKeys === 'function' );
+
 // Browser stack trace strings are usually provided on the Error object,
 // and render each stack frame on its own line, e.g.:
 //
@@ -374,6 +377,8 @@ function log( intakeURL, descriptor, component ) {
 		protocol + '//' + host + mw.util.getUrl( 'Special:' + canonicalName ) + search + hash :
 		location.href;
 
+	const wasMwUtilReady3 = ( mw.util !== undefined && typeof $.fn.updateTooltipAccessKeys === 'function' );
+
 	// Extra data that can be specified as-needed. Note that the values must always be strings.
 	const errorContext = {
 		component: component || 'unknown',
@@ -384,6 +389,9 @@ function log( intakeURL, descriptor, component ) {
 		is_logged_in: String( !mw.user.isAnon() ),
 		namespace: mw.config.get( 'wgCanonicalNamespace', '' ),
 		debug: String( !!mw.config.get( 'debug', 0 ) ),
+		// Temporary hack for T343944 to determine when mediawiki.util gets compromised
+		// eslint-disable-next-line camelcase
+		is_mw_util_ready: [ mw.util.wasMwUtilReady1, wasMwUtilReady2, wasMwUtilReady3 ].map( String ).join( ' ' ),
 		// T265096 - record when a banner was shown. Might be a hint to catch errors originating
 		// in banner code, which is otherwise difficult to diagnose.
 		banner_shown: String( (
