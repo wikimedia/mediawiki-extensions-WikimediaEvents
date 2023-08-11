@@ -360,6 +360,7 @@ function shouldLog( descriptor ) {
  * @param {string} [component] The component which logged this error
  */
 function log( intakeURL, descriptor, component ) {
+	/* eslint-disable camelcase */
 	let gadgets = '';
 	const host = location.host;
 	const protocol = location.protocol;
@@ -380,13 +381,11 @@ function log( intakeURL, descriptor, component ) {
 		version: mw.config.get( 'wgVersion', '' ),
 		skin: mw.config.get( 'skin', '' ),
 		action: mw.config.get( 'wgAction', '' ),
-		// eslint-disable-next-line camelcase
 		is_logged_in: String( !mw.user.isAnon() ),
 		namespace: mw.config.get( 'wgCanonicalNamespace', '' ),
 		debug: String( !!mw.config.get( 'debug', 0 ) ),
 		// T265096 - record when a banner was shown. Might be a hint to catch errors originating
 		// in banner code, which is otherwise difficult to diagnose.
-		// eslint-disable-next-line camelcase
 		banner_shown: String( (
 			mw.centralNotice &&
 			// T319498: mw.centralNotice.isBannerShown might or might not exist
@@ -395,7 +394,6 @@ function log( intakeURL, descriptor, component ) {
 		) || false )
 	};
 	if ( canonicalName ) {
-		// eslint-disable-next-line camelcase
 		errorContext.special_page = canonicalName;
 	}
 	gadgets = mw.loader.getModuleNames().filter( function ( module ) {
@@ -417,22 +415,19 @@ function log( intakeURL, descriptor, component ) {
 		// Schema used to validate events
 		$schema: '/mediawiki/client/error/2.0.0',
 		// Name of the error constructor
-		// eslint-disable-next-line camelcase
 		error_class: descriptor.errorClass,
 		// Message included with the Error object
 		message: descriptor.errorMessage,
 		// URL of the file causing the error
-		// eslint-disable-next-line camelcase
 		file_url: descriptor.fileUrl,
 		// URL of the web page.
 		url: url,
 		// Normalized stack trace string
 		// We log undefined rather than empty string (consistent with file_url) to allow for filtering.
-		// eslint-disable-next-line camelcase
 		stack_trace: descriptor.stackTrace || 'undefined',
-		// eslint-disable-next-line camelcase
 		error_context: errorContext
 	} ) );
+	/* eslint-enable */
 }
 
 /**
