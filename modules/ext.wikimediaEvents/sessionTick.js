@@ -50,9 +50,6 @@ const TICK_LIMIT = Math.ceil( RESET_MS / TICK_MS );
 const KEY_LAST_TIME = 'wmE-sessionTickLastTickTime';
 const KEY_COUNT = 'wmE-sessionTickTickCount';
 
-// Whether the browser supports localStorage.
-let supportsLocalStorage;
-
 /**
  * Detect support for EventListenerOptions and set 'supportsPassive' flag.
  * See: https://dom.spec.whatwg.org/#dictdef-addeventlisteneroptions
@@ -76,22 +73,6 @@ function detectPassiveEventListenerSupport() {
 }
 
 /**
- * Detect support for localStorage.
- *
- * See https://phabricator.wikimedia.org/T295619 for additional detail.
- */
-function detectLocalStorageSupport() {
-	try {
-		localStorage.setItem( 'localStorageSupport', '1' );
-		localStorage.removeItem( 'localStorageSupport' );
-		return true;
-	} catch ( e ) {
-		// Silently fail.
-	}
-	return false;
-}
-
-/**
  * Publish 'sessionReset' event to mw.track().
  *
  * This is allows EventLogging to periodically reset the
@@ -99,7 +80,7 @@ function detectLocalStorageSupport() {
  * other events make use of.
  */
 function sessionReset() {
-	mw.cookie.set( KEY_COUNT, 0 );
+	mw.storage.set( KEY_COUNT, 0 );
 	mw.track( 'sessionReset', 1 );
 }
 
@@ -108,14 +89,13 @@ function sessionTick( incr ) {
 		throw new Error( 'Session ticks exceed limit' );
 	}
 
-	const count = ( Number( mw.cookie.get( KEY_COUNT ) ) || 0 );
-	mw.cookie.set( KEY_COUNT, count + incr );
+	const count = ( Number( mw.storage.get( KEY_COUNT ) ) || 0 );
+	mw.storage.set( KEY_COUNT, count + incr );
 
 	while ( incr-- > 0 ) {
 		mw.eventLog.submit( 'mediawiki.client.session_tick', {
 			$schema: '/analytics/session_tick/2.0.0',
-			tick: count + incr,
-			test: !supportsLocalStorage ? { supportsLocalStorage: 0 } : undefined
+			tick: count + incr
 		} );
 	}
 }
@@ -128,7 +108,7 @@ function sessionTick( incr ) {
  * 2. Upon any activity, ignore the next 5 seconds (DEBOUNCE_MS),
  *    and then call run().
  *
- * 3. In run(), we read data from cookies (which can be changed by other tabs),
+ * 3. In run(), we read data from localStorage (which can be changed by other tabs),
  *    and if it's our first time here, or if it's been more than 1 minute (TICK_MS),
  *    we update the data and send an event beacon to the server.
  *
@@ -142,15 +122,15 @@ function regulator() {
 
 	function run() {
 		const now = Date.now();
-		const gap = now - ( Number( mw.cookie.get( KEY_LAST_TIME ) ) || 0 );
+		const gap = now - ( Number( mw.storage.get( KEY_LAST_TIME ) ) || 0 );
 
 		if ( gap > RESET_MS ) {
-			mw.cookie.set( KEY_LAST_TIME, now );
+			mw.storage.set( KEY_LAST_TIME, now );
 			sessionReset();
 			// Tick once to start
 			sessionTick( 1 );
 		} else if ( gap > TICK_MS ) {
-			mw.cookie.set( KEY_LAST_TIME, now - ( gap % TICK_MS ) );
+			mw.storage.set( KEY_LAST_TIME, now - ( gap % TICK_MS ) );
 			sessionTick( Math.floor( gap / TICK_MS ) );
 		}
 
@@ -218,9 +198,6 @@ function regulator() {
 // - the browser supports the Page Visibility API,
 // - the browser supports passive event listeners (T274264, T248987).
 if ( enabled && document.hidden !== undefined && detectPassiveEventListenerSupport() ) {
-
-	supportsLocalStorage = detectLocalStorageSupport();
-
 	// Optimization: Avoid slowing down initial paint and page load time.
 	// Delay storage I/O cost during module execution.
 	mw.requestIdleCallback( regulator );
