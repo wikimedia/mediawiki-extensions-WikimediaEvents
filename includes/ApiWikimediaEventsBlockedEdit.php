@@ -33,6 +33,15 @@ class ApiWikimediaEventsBlockedEdit extends ApiBase {
 			],
 			'interface' => [
 				ParamValidator::PARAM_REQUIRED => true,
+
+				// See https://gerrit.wikimedia.org/g/schemas/event/secondary/+/192e1a497d16b3da22817177e7676e342a4494a7/jsonschema/analytics/mediawiki/editattemptsblocked/current.yaml#44
+				ParamValidator::PARAM_TYPE => [
+					'wikieditor',
+					'visualeditor',
+					'mobilefrontend',
+					'discussiontools',
+					'other',
+				],
 			],
 			'platform' => [
 				ParamValidator::PARAM_REQUIRED => true,
