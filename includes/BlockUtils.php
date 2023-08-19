@@ -5,9 +5,9 @@ namespace WikimediaEvents;
 use MediaWiki\Block\Block;
 use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Title\Title;
 use Message;
 use RequestContext;
-use Title;
 use User;
 use Wikimedia\IPUtils;
 

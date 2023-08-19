@@ -3,7 +3,7 @@
 namespace WikimediaEvents;
 
 use ApiBase;
-use Title;
+use MediaWiki\Title\Title;
 use Wikimedia\ParamValidator\ParamValidator;
 
 class ApiWikimediaEventsBlockedEdit extends ApiBase {

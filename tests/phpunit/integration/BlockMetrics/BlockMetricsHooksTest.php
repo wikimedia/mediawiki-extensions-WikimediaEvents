@@ -4,8 +4,8 @@ namespace WikimediaEvents\Tests;
 
 use MediaWiki\Block\DatabaseBlock;
 use MediaWiki\Permissions\PermissionManager;
+use MediaWiki\Title\Title;
 use MediaWikiIntegrationTestCase;
-use Title;
 use WikimediaEvents\BlockMetrics\BlockMetricsHooks;
 
 /**

@@ -3,8 +3,8 @@
 namespace WikimediaEvents\Tests;
 
 use MediaWiki\Request\FauxRequest;
+use MediaWiki\Title\Title;
 use RequestContext;
-use Title;
 use WikimediaEvents\PageSplitter\PageSplitterInstrumentation;
 use WikimediaEvents\WebABTest\WebABTestArticleIdFactory;
 
