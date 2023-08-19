@@ -2,7 +2,7 @@
 
 namespace WikimediaEvents\Tests;
 
-use Title;
+use MediaWiki\Title\Title;
 use WebRequest;
 use WikimediaEvents\PageSplitter\PageHashGenerate;
 use WikimediaEvents\PageSplitter\PageSplitterInstrumentation;
