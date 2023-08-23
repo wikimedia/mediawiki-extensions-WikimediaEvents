@@ -115,6 +115,11 @@
 					"callbackParam": "searchSatisfaction"
 				},
 				{
+					"name": "searchSli.js",
+					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
+					"callbackParam": "searchSli"
+				},
+				{
 					"name": "desktopWebUIActions.js",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
 					"callbackParam": "desktopWebUIActions"

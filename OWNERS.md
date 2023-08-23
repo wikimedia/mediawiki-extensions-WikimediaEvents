@@ -28,7 +28,7 @@ Documentation at <https://wikitech.wikimedia.org/wiki/Graphite#statsv>.
 ## Search satisfaction
 
 * Since: October 2015
-* Files: searchSatisfaction.js
+* Files: searchSatisfaction.js, searchSli.js
 * Contact: https://www.mediawiki.org/wiki/Wikimedia_Search_Platform
 
 ## Reading depth
