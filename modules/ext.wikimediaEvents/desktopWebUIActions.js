@@ -6,6 +6,9 @@
  * Metrics Platform events: web.ui.init, web.ui.click
  */
 const config = require( './config.json' );
+
+// Require web fragments from webAccessibilitySettings.js
+const webA11ySettings = require( './webAccessibilitySettings.js' );
 let sampleSize = config.desktopWebUIActionsTracking || 0;
 const overSampleLoggedInUsers = config.desktopWebUIActionsTrackingOversampleLoggedInUsers || false;
 let skinVersion;
@@ -80,7 +83,15 @@ function logEvent( action, name ) {
 		if ( name ) {
 			data.name = name;
 		}
-		mw.eventLog.logEvent( 'DesktopWebUIActionsTracking', data );
+
+		// Use Object.assign to merge data with webA11ySettings
+		const webA11ySettingsData = Object.assign(
+			{},
+			data,
+			webA11ySettings()
+		);
+
+		mw.eventLog.logEvent( 'DesktopWebUIActionsTracking', webA11ySettingsData );
 
 		// T281761: Also log via the Metrics Platform:
 		const eventName = 'web.ui.' + action;
@@ -192,24 +203,50 @@ function getMenuLinkEventName( $target ) {
 	}
 }
 
+// Retrieves an array of skin-specific JavaScript dependencies based on the
+// current skin selected in the MediaWiki instance.
+function getSkinDependencies() {
+	const skin = mw.config.get( 'skin' );
+	if ( skin === 'vector-2022' ) {
+		return [ 'skins.vector.js' ];
+	} else {
+		return [];
+	}
+}
+
+// If the popups state is not 'registered', it adds 'ext.popups.main' to the list of dependencies
+// and returns the list of dependencies.
+function getInstrumentationDependencies() {
+	// Check popups state.
+	const popupsState = mw.loader.getState( 'ext.popups.main' );
+	const dependencies = getSkinDependencies();
+	if ( popupsState !== 'registered' ) {
+		return dependencies.concat( [ 'ext.popups.main' ] );
+	}
+	return dependencies;
+}
+
 // Wait for DOM ready because logEvent() requires
 // knowing sidebar state and body classes.
 $( function () {
-	logEvent( 'init' );
-	$( document )
-		// Track clicks to elements with `data-event-name`
-		// and children of elements that have the attribute
-		// i.e. user menu dropdown button, sticky header buttons, table of contents links
-		.on( 'click', function ( event ) {
-			const $target = $( event.target );
-			const $closest = $target.closest( '[data-event-name]' );
-			if ( $closest.length ) {
-				logEvent( 'click', $closest.attr( 'data-event-name' ) );
-			} else {
-				const eventName = getMenuLinkEventName( $target );
-				if ( eventName ) {
-					logEvent( 'click', eventName );
+	// Wait for ext.popups.main to be loaded.
+	mw.loader.using( getInstrumentationDependencies() ).then( () => {
+		logEvent( 'init' );
+		$( document )
+			// Track clicks to elements with `data-event-name`
+			// and children of elements that have the attribute
+			// i.e. user menu dropdown button, sticky header buttons, table of contents links
+			.on( 'click', function ( event ) {
+				const $target = $( event.target );
+				const $closest = $target.closest( '[data-event-name]' );
+				if ( $closest.length ) {
+					logEvent( 'click', $closest.attr( 'data-event-name' ) );
+				} else {
+					const eventName = getMenuLinkEventName( $target );
+					if ( eventName ) {
+						logEvent( 'click', eventName );
+					}
 				}
-			}
-		} );
+			} );
+	} );
 } );
