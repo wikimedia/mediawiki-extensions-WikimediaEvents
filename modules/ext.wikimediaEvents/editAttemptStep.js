@@ -347,7 +347,10 @@ function editAttemptStepHandler( topic, data ) {
 		// Schema actually does have an init_timing field, but we don't want to
 		// store it because it's not meaningful.
 		duration = Math.round( computeDuration( data.action, data, timeStamp ) );
-		data[ actionPrefix + '_timing' ] = duration;
+		// Fall back to -1 to avoid event validation issues if there was incomplete
+		// timing data that resulted in a NaN; -1 is used as a signal value in this
+		// field to indicate that the data shouldn't be used.
+		data[ actionPrefix + '_timing' ] = isNaN( duration ) ? -1 : duration;
 	}
 	if ( data.action === 'saveFailure' ) {
 		data[ actionPrefix + '_message' ] = data.message;
