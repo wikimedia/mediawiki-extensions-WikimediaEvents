@@ -5,13 +5,14 @@ namespace WikimediaEvents;
 use HTMLForm;
 use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Preferences\Hook\PreferencesFormPreSaveHook;
 use MWCryptHash;
 use User;
 use UserBucketProvider;
 
 // T261842: The Web team is interested in all skin changes involving Vector
 // legacy and Vector latest.
-class VectorPrefDiffInstrumentation {
+class VectorPrefDiffInstrumentation implements PreferencesFormPreSaveHook {
 	/**
 	 * EventLogging schema to use.
 	 * @var string
@@ -80,10 +81,10 @@ class VectorPrefDiffInstrumentation {
 	 * @param bool &$result Variable defining is form save successful
 	 * @param array $oldPreferences
 	 */
-	public static function onPreferencesFormPreSave(
-		array $formData,
-		HTMLForm $form,
-		User $user,
+	public function onPreferencesFormPreSave(
+		$formData,
+		$form,
+		$user,
 		&$result,
 		$oldPreferences
 	) {

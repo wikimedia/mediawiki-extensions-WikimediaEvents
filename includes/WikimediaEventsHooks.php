@@ -1,25 +1,40 @@
 <?php
 
+// phpcs:disable MediaWiki.NamingConventions.LowerCamelFunctionsName.FunctionName
+
 namespace WikimediaEvents;
 
+use Article;
 use Config;
 use DeferredUpdates;
 use ExtensionRegistry;
 use IContextSource;
+use ISearchResultSet;
 use MediaWiki;
+use MediaWiki\ChangeTags\Hook\ChangeTagsListActiveHook;
+use MediaWiki\ChangeTags\Hook\ListDefinedTagsHook;
+use MediaWiki\Hook\BeforeInitializeHook;
+use MediaWiki\Hook\BeforePageDisplayHook;
+use MediaWiki\Hook\MakeGlobalVariablesScriptHook;
+use MediaWiki\Hook\RecentChange_saveHook;
+use MediaWiki\Hook\SpecialSearchGoResultHook;
+use MediaWiki\Hook\SpecialSearchResultsHook;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Page\Hook\ArticleViewHeaderHook;
 use MediaWiki\ResourceLoader as RL;
+use MediaWiki\ResourceLoader\Hook\ResourceLoaderRegisterModulesHook;
 use MediaWiki\ResourceLoader\ResourceLoader;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Storage\EditResult;
+use MediaWiki\Storage\Hook\PageSaveCompleteHook;
 use MediaWiki\Title\Title;
 use MediaWiki\User\UserIdentity;
 use MediaWiki\WikiMap\WikiMap;
 use MobileContext;
 use OutputPage;
+use ParserOutput;
 use RecentChange;
 use RequestContext;
-use SearchResultSet;
 use Skin;
 use User;
 use WebRequest;
@@ -33,13 +48,25 @@ use WikiPage;
  * @author Matthew Flaschen <mflaschen@wikimedia.org>
  * @author Benny Situ <bsitu@wikimedia.org>
  */
-class WikimediaEventsHooks {
+class WikimediaEventsHooks implements
+	BeforeInitializeHook,
+	BeforePageDisplayHook,
+	PageSaveCompleteHook,
+	ArticleViewHeaderHook,
+	ListDefinedTagsHook,
+	ChangeTagsListActiveHook,
+	SpecialSearchGoResultHook,
+	SpecialSearchResultsHook,
+	RecentChange_saveHook,
+	ResourceLoaderRegisterModulesHook,
+	MakeGlobalVariablesScriptHook
+{
 
 	/**
 	 * @param OutputPage $out
 	 * @param Skin $skin
 	 */
-	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ): void {
+	public function onBeforePageDisplay( $out, $skin ): void {
 		$out->addModules( 'ext.wikimediaEvents' );
 
 		if ( ExtensionRegistry::getInstance()->isLoaded( 'WikibaseRepository' ) ) {
@@ -106,13 +133,13 @@ class WikimediaEventsHooks {
 	 *
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageSaveComplete
 	 */
-	public static function onPageSaveComplete(
-		WikiPage $wikiPage,
-		UserIdentity $userIdentity,
-		string $summary,
-		int $flags,
-		RevisionRecord $revisionRecord,
-		EditResult $editResult
+	public function onPageSaveComplete(
+		$wikiPage,
+		$userIdentity,
+		$summary,
+		$flags,
+		$revisionRecord,
+		$editResult
 	): void {
 		if ( PHP_SAPI === 'cli' ) {
 			return; // ignore maintenance scripts
@@ -283,7 +310,7 @@ class WikimediaEventsHooks {
 	 *
 	 * @param array &$tags
 	 */
-	public static function onListDefinedTags( array &$tags ): void {
+	public function onListDefinedTags( &$tags ): void {
 		if ( WikiMap::getCurrentWikiId() === 'commonswiki' ) {
 			$tags[] = 'cross-wiki-upload';
 			// For A/B test
@@ -299,7 +326,7 @@ class WikimediaEventsHooks {
 	 *
 	 * @param array &$tags
 	 */
-	public static function onChangeTagsListActive( array &$tags ): void {
+	public function onChangeTagsListActive( &$tags ): void {
 		if ( WikiMap::getCurrentWikiId() === 'commonswiki' ) {
 			$tags[] = 'cross-wiki-upload';
 			// For A/B test
@@ -315,7 +342,7 @@ class WikimediaEventsHooks {
 	 * @param Title $title
 	 * @param string|null &$url
 	 */
-	public static function onSpecialSearchGoResult( $term, Title $title, &$url ): void {
+	public function onSpecialSearchGoResult( $term, $title, &$url ): void {
 		$request = RequestContext::getMain()->getRequest();
 
 		$wprov = $request->getRawVal( 'wprov' );
@@ -330,15 +357,23 @@ class WikimediaEventsHooks {
 	 * make it trivial by injecting a boolean value to check.
 	 *
 	 * @param string $term
-	 * @param SearchResultSet $titleMatches
-	 * @param SearchResultSet $textMatches
+	 * @param ?ISearchResultSet &$titleMatches
+	 * @param ?ISearchResultSet &$textMatches
 	 */
-	public static function onSpecialSearchResults( $term, $titleMatches, $textMatches ): void {
+	public function onSpecialSearchResults( $term, &$titleMatches, &$textMatches ): void {
 		$out = RequestContext::getMain()->getOutput();
 
 		$out->addJsConfigVars( [
 			'wgIsSearchResultPage' => true,
 		] );
+	}
+
+	/**
+	 * @param RecentChange $rc
+	 */
+	public function onRecentChange_save( $rc ): void {
+		self::onRecentChangeSaveCrossWikiUpload( $rc );
+		self::onRecentChangeSaveEditCampaign( $rc );
 	}
 
 	/**
@@ -402,7 +437,7 @@ class WikimediaEventsHooks {
 	/**
 	 * @param ResourceLoader $rl
 	 */
-	public static function onResourceLoaderRegisterModules( ResourceLoader $rl ): void {
+	public function onResourceLoaderRegisterModules( ResourceLoader $rl ): void {
 		if ( !ExtensionRegistry::getInstance()->isLoaded( 'VisualEditor' ) ) {
 			return;
 		}
@@ -418,7 +453,12 @@ class WikimediaEventsHooks {
 		] );
 	}
 
-	public static function onArticleViewHeader() {
+	/**
+	 * @param Article $article
+	 * @param bool|ParserOutput|null &$outputDone
+	 * @param bool &$pcache
+	 */
+	public function onArticleViewHeader( $article, &$outputDone, &$pcache ) {
 		DeferredUpdates::addCallableUpdate( static function () {
 			$context = RequestContext::getMain();
 			$timing = $context->getTiming();
@@ -442,7 +482,7 @@ class WikimediaEventsHooks {
 	 * @param array &$vars
 	 * @param OutputPage $out
 	 */
-	public static function onMakeGlobalVariablesScript( array &$vars, OutputPage $out ): void {
+	public function onMakeGlobalVariablesScript( &$vars, $out ): void {
 		$vars['wgWMESchemaEditAttemptStepOversample'] =
 			static::shouldSchemaEditAttemptStepOversample( $out->getContext() );
 
@@ -487,7 +527,7 @@ class WikimediaEventsHooks {
 	 * @param WebRequest $request
 	 * @param MediaWiki $mediaWiki
 	 */
-	public static function onBeforeInitializeWMDECampaign(
+	public function onBeforeInitialize(
 		$title,
 		$unused,
 		$output,

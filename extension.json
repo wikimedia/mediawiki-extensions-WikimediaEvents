@@ -23,6 +23,15 @@
 		"WikimediaEvents\\Tests\\": "tests/phpunit/"
 	},
 	"HookHandlers": {
+		"main": {
+			"class": "WikimediaEvents\\WikimediaEventsHooks"
+		},
+		"VectorInstrumentation": {
+			"class": "WikimediaEvents\\VectorPrefDiffInstrumentation"
+		},
+		"PrefInstrumentation": {
+			"class": "WikimediaEvents\\PrefUpdateInstrumentation"
+		},
 		"BlockMetricsHooks": {
 			"class": "WikimediaEvents\\BlockMetrics\\BlockMetricsHooks",
 			"services": [
@@ -38,23 +47,20 @@
 		}
 	},
 	"Hooks": {
-		"BeforeInitialize": "WikimediaEvents\\WikimediaEventsHooks::onBeforeInitializeWMDECampaign",
-		"BeforePageDisplay": "WikimediaEvents\\WikimediaEventsHooks::onBeforePageDisplay",
-		"PageSaveComplete": "WikimediaEvents\\WikimediaEventsHooks::onPageSaveComplete",
-		"PreferencesFormPreSave": "WikimediaEvents\\VectorPrefDiffInstrumentation::onPreferencesFormPreSave",
-		"SaveUserOptions": "WikimediaEvents\\PrefUpdateInstrumentation::onSaveUserOptions",
-		"ArticleViewHeader": "WikimediaEvents\\WikimediaEventsHooks::onArticleViewHeader",
-		"ListDefinedTags": "WikimediaEvents\\WikimediaEventsHooks::onListDefinedTags",
-		"ChangeTagsListActive": "WikimediaEvents\\WikimediaEventsHooks::onChangeTagsListActive",
+		"BeforeInitialize": "main",
+		"BeforePageDisplay": "main",
+		"PageSaveComplete": "main",
+		"PreferencesFormPreSave": "VectorInstrumentation",
+		"SaveUserOptions": "PrefInstrumentation",
+		"ArticleViewHeader": "main",
+		"ListDefinedTags": "main",
+		"ChangeTagsListActive": "main",
 		"XAnalyticsSetHeader": "WikimediaEvents\\WikimediaEventsHooks::onXAnalyticsSetHeader",
-		"SpecialSearchGoResult": "WikimediaEvents\\WikimediaEventsHooks::onSpecialSearchGoResult",
-		"SpecialSearchResults": "WikimediaEvents\\WikimediaEventsHooks::onSpecialSearchResults",
-		"RecentChange_save": [
-			"WikimediaEvents\\WikimediaEventsHooks::onRecentChangeSaveCrossWikiUpload",
-			"WikimediaEvents\\WikimediaEventsHooks::onRecentChangeSaveEditCampaign"
-		],
-		"ResourceLoaderRegisterModules": "WikimediaEvents\\WikimediaEventsHooks::onResourceLoaderRegisterModules",
-		"MakeGlobalVariablesScript": "WikimediaEvents\\WikimediaEventsHooks::onMakeGlobalVariablesScript",
+		"SpecialSearchGoResult": "main",
+		"SpecialSearchResults": "main",
+		"RecentChange_save": "main",
+		"ResourceLoaderRegisterModules": "main",
+		"MakeGlobalVariablesScript": "main",
 		"PermissionErrorAudit": "BlockMetricsHooks",
 		"EditPage::showReadOnlyForm:initial": "EditPageHooks"
 	},

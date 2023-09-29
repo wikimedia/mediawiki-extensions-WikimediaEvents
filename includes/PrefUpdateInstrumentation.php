@@ -8,6 +8,7 @@ use MediaWiki\Extension\BetaFeatures\BetaFeatures;
 use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\User\Options\Hook\SaveUserOptionsHook;
 use MediaWiki\User\UserIdentity;
 use MWTimestamp;
 use RequestContext;
@@ -23,7 +24,7 @@ use UserBucketProvider;
  * @author Matthew Flaschen <mflaschen@wikimedia.org>
  * @author Benny Situ <bsitu@wikimedia.org>
  */
-class PrefUpdateInstrumentation {
+class PrefUpdateInstrumentation implements SaveUserOptionsHook {
 
 	/**
 	 * @var string Bumped when the nature of the data collected in the log is changed.
@@ -133,7 +134,7 @@ class PrefUpdateInstrumentation {
 	 * @param array &$modifiedOptions The options being saved
 	 * @param array $originalOptions The original options being replaced
 	 */
-	public static function onSaveUserOptions(
+	public function onSaveUserOptions(
 		UserIdentity $user,
 		array &$modifiedOptions,
 		array $originalOptions
