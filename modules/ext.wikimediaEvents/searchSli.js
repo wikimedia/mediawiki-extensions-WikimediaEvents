@@ -6,15 +6,17 @@
  * TODO: minerva compat?
  */
 
-if ( !performance || !performance.timing || !performance.now ) {
+if ( !window.performance || !window.performance.now || !window.performance.getEntriesByType ) {
 	return;
 }
 
 // Note this is only core Special:Search, Special:MediaSearch is tracked from within itself
 if ( mw.config.get( 'wgIsSearchResultPage' ) ) {
 	$( function () {
-		const took = performance.timing.loadEventEnd - performance.timing.navigationStart;
-		mw.track( 'timing.Search.FullTextResults', took );
+		const entry = performance.getEntriesByType( 'navigation' )[ 0 ];
+		if ( entry && entry.loadEventEnd ) {
+			mw.track( 'timing.Search.FullTextResults', entry.loadEventEnd );
+		}
 	} );
 }
 
@@ -29,7 +31,7 @@ function trackAutocomplete( _topic, data ) {
 		mw.track( 'timing.Search.AutocompleteResults', took );
 	}
 }
-// Old style jquery suggestions widget, and modern Vector Vue app
+// Old style jquery.suggestions module, and modern Vector Vue app
 mw.trackSubscribe( 'mediawiki.searchSuggest', trackAutocomplete );
-// Old style OOui suggestions widget
+// Old style OOUI suggestions widget
 mw.trackSubscribe( 'mw.widgets.SearchInputWidget', trackAutocomplete );
