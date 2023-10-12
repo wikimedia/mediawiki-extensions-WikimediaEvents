@@ -27,8 +27,6 @@ namespace WikimediaEvents;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\WikiMap\WikiMap;
 use Monolog\Handler\AbstractHandler;
-use Status;
-use StatusValue;
 
 /**
  * Counts authentication-related log events (those sent to the 'authevents'
@@ -37,10 +35,9 @@ use StatusValue;
  * Events can include the following data in their context:
  *   - 'event': (string, required) the type of the event (e.g. 'login').
  *   - 'eventType': (string) a subtype for more complex events.
- *   - 'successful': (bool) whether the attempt was successful. Can be omitted if 'status' is
- *     a Status or a StatusValue.
- *   - 'status': (Status|StatusValue|string|int) attempt status (such as an error message key).
- *     string/int values will be ignored unless 'successful' is false.
+ *   - 'successful': (bool) whether the attempt was successful.
+ *   - 'status': (string) attempt status (such as an error message key).
+ *     Will be ignored unless 'successful' is false.
  *
  * Will result in a ping to a graphite key that looks like
  * <MediaWiki root>.authmanager.<event>.<type>.<entrypoint>.[success|failure].<status>
@@ -62,19 +59,8 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 		$status = $this->getField( 'status', $record['context'] );
 		$successful = $this->getField( 'successful', $record['context'] );
 		$error = null;
-		if ( $status instanceof StatusValue ) {
-			$status = Status::wrap( $status );
-			$successful = $status->isGood();
-			if ( !$successful ) {
-				$errorArray = $status->getErrorsArray() ?: $status->getWarningsArray();
-				$error = $errorArray[0][0];
-			}
-		} elseif ( is_string( $status ) && $successful === false ) {
-			$error = $status;
-		} elseif ( is_numeric( $status ) && $successful === false ) {
+		if ( $successful === false ) {
 			$error = strval( $status );
-		} elseif ( is_bool( $status ) ) {
-			$successful = $status;
 		}
 
 		// Sense-check in case this was invoked from some non-metrics-related
@@ -83,7 +69,6 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 			( $record['channel'] !== 'authevents' && $record['channel'] !== 'captcha' )
 			|| !$event || !is_string( $event )
 			|| ( $type && !is_string( $type ) )
-			|| ( $error && !is_string( $error ) )
 		) {
 			return false;
 		}

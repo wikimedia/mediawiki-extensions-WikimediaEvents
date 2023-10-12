@@ -4,8 +4,6 @@ namespace WikimediaEvents\Tests;
 
 use IBufferingStatsdDataFactory;
 use MediaWikiIntegrationTestCase;
-use Status;
-use StatusValue;
 use WikimediaEvents\AuthManagerStatsdHandler;
 
 /**
@@ -32,10 +30,6 @@ class AuthManagerStatsdHandlerTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public static function provideHandle() {
-		$multiStatus = Status::newGood();
-		$multiStatus->fatal( 'foo' );
-		$multiStatus->fatal( 'bar' );
-
 		return [
 			'no event' => [ [
 				'channel' => 'authevents',
@@ -43,7 +37,7 @@ class AuthManagerStatsdHandlerTest extends MediaWikiIntegrationTestCase {
 			], null ],
 			'wrong type' => [ [
 				'channel' => 'authevents',
-				'context' => [ 'event' => 'autocreate', 'type' => Status::newGood() ],
+				'context' => [ 'event' => 'autocreate', 'type' => [ 'oops' ] ],
 			], null ],
 
 			'right channel' => [ [
@@ -87,23 +81,6 @@ class AuthManagerStatsdHandlerTest extends MediaWikiIntegrationTestCase {
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'successful' => false, 'status' => 'snafu' ],
 			], 'authmanager.autocreate.failure.snafu' ],
-
-			'Status, good' => [ [
-				'channel' => 'authevents',
-				'context' => [ 'event' => 'autocreate', 'status' => Status::newGood() ],
-			], 'authmanager.autocreate.success' ],
-			'Status, bad' => [ [
-				'channel' => 'authevents',
-				'context' => [ 'event' => 'autocreate', 'status' => Status::newFatal( 'snafu' ) ],
-			], 'authmanager.autocreate.failure.snafu' ],
-			'Status, multiple' => [ [
-				'channel' => 'authevents',
-				'context' => [ 'event' => 'autocreate', 'status' => $multiStatus ],
-			], 'authmanager.autocreate.failure.foo' ],
-			'StatusValue' => [ [
-				'channel' => 'authevents',
-				'context' => [ 'event' => 'autocreate', 'status' => StatusValue::newGood() ],
-			], 'authmanager.autocreate.success' ],
 		];
 	}
 }
