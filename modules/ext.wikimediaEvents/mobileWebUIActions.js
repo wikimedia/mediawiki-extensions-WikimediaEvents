@@ -7,8 +7,7 @@
  */
 const moduleConfig = require( './config.json' );
 const sampleSize = moduleConfig.mobileWebUIActionsTracking || 0;
-// Require common web fragments from webAccessibilitySettings.js
-const webA11ySettings = require( './webAccessibilitySettings.js' );
+
 /**
  * Helper function to build comma-separated list of all enabled mobile modes
  *
@@ -41,20 +40,12 @@ function logEvent( action, name, destination ) {
 		pageToken: mw.user.getPageviewToken(),
 		isAnon: mw.user.isAnon(),
 		userGroups: mw.config.get( 'wgUserGroups' ).join( ',' ),
-		editCountBucket: mw.config.get( 'wgUserEditCountBucket' ) || '0 edits',
-		skin: mw.config.get( 'skin' )
+		editCountBucket: mw.config.get( 'wgUserEditCountBucket' ) || '0 edits'
 	};
 	if ( destination ) {
 		event.destination = destination;
 	}
-
-	const webA11ySettingsEvent = Object.assign(
-		{},
-		event,
-		webA11ySettings()
-	);
-
-	mw.track( 'event.MobileWebUIActionsTracking', webA11ySettingsEvent );
+	mw.track( 'event.MobileWebUIActionsTracking', event );
 
 	// T281761: Also log via the Metrics Platform:
 	const eventName = 'web.ui.' + action;

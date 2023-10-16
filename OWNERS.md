@@ -79,14 +79,6 @@ Details at <https://phabricator.wikimedia.org/T292587>.
 
 Details at <https://phabricator.wikimedia.org/T335309>.
 
-## Accessibility Settings for Web
-
-* Since: September 2023
-* Files: webAccessibilitySettings.js
-* Contact: Readers Web
-
-Details at <https://phabricator.wikimedia.org/T346106>.
-
 ## Scroll-tracking for Vector
 
 * Since: October 2021
