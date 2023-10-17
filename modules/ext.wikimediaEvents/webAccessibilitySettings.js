@@ -89,6 +89,6 @@ module.exports = () => ( {
 	is_page_preview_on: getPagePreviewSettings(),
 	is_pinned: getPinnedSettings(),
 	is_media_viewer_enabled: getMediaViewerSettings(),
-	is_dark_mode_preferred_by_os: window.matchMedia && window.matchMedia( '(prefers-color-scheme: dark)' ).matches,
+	is_dark_mode_prepared_by_os: window.matchMedia && window.matchMedia( '(prefers-color-scheme: dark)' ).matches,
 	is_dark_mode_on: false
 } );
