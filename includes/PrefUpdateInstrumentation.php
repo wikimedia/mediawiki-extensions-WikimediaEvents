@@ -145,7 +145,7 @@ class PrefUpdateInstrumentation implements SaveUserOptionsHook {
 
 		// An empty $originalOptions array will almost certainly cause spurious PrefUpdates events to be issued,
 		// and indicates a likely bug in the preference handling code causing the save. Emit a warning and abort.
-		if ( empty( $originalOptions ) ) {
+		if ( !$originalOptions ) {
 			LoggerFactory::getInstance( 'WikimediaEvents' )->warning(
 				'WikimediaEventsHooks::onUserSaveOptions called with empty originalOptions array. ' .
 				'Aborting to avoid creating spurious PrefUpdate events.',
