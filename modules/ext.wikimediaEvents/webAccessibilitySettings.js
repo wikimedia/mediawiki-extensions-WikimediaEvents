@@ -12,7 +12,8 @@
  * @return {string} Wiki font preference, or "N/A" if not available.
  */
 function getFont() {
-	return mw.user.clientPrefs.get( 'vector-feature-custom-font-size' ) || '0';
+	// Temporary conditionals - Pending cleanup in T349862.
+	return mw.user.clientPrefs.get( 'vector-feature-custom-font-size' ) || mw.user.clientPrefs.get( 'mf-font-size' ) || '0';
 }
 
 /**
