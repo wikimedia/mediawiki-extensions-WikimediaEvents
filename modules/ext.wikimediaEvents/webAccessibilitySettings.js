@@ -68,7 +68,7 @@ function getMediaViewerSettings() {
 /**
  * Check if there are pinned elements.
  * Generates a function to check if the current skin supports pinned elements.
- * Returns the 'hasPinnedElements' result for the 'vector-2022' skin, otherwise false.
+ * Returns the 'analyticsPinnedState' result for the 'vector-2022' skin, otherwise false.
  *
  * @return {boolean} Pinned elements.
  */
@@ -76,7 +76,7 @@ function getPinnedSettings() {
 	if ( mw.config.get( 'skin' ) === 'vector-2022' ) {
 		// Consumer of skins.vector.js module:
 		const skinsVector = require( 'skins.vector.js' );
-		const hasPinnedElementsFn = skinsVector.pinnableElement.hasPinnedElements;
+		const hasPinnedElementsFn = skinsVector.pinnableElement.analyticsPinnedState;
 		return hasPinnedElementsFn();
 	} else {
 		return false;
