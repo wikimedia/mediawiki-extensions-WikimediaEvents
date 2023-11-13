@@ -203,7 +203,7 @@ function addABTestData( data, addToken ) {
 }
 
 function inSample( samplingRate ) {
-	// Not using mw.eventLog.inSample() because we want to use our own editing session ID,
+	// Not using mw.eventLog.sessionInSample() because we want to use our own editing session ID,
 	// so that entire editor sessions are sampled or not, instead of single events.
 	return mw.eventLog.randomTokenMatch(
 		1 / samplingRate,
