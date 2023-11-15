@@ -114,6 +114,9 @@ class PrefUpdateInstrumentation implements SaveUserOptionsHook {
 
 		// Search Preview
 		'searchpreview' => self::VALUE_WELLKNOWN_SHORT,
+
+		// ParserMigration
+		'parsermigration-parsoid-readviews' => self::VALUE_WELLKNOWN_SHORT,
 	];
 
 	/**
