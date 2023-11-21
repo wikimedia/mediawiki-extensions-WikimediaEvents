@@ -3,7 +3,6 @@
  *
  * Launch task: https://phabricator.wikimedia.org/T220016
  * Schema: https://schema.wikimedia.org/#!/secondary/jsonschema/analytics/legacy/mobilewebuiactionstracking
- * Metrics Platform events: web.ui.init, web.ui.click
  */
 const moduleConfig = require( './config.json' );
 const sampleSize = moduleConfig.mobileWebUIActionsTracking || 0;
@@ -55,27 +54,6 @@ function logEvent( action, name, destination ) {
 	);
 
 	mw.track( 'event.MobileWebUIActionsTracking', webA11ySettingsEvent );
-
-	// T281761: Also log via the Metrics Platform:
-	const eventName = 'web.ui.' + action;
-
-	/* eslint-disable camelcase */
-	const customData = {
-		modes: modes
-	};
-
-	// When action is "init", name looks like "ns=". Fortunately, the Metrics Platform client can
-	// capture the namespace of the current page for us.
-	if ( action !== 'init' ) {
-		customData.el_id = name;
-	}
-
-	if ( destination ) {
-		customData.destination = destination;
-	}
-	/* eslint-enable camelcase */
-
-	mw.eventLog.dispatch( eventName, customData );
 }
 
 if ( !mw.eventLog.eventInSample( 1 / sampleSize ) ) {
