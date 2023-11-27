@@ -32,9 +32,15 @@ function log( action ) {
 		action: action,
 		access_method: isMobile ? 'mobile web' : 'desktop'
 	} );
-	/* eslint-enable camelcase */
 
+	// Retained temporarily to ensure uninterrupted scroll data collection.
 	mw.eventLog.submit( 'mediawiki.web_ui_scroll', data );
+
+	// Sends the same data to the new Metrics Platform for migration.
+	// TODO: Begin deprecating mw.eventLog.submit after completing QA for
+	// mw.eventLog.submitInteraction. See T352342.
+	mw.eventLog.submitInteraction( 'mediawiki.web_ui_scroll_migrated', '/analytics/product_metrics/web/base/1.1.0', action );
+	/* eslint-enable camelcase */
 }
 
 /**
