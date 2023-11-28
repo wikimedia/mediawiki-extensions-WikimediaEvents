@@ -443,18 +443,6 @@ function visualEditorFeatureUseHandler( topic, data ) {
 		log( topic, event, schemaVisualEditorFeatureUse.defaults );
 	} else {
 		schemaVisualEditorFeatureUse.log( event, vefuOversample ? 1 : vefuSampleRate );
-
-		// T309602: Also log via the Metrics Platform:
-		const eventName = 'vefu.' + data.action;
-
-		const customData = {
-			feature: data.feature,
-			editing_session_id: session.editing_session_id,
-			editor_interface: data.editor_interface || session.editor_interface,
-			integration: data.integration || session.integration
-		};
-
-		mw.eventLog.dispatch( eventName, customData );
 	}
 
 	if ( data.feature === 'editor-switch' ) {
