@@ -22,10 +22,30 @@
  * @since 1.39
  */
 
+use GeoIp2\Database\Reader;
+use MaxMind\Db\Reader\InvalidDatabaseException;
+use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\MediaWikiServices;
 use WikimediaEvents\WebABTest\WebABTestArticleIdFactory;
+use WikimediaEvents\WikimediaEventsCountryCodeLookup;
 
 return [
 	'WikimediaEvents.WebABTestArticleIdFactory' => static function (): WebABTestArticleIdFactory {
 		return new WebABTestArticleIdFactory();
+	},
+	'WikimediaEventsCountryCodeLookup' => static function (
+		MediaWikiServices $mediaWikiServices
+	): ?WikimediaEventsCountryCodeLookup {
+		$reader = null;
+		try {
+			$wmeGeoIp2Path = $mediaWikiServices->getMainConfig()->get( 'WMEGeoIP2Path' );
+			if ( $wmeGeoIp2Path ) {
+				$reader = new Reader( $wmeGeoIp2Path );
+			}
+		} catch ( InvalidDatabaseException | InvalidArgumentException $e ) {
+			LoggerFactory::getInstance( 'WikimediaEvents' )
+				->error( $e->getMessage() );
+		}
+		return new WikimediaEventsCountryCodeLookup( $reader );
 	},
 ];
