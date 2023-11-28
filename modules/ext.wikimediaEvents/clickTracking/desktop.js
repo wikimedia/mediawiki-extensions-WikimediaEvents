@@ -4,10 +4,11 @@
  * Launch task: https://phabricator.wikimedia.org/T250282
  * Schema: https://schema.wikimedia.org/#!/secondary/jsonschema/analytics/legacy/desktopwebuiactionstracking
  */
-const config = require( './config.json' );
+const config = require( '../config.json' );
+const util = require( './utils.js' );
 
 // Require web fragments from webAccessibilitySettings.js
-const webA11ySettings = require( './webAccessibilitySettings.js' );
+const webA11ySettings = require( '../webAccessibilitySettings.js' );
 let sampleSize = config.desktopWebUIActionsTracking || 0;
 const overSampleLoggedInUsers = config.desktopWebUIActionsTrackingOversampleLoggedInUsers || false;
 let skinVersion;
@@ -134,74 +135,6 @@ mw.trackSubscribe( 'webuiactions_log.', function ( topic, value ) {
 } );
 
 /**
- * Checks if the feature is enabled.
- *
- * @param {string} name
- * @return {boolean}
- */
-function isVectorFeatureEnabled( name ) {
-	const className = 'vector-feature-' + name + '-enabled';
-	return document.documentElement.classList.contains( className );
-}
-
-/**
- * Derives an event name value for a link which has no data-event-name
- * data attribute using the following checks:
- * 1) Finds the closest link that matches the '.vector-menu a' selector.
- *    If none, returns null.
- * 2) Checks if the link is inside a `vector-pinnable-element`.
- *    If so an event name is created with a suffix that includes the name of the
- *    feature and ".pinned" or ".unpinned" depending on the current state.
- * 4) If not, uses the targets elements ID attribute.
- * 5) If parent has no ID element this will return null.
- *
- * Note: this code runs in both Vector skins, and the pinned or unpinned
- * class will always be absent in legacy Vector.
- *
- * @param {jQuery} $target
- * @return {string|null}
- */
-function getMenuLinkEventName( $target ) {
-	const $closestLink = $target.closest( '.vector-menu a' );
-	const closestLink = $closestLink[ 0 ];
-	if ( !closestLink ) {
-		return null;
-	}
-	const linkListItem = closestLink.parentNode;
-	if ( !linkListItem ) {
-		return;
-	}
-	/**
-	 * T332612: Makes TOC heading clicks in unpinned state fire a
-	 * generic event because tracking the section a user is reading
-	 * within an article doesn't fall within the list of exceptions
-	 * in the WMF Privacy Policy and thus isn't allowed.
-	 * Source: See "Information Related to Your Use of the Wikimedia Sites"
-	 * in https://foundation.wikimedia.org/wiki/Policy:Privacy_policy.
-	 * NOTE: In pinned state, TOC heading clicks already fire generic event
-	 * called 'ui.sidebar-toc'
-	 */
-	let id = linkListItem.id;
-	if ( id.indexOf( 'toc' ) !== -1 ) {
-		// Replaces TOC heading ID with a generic prefix called 'toc-heading'.
-		id = id.slice( 0, id.indexOf( 'toc-' ) ) + 'toc-heading';
-	}
-	const pinnableElement = $closestLink.closest( '.vector-pinnable-element' )[ 0 ];
-	const pinnableElementHeader = pinnableElement ? pinnableElement.querySelector( '.vector-pinnable-header' ) : null;
-
-	// Note not all pinnable-elements have a header so check both.
-	if ( id && pinnableElement && pinnableElementHeader ) {
-		const featureName = pinnableElementHeader.dataset.name || pinnableElementHeader.dataset.featureName || 'unknown';
-		const pinnedState = isVectorFeatureEnabled( featureName ) ?
-			'-enabled' :
-			'-disabled';
-		return id + '.' + featureName + pinnedState;
-	} else {
-		return id;
-	}
-}
-
-/**
  * Retrieves an array of skin-specific JavaScript dependencies based on the
  * current skin selected in the MediaWiki instance.
  *
@@ -260,17 +193,6 @@ $( function () {
 			// Track clicks to elements with `data-event-name`
 			// and children of elements that have the attribute
 			// i.e. user menu dropdown button, sticky header buttons, table of contents links
-			.on( 'click', function ( event ) {
-				const $target = $( event.target );
-				const $closest = $target.closest( '[data-event-name]' );
-				if ( $closest.length ) {
-					logEvent( 'click', $closest.attr( 'data-event-name' ) );
-				} else {
-					const eventName = getMenuLinkEventName( $target );
-					if ( eventName ) {
-						logEvent( 'click', eventName );
-					}
-				}
-			} );
+			.on( 'click', util.onClickTrack( logEvent ) );
 	} );
 } );

@@ -9,10 +9,10 @@ require( './blockedEdit.js' );
 
 const skin = mw.config.get( 'skin' );
 if ( skin === 'minerva' ) {
-	require( './mobileWebUIActions.js' );
+	require( './clickTracking/mobile.js' );
 } else if ( skin === 'vector-2022' || skin === 'vector' ) {
 	require( './searchSatisfaction.js' );
-	require( './desktopWebUIActions.js' );
+	require( './clickTracking/desktop.js' );
 	require( './universalLanguageSelector.js' );
 	require( './webUIScroll.js' );
 } else {

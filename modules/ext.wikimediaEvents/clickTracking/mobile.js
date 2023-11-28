@@ -4,10 +4,10 @@
  * Launch task: https://phabricator.wikimedia.org/T220016
  * Schema: https://schema.wikimedia.org/#!/secondary/jsonschema/analytics/legacy/mobilewebuiactionstracking
  */
-const moduleConfig = require( './config.json' );
+const moduleConfig = require( '../config.json' );
 const sampleSize = moduleConfig.mobileWebUIActionsTracking || 0;
 // Require common web fragments from webAccessibilitySettings.js
-const webA11ySettings = require( './webAccessibilitySettings.js' );
+const webA11ySettings = require( '../webAccessibilitySettings.js' );
 /**
  * Helper function to build comma-separated list of all enabled mobile modes
  *

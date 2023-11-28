@@ -116,6 +116,7 @@
 				"phpEngine.js",
 				"blockedEdit.js",
 				"networkProbe.js",
+				"clickTracking/utils.js",
 				{
 					"name": "searchSatisfaction.js",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
@@ -127,14 +128,14 @@
 					"callbackParam": "searchSli"
 				},
 				{
-					"name": "desktopWebUIActions.js",
+					"name": "clickTracking/desktop.js",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
-					"callbackParam": "desktopWebUIActions"
+					"callbackParam": "clickTracking/desktop"
 				},
 				{
-					"name": "mobileWebUIActions.js",
+					"name": "clickTracking/mobile.js",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
-					"callbackParam": "mobileWebUIActions"
+					"callbackParam": "clickTracking/mobile"
 				},
 				{
 					"name": "universalLanguageSelector.js",
@@ -223,6 +224,7 @@
 		"localBasePath": "tests/qunit/ext.wikimediaEvents/",
 		"remoteExtPath": "WikimediaEvents/tests/qunit/ext.wikimediaEvents/",
 		"scripts": [
+			"clickTracking.test.js",
 			"clientError.test.js"
 		],
 		"dependencies": [
