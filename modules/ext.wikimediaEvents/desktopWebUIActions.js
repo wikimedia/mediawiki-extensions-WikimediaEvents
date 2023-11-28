@@ -185,8 +185,14 @@ function getMenuLinkEventName( $target ) {
 	}
 }
 
-// Retrieves an array of skin-specific JavaScript dependencies based on the
-// current skin selected in the MediaWiki instance.
+/**
+ * Retrieves an array of skin-specific JavaScript dependencies based on the
+ * current skin selected in the MediaWiki instance.
+ *
+ * @ignore
+ *
+ * @return {string[]}
+ */
 function getSkinDependencies() {
 	const skin = mw.config.get( 'skin' );
 	if ( skin === 'vector-2022' ) {
@@ -196,13 +202,33 @@ function getSkinDependencies() {
 	}
 }
 
-// If the popups state is not 'registered', it adds 'ext.popups.main' to the list of dependencies
-// and returns the list of dependencies.
+/**
+ * Gets the list of JavaScript dependencies for the instrument.
+ *
+ * If the Popups extension is loaded and the 'ext.popups.main' ResourceLoader module is being
+ * loaded, is loaded or ready, then the module is added to the list of dependencies.
+ *
+ * @see getSkinDependencies
+ *
+ * @ignore
+ *
+ * @return {string[]}
+ */
 function getInstrumentationDependencies() {
+	const dependencies = getSkinDependencies();
+
 	// Check popups state.
 	const popupsState = mw.loader.getState( 'ext.popups.main' );
-	const dependencies = getSkinDependencies();
-	if ( popupsState !== 'registered' ) {
+
+	if (
+
+		// mw.loader.getState() returns null if the module isn't known to the ResourceLoader but
+		// is documented as returning 'missing'.
+		popupsState &&
+
+		popupsState !== 'registered' &&
+		popupsState !== 'error'
+	) {
 		return dependencies.concat( [ 'ext.popups.main' ] );
 	}
 	return dependencies;
