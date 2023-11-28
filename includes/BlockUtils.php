@@ -9,7 +9,6 @@ use MediaWiki\Title\Title;
 use Message;
 use RequestContext;
 use User;
-use Wikimedia\IPUtils;
 
 class BlockUtils {
 	// Possible block error keys from Block\BlockErrorFormatter::getBlockErrorMessageKey()
@@ -125,14 +124,6 @@ class BlockUtils {
 		if ( $geoip ) {
 			$components = explode( ':', $geoip );
 			$country = $components[0];
-		}
-		// If no country was found yet, try to do GeoIP lookup
-		// Requires php5-geoip package
-		if ( !$country && function_exists( 'geoip_country_code_by_name' ) ) {
-			$ip = $request->getIP();
-			if ( IPUtils::isValid( $ip ) ) {
-				$country = geoip_country_code_by_name( $ip );
-			}
 		}
 		return $country;
 	}
