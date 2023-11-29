@@ -71,7 +71,11 @@ const onClickTrack = function ( logEvent ) {
 		const $target = $( event.target );
 		const $closest = $target.closest( '[data-event-name]' );
 		if ( $closest.length ) {
-			logEvent( 'click', $closest.attr( 'data-event-name' ) );
+			// T352075
+			// Click tracking of this kind is restricted to certain types of elements to avoid duplicate events.
+			if ( [ 'A', 'BUTTON', 'INPUT' ].indexOf( $closest[ 0 ].tagName ) > -1 ) {
+				logEvent( 'click', $closest.attr( 'data-event-name' ) );
+			}
 		} else {
 			const eventName = getMenuLinkEventName( $target );
 			if ( eventName ) {
