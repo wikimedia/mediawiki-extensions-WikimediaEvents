@@ -54,6 +54,21 @@ function logEvent( action, name, destination ) {
 	);
 
 	mw.track( 'event.MobileWebUIActionsTracking', webA11ySettingsEvent );
+
+	// Prepare data to log event via Metrics Platform (T351298)
+	const metricsPlatformData = webA11ySettings();
+	/* eslint-disable camelcase */
+	metricsPlatformData.action_context = modes;
+	metricsPlatformData.action_source = name;
+	/* eslint-enable camelcase */
+
+	// Log event via Metrics Platform (T351298)
+	mw.eventLog.submitInteraction(
+		'mediawiki.web_ui_actions',
+		'/analytics/mediawiki/product_metrics/web_ui_actions/1.0.0',
+		action,
+		metricsPlatformData
+	);
 }
 
 if ( !mw.eventLog.eventInSample( 1 / sampleSize ) ) {
