@@ -159,18 +159,6 @@
 				"mediawiki.visibleTimeout"
 			]
 		},
-		"ext.wikimediaEvents.specialPages": {
-			"localBasePath": "modules/ext.wikimediaEvents.specialPages",
-			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.specialPages",
-			"packageFiles": [
-				"index.js",
-				"specialDiff.js",
-				"specialMobileDiff.js"
-			],
-			"dependencies": [
-				"ext.eventLogging"
-			]
-		},
 		"ext.wikimediaEvents.wikibase": {
 			"localBasePath": "modules/ext.wikimediaEvents.wikibase",
 			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.wikibase",
