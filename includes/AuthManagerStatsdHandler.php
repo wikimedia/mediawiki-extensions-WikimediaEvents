@@ -25,7 +25,6 @@
 namespace WikimediaEvents;
 
 use MediaWiki\MediaWikiServices;
-use MediaWiki\WikiMap\WikiMap;
 use Monolog\Handler\AbstractHandler;
 
 /**
@@ -42,7 +41,7 @@ use Monolog\Handler\AbstractHandler;
  * Will result in a ping to a graphite key that looks like
  * <MediaWiki root>.authmanager.<event>.<type>.<entrypoint>.[success|failure].<status>
  * Some segments will be omitted when the appropriate data is not present.
- * <entrypoint> is 'web' or 'centrallogin' or 'api' and filled automatically.
+ * <entrypoint> is 'web' or 'api' and filled automatically.
  *
  * Used to alert on sudden, unexplained changes in e.g. the number of login
  * errors.
@@ -95,11 +94,7 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 	 * @return string
 	 */
 	protected function getEntryPoint() {
-		$entrypoint = defined( 'MW_API' ) ? 'api' : 'web';
-		if ( $entrypoint === 'web' && WikiMap::getCurrentWikiId() === 'loginwiki' ) {
-			$entrypoint = 'centrallogin';
-		}
-		return $entrypoint;
+		return defined( 'MW_API' ) ? 'api' : 'web';
 	}
 
 	/**
