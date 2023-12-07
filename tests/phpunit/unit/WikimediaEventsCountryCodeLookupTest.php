@@ -75,19 +75,16 @@ class WikimediaEventsCountryCodeLookupTest extends MediaWikiUnitTestCase {
 				'DE',
 				'DE',
 				'127.0.0.1',
-				null,
 			],
 			'Invalid IP' => [
 				null,
 				null,
 				'foo',
-				null,
 			],
 			'Return unknown instead of null if isoCode is null on country record' => [
 				null,
 				null,
 				'127.0.0.1',
-				null,
 			]
 		];
 	}
