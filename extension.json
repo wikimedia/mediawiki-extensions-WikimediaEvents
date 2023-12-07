@@ -312,6 +312,10 @@
 		"WMENewPHPSamplingRate": {
 			"value": 0,
 			"description": "The sampling rate of all users we want to direct to the new PHP version."
+		},
+		"WMEGeoIP2Path": {
+			"value": "/usr/share/GeoIP/GeoIP2-Country.mmdb",
+			"description": "The path to the GeoIP2 country database file. For Wikimedia production, suggested value is '/usr/share/GeoIP/GeoIP2-Country.mmdb'. Null means that we make no attempt to use GeoIP2 to look up country codes for an IP address."
 		}
 	},
 	"ServiceWiringFiles": [

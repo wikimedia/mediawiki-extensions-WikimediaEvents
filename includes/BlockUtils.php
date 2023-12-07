@@ -71,7 +71,6 @@ class BlockUtils {
 		// somewhat arbitrary, but is consistent with account creation block
 		// logging.
 		$local = MediaWikiServices::getInstance()->getPermissionManager()->isBlockedFrom( $user, $title, false );
-		$block = null;
 		if ( $local ) {
 			$block = $user->getBlock();
 		} else {
@@ -88,6 +87,17 @@ class BlockUtils {
 		} else {
 			$expiry = wfTimestamp( TS_ISO_8601, $rawExpiry );
 		}
+
+		$request = RequestContext::getMain()->getRequest();
+		// Avoid accessing the service and its dependencies if we can by checking
+		// first if we can get the country code from the GeoIP cookie.
+		$countryCode = WikimediaEventsCountryCodeLookup::getFromCookie( $request );
+		if ( !$countryCode ) {
+			/** @var WikimediaEventsCountryCodeLookup $countryCodeLookup */
+			$countryCodeLookup = MediaWikiServices::getInstance()->get( 'WikimediaEventsCountryCodeLookup' );
+			$countryCode = $countryCodeLookup->getFromGeoIP( $request );
+		}
+
 		$event = [
 			'$schema' => '/analytics/mediawiki/editattemptsblocked/1.0.0',
 			'block_id' => json_encode( $block->getIdentifier() ),
@@ -97,7 +107,7 @@ class BlockUtils {
 			'block_scope' => $local ? 'local' : 'global',
 			'platform' => $platform,
 			'interface' => $interface,
-			'country_code' => self::getCountryCode() ?: 'Unknown',
+			'country_code' => WikimediaEventsCountryCodeLookup::getCountryCodeFormattedForEvent( $countryCode ),
 			// http.client_ip is handled by eventgate-wikimedia
 			'database' => $wgDBname,
 			'page_id' => $title->getId(),
@@ -109,23 +119,6 @@ class BlockUtils {
 			],
 		];
 		EventLogging::submit( 'mediawiki.editattempt_block', $event );
-	}
-
-	/**
-	 * Determine the current country via geoip if available
-	 *
-	 * @return string|false
-	 */
-	private static function getCountryCode() {
-		$request = RequestContext::getMain()->getRequest();
-		$country = false;
-		// Use the GeoIP cookie if available.
-		$geoip = $request->getCookie( 'GeoIP', '' );
-		if ( $geoip ) {
-			$components = explode( ':', $geoip );
-			$country = $components[0];
-		}
-		return $country;
 	}
 
 }
