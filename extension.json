@@ -321,5 +321,6 @@
 	"ServiceWiringFiles": [
 		"includes/ServiceWiring.php"
 	],
-	"manifest_version": 2
+	"manifest_version": 2,
+	"load_composer_autoloader": true
 }
