@@ -212,48 +212,6 @@ function inSample( samplingRate ) {
 }
 
 /**
- * Log the equivalent of an EditAttemptStep event via
- * [the Metrics Platform](https://wikitech.wikimedia.org/wiki/Metrics_Platform).
- *
- * See https://phabricator.wikimedia.org/T309013.
- *
- * @param {Object} data
- * @param {string} actionPrefix
- */
-function logEditViaMetricsPlatform( data, actionPrefix ) {
-	let prefix;
-	if ( session.integration === 'discussiontools' ) {
-		prefix = 'eas.dt.';
-	} else if ( session.platform === 'phone' && session.integration === 'page' ) {
-		prefix = 'eas.mf.';
-	} else if ( session.editor_interface === 'visualeditor' || session.editor_interface === 'wikitext-2017' ) {
-		prefix = 'eas.ve.';
-	} else {
-		prefix = 'eas.wt.';
-	}
-	const eventName = prefix + actionPrefix;
-
-	const customData = $.extend( {}, data );
-
-	// Provided in eventName instead
-	delete customData.action;
-
-	// Sampling rate (and therefore whether a stream should oversample) is captured in the
-	// stream config ($wgEventStreams).
-	delete customData.is_oversample;
-
-	// Platform can be derived from the agent_client_platform_family context attribute mixed in
-	// by the JavaScript Metrics Platform Client. The context attribute will be
-	// "desktop_browser" or "mobile_browser" depending on whether the MobileFrontend extension
-	// has signalled that it is enabled.
-	// (T249944 may someday require changing this, if 'platform' property is changed so that
-	// it isn't simply based on `mw.config.get( 'wgMFMode' )`.)
-	delete customData.platform;
-
-	mw.eventLog.dispatch( eventName, customData );
-}
-
-/**
  * Edit schema
  * https://meta.wikimedia.org/wiki/Schema:EditAttemptStep
  */
@@ -397,9 +355,6 @@ function editAttemptStepHandler( topic, data ) {
 		log( topic + '.' + data.action, duration + 'ms', data, schemaEditAttemptStep.defaults );
 	} else {
 		schemaEditAttemptStep.log( data, easOversample ? 1 : easSampleRate );
-
-		// T309013: Also log via the Metrics Platform:
-		logEditViaMetricsPlatform( data, actionPrefix );
 	}
 }
 
