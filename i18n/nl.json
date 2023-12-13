@@ -5,8 +5,13 @@
 			"Mainframe98",
 			"Romaine",
 			"Siebrand",
-			"Sjoerddebruin"
+			"Sjoerddebruin",
+			"McDutchie"
 		]
 	},
-	"wikimediaevents-desc": "Logboeken voor Wikimediaspecifieke gebeurtenissen die EventLogging gebruiken"
+	"wikimediaevents-desc": "Logboeken voor Wikimediaspecifieke gebeurtenissen die EventLogging gebruiken",
+	"apihelp-wikimediaeventsblockededit-summary": "Informatie loggen over geblokkeerde bewerkingspogingen",
+	"apihelp-wikimediaeventsblockededit-param-page": "Een pagina waarop een bewerkingspoging is gedaan",
+	"apihelp-wikimediaeventsblockededit-param-interface": "De interface die werd gebruikt om te bewerken",
+	"apihelp-wikimediaeventsblockededit-param-platform": "Het platform dat werd gebruikt om te bewerken"
 }
