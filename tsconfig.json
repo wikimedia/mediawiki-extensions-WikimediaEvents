@@ -1,5 +1,6 @@
 {
 	"include": [
+		"modules/ext.wikimediaEvents/clientError.js",
 		"modules/index.d.ts"
 	],
 	"compilerOptions": {

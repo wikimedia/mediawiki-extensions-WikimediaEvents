@@ -5,7 +5,11 @@
  * Launch task: https://phabricator.wikimedia.org/T235189
  */
 /* eslint-disable max-len */
-const moduleConfig = require( './config.json' );
+/**
+ * @typedef ModuleConfig
+ * @property {string} clientErrorIntakeURL
+ */
+const moduleConfig = /** @type {ModuleConfig} */ require( /** @type {string} */ ( './config.json' ) );
 // Only log up to this many errors per page (T259371)
 const errorLimit = 5;
 let errorCount = 0;
@@ -135,7 +139,7 @@ function getNormalizedStackTraceLines( str ) {
  * @return {boolean}
  */
 function shouldIgnoreMessage( message ) {
-	return message && [
+	return !!( message ) && [
 		// Users unintentionally sometimes, directly or indirectly, end up running multiple scripts
 		// that try to load a gadget from another site by the same name. This can cause an error if
 		// those uncoordinated attempts overlap. The error is harmless to the user as both copies are
@@ -193,9 +197,18 @@ function shouldIgnoreFileUrl( fileUrl ) {
 }
 
 /**
+ * See https://github.com/wikimedia/typescript-types/issues/48.
+ *
+ * @typedef UnprocessedErrorObject
+ * @property {string|undefined} url?
+ * @property {string} errorMessage?
+ * @property {Error} errorObject?
+ */
+
+/**
  * Parses out an error descriptor from the error's stack trace.
  *
- * @param {Error|Mixed} error The error that was caught. In theory an Error object, but it's
+ * @param {Error|UnprocessedErrorObject|null} error The error that was caught. In theory an Error object, but it's
  *   not strictly impossible for something else to end up here.
  * @return {ErrorDescriptor?} If the error can be parsed, then an `ErrorDescriptor` object;
  *  otherwise, `null`
@@ -234,6 +247,7 @@ function processErrorInstance( error ) {
 	const fileUrl = fileUrlParts.slice( 0, -2 ).join( ':' );
 
 	return {
+		// @ts-ignore https://github.com/microsoft/TypeScript/issues/3841
 		errorClass: error.constructor.name,
 		errorMessage: error.message,
 		fileUrl: fileUrl,
@@ -255,7 +269,7 @@ function normalizeErrorMessage( message ) {
 }
 
 /**
- * @param {Object|null|undefined} [errorLoggerObject]
+ * @param {UnprocessedErrorObject|null|undefined} [errorLoggerObject]
  * @return {ErrorDescriptor|null}
  */
 function processErrorLoggerObject( errorLoggerObject ) {
@@ -269,6 +283,7 @@ function processErrorLoggerObject( errorLoggerObject ) {
 		'';
 
 	return {
+		// @ts-ignore https://github.com/microsoft/TypeScript/issues/3841
 		errorClass: ( errorObject && errorObject.constructor.name ) || '',
 		errorMessage: normalizeErrorMessage( errorLoggerObject.errorMessage ),
 		// file url may not be defined given cached scripts run from localStorage.
@@ -282,14 +297,10 @@ function processErrorLoggerObject( errorLoggerObject ) {
 /**
  * Gets whether or not the error, described by an `ErrorDescriptor` object, should be logged.
  *
- * @param {ErrorDescriptor|null} descriptor
+ * @param {ErrorDescriptor} descriptor
  * @return {boolean}
  */
 function shouldLog( descriptor ) {
-	if ( !descriptor ) {
-		return false;
-	}
-
 	if ( descriptor.fileUrl === 'undefined' && descriptor.errorMessage === 'Script error.' ) {
 		// ScriptErrors do not have stack traces and are inactionable without file uri.
 		// See T266517#6906587 for more background.
@@ -353,6 +364,20 @@ function shouldLog( descriptor ) {
 }
 
 /**
+ * @typedef ErrorContext
+ * @property {string} [special_page]
+ * @property {string} [gadgets]
+ * @property {string} component
+ * @property {string} wiki
+ * @property {string} version
+ * @property {string} skin
+ * @property {string} action
+ * @property {string} is_logged_in
+ * @property {string} namespace
+ * @property {string} debug
+ * @property {string} banner_shown
+ */
+/**
  * Log the error to the "mediawiki.client.error" stream on the specified EventGate instance.
  *
  * @param {string} intakeURL The URL of the EventGate instance
@@ -374,7 +399,14 @@ function log( intakeURL, descriptor, component ) {
 		protocol + '//' + host + mw.util.getUrl( 'Special:' + canonicalName ) + search + hash :
 		location.href;
 
+	/**
+	 * @typedef {Object} CentralNotice
+	 * @property {Function?} isBannerShown
+	 */
+	// @ts-ignore https://github.com/wikimedia/typescript-types/issues/46
+	const centralNotice = /** @type {CentralNotice} */ ( mw.centralNotice );
 	// Extra data that can be specified as-needed. Note that the values must always be strings.
+	/** @type ErrorContext */
 	const errorContext = {
 		component: component || 'unknown',
 		wiki: mw.config.get( 'wgWikiID', '' ),
@@ -387,18 +419,19 @@ function log( intakeURL, descriptor, component ) {
 		// T265096 - record when a banner was shown. Might be a hint to catch errors originating
 		// in banner code, which is otherwise difficult to diagnose.
 		banner_shown: String( (
-			mw.centralNotice &&
+			centralNotice &&
 			// T319498: mw.centralNotice.isBannerShown might or might not exist
-			mw.centralNotice.isBannerShown &&
-			mw.centralNotice.isBannerShown()
+			centralNotice.isBannerShown &&
+			centralNotice.isBannerShown()
 		) || false )
 	};
 	if ( canonicalName ) {
 		errorContext.special_page = canonicalName;
 	}
+	// @ts-ignore https://github.com/wikimedia/typescript-types/issues/47
 	gadgets = mw.loader.getModuleNames().filter( function ( module ) {
 		return module.match( /^ext\.gadget\./ ) && mw.loader.getState( module ) !== 'registered';
-	} ).map( function ( module ) {
+	} ).map( function ( /** @type string */ module ) {
 		return module.replace( /^ext\.gadget\./, '' );
 	} ).join( ',' );
 	if ( gadgets ) {
@@ -446,9 +479,9 @@ function install( intakeURL ) {
 		}
 
 		const component = topic.replace( /^error\./, '' );
-		const descriptor = processErrorInstance( error );
+		const descriptor = processErrorInstance( /** @type UnprocessedErrorObject */ ( error ) );
 
-		if ( shouldLog( descriptor ) ) {
+		if ( descriptor && shouldLog( descriptor ) ) {
 			log( intakeURL, descriptor, component );
 		}
 	} );
@@ -461,9 +494,9 @@ function install( intakeURL ) {
 	// window.onerror events and producing equivalent messages to
 	// the 'global.error' topic.
 	mw.trackSubscribe( 'global.error', function ( _, obj ) {
-		const descriptor = processErrorLoggerObject( obj );
+		const descriptor = processErrorLoggerObject( /** @type UnprocessedErrorObject */ ( obj ) );
 
-		if ( shouldLog( descriptor ) ) {
+		if ( descriptor && shouldLog( descriptor ) ) {
 			log( intakeURL, descriptor );
 		}
 	} );
@@ -471,14 +504,16 @@ function install( intakeURL ) {
 
 // Functionally this file is self-contained, but export some methods for testing.
 module.exports = {
-	getNormalizedStackTraceLines: getNormalizedStackTraceLines,
-	processErrorInstance: processErrorInstance,
-	processErrorLoggerObject: processErrorLoggerObject,
-	log: log
+	getNormalizedStackTraceLines,
+	processErrorInstance,
+	processErrorLoggerObject,
+	log
 };
 
-if ( !window.QUnit &&
-	navigator.sendBeacon &&
+if (
+	// @ts-ignore
+	!window.QUnit &&
+	navigator.sendBeacon !== undefined &&
 	moduleConfig.clientErrorIntakeURL
 ) {
 	// Only install the logger if:
