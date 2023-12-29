@@ -2,7 +2,7 @@
 
 namespace WikimediaEvents\PageSplitter;
 
-use Config;
+use MediaWiki\Config\Config;
 
 /**
  * Hooks used for PageSplitter-related logging

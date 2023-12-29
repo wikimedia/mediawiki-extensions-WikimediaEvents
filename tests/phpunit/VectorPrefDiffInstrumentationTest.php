@@ -3,9 +3,9 @@
 namespace WikimediaEvents\Tests;
 
 use HTMLForm;
+use MediaWiki\User\User;
 use MediaWiki\User\UserEditTracker;
 use MediaWikiIntegrationTestCase;
-use User;
 use Wikimedia\TestingAccessWrapper;
 use WikimediaEvents\VectorPrefDiffInstrumentation;
 

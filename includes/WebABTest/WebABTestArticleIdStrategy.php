@@ -2,8 +2,8 @@
 
 namespace WikimediaEvents\WebABTest;
 
+use MediaWiki\Request\WebRequest;
 use MediaWiki\Title\Title;
-use WebRequest;
 use WikimediaEvents\PageSplitter\PageHashGenerate;
 use WikimediaEvents\PageSplitter\PageSplitterInstrumentation;
 

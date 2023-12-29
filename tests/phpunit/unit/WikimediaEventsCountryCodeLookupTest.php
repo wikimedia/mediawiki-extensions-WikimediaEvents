@@ -4,8 +4,8 @@ namespace WikimediaEvents\Tests\Unit;
 
 use GeoIp2\Database\Reader;
 use GeoIp2\Model\Country;
+use MediaWiki\Request\WebRequest;
 use MediaWikiUnitTestCase;
-use WebRequest;
 use WikimediaEvents\WikimediaEventsCountryCodeLookup;
 
 /**

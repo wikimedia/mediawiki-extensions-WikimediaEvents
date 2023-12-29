@@ -6,14 +6,14 @@ use ExtensionRegistry;
 use FormatJson;
 use MediaWiki\Extension\BetaFeatures\BetaFeatures;
 use MediaWiki\Extension\EventLogging\EventLogging;
+use MediaWiki\Extension\EventLogging\Libs\UserBucketProvider\UserBucketProvider;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\User\Options\Hook\SaveUserOptionsHook;
 use MediaWiki\User\UserIdentity;
-use MWTimestamp;
+use MediaWiki\Utils\MWTimestamp;
 use RequestContext;
 use RuntimeException;
-use UserBucketProvider;
 
 /**
  * Hooks and helper functions used for Wikimedia-related logging of user preference updates.

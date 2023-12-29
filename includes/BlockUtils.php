@@ -6,9 +6,9 @@ use MediaWiki\Block\Block;
 use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Title\Title;
+use MediaWiki\User\User;
 use Message;
 use RequestContext;
-use User;
 
 class BlockUtils {
 	// Possible block error keys from Block\BlockErrorFormatter::getBlockErrorMessageKey()

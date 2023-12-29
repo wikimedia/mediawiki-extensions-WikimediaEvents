@@ -4,11 +4,11 @@ namespace WikimediaEvents;
 
 use HTMLForm;
 use MediaWiki\Extension\EventLogging\EventLogging;
+use MediaWiki\Extension\EventLogging\Libs\UserBucketProvider\UserBucketProvider;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Preferences\Hook\PreferencesFormPreSaveHook;
+use MediaWiki\User\User;
 use MWCryptHash;
-use User;
-use UserBucketProvider;
 
 // T261842: The Web team is interested in all skin changes involving Vector
 // legacy and Vector latest.

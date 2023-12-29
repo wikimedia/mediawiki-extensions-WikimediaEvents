@@ -2,8 +2,8 @@
 
 namespace WikimediaEvents\Tests;
 
+use MediaWiki\User\User;
 use MediaWiki\User\UserEditTracker;
-use User;
 use Wikimedia\TestingAccessWrapper;
 use WikimediaEvents\PrefUpdateInstrumentation;
 
