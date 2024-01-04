@@ -231,7 +231,7 @@ class PrefUpdateInstrumentation implements SaveUserOptionsHook {
 			// Encode value as JSON.
 			// This is parseable and allows a consistent type for validation.
 			'value' => FormatJson::encode( $trackedValue ),
-			'isDefault' => $userOptionsLookup->getDefaultOption( $optName ) == $optValue,
+			'isDefault' => $userOptionsLookup->getDefaultOption( $optName, $user ) == $optValue,
 			'bucketedUserEditCount' => UserBucketProvider::getUserEditCountBucket( $user ),
 		];
 	}
