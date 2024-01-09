@@ -1,0 +1,16 @@
+{
+	"include": [
+		"modules/index.d.ts"
+	],
+	"compilerOptions": {
+		"strict": true,
+		"allowJs": true,
+		"checkJs": true,
+		"noEmit": true,
+		"skipLibCheck": true,
+		"resolveJsonModule": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true
+	}
+}
