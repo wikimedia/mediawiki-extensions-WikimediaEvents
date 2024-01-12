@@ -157,10 +157,6 @@
 				"mediawiki.experiments",
 				"mediawiki.storage",
 				"mediawiki.visibleTimeout"
-			],
-			"targets": [
-				"desktop",
-				"mobile"
 			]
 		},
 		"ext.wikimediaEvents.specialPages": {
@@ -174,10 +170,6 @@
 			],
 			"dependencies": [
 				"ext.eventLogging"
-			],
-			"targets": [
-				"desktop",
-				"mobile"
 			]
 		},
 		"ext.wikimediaEvents.wikibase": {
@@ -196,10 +188,6 @@
 				"ext.eventLogging",
 				"mediawiki.user",
 				"mediawiki.experiments"
-			],
-			"targets": [
-				"desktop",
-				"mobile"
 			]
 		},
 		"ext.wikimediaEvents.networkprobe": {
