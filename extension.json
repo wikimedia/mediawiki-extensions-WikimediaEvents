@@ -160,7 +160,6 @@
 			]
 		},
 		"ext.wikimediaEvents.specialPages": {
-			"es6": true,
 			"localBasePath": "modules/ext.wikimediaEvents.specialPages",
 			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.specialPages",
 			"packageFiles": [
