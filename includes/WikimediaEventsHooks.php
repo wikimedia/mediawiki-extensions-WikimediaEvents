@@ -142,7 +142,6 @@ class WikimediaEventsHooks implements
 		$request = RequestContext::getMain()->getRequest();
 		$services = MediaWikiServices::getInstance();
 		$nsInfo = $services->getNamespaceInfo();
-		$stats = $services->getStatsdDataFactory();
 		$permMgr = $services->getPermissionManager();
 
 		$user = User::newFromIdentity( $userIdentity );
@@ -188,24 +187,44 @@ class WikimediaEventsHooks implements
 		$size = $content->getSize();
 
 		DeferredUpdates::addCallableUpdate(
-			static function () use ( $stats, $size, $nsType, $accType, $entry, $edit ) {
-				$timing = RequestContext::getMain()->getTiming();
-				$measure = $timing->measure(
+			static function () use ( $size, $nsType, $accType, $entry, $edit ) {
+				$reqCtxTiming = RequestContext::getMain()->getTiming();
+
+				$measure = $reqCtxTiming->measure(
 					'editResponseTime', 'requestStart', 'requestShutdown' );
 				if ( $measure === false ) {
 					return;
 				}
 
 				$timeMs = $measure['duration'] * 1000;
-				$stats->timing( "timing.{$edit}ResponseTime", $timeMs );
-				$stats->timing( "timing.{$edit}ResponseTime.page.$nsType", $timeMs );
-				$stats->timing( "timing.{$edit}ResponseTime.user.$accType", $timeMs );
-				$stats->timing( "timing.{$edit}ResponseTime.entry.$entry", $timeMs );
+
+				$statsFactory = MediaWikiServices::getInstance()->getStatsFactory()
+					->withComponent( 'WikimediaEvents' );
+				$metric = ( $edit === 'nullEdit' ) ?
+					'nullEditResponseTime_seconds' : 'editResponseTime_seconds';
+
+				$statsFactory->getTiming( $metric )
+					->setLabel( 'page', $nsType )
+					->setLabel( 'user', $accType )
+					->setLabel( 'entry', $entry )
+					->copyToStatsdAt( [
+						"timing.{$edit}ResponseTime",
+						"timing.{$edit}ResponseTime.page.$nsType",
+						"timing.{$edit}ResponseTime.user.$accType",
+						"timing.{$edit}ResponseTime.entry.$entry",
+					] )->observe( $timeMs );
+
 				if ( $edit === 'edit' ) {
 					$msPerKb = $timeMs / ( max( $size, 1 ) / 1e3 ); // T224686
-					$stats->timing( "timing.editResponseTimePerKB.page.$nsType", $msPerKb );
-					$stats->timing( "timing.editResponseTimePerKB.user.$accType", $msPerKb );
-					$stats->timing( "timing.editResponseTimePerKB.entry.$entry", $msPerKb );
+					$statsFactory->getTiming( 'editResponseTimePerKB_seconds' )
+						->setLabel( 'page', $nsType )
+						->setLabel( 'user', $accType )
+						->setLabel( 'entry', $entry )
+						->copyToStatsdAt( [
+							"timing.editResponseTimePerKB.page.$nsType",
+							"timing.editResponseTimePerKB.user.$accType",
+							"timing.editResponseTimePerKB.entry.$entry",
+						] )->observe( $msPerKb );
 				}
 			}
 		);
