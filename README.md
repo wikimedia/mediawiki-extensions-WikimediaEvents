@@ -21,6 +21,22 @@ instrument. This expectation is enforced by the [OwnersStructureTest PHPUnit
 test](./tests/phpunit/OwnersStructureTest.php), which will fail if the files that make up the
 instrument aren't listed alongside contact details for you and/or your team and a description of it.
 
+## Type Checking
+
+As of [I63943fe97730953035a658f967a3d90cea9525a4](https://gerrit.wikimedia.org/r/q/I63943fe97730953035a658f967a3d90cea9525a4),
+you can opt in to using TypeScript to type check your instrument during CI. To do so, add the relative path
+to your instrument file(s) to the `"include"` section in [tsconfig.json](./tsconfig.json), e.g.
+
+```json
+{
+  "include": [
+    "./path/to/your/instrument.js",
+
+    "modules/index.d.ts"
+  ]
+}
+```
+
 ## License
 
 WikimediaEvents is distributed under the GNU General Public License, Version 2, or, at your
