@@ -14,9 +14,6 @@ use WikimediaEvents\BlockMetrics\BlockMetricsHooks;
  */
 class BlockMetricsHooksTest extends MediaWikiIntegrationTestCase {
 
-	/** @inheritDoc */
-	protected $tablesUsed = [ 'user', 'ipblocks' ];
-
 	public function testOnPermissionErrorAudit() {
 		$this->markTestSkippedIfExtensionNotLoaded( 'EventBus' );
 
