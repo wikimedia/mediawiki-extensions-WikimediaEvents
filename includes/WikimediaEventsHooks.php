@@ -441,7 +441,6 @@ class WikimediaEventsHooks implements
 			'remoteExtPath' => 'WikimediaEvents/modules',
 			"scripts" => "ext.wikimediaEvents.visualEditor/campaigns.js",
 			"dependencies" => "ext.visualEditor.targetLoader",
-			"targets" => [ "desktop", "mobile" ],
 		] );
 	}
 
