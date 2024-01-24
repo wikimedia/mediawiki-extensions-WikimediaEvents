@@ -104,6 +104,12 @@ class WikimediaEventsHooks implements
 
 				$headerItems['special'] = $name ?? 'unknown';
 			}
+			$revId = $out->getRevisionId();
+			// The revision ID will be positive for page and diff views, as well
+			// as viewing old revisions.
+			if ( $revId > 0 ) {
+				$headerItems['rev_id'] = $revId;
+			}
 		}
 
 		if ( $out->getUser()->isRegistered() ) {
