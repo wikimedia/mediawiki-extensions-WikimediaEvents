@@ -29,7 +29,7 @@ use Monolog\Handler\AbstractHandler;
 
 /**
  * Counts authentication-related log events (those sent to the 'authevents'
- * channel) via StatsD.
+ * channel).
  *
  * Events can include the following data in their context:
  *   - 'event': (string, required) the type of the event (e.g. 'login').
@@ -38,10 +38,19 @@ use Monolog\Handler\AbstractHandler;
  *   - 'status': (string) attempt status (such as an error message key).
  *     Will be ignored unless 'successful' is false.
  *
- * Will result in a ping to a graphite key that looks like
+ * Will result in a ping to a statsd counter that looks like
  * <MediaWiki root>.authmanager.<event>.<type>.<entrypoint>.[success|failure].<status>
  * Some segments will be omitted when the appropriate data is not present.
  * <entrypoint> is 'web' or 'api' and filled automatically.
+ *
+ * Generic stats counters will also be incremented, depending on the event:
+ *   - 'authmanager_success_total'
+ *   - 'authmanager_error_total'
+ * With the following labels:
+ *   - 'entrypoint': as described above, 'web' or 'api'
+ *   - 'event': the type of the event
+ *   - 'subtype': (can be 'n/a' if no subtype is found)
+ *   - 'reason': failure reason, set only for errors
  *
  * Used to alert on sudden, unexplained changes in e.g. the number of login
  * errors.
@@ -76,15 +85,28 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 		$keyParts = [ 'authmanager', $event, $type, $entrypoint ];
 		if ( $successful === true ) {
 			$keyParts[] = 'success';
+			$counterName = 'authmanager_success_total';
 		} elseif ( $successful === false ) {
+			$counterName = 'authmanager_error_total';
 			$keyParts[] = 'failure';
 			$keyParts[] = $error;
+		} else {
+			$counterName = 'authmanager_event_total';
 		}
-		$key = implode( '.', array_filter( $keyParts ) );
+		$statsdKey = implode( '.', array_filter( $keyParts ) );
 
 		// use of this class is set up in operations/mediawiki-config so no nice dependency injection
-		$stats = MediaWikiServices::getInstance()->getStatsdDataFactory();
-		$stats->increment( $key );
+		$counter = MediaWikiServices::getInstance()->getStatsFactory()
+			->withComponent( 'WikimediaEvents' )
+			->getCounter( $counterName )
+			->setLabel( 'entrypoint', $entrypoint )
+			->setLabel( 'event', $event )
+			->setLabel( 'subtype', $type ?? 'n/a' );
+		if ( $successful === false ) {
+			$counter->setLabel( 'reason', $error ?: 'n/a' );
+		}
+		$counter->copyToStatsdAt( $statsdKey )
+			->increment();
 
 		// pass to next handler
 		return false;
