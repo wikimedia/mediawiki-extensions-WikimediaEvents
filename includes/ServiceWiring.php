@@ -35,7 +35,7 @@ return [
 	},
 	'WikimediaEventsCountryCodeLookup' => static function (
 		MediaWikiServices $mediaWikiServices
-	): ?WikimediaEventsCountryCodeLookup {
+	): WikimediaEventsCountryCodeLookup {
 		$reader = null;
 		try {
 			$wmeGeoIp2Path = $mediaWikiServices->getMainConfig()->get( 'WMEGeoIP2Path' );
