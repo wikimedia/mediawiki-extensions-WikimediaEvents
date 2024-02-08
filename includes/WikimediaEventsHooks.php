@@ -137,12 +137,19 @@ class WikimediaEventsHooks implements
 			return; // ignore maintenance scripts
 		}
 
+		// Discard null edits from these metrics as they do not produce a
+		// saved an edit to a page, and thus notably differ in code execution.
+		// Note that null edits can still be relatively slow, as they do perform
+		// reparses.
+		if ( $editResult->isNullEdit() ) {
+			return;
+		}
+
 		$title = $wikiPage->getTitle();
 
 		$request = RequestContext::getMain()->getRequest();
 		$services = MediaWikiServices::getInstance();
 		$nsInfo = $services->getNamespaceInfo();
-		$stats = $services->getStatsdDataFactory();
 		$permMgr = $services->getPermissionManager();
 
 		$user = User::newFromIdentity( $userIdentity );
@@ -181,32 +188,44 @@ class WikimediaEventsHooks implements
 			$entry = 'other';
 		}
 
-		// Null edits are both slow (due to user name mismatch reparses) and are
-		// not the focus of this benchmark, which is about actual edits to pages
-		$edit = $editResult->isNullEdit() ? 'nullEdit' : 'edit';
-
 		$size = $content->getSize();
 
 		DeferredUpdates::addCallableUpdate(
-			static function () use ( $stats, $size, $nsType, $accType, $entry, $edit ) {
-				$timing = RequestContext::getMain()->getTiming();
-				$measure = $timing->measure(
+			static function () use ( $size, $nsType, $accType, $entry ) {
+				$reqCtxTiming = RequestContext::getMain()->getTiming();
+
+				$measure = $reqCtxTiming->measure(
 					'editResponseTime', 'requestStart', 'requestShutdown' );
 				if ( $measure === false ) {
 					return;
 				}
 
 				$timeMs = $measure['duration'] * 1000;
-				$stats->timing( "timing.{$edit}ResponseTime", $timeMs );
-				$stats->timing( "timing.{$edit}ResponseTime.page.$nsType", $timeMs );
-				$stats->timing( "timing.{$edit}ResponseTime.user.$accType", $timeMs );
-				$stats->timing( "timing.{$edit}ResponseTime.entry.$entry", $timeMs );
-				if ( $edit === 'edit' ) {
-					$msPerKb = $timeMs / ( max( $size, 1 ) / 1e3 ); // T224686
-					$stats->timing( "timing.editResponseTimePerKB.page.$nsType", $msPerKb );
-					$stats->timing( "timing.editResponseTimePerKB.user.$accType", $msPerKb );
-					$stats->timing( "timing.editResponseTimePerKB.entry.$entry", $msPerKb );
-				}
+
+				$statsFactory = MediaWikiServices::getInstance()->getStatsFactory()
+					->withComponent( 'WikimediaEvents' );
+
+				$statsFactory->getTiming( 'editResponseTime_seconds' )
+					->setLabel( 'page', $nsType )
+					->setLabel( 'user', $accType )
+					->setLabel( 'entry', $entry )
+					->copyToStatsdAt( [
+						"timing.editResponseTime",
+						"timing.editResponseTime.page.$nsType",
+						"timing.editResponseTime.user.$accType",
+						"timing.editResponseTime.entry.$entry",
+					] )->observe( $timeMs );
+
+				$msPerKb = $timeMs / ( max( $size, 1 ) / 1e3 ); // T224686
+				$statsFactory->getTiming( 'editResponseTimePerKB_seconds' )
+					->setLabel( 'page', $nsType )
+					->setLabel( 'user', $accType )
+					->setLabel( 'entry', $entry )
+					->copyToStatsdAt( [
+						"timing.editResponseTimePerKB.page.$nsType",
+						"timing.editResponseTimePerKB.user.$accType",
+						"timing.editResponseTimePerKB.entry.$entry",
+					] )->observe( $msPerKb );
 			}
 		);
 	}
