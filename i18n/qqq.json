@@ -11,5 +11,12 @@
 	"apihelp-wikimediaeventsblockededit-summary": "{{doc-apihelp-summary|wikimediaeventsblockededit}}",
 	"apihelp-wikimediaeventsblockededit-param-page": "{{doc-apihelp-param|wikimediaeventsblockededit|page}}",
 	"apihelp-wikimediaeventsblockededit-param-interface": "{{doc-apihelp-param|wikimediaeventsblockededit|interface}}",
-	"apihelp-wikimediaeventsblockededit-param-platform": "{{doc-apihelp-param|wikimediaeventsblockededit|platform}}"
+	"apihelp-wikimediaeventsblockededit-param-platform": "{{doc-apihelp-param|wikimediaeventsblockededit|platform}}",
+	"wikimediaevents-special-wikimediadebug-desc": "{{doc-special|WikimediaDebug}}",
+	"wikimediaevents-special-wikimediadebug-notenabled": "Error message shown when Special:WikimediaDebug is disabled.",
+	"wikimediaevents-special-wikimediadebug-submit-set": "Button text for setting the WikimediaDebug cookie.\n\nParameters:\n* $1 - the duration of the cookie (e.g. 1 hour)",
+	"wikimediaevents-special-wikimediadebug-submit-renew": "Button text for renewing the WikimediaDebug cookie.\n\nParameters:\n* $1 - the duration of the cookie (e.g. 1 hour)",
+	"wikimediaevents-special-wikimediadebug-submit-clear": "Button text for clearing the WikimediaDebug cookie.",
+	"wikimediaevents-special-wikimediadebug-header-active": "Explanatory text on Special:WikimediaDebug when the WikimediaDebug cookie is already set.\n\nParameters:\n* $1 - the domain on which the cookie will be set",
+	"wikimediaevents-special-wikimediadebug-header-inactive": "Explanatory text on Special:WikimediaDebug when the WikimediaDebug cookie is not set.\n\nParameters:\n* $1 - the domain on which the cookie will be set\n* $2 - cookie expiry time"
 }

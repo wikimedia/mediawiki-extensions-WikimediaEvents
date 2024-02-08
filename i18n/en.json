@@ -8,5 +8,12 @@
 	"apihelp-wikimediaeventsblockededit-summary": "Log information about blocked edit attempts",
 	"apihelp-wikimediaeventsblockededit-param-page": "A page on which an edit attempt was made",
 	"apihelp-wikimediaeventsblockededit-param-interface": "The interface which was used to edit",
-	"apihelp-wikimediaeventsblockededit-param-platform": "The platform which was used to edit"
+	"apihelp-wikimediaeventsblockededit-param-platform": "The platform which was used to edit",
+	"wikimediaevents-special-wikimediadebug-desc": "WikimediaDebug",
+	"wikimediaevents-special-wikimediadebug-notenabled": "This special page is not enabled.",
+	"wikimediaevents-special-wikimediadebug-submit-set": "Activate debug cookie for $1",
+	"wikimediaevents-special-wikimediadebug-submit-renew": "Renew cookie for $1",
+	"wikimediaevents-special-wikimediadebug-submit-clear": "Clear cookie",
+	"wikimediaevents-special-wikimediadebug-header-active": "The [https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] cookie is currently '''enabled''' on <code>$1</code>.\n\nIt expires at $2.\n\nClick on the button to clear it from this device. Note that this will only clear the cookie on this domain - if you activated it on other domains, you have to separately clear it via the special page on those domains (or use your browser's cookie clearing functionality).",
+	"wikimediaevents-special-wikimediadebug-header-inactive": "Click on the button to activate the [https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] cookie on <code>$1</code>.\n\nWhen activated, web requests from your device for this wiki will '''send debug logs containing personal information''' to developers. Please only activate this if you have been asked by a developer. Note that this will result in a slower browsing experience.\n\nIf you are testing cross-domain functionality, remember to also activate the cookie via the special page on the other domain(s) as well."
 }

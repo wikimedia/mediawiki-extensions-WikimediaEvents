@@ -70,10 +70,21 @@
 			"services": []
 		}
 	},
+	"SpecialPages": {
+		"WikimediaDebug": {
+			"class": "WikimediaEvents\\SpecialWikimediaDebug",
+			"services": [
+				"ExtensionRegistry"
+			]
+		}
+	},
 	"MessagesDirs": {
 		"WikimediaEvents": [
 			"i18n"
 		]
+	},
+	"ExtensionMessagesFiles": {
+		"WikimediaEventsAlias": "WikimediaEvents.alias.php"
 	},
 	"attributes": {
 		"EventLogging": {
@@ -279,6 +290,10 @@
 		"WMEPageSchemaSplitTestTreatment": {
 			"value": "treatment",
 			"description": "The name of the bucket where pages see the new treatment. See https://phabricator.wikimedia.org/T301584 and associated tasks for detail."
+		},
+		"WMEWikimediaDebugBackend": {
+			"value": false,
+			"description": "Debug server to use in WikimediaDebug cookies (false to disable the feature)."
 		},
 		"WMENewPHPVersion": {
 			"value": "",
