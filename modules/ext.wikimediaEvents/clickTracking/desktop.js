@@ -55,7 +55,6 @@ function getUserViewportBucket() {
 }
 
 /**
- *
  * @param {string} action of event either `init` or `click`
  * @param {string} [name]
  */

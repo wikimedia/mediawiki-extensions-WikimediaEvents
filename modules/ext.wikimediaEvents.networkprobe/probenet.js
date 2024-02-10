@@ -328,7 +328,7 @@ class Probenet {
 	// WikimediaEvents specific implementation of generateIdentifier
 	generateIdentifier( target, pulse_number ) {
 		const token = mw.user.getPageviewToken();
-		const identifier = `${token}_${target}_${pulse_number}`;
+		const identifier = `${ token }_${ target }_${ pulse_number }`;
 		return identifier;
 	}
 

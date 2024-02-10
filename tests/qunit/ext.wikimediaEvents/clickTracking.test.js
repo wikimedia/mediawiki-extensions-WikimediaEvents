@@ -1,5 +1,5 @@
 /* eslint-env qunit */
-/* eslint-disable camelcase */
+
 'use strict';
 
 const desktopWebUIActions = require( 'ext.wikimediaEvents/clickTracking/utils.js' );
