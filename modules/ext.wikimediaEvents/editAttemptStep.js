@@ -187,17 +187,17 @@ function computeDuration( action, event, timeStamp ) {
 }
 
 function addABTestData( data, addToken ) {
-	// DiscussionTools A/B test for logged out users
-	if ( !mw.config.get( 'wgDiscussionToolsABTest' ) ) {
-		return;
-	}
-	if ( mw.config.get( 'wgDiscussionToolsABTestBucket' ) ) {
-		data.bucket = mw.config.get( 'wgDiscussionToolsABTestBucket' );
-	}
-	if ( mw.user.isAnon() && addToken ) {
-		const token = mw.cookie.get( 'DTABid', '' );
-		if ( token ) {
-			data.anonymous_user_token = token;
+	// Edit check a/b test for all users
+	if ( ( mw.config.get( 'wgVisualEditorConfig' ) || {} ).editCheckABTest ) {
+		const bucket = mw.config.get( 'wgVisualEditorEditCheckABTestBucket' );
+		if ( bucket ) {
+			data.bucket = bucket;
+			if ( mw.user.isAnon() && addToken ) {
+				const token = mw.cookie.get( 'VEECid', '' );
+				if ( token ) {
+					data.anonymous_user_token = token;
+				}
+			}
 		}
 	}
 }
