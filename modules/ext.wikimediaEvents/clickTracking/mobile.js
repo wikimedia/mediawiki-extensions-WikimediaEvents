@@ -65,7 +65,7 @@ function logEvent( action, name, destination ) {
 	// Log event via Metrics Platform (T351298)
 	mw.eventLog.submitInteraction(
 		'mediawiki.web_ui_actions',
-		'/analytics/mediawiki/product_metrics/web_ui_actions/1.0.0',
+		'/analytics/mediawiki/product_metrics/web_ui_actions/1.0.1',
 		action,
 		metricsPlatformData
 	);

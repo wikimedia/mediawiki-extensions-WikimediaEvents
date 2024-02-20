@@ -83,6 +83,20 @@ function getPinnedSettings() {
 	}
 }
 
+/**
+ * @return {string} Get dark mode clientpref value
+ */
+function getDarkModeSettings() {
+	return mw.user.clientPrefs.get( 'skin-night-mode' ) || '0';
+}
+
+/**
+ * @return {boolean} Get browser dark mode media status
+ */
+function getDarkModeBrowserMedia() {
+	return window.matchMedia && window.matchMedia( '(prefers-color-scheme: dark)' ).matches;
+}
+
 /* eslint-disable camelcase */
 module.exports = () => ( {
 	font: getFont(),
@@ -90,6 +104,7 @@ module.exports = () => ( {
 	is_page_preview_on: getPagePreviewSettings(),
 	is_pinned: getPinnedSettings(),
 	is_media_viewer_enabled: getMediaViewerSettings(),
-	is_dark_mode_prepared_by_os: window.matchMedia && window.matchMedia( '(prefers-color-scheme: dark)' ).matches,
-	is_dark_mode_on: false
+	is_dark_mode_prepared_by_os: getDarkModeBrowserMedia(),
+	dark_mode_setting: getDarkModeSettings(),
+	is_dark_mode_on: getDarkModeSettings() === '1' || ( getDarkModeBrowserMedia() && getDarkModeSettings() === '2' )
 } );
