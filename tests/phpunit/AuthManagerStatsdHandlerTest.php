@@ -2,8 +2,9 @@
 
 namespace WikimediaEvents\Tests;
 
-use IBufferingStatsdDataFactory;
 use MediaWikiIntegrationTestCase;
+use Wikimedia\Stats\Metrics\CounterMetric;
+use Wikimedia\Stats\StatsFactory;
 use WikimediaEvents\AuthManagerStatsdHandler;
 
 /**
@@ -13,17 +14,30 @@ class AuthManagerStatsdHandlerTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @dataProvider provideHandle
 	 */
-	public function testHandle( $record, $expectedKey ) {
-		$stats = $this->createMock( IBufferingStatsdDataFactory::class );
-		$this->setService( 'StatsdDataFactory', $stats );
-		$handler = $this->getMockBuilder( AuthManagerStatsdHandler::class )
-			->onlyMethods( [ 'getEntryPoint' ] )->getMock();
-		$handler->method( 'getEntryPoint' )->willReturn( null );
+	public function testHandle( $record, $expectedMetric ) {
+		$counter = $this->createMock( CounterMetric::class );
+		$counter->method( 'setLabel' )->willReturnSelf();
+		$counter->method( 'copyToStatsdAt' )->willReturnSelf();
 
-		if ( $expectedKey === null ) {
-			$stats->expects( $this->never() )->method( 'increment' );
+		$stats = $this->createMock( StatsFactory::class );
+		$this->setService( 'StatsFactory', $stats );
+		$stats->method( 'withComponent' )->willReturnSelf();
+		$stats->method( 'getCounter' )->willReturn( $counter );
+
+		$handler = new AuthManagerStatsdHandler();
+
+		if ( $expectedMetric === null ) {
+			$counter->expects( $this->never() )->method( 'increment' );
 		} else {
-			$stats->expects( $this->once() )->method( 'increment' )->with( $expectedKey );
+			list( $metricName, $metricLabels ) = $expectedMetric;
+			$stats->expects( $this->once() )->method( 'getCounter' )->with( $metricName );
+			// Check $metricLabels matches setLabel() arguments and call count
+			$setLabelMock = $counter->expects( $this->exactly( count( $metricLabels ) ) )->method( 'setLabel' );
+			$setLabelMock->will( $this->returnCallback( function ( $key, $value ) use ( $metricLabels ) {
+				$this->assertEquals( $metricLabels[$key], $value, sprintf( "unexpected setLabel(%s, %s) call",
+					var_export( $key, true ), var_export( $value, true ) ) );
+			} ) );
+			$counter->expects( $this->once() )->method( 'increment' );
 		}
 
 		$handler->handle( $record );
@@ -43,11 +57,13 @@ class AuthManagerStatsdHandlerTest extends MediaWikiIntegrationTestCase {
 			'right channel' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate' ],
-			], 'authmanager.autocreate' ],
+			], [ 'authmanager_event_total',
+			   [ 'event' => 'autocreate', 'subtype' => 'n/a', 'entrypoint' => 'web' ] ] ],
 			'other channel' => [ [
 				'channel' => 'captcha',
 				'context' => [ 'event' => 'autocreate' ],
-			], 'authmanager.autocreate' ],
+			], [ 'authmanager_event_total',
+			   [ 'event' => 'autocreate', 'subtype' => 'n/a', 'entrypoint' => 'web' ] ] ],
 			'wrong channel' => [ [
 				'channel' => 'authentication',
 				'context' => [ 'event' => 'autocreate' ],
@@ -56,31 +72,38 @@ class AuthManagerStatsdHandlerTest extends MediaWikiIntegrationTestCase {
 			'simple' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate' ],
-			], 'authmanager.autocreate' ],
+			], [ 'authmanager_event_total',
+			   [ 'event' => 'autocreate', 'subtype' => 'n/a', 'entrypoint' => 'web' ] ] ],
 			'type' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'eventType' => 'session' ],
-			], 'authmanager.autocreate.session' ],
+			], [ 'authmanager_event_total',
+			   [ 'event' => 'autocreate', 'subtype' => 'session', 'entrypoint' => 'web' ] ] ],
 			'type fallback' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'type' => 'session' ],
-			], 'authmanager.autocreate.session' ],
+			], [ 'authmanager_event_total',
+			   [ 'event' => 'autocreate', 'subtype' => 'session', 'entrypoint' => 'web' ] ] ],
 			'success' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'successful' => true ],
-			], 'authmanager.autocreate.success' ],
+			], [ 'authmanager_success_total',
+			   [ 'event' => 'autocreate', 'subtype' => 'n/a', 'entrypoint' => 'web' ] ] ],
 			'failure' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'successful' => false ],
-			], 'authmanager.autocreate.failure' ],
+			], [ 'authmanager_error_total',
+			   [ 'event' => 'autocreate', 'subtype' => 'n/a', 'reason' => 'n/a', 'entrypoint' => 'web' ] ] ],
 			'success with status' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'successful' => true, 'status' => 'snafu' ],
-			], 'authmanager.autocreate.success' ],
+			], [ 'authmanager_success_total',
+			   [ 'event' => 'autocreate', 'subtype' => 'n/a', 'entrypoint' => 'web' ] ] ],
 			'failure with status' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'successful' => false, 'status' => 'snafu' ],
-			], 'authmanager.autocreate.failure.snafu' ],
+			], [ 'authmanager_error_total',
+			   [ 'event' => 'autocreate', 'subtype' => 'n/a', 'reason' => 'snafu', 'entrypoint' => 'web' ] ] ],
 		];
 	}
 }
