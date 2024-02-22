@@ -78,7 +78,7 @@
 	"attributes": {
 		"EventLogging": {
 			"Schemas": {
-				"DesktopWebUIActionsTracking": "/analytics/legacy/desktopwebuiactionstracking/1.4.2",
+				"DesktopWebUIActionsTracking": "/analytics/legacy/desktopwebuiactionstracking/1.4.3",
 				"EditAttemptStep": "/analytics/legacy/editattemptstep/2.0.2",
 				"VisualEditorFeatureUse": "/analytics/legacy/visualeditorfeatureuse/1.1.0",
 				"SearchSatisfaction": "/analytics/legacy/searchsatisfaction/1.4.0",
