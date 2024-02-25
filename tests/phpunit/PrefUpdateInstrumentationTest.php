@@ -112,9 +112,13 @@ class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 
 		// Above we assert the return value (ignoring the log-only error).
 		// Below we assert the logged error.
-		$this->expectError();
-		$this->expectErrorMessage( $error );
-		$prefUpdate->createPrefUpdateEvent( $user, $name, $value, self::MOCK_TIME );
+		$this->expectPHPError(
+			E_USER_WARNING,
+			static function () use ( $prefUpdate, $user, $name, $value ) {
+				$prefUpdate->createPrefUpdateEvent( $user, $name, $value, self::MOCK_TIME );
+			},
+			$error
+		);
 	}
 
 }
