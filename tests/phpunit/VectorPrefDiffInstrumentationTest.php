@@ -35,19 +35,15 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 		$skinVersionField->method( 'getDefault' )->willReturn( $skinVersionDefault );
 
 		$form = $this->createMock( \HTMLForm::class );
-		$form->method( 'hasField' )->will(
-			$this->returnValueMap( [
-				[ 'skin', true ],
-				[ 'VectorSkinVersion', true ]
-			] )
-		);
+		$form->method( 'hasField' )->willReturnMap( [
+			[ 'skin', true ],
+			[ 'VectorSkinVersion', true ]
+		] );
 
-		$form->method( 'getField' )->will(
-			$this->returnValueMap( [
-				[ 'skin', $skinField ],
-				[ 'VectorSkinVersion', $skinVersionField ]
-			] )
-		);
+		$form->method( 'getField' )->willReturnMap( [
+			[ 'skin', $skinField ],
+			[ 'VectorSkinVersion', $skinVersionField ]
+		] );
 
 		return $form;
 	}

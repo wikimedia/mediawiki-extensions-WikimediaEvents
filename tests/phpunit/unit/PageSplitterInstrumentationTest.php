@@ -81,7 +81,7 @@ class PageSplitterInstrumentationTest extends MediaWikiUnitTestCase {
 		];
 		yield [
 			'ratio' => 0.0, 'buckets' => [ 'control', 'treatment' ],
-			'page' => 0.99 , 'sampled' => false, 'bucket' => 'treatment'
+			'page' => 0.99, 'sampled' => false, 'bucket' => 'treatment'
 		];
 
 		// 50% sampling ratio

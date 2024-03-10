@@ -59,30 +59,30 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	public function setUp(): void {
 		$browser = getenv( 'SELENIUM_BROWSER' );
 		switch ( strtolower( $browser ) ) {
-		case 'chrome':
-			// requires driver from http://chromedriver.storage.googleapis.com/
-			$url = 'http://localhost:9515';
-			$cap = DesiredCapabilities::chrome();
-			break;
-		case 'phantomjs':
-			// Runs via selenium-server-standalone jar
-			$url = 'http://localhost:4444/wd/hub';
-			$cap = DesiredCapabilities::phantomjs();
-			break;
-		case 'firefox':
-			// Runs via selenium-server-standalone jar
-			$url = 'http://localhost:4444/wd/hub';
-			$cap = DesiredCapabilities::firefox();
-			break;
-		default:
-			$url = '';
-			$capClass = 'Facebook\WebDriver\Remote\DesiredCapabilities';
-			if ( $browser && method_exists( $capClass, $browser ) ) {
-				$cap = call_user_func( [ $capClass, $browser ] );
-			} else {
-				throw new \RuntimeException(
-					'SELENIUM_BROWSER environment var must be set to a known browser' );
-			}
+			case 'chrome':
+				// requires driver from http://chromedriver.storage.googleapis.com/
+				$url = 'http://localhost:9515';
+				$cap = DesiredCapabilities::chrome();
+				break;
+			case 'phantomjs':
+				// Runs via selenium-server-standalone jar
+				$url = 'http://localhost:4444/wd/hub';
+				$cap = DesiredCapabilities::phantomjs();
+				break;
+			case 'firefox':
+				// Runs via selenium-server-standalone jar
+				$url = 'http://localhost:4444/wd/hub';
+				$cap = DesiredCapabilities::firefox();
+				break;
+			default:
+				$url = '';
+				$capClass = 'Facebook\WebDriver\Remote\DesiredCapabilities';
+				if ( $browser && method_exists( $capClass, $browser ) ) {
+					$cap = call_user_func( [ $capClass, $browser ] );
+				} else {
+					throw new \RuntimeException(
+						'SELENIUM_BROWSER environment var must be set to a known browser' );
+				}
 		}
 		if ( getenv( 'SELENIUM_BROWSER_URL' ) ) {
 			$url = getenv( 'SELENIUM_BROWSER_URL' );

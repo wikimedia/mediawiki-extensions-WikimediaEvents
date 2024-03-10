@@ -14,11 +14,11 @@ class OwnersStructureTest extends \PHPUnit\Framework\TestCase {
 	public static function setUpBeforeClass(): void {
 		// Parse the owners data and store it in an array.
 		$sections = [];
-		$lines = file( __DIR__ . '/../../OWNERS.md',  FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
+		$lines = file( __DIR__ . '/../../OWNERS.md', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
 		$section = null;
 		foreach ( $lines as $line ) {
 			if ( strpos( $line, '* ' ) === 0 ) {
-				list( $label, $value ) = explode( ':', substr( $line, 2 ), 2 );
+				[ $label, $value ] = explode( ':', substr( $line, 2 ), 2 );
 				if ( $label === 'Files' ) {
 					$section[$label] = array_map( 'trim', explode( ',', $value ) );
 				} else {

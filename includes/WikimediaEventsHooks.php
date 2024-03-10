@@ -99,7 +99,7 @@ class WikimediaEventsHooks implements
 				$headerItems['page_id'] = $pageId;
 			}
 			if ( $title->isSpecialPage() ) {
-				list( $name, /* $subpage */ ) = MediaWikiServices::getInstance()->getSpecialPageFactory()
+				[ $name, /* $subpage */ ] = MediaWikiServices::getInstance()->getSpecialPageFactory()
 					->resolveAlias( $title->getDBkey() );
 
 				$headerItems['special'] = $name ?? 'unknown';

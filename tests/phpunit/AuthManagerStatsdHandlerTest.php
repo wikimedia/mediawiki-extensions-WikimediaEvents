@@ -29,14 +29,14 @@ class AuthManagerStatsdHandlerTest extends MediaWikiIntegrationTestCase {
 		if ( $expectedMetric === null ) {
 			$counter->expects( $this->never() )->method( 'increment' );
 		} else {
-			list( $metricName, $metricLabels ) = $expectedMetric;
+			[ $metricName, $metricLabels ] = $expectedMetric;
 			$stats->expects( $this->once() )->method( 'getCounter' )->with( $metricName );
 			// Check $metricLabels matches setLabel() arguments and call count
 			$setLabelMock = $counter->expects( $this->exactly( count( $metricLabels ) ) )->method( 'setLabel' );
-			$setLabelMock->will( $this->returnCallback( function ( $key, $value ) use ( $metricLabels ) {
+			$setLabelMock->willReturnCallback( function ( $key, $value ) use ( $metricLabels ) {
 				$this->assertEquals( $metricLabels[$key], $value, sprintf( "unexpected setLabel(%s, %s) call",
 					var_export( $key, true ), var_export( $value, true ) ) );
-			} ) );
+			} );
 			$counter->expects( $this->once() )->method( 'increment' );
 		}
 
