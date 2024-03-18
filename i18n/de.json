@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Brettchenweber",
 			"Kghbln",
 			"Metalhead64"
 		]
@@ -9,5 +10,12 @@
 	"apihelp-wikimediaeventsblockededit-summary": "Protokollierung von Informationen über blockierte Bearbeitungsversuche",
 	"apihelp-wikimediaeventsblockededit-param-page": "Eine Seite, auf der ein Bearbeitungsversuch unternommen wurde",
 	"apihelp-wikimediaeventsblockededit-param-interface": "Die Schnittstelle, die zum Bearbeiten verwendet wurde",
-	"apihelp-wikimediaeventsblockededit-param-platform": "Die Plattform, die zum Bearbeiten verwendet wurde"
+	"apihelp-wikimediaeventsblockededit-param-platform": "Die Plattform, die zum Bearbeiten verwendet wurde",
+	"wikimediaevents-special-wikimediadebug-desc": "Wikimedia-Debug",
+	"wikimediaevents-special-wikimediadebug-notenabled": "Diese Spezialseite ist nicht aktiviert.",
+	"wikimediaevents-special-wikimediadebug-submit-set": "Debug-Cookie für $1 aktivieren",
+	"wikimediaevents-special-wikimediadebug-submit-renew": "Debug-Cookie für $1 erneuern",
+	"wikimediaevents-special-wikimediadebug-submit-clear": "Cookie löschen",
+	"wikimediaevents-special-wikimediadebug-header-active": "Das [https://wikitech.wikimedia.org/wiki/WikimediaDebug Wikimedia-Debug]-Cookie ist derzeit für <code>$1</code> aktiviert.\n\nEs läuft am $2 ab.\n\nKlicke auf die Schaltfläche, um es auf diesem Gerät zu löschen. Beachte, dass dadurch nur das Cookie auf dieser Domain gelöscht wird. Wenn du es auf anderen Domains aktiviert hast, musst du es separat über die spezielle Seite auf diesen Domains löschen (oder die Cookie-Löschfunktion deines Browsers verwenden).",
+	"wikimediaevents-special-wikimediadebug-header-inactive": "Klicke auf die Schaltfläche, um den [https://wikitech.wikimedia.org/wiki/WikimediaDebug Wikimedia-Debug]-Cookie auf <code>$1</code> zu aktivieren.\n\nWenn er aktiviert ist, werden bei Webanfragen von deinem Gerät für dieses Wiki '''Debug-Protokolle mit persönlichen Informationen''' an Entwickler gesendet. Bitte aktiviere dies nur, wenn du von einem Entwickler dazu aufgefordert wurdest. Beachte, dass sich das Browsen verlangsamen kann.\n\nWenn du domänenübergreifende Funktionen testest, denke daran, das Cookie über die Spezialseite auch auf der/den anderen Domäne(n) zu aktivieren."
 }

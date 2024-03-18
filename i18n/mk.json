@@ -8,5 +8,11 @@
 	"apihelp-wikimediaeventsblockededit-summary": "Заведувај информации во дневникот за блокирани обиди за најава",
 	"apihelp-wikimediaeventsblockededit-param-page": "Страница на која е направен обидот за уредување",
 	"apihelp-wikimediaeventsblockededit-param-interface": "Посредникот употребен при уредувањето",
-	"apihelp-wikimediaeventsblockededit-param-platform": "Подлогата употребен при уредувањето"
+	"apihelp-wikimediaeventsblockededit-param-platform": "Подлогата употребен при уредувањето",
+	"wikimediaevents-special-wikimediadebug-notenabled": "Оваа службена страница не е овозможена.",
+	"wikimediaevents-special-wikimediadebug-submit-set": "Активирај колаче за отстранување грешки за $1",
+	"wikimediaevents-special-wikimediadebug-submit-renew": "Обнови колаче за $1",
+	"wikimediaevents-special-wikimediadebug-submit-clear": "Тргни колаче",
+	"wikimediaevents-special-wikimediadebug-header-active": "Колачето [https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] моментално е '''овозможено''' на <code>$1</code>.\n\nИстекува на $2.\n\nСтиснете на копчето за да го тргнете од овој уред. Имајте на ум дека ова ќе го тргне само од овој домен — ако сте го вклучиле на други домени, ќе треба да го тргнете одделно преку службената страница на тие домени (или послужете се со функцијата за чистење колачиња во вашиот прелистувач).",
+	"wikimediaevents-special-wikimediadebug-header-inactive": "Стиснете на копчето за да го активирате  колачето [https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] на <code>$1</code>.\n\nКога ќе се активира, семрежните барања до вашиот уред за ова вики на разработувачите ќе им '''испратат дневници за отстранување грешки кои содржат лични податоци'''. Активирајте го ова само ако тоа ви е побарано од разработувач. Имајте на ум дека ова ќе ви го забави прелистувачот.\n\nДоколку испробувате прекудоменска функционалност, не забовавајте воедно да го активирате колачето преку службената страница на другите домени."
 }

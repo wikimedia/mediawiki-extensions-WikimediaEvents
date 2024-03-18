@@ -3,6 +3,7 @@
 		"authors": [
 			"AlvaroMolina",
 			"Dgstranz",
+			"Eulalio",
 			"Fitoschido",
 			"Jonathan rrr",
 			"Lemondoge",
@@ -10,5 +11,12 @@
 			"MarcoAurelio"
 		]
 	},
-	"wikimediaevents-desc": "Registra eventos específicos de Wikimedia mediante EventLogging"
+	"wikimediaevents-desc": "Registra eventos específicos de Wikimedia mediante EventLogging",
+	"wikimediaevents-special-wikimediadebug-desc": "WikimediaDebug",
+	"wikimediaevents-special-wikimediadebug-notenabled": "Esta página especial no está habilitada.",
+	"wikimediaevents-special-wikimediadebug-submit-set": "Activar la cookie de depuración por $1",
+	"wikimediaevents-special-wikimediadebug-submit-renew": "Renovar cookie por $1",
+	"wikimediaevents-special-wikimediadebug-submit-clear": "Eliminar cookie",
+	"wikimediaevents-special-wikimediadebug-header-active": "La cookie [https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] está actualmente '''habilitada''' en <code>$1</code>.\n\nCaduca en $2.\n\nClic en para borrarla de este dispositivo. Tenga en cuenta que esto solo borrará la cookie en este dominio; si la activó en otros dominios, debe borrarla por separado a través de la página especial de esos dominios (o usar la función de eliminación de cookies de su navegador).",
+	"wikimediaevents-special-wikimediadebug-header-inactive": "Clic en el botón para activar la cookie [https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] en <code>$1</code>.\n\nCuando se active, las solicitudes web desde su dispositivo para este wiki '''enviarán registros depurados conteniendo información personal''' a los desarrolladores. Active esto solo si un desarrollador se lo ha pedido. Tenga en cuenta que esto hará que la navegación sea más lenta.\n\nSi está probando la funcionalidad entre dominios, recuerde activar también la cookie a través de la página especial en los otros dominios."
 }
