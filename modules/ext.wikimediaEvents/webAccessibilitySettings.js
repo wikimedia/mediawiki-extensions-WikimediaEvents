@@ -87,7 +87,24 @@ function getPinnedSettings() {
  * @return {string} Get dark mode clientpref value
  */
 function getDarkModeSettings() {
-	return mw.user.clientPrefs.get( 'skin-night-mode' ) || '0';
+	const theme = mw.user.clientPrefs.get( 'skin-theme' );
+
+	// if no set value for the new client pref, fall back to the old behavior
+	if ( theme === false ) {
+		return mw.user.clientPrefs.get( 'skin-night-mode' ) || '0';
+	}
+
+	// otherwise, convert the new pref values to their old equivalents for logging consistency
+	switch ( theme ) {
+		case 'night':
+			return '1';
+		case 'os':
+			return '2';
+		case 'day':
+			return '0';
+		default:
+			return '0'; // ideally this should never happen, but if we get an unusable value we group with day mode
+	}
 }
 
 /**
