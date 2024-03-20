@@ -7,5 +7,6 @@
 			"Sakretsu"
 		]
 	},
-	"wikimediaevents-desc": "Registra eventi specifici Wikimedia utilizzando EventLogging"
+	"wikimediaevents-desc": "Registra eventi specifici Wikimedia utilizzando EventLogging",
+	"wikimediaevents-special-wikimediadebug-notenabled": "Questa pagina speciale non è abilitata."
 }
