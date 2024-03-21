@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Abiyoyo",
+			"Dirruw'o",
 			"Facenapalm",
 			"Happy13241",
 			"Kaganer",
@@ -13,5 +14,9 @@
 			"Striking Blue"
 		]
 	},
-	"wikimediaevents-desc": "Ведёт журнал определённых Викимедиа событий с использованием EventLogging"
+	"wikimediaevents-desc": "Ведёт журнал определённых Викимедиа событий с использованием EventLogging",
+	"wikimediaevents-special-wikimediadebug-notenabled": "Эта служебная страница не включена.",
+	"wikimediaevents-special-wikimediadebug-submit-set": "Активируйте отладочный файл cookie за $1",
+	"wikimediaevents-special-wikimediadebug-submit-renew": "Продлить файл cookie за $1",
+	"wikimediaevents-special-wikimediadebug-submit-clear": "Удалить Cookies"
 }

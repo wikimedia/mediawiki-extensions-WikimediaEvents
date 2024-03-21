@@ -8,5 +8,11 @@
 	"apihelp-wikimediaeventsblockededit-summary": "Logg informasjon om blokkerte redigeringsforsøk",
 	"apihelp-wikimediaeventsblockededit-param-page": "En side et redigeringsforsøk ble gjort på",
 	"apihelp-wikimediaeventsblockededit-param-interface": "Grensesnittet som ble brukt for å redigere",
-	"apihelp-wikimediaeventsblockededit-param-platform": "Plattformen som ble brukt til å redigere"
+	"apihelp-wikimediaeventsblockededit-param-platform": "Plattformen som ble brukt til å redigere",
+	"wikimediaevents-special-wikimediadebug-notenabled": "Denne spesialsiden er ikke aktivert.",
+	"wikimediaevents-special-wikimediadebug-submit-set": "Aktiver feilsøkingsinformasjonskapsel i $1",
+	"wikimediaevents-special-wikimediadebug-submit-renew": "Forny informasjonskapselen for $1",
+	"wikimediaevents-special-wikimediadebug-submit-clear": "Fjern informasjonskapsel",
+	"wikimediaevents-special-wikimediadebug-header-active": "Informasjonskapselen [https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] er for tiden '''aktivert''' på <code>$1</code>.\n\nDen løper ut $2.\n\nTrykk på knappen for å fjerne den fra denne enheten. Merk at dette kun vil fjerne informasjonskapselen for dette domenet – hvis du har aktivert den på andre domener må du fjerne den individuelt fra hvert domene (eller bruke nettleserens funksjonalitet for å fjerne informasjonskapsler).",
+	"wikimediaevents-special-wikimediadebug-header-inactive": "Trykk på knappen for å aktivere informasjonskapselen [https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] på <code>$1</code>.\n\nNår den er aktivert vil nettforespørsler fra enheten din som gjelder denne wikien '''sende feilsøkingslogger med personlig informasjon''' til utviklerne. Aktiver dette kun hvis en utvikler har bedt deg om det. Merk at dette vil føre til en tregere nettleseropplevelse.\n\nHvis du tester funksjonalitet på tvers av domener må du huske å også aktivere informasjonskapselen på tilsvarende spesialsider på de andre domenene."
 }
