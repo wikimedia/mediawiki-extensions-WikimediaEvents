@@ -18,5 +18,6 @@
 	"wikimediaevents-special-wikimediadebug-notenabled": "Эта служебная страница не включена.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "Активируйте отладочный файл cookie за $1",
 	"wikimediaevents-special-wikimediadebug-submit-renew": "Продлить файл cookie за $1",
-	"wikimediaevents-special-wikimediadebug-submit-clear": "Удалить Cookies"
+	"wikimediaevents-special-wikimediadebug-submit-clear": "Удалить Cookies",
+	"wikimediaevents-special-wikimediadebug-header-active": "Файл cookie [https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] в настоящее время «включен» на <code>$1</code> .\n\nСрок его действия истекает на $2 .\n\nНажмите на значок кнопку, чтобы удалить его с этого устройства. Обратите внимание, что при этом файл cookie будет удален только в этом домене. Если вы активировали его в других доменах, вам придется очистить его отдельно через специальную страницу в этих доменах (или использовать функцию очистки файлов cookie вашего браузера)."
 }

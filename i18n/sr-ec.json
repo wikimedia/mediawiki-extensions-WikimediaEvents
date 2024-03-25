@@ -4,5 +4,7 @@
 			"Milicevic01"
 		]
 	},
-	"wikimediaevents-special-wikimediadebug-notenabled": "Ова посебна страница није омогућена."
+	"wikimediaevents-special-wikimediadebug-notenabled": "Ова посебна страница није омогућена.",
+	"wikimediaevents-special-wikimediadebug-submit-renew": "Обнови колачић за $1",
+	"wikimediaevents-special-wikimediadebug-submit-clear": "Обриши колачић"
 }

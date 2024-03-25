@@ -1,11 +1,16 @@
 {
 	"@metadata": {
 		"authors": [
+			"Anterdc99",
+			"Googology",
 			"Liuxinyu970226",
 			"Sunny00217",
 			"Tranve",
 			"VulpesVulpes825"
 		]
 	},
-	"wikimediaevents-desc": "使用EventLogging的维基媒体特定事件日志"
+	"wikimediaevents-desc": "使用EventLogging的维基媒体特定事件日志",
+	"wikimediaevents-special-wikimediadebug-notenabled": "此特殊页面未启用。",
+	"wikimediaevents-special-wikimediadebug-submit-renew": "更新$1cookie",
+	"wikimediaevents-special-wikimediadebug-submit-clear": "清除Cookie"
 }
