@@ -9,6 +9,7 @@ use WikimediaEvents\PrefUpdateInstrumentation;
 
 /**
  * @covers \WikimediaEvents\PrefUpdateInstrumentation
+ * @group Database
  */
 class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 
