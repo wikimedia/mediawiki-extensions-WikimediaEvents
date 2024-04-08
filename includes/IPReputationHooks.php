@@ -15,6 +15,7 @@ use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserGroupManager;
+use MediaWiki\User\UserIdentity;
 use MediaWiki\WikiMap\WikiMap;
 use Psr\Log\LoggerInterface;
 use WANObjectCache;
@@ -75,21 +76,7 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 			$user,
 			$revisionRecord
 		) {
-			$data = $this->getIPoidDataForIp( $ip );
-			if ( !$data ) {
-				return;
-			}
-			$event = $this->convertIPoidDataToEventLoggingFormat( $data );
-			$userEntitySerializer = new UserEntitySerializer( $this->userFactory, $this->userGroupManager );
-			$event += [
-				'$schema' => self::SCHEMA,
-				'wiki_id' => WikiMap::getCurrentWikiId(),
-				'http' => [ 'client_ip' => $ip ],
-				'performer' => $userEntitySerializer->toArray( $user ),
-				'action' => 'edit',
-				'identifier' => $revisionRecord->getId(),
-			];
-			$this->eventSubmitter->submit( self::STREAM, $event );
+			$this->recordEvent( $ip, 'edit', $user, $revisionRecord->getId() );
 		} );
 	}
 
@@ -227,21 +214,34 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 		}
 		$ip = RequestContext::getMain()->getRequest()->getIP();
 		DeferredUpdates::addCallableUpdate( function () use ( $ip, $user ) {
-			$data = $this->getIPoidDataForIp( $ip );
-			if ( !$data ) {
-				return;
-			}
-			$event = $this->convertIPoidDataToEventLoggingFormat( $data );
-			$userEntitySerializer = new UserEntitySerializer( $this->userFactory, $this->userGroupManager );
-			$event += [
-				'$schema' => self::SCHEMA,
-				'wiki_id' => WikiMap::getCurrentWikiId(),
-				'http' => [ 'client_ip' => $ip ],
-				'performer' => $userEntitySerializer->toArray( $user ),
-				'action' => 'createaccount',
-				'identifier' => $user->getId(),
-			];
-			$this->eventSubmitter->submit( self::STREAM, $event );
+			$this->recordEvent( $ip, 'createaccount', $user, $user->getId() );
 		} );
+	}
+
+	/**
+	 * Attempt to fetch data from ipoid, and submit an appropriate event if data is found.
+	 *
+	 * @param string $ip
+	 * @param string $action
+	 * @param UserIdentity $user
+	 * @param int $identifier
+	 * @return void
+	 */
+	private function recordEvent( string $ip, string $action, UserIdentity $user, int $identifier ) {
+		$data = $this->getIPoidDataForIp( $ip );
+		if ( !$data ) {
+			return;
+		}
+		$event = $this->convertIPoidDataToEventLoggingFormat( $data );
+		$userEntitySerializer = new UserEntitySerializer( $this->userFactory, $this->userGroupManager );
+		$event += [
+			'$schema' => self::SCHEMA,
+			'wiki_id' => WikiMap::getCurrentWikiId(),
+			'http' => [ 'client_ip' => $ip ],
+			'performer' => $userEntitySerializer->toArray( $user ),
+			'action' => $action,
+			'identifier' => $identifier,
+		];
+		$this->eventSubmitter->submit( self::STREAM, $event );
 	}
 }
