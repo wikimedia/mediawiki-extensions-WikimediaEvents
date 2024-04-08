@@ -30,7 +30,7 @@ use Wikimedia\IPUtils;
 class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 
 	private const STREAM = 'mediawiki.ip_reputation.score';
-	private const SCHEMA = '/analytics/mediawiki/ip_reputation/score/1.0.0';
+	private const SCHEMA = '/analytics/mediawiki/ip_reputation/score/1.1.0';
 
 	private FormatterFactory $formatterFactory;
 	private HttpRequestFactory $httpRequestFactory;
@@ -209,12 +209,10 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 
 	/** @inheritDoc */
 	public function onLocalUserCreated( $user, $autocreated ) {
-		if ( $autocreated ) {
-			return;
-		}
 		$ip = RequestContext::getMain()->getRequest()->getIP();
-		DeferredUpdates::addCallableUpdate( function () use ( $ip, $user ) {
-			$this->recordEvent( $ip, 'createaccount', $user, $user->getId() );
+		DeferredUpdates::addCallableUpdate( function () use ( $ip, $user, $autocreated ) {
+			$action = $autocreated ? 'autocreateaccount' : 'createaccount';
+			$this->recordEvent( $ip, $action, $user, $user->getId() );
 		} );
 	}
 
