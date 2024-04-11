@@ -65,11 +65,16 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 	}
 
 	/** @inheritDoc */
+	public function onLocalUserCreated( $user, $autocreated ) {
+		$ip = RequestContext::getMain()->getRequest()->getIP();
+		DeferredUpdates::addCallableUpdate( function () use ( $ip, $user, $autocreated ) {
+			$action = $autocreated ? 'autocreateaccount' : 'createaccount';
+			$this->recordEvent( $ip, $action, $user, $user->getId() );
+		} );
+	}
+
+	/** @inheritDoc */
 	public function onPageSaveComplete( $wikiPage, $user, $summary, $flags, $revisionRecord, $editResult ) {
-		$baseUrl = $this->config->get( 'WikimediaEventsIPoidUrl' );
-		if ( !$baseUrl ) {
-			return false;
-		}
 		$ip = RequestContext::getMain()->getRequest()->getIP();
 		DeferredUpdates::addCallableUpdate( function () use (
 			$ip,
@@ -86,6 +91,10 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 	 * @return array|null IPoid data for the specific address, or null if there is no data
 	 */
 	private function getIPoidDataForIp( string $ip ): ?array {
+		$baseUrl = $this->config->get( 'WikimediaEventsIPoidUrl' );
+		if ( !$baseUrl ) {
+			return null;
+		}
 		$sanitizedIp = IPUtils::sanitizeIP( $ip );
 		$data = $this->cache->getWithSetCallback(
 			$this->cache->makeGlobalKey( 'wikimediaevents-ipoid', $sanitizedIp ),
@@ -205,15 +214,6 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 		// n.b. there are other properties in the ip_reputation.score stream, but
 		// they rely on raw Spur data which is not currently accessible via IPoid.
 		return $event;
-	}
-
-	/** @inheritDoc */
-	public function onLocalUserCreated( $user, $autocreated ) {
-		$ip = RequestContext::getMain()->getRequest()->getIP();
-		DeferredUpdates::addCallableUpdate( function () use ( $ip, $user, $autocreated ) {
-			$action = $autocreated ? 'autocreateaccount' : 'createaccount';
-			$this->recordEvent( $ip, $action, $user, $user->getId() );
-		} );
 	}
 
 	/**
