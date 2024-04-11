@@ -2,6 +2,7 @@
 
 namespace WikimediaEvents;
 
+use MediaWiki\Auth\Hook\LocalUserCreatedHook;
 use MediaWiki\Config\Config;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Deferred\DeferredUpdates;
@@ -25,7 +26,7 @@ use Wikimedia\IPUtils;
  * Note: these hook implementations will eventually move to Extension:IPReputation, when
  * that is running in production.
  */
-class IPReputationHooks implements PageSaveCompleteHook {
+class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 
 	private const STREAM = 'mediawiki.ip_reputation.score';
 	private const SCHEMA = '/analytics/mediawiki/ip_reputation/score/1.0.0';
@@ -217,5 +218,30 @@ class IPReputationHooks implements PageSaveCompleteHook {
 		// n.b. there are other properties in the ip_reputation.score stream, but
 		// they rely on raw Spur data which is not currently accessible via IPoid.
 		return $event;
+	}
+
+	/** @inheritDoc */
+	public function onLocalUserCreated( $user, $autocreated ) {
+		if ( $autocreated ) {
+			return;
+		}
+		$ip = RequestContext::getMain()->getRequest()->getIP();
+		DeferredUpdates::addCallableUpdate( function () use ( $ip, $user ) {
+			$data = $this->getIPoidDataForIp( $ip );
+			if ( !$data ) {
+				return;
+			}
+			$event = $this->convertIPoidDataToEventLoggingFormat( $data );
+			$userEntitySerializer = new UserEntitySerializer( $this->userFactory, $this->userGroupManager );
+			$event += [
+				'$schema' => self::SCHEMA,
+				'wiki_id' => WikiMap::getCurrentWikiId(),
+				'http' => [ 'client_ip' => $ip ],
+				'performer' => $userEntitySerializer->toArray( $user ),
+				'action' => 'createaccount',
+				'identifier' => $user->getId(),
+			];
+			$this->eventSubmitter->submit( self::STREAM, $event );
+		} );
 	}
 }

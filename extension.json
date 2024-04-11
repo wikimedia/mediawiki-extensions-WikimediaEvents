@@ -63,6 +63,7 @@
 		"BeforeInitialize": "main",
 		"BeforePageDisplay": "main",
 		"PageSaveComplete": [ "main", "IPReputationHooks" ],
+		"LocalUserCreated": "IPReputationHooks",
 		"PreferencesFormPreSave": "VectorInstrumentation",
 		"SaveUserOptions": "PrefInstrumentation",
 		"ArticleViewHeader": "main",
