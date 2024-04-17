@@ -114,7 +114,6 @@ function getDarkModeBrowserMedia() {
 	return window.matchMedia && window.matchMedia( '(prefers-color-scheme: dark)' ).matches;
 }
 
-/* eslint-disable camelcase */
 module.exports = () => ( {
 	font: getFont(),
 	is_full_width: getInterfaceWidth(),

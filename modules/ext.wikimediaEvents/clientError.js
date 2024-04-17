@@ -385,7 +385,6 @@ function shouldLog( descriptor ) {
  * @param {string} [component] The component which logged this error
  */
 function log( intakeURL, descriptor, component ) {
-	/* eslint-disable camelcase */
 	let gadgets = '';
 	const host = location.host;
 	const protocol = location.protocol;
@@ -460,7 +459,6 @@ function log( intakeURL, descriptor, component ) {
 		stack_trace: descriptor.stackTrace || 'undefined',
 		error_context: errorContext
 	} ) );
-	/* eslint-enable */
 }
 
 /**

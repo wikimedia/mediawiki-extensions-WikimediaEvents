@@ -7,7 +7,11 @@
 	],
 	"rules": {
 		"no-var": "warn",
-		"compat/compat": "warn"
+		"compat/compat": "warn",
+		"camelcase": [
+			"error",
+			{ "properties": "never" }
+		]
 	},
 	"env": {
 		"commonjs": true

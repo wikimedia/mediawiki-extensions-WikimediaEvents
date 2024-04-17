@@ -23,7 +23,7 @@ const webCommon = require( './webCommon.js' );
  * @param {string} action of event (`init`, `scroll`, or `scroll-to-top`)
  */
 function log( action ) {
-	/* eslint-disable camelcase */
+
 	const data = Object.assign( {}, webCommon(), {
 		$schema: '/analytics/mediawiki/web_ui_scroll/2.0.0',
 		web_session_id: mw.user.sessionId(),
@@ -40,7 +40,7 @@ function log( action ) {
 	// TODO: Begin deprecating mw.eventLog.submit after completing QA for
 	// mw.eventLog.submitInteraction. See T352342.
 	mw.eventLog.submitInteraction( 'mediawiki.web_ui_scroll_migrated', '/analytics/product_metrics/web/base/1.1.0', action );
-	/* eslint-enable camelcase */
+
 }
 
 /**

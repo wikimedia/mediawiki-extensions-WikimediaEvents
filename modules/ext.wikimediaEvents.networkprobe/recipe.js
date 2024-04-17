@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-
 const RECIPE = {
 	name: 'Latency Test',
 	type: 'http_get',

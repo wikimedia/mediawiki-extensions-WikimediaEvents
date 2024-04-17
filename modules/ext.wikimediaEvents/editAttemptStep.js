@@ -7,7 +7,6 @@ const config = require( './config.json' );
 
 const webCommon = require( './webCommon.js' );
 // Many EditAttemptStep event properties are in snake_case for historical reasons
-/* eslint-disable camelcase */
 
 // Stores data common to all events in an editing session
 // (from opening an editor to saving or cancelling the edit).

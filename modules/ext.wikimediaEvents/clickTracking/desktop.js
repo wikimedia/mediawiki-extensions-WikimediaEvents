@@ -94,11 +94,10 @@ function logEvent( action, name ) {
 
 		// Prepare data to log event via Metrics Platform (T351298)
 		const metricsPlatformData = webA11ySettings();
-		/* eslint-disable camelcase */
+
 		metricsPlatformData.is_sidebar_collapsed = data.isSidebarCollapsed;
 		metricsPlatformData.viewport_size_bucket = data.viewportSizeBucket;
 		metricsPlatformData.action_source = name;
-		/* eslint-enable camelcase */
 
 		// Log event via Metrics Platform (T351298)
 		mw.eventLog.submitInteraction(

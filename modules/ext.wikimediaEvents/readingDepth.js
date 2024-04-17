@@ -155,7 +155,6 @@ function logEvent( action ) {
 	const pageLength = mw.config.get( 'wgWMEPageLength', -1 );
 	const isMobile = mw.config.get( 'wgMFMode' );
 
-	/* eslint-disable camelcase */
 	const data = $.extend( {}, EVENT, {
 		action: action,
 		dom_interactive_time: domInteractive ?
@@ -168,13 +167,10 @@ function logEvent( action ) {
 		page_length: pageLength,
 		access_method: isMobile ? 'mobile web' : 'desktop'
 	}, eventData );
-	/* eslint-enable camelcase */
 
 	if ( action === 'pageUnloaded' ) {
-		/* eslint-disable camelcase */
 		data.total_length = Math.round( performance.now() - visibilityListenersAdded );
 		data.visible_length = Math.round( data.total_length - msPaused );
-		/* eslint-enable camelcase */
 	}
 
 	// mw.track replaced with mw.eventLog
@@ -235,7 +231,6 @@ function enableTracking() {
 	if ( !trackingIsEnabled ) {
 		trackingIsEnabled = true;
 
-		/* eslint-disable camelcase */
 		EVENT = {
 			$schema: '/analytics/mediawiki/web_ui_reading_depth/1.0.0',
 			page_namespace: mw.config.get( 'wgNamespaceNumber' ),
@@ -243,7 +238,7 @@ function enableTracking() {
 			is_anon: mw.user.isAnon(),
 			session_token: sessionId
 		};
-		/* eslint-enable camelcase */
+
 		window.addEventListener( 'beforeunload', onBeforeUnload );
 		onLoad();
 	}

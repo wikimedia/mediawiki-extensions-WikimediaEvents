@@ -14,7 +14,6 @@ const webCommon = require( './webCommon.js' );
  * @param {Object} data event info for logging
  */
 function logEvent( data ) {
-	/* eslint-disable camelcase */
 	const event = Object.assign( {}, webCommon(), {
 		$schema: '/analytics/mediawiki/web_ab_test_enrollment/2.0.0',
 		web_session_id: mw.user.sessionId(),
@@ -22,7 +21,6 @@ function logEvent( data ) {
 		experiment_name: data.experimentName,
 		is_anon: mw.user.isAnon()
 	} );
-	/* eslint-enable camelcase */
 
 	mw.eventLog.submit( 'mediawiki.web_ab_test_enrollment', event );
 }

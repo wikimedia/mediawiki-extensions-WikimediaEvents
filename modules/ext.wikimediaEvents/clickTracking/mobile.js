@@ -57,10 +57,9 @@ function logEvent( action, name, destination ) {
 
 	// Prepare data to log event via Metrics Platform (T351298)
 	const metricsPlatformData = webA11ySettings();
-	/* eslint-disable camelcase */
+
 	metricsPlatformData.action_context = modes;
 	metricsPlatformData.action_source = name;
-	/* eslint-enable camelcase */
 
 	// Log event via Metrics Platform (T351298)
 	mw.eventLog.submitInteraction(
