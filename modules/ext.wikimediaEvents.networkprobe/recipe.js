@@ -30,6 +30,10 @@ const RECIPE = {
 		{
 			name: 'ulsfo',
 			target: 'https://measure-ulsfo.wikimedia.org/measure'
+		},
+		{
+			name: 'magru',
+			target: 'https://measure-magru.wikimedia.org/measure'
 		}
 	],
 	ctx: {
