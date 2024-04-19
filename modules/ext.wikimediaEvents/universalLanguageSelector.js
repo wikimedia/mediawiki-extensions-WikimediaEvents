@@ -95,7 +95,7 @@ function log( event ) {
 
 		// For detail about the web_session_id property, see
 		// https://schema.wikimedia.org/repositories/secondary/jsonschema/fragment/analytics/web_identifiers/current.yaml.
-		web_session_id: mw.user.sessionId(), // eslint-disable-line camelcase
+		web_session_id: mw.user.sessionId(),
 
 		isAnon: mw.user.isAnon(),
 

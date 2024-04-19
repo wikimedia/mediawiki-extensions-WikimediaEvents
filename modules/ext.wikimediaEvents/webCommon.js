@@ -33,6 +33,5 @@ function getSkin() {
 module.exports = () => ( {
 	wiki: getWikiName(),
 	skin: getSkin(),
-	/* eslint-disable-next-line camelcase */
 	is_bot: isUserBot()
 } );
