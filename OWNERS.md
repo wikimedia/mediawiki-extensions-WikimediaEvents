@@ -153,3 +153,13 @@ Moved here in <https://phabricator.wikimedia.org/T332438>.
 * Contact: Trust & Safety Product Team
 
 More details at <https://phabricator.wikimedia.org/T357763>
+
+## Experiment Platform Standardized Instruments
+
+* Since: January 2025
+* Files: ClickThroughRateInstrument.js
+* Contact: Experiment Platform
+
+A collection of standardized instruments, including:
+
+1. Click Through Rate (CTR)

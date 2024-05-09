@@ -270,6 +270,17 @@
 				"ext.eventLogging",
 				"mediawiki.cookie"
 			]
+		},
+		"ext.wikimediaEvents.experimentPlatform": {
+			"localBasePath": "modules/ext.wikimediaEvents.experimentPlatform",
+			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.experimentPlatform",
+			"packageFiles": [
+				"index.js",
+				"ClickThroughRateInstrument.js"
+			],
+			"dependencies": [
+				"ext.eventLogging"
+			]
 		}
 	},
 	"ResourceFileModulePaths": {
