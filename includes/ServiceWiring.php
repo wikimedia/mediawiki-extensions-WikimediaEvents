@@ -26,6 +26,7 @@ use GeoIp2\Database\Reader;
 use MaxMind\Db\Reader\InvalidDatabaseException;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
+use WikimediaEvents\AccountCreationLogger;
 use WikimediaEvents\WebABTest\WebABTestArticleIdFactory;
 use WikimediaEvents\WikimediaEventsCountryCodeLookup;
 
@@ -48,4 +49,8 @@ return [
 		}
 		return new WikimediaEventsCountryCodeLookup( $reader );
 	},
+	'AccountCreationLogger' => static function ( MediaWikiServices $services ): AccountCreationLogger {
+		return new AccountCreationLogger( $services->getUserIdentityUtils(), $services->getSpecialPageFactory() );
+	}
+
 ];

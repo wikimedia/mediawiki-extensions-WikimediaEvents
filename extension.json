@@ -24,7 +24,8 @@
 	},
 	"HookHandlers": {
 		"main": {
-			"class": "WikimediaEvents\\WikimediaEventsHooks"
+			"class": "WikimediaEvents\\WikimediaEventsHooks",
+			"services": [ "AccountCreationLogger" ]
 		},
 		"VectorInstrumentation": {
 			"class": "WikimediaEvents\\VectorPrefDiffInstrumentation"
@@ -76,7 +77,8 @@
 		"ResourceLoaderRegisterModules": "main",
 		"MakeGlobalVariablesScript": "main",
 		"PermissionErrorAudit": "BlockMetricsHooks",
-		"EditPage::showReadOnlyForm:initial": "EditPageHooks"
+		"EditPage::showReadOnlyForm:initial": "EditPageHooks",
+		"AuthManagerLoginAuthenticateAudit": "main"
 	},
 	"APIModules": {
 		"wikimediaeventsblockededit": {
@@ -333,6 +335,15 @@
 	"ServiceWiringFiles": [
 		"includes/ServiceWiring.php"
 	],
+	"AuthManagerAutoConfig": {
+		"preauth": {
+			"AccountCreationEventProvider": {
+				"class": "WikimediaEvents\\AccountCreationEventProvider",
+				"services": [ "AccountCreationLogger" ],
+				"sort": 0
+			}
+		}
+	},
 	"manifest_version": 2,
 	"load_composer_autoloader": true
 }
