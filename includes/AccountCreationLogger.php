@@ -45,11 +45,14 @@ class AccountCreationLogger {
 	 */
 	public function logAuthEvent(
 		string $stream, string $eventType, UserIdentity $performer, AuthenticationResponse $response ): void {
+		$additionalData = [];
 		$title = RequestContext::getMain()->getTitle();
-		$additionalData = [
-			'page_title' => $title->getDBkey(),
-			'page_namespace' => $title->getNamespace(),
-		];
+		if ( $title !== null ) {
+			$additionalData += [
+				'page_title' => $title->getDBkey(),
+				'page_namespace' => $title->getNamespace(),
+			];
+		}
 		if ( $response->status === AuthenticationResponse::FAIL ) {
 			$additionalData['error_message_key'] = $response->message->getKey();
 		}
