@@ -17,5 +17,7 @@
 	"wikimediaevents-special-wikimediadebug-notenabled": "Deze speciale pagina is niet ingeschakeld.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "Debug-cookie voor $1 activeren",
 	"wikimediaevents-special-wikimediadebug-submit-renew": "Cookie voor $1 vernieuwen",
-	"wikimediaevents-special-wikimediadebug-submit-clear": "Cookie wissen"
+	"wikimediaevents-special-wikimediadebug-submit-clear": "Cookie wissen",
+	"wikimediaevents-special-wikimediadebug-header-active": "De cookie [https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] is momenteel '''ingeschakeld''' op <code>$1</code>.\n\nDeze verloopt op $2.\n\nKlik op de knop om de cookie van dit apparaat te wissen. Houd er rekening mee dat deze hierdoor alleen op dit domein wordt gewist. Cookies die op andere domeinen zijn geactiveerd moeten afzonderlijk worden gewist via de speciale pagina op die domeinen (of middels de functionaliteit voor het wissen van cookies in de browser).",
+	"wikimediaevents-special-wikimediadebug-header-inactive": "Klik op de knop om de cookie [https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] op <code>$1</code> te activeren.\n\nNa activering worden met uw opvragingen voor deze wiki '''debug-logs met persoonlijke informatie meegestuurd''' ten bate van de ontwikkelaars. Activeer dit dus alleen als een ontwikkelaar u hierom vraagt. Het raadplegen van webpagina’s wordt hierdoor ook langzamer.\n\nAls u domein-overschrijdende functies test, vergeet dan niet om de cookie ook via de speciale pagina op de andere domein(en) te activeren."
 }
