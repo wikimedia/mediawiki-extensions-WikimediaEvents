@@ -330,6 +330,10 @@
 		"WikimediaEventsIPoidRequestTimeoutSeconds": {
 			"description": "Number of seconds to use for timeout and connectTimeout options to HTTP request factory when calling IPoid",
 			"value": 2
+		},
+		"WikimediaEventsIPReputationAccountAgeThreshold": {
+			"description": "Number (in days) to use as a cut off for recording IP reputation data on edits. User accounts older than this number of days will not be included in logging of IP reputation data on edit.",
+			"value": 90
 		}
 	},
 	"ServiceWiringFiles": [

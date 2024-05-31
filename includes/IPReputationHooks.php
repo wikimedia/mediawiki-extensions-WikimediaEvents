@@ -13,6 +13,7 @@ use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Language\FormatterFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
+use MediaWiki\User\User;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserGroupManager;
 use MediaWiki\User\UserIdentity;
@@ -20,6 +21,8 @@ use MediaWiki\WikiMap\WikiMap;
 use Psr\Log\LoggerInterface;
 use WANObjectCache;
 use Wikimedia\IPUtils;
+use Wikimedia\LightweightObjectStore\ExpirationAwareness;
+use Wikimedia\Timestamp\ConvertibleTimestamp;
 
 /**
  * Hooks for logging IP reputation data with an event (edit, account creation, etc.)
@@ -81,8 +84,33 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 			$user,
 			$revisionRecord
 		) {
+			$userObject = $this->userFactory->newFromUserIdentity( $user );
+			if ( !$this->shouldLogEditEventForUser( $userObject ) ) {
+				return;
+			}
 			$this->recordEvent( $ip, 'edit', $user, $revisionRecord->getId() );
 		} );
+	}
+
+	/**
+	 * Check if we should log an edit event for a user.
+	 *
+	 * The main thing is to exclude logged-in accounts over a certain account age
+	 * threshold (the default is 90 days).
+	 *
+	 * @param User $user
+	 * @return bool True if we should log, false otherwise.
+	 */
+	private function shouldLogEditEventForUser( User $user ): bool {
+		$userRegistration = $user->getRegistration();
+		if ( !$user->isAnon() && !$userRegistration ) {
+			// The user account is not anonymous and there's no registration date, so
+			// it is a very old account. Don't do record anything for these accounts.
+			return false;
+		}
+		$userAge = ConvertibleTimestamp::time() - (int)wfTimestampOrNull( TS_UNIX, $userRegistration );
+		$threshold = $this->config->get( 'WikimediaEventsIPReputationAccountAgeThreshold' );
+		return $userAge <= $threshold * ExpirationAwareness::TTL_DAY;
 	}
 
 	/**
