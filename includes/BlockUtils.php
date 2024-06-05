@@ -70,7 +70,7 @@ class BlockUtils {
 		// Prefer the local block over the global one if both are set. This is
 		// somewhat arbitrary, but is consistent with account creation block
 		// logging.
-		$local = MediaWikiServices::getInstance()->getPermissionManager()->isBlockedFrom( $user, $title, false );
+		$local = MediaWikiServices::getInstance()->getPermissionManager()->isBlockedFrom( $user, $title, true );
 		if ( $local ) {
 			$block = $user->getBlock();
 		} else {
