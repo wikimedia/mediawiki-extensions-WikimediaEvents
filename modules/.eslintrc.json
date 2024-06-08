@@ -10,8 +10,11 @@
 		"compat/compat": "warn",
 		"camelcase": [
 			"error",
-			{ "properties": "never" }
-		]
+			{
+				"properties": "never"
+			}
+		],
+		"no-jquery/no-extend": "warn"
 	},
 	"env": {
 		"commonjs": true

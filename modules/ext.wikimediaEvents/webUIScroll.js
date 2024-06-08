@@ -53,7 +53,7 @@ function hookAction( data ) {
 	// whether the scroll action should be logged (see T292586 and T303297).
 	if ( data.context.indexOf( 'scrolled-below-' ) === 0 ) {
 		waitBeforeScrollUp = true;
-		timer = setTimeout( function () {
+		timer = setTimeout( () => {
 			waitBeforeScrollUp = false;
 		}, timeToWaitBeforeScrollUp );
 	}
@@ -66,7 +66,7 @@ function hookAction( data ) {
 }
 
 // Watch for specific scroll events via hooks.
-mw.requestIdleCallback( function () {
+mw.requestIdleCallback( () => {
 	const disabled = sampleRate === 0 && sampleRateAnons === 0;
 	// Only initialize the instrument if config allows.
 	if ( disabled ||

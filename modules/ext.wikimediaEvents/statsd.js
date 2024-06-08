@@ -41,14 +41,14 @@ function enqueue( k, v ) {
 	}
 }
 
-mw.trackSubscribe( 'timing.', function ( topic, time ) {
+mw.trackSubscribe( 'timing.', ( topic, time ) => {
 	enqueue(
 		topic.slice( 'timing.'.length ),
 		Math.round( time ) + 'ms'
 	);
 } );
 
-mw.trackSubscribe( 'counter.', function ( topic, count ) {
+mw.trackSubscribe( 'counter.', ( topic, count ) => {
 	count = Math.round( count );
 	if ( isNaN( count ) ) {
 		count = 1;
@@ -59,7 +59,7 @@ mw.trackSubscribe( 'counter.', function ( topic, count ) {
 	);
 } );
 
-mw.trackSubscribe( 'gauge.', function ( topic, value ) {
+mw.trackSubscribe( 'gauge.', ( topic, value ) => {
 	value = Math.round( value );
 	if ( isNaN( value ) ) {
 		return;

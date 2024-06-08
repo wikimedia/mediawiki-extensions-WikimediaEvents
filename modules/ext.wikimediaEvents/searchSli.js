@@ -12,7 +12,7 @@ if ( !window.performance || !window.performance.now || !window.performance.getEn
 
 // Note this is only core Special:Search, Special:MediaSearch is tracked from within itself
 if ( mw.config.get( 'wgIsSearchResultPage' ) ) {
-	$( function () {
+	$( () => {
 		const entry = performance.getEntriesByType( 'navigation' )[ 0 ];
 		if ( entry && entry.loadEventEnd ) {
 			mw.track( 'timing.Search.FullTextResults', entry.loadEventEnd );

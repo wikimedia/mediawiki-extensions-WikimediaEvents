@@ -74,18 +74,18 @@ if ( !mw.eventLog.eventInSample( 1 / sampleSize ) ) {
 	return;
 }
 
-mw.trackSubscribe( 'webuiactions_log.', function ( topic, value ) {
+mw.trackSubscribe( 'webuiactions_log.', ( topic, value ) => {
 	// e.g. webuiactions_log.click value=event-name
 	logEvent( topic.slice( 'webuiactions_log.'.length ), value );
 } );
 
-mw.requestIdleCallback( function () {
+mw.requestIdleCallback( () => {
 	// Log the page load.
 	// ns= allows us to tell the namespace this occurred in.
 	logEvent( 'init', 'ns=' + mw.config.get( 'wgNamespaceNumber' ) );
 } );
 
-$( document ).on( 'click', function ( event ) {
+$( document ).on( 'click', ( event ) => {
 	const $closest = $( event.target ).closest( '[data-event-name]' );
 	if ( $closest.length ) {
 		const destination = $closest.attr( 'href' );

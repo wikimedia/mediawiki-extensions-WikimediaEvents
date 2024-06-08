@@ -155,7 +155,7 @@ function regulator() {
 
 	function setActiveDebounce() {
 		if ( !debounceTimeout ) {
-			debounceTimeout = setTimeout( function () {
+			debounceTimeout = setTimeout( () => {
 				clearTimeout( debounceTimeout );
 				debounceTimeout = null;
 			}, DEBOUNCE_MS );

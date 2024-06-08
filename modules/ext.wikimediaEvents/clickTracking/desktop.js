@@ -127,7 +127,7 @@ if ( !sampleSize || !mw.eventLog.eventInSample( 1 / sampleSize ) ) {
 	return;
 }
 
-mw.trackSubscribe( 'webuiactions_log.', function ( topic, value ) {
+mw.trackSubscribe( 'webuiactions_log.', ( topic, value ) => {
 	// e.g. webuiactions_log.click value=event-name
 	logEvent( topic.slice( 'webuiactions_log.'.length ), value );
 } );
@@ -183,7 +183,7 @@ function getInstrumentationDependencies() {
 
 // Wait for DOM ready because logEvent() requires
 // knowing sidebar state and body classes.
-$( function () {
+$( () => {
 	// Wait for ext.popups.main to be loaded.
 	mw.loader.using( getInstrumentationDependencies() ).then( () => {
 		logEvent( 'init' );

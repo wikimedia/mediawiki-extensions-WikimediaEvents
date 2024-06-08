@@ -274,7 +274,7 @@ class Probenet {
 			[ 'status_code', probe_result.responseStatus ],
 			[ 'transfer_bytes', probe_result.encodedBodySize ],
 			[ 'actual_bytes', probe_result.decodedBodySize ]
-		].forEach( function ( [ key, value ] ) {
+		].forEach( ( [ key, value ] ) => {
 			// Some of the properties can be undefined in some browsers
 			// ( undefined - 42 ) returns NaN.
 			// NaN becomes null after JSON serialisation.

@@ -116,7 +116,7 @@ function handleInitEvent( event ) {
 // Add the editing session ID to API requests using `trackEditAttemptStepSessionId: true`,
 // so that events may be logged server-side.
 // https://api.jquery.com/jquery.ajaxprefilter/
-$.ajaxPrefilter( function ( options ) {
+$.ajaxPrefilter( ( options ) => {
 	if ( options.trackEditAttemptStepSessionId && session.editing_session_id ) {
 		if ( options.data instanceof window.FormData ) {
 			options.data.append( 'editingStatsId', session.editing_session_id );

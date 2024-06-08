@@ -123,7 +123,7 @@ function SessionState() {
 		// todo: send an end-session event or something?
 		state = {};
 		mw.storage.remove( key( '__EndTime__' ) );
-		persist.forEach( function ( type ) {
+		persist.forEach( ( type ) => {
 			mw.storage.remove( key( type ) );
 		} );
 	}
@@ -192,7 +192,7 @@ function SessionState() {
 					formatversion: 2,
 					action: 'cirrus-config-dump',
 					prop: 'usertesting'
-				} ).then( function ( data ) {
+				} ).then( ( data ) => {
 					set( 'subTest', resolveSubTest( data.CirrusSearchActiveUserTest ) );
 				} );
 			}
@@ -489,7 +489,7 @@ function setupSearchTest( session ) {
 		$( '#mw-content-text' ).on(
 			'click',
 			'.mw-search-result a, #mw-search-DYM-suggestion, #mw-search-DYM-original, #mw-search-DYM-rewritten',
-			function ( evt ) {
+			( evt ) => {
 				let wprov;
 				// Sometimes the click event is on a span inside the anchor
 				const $target = $( evt.target ).closest( 'a' );
@@ -531,7 +531,7 @@ function setupSearchTest( session ) {
 		$( '#mw-interwiki-results' ).on(
 			'click',
 			'.iw-result__title a, .iw-result__mini-gallery a, .iw-result__footer a',
-			function ( evt ) {
+			( evt ) => {
 				const $target = $( evt.target ).closest( 'a' );
 				const href = $target.attr( 'href' ) || '';
 
@@ -550,7 +550,7 @@ function setupSearchTest( session ) {
 
 	if ( search.cameFromSearch ) {
 		logEvent( 'visitPage', createVisitPageEvent() );
-		interval( checkinTimes, function ( checkin ) {
+		interval( checkinTimes, ( checkin ) => {
 			logEvent( 'checkin', { checkin: checkin } );
 		} );
 	}
@@ -636,7 +636,7 @@ function setupAutocompleteTest( session ) {
 		logEvent( 'visitPage', {
 			position: autoComplete.resultPosition
 		} );
-		interval( checkinTimes, function ( checkin ) {
+		interval( checkinTimes, ( checkin ) => {
 			logEvent( 'checkin', {
 				checkin: checkin
 			} );
@@ -681,14 +681,14 @@ function setup( fn ) {
 
 // Full text search satisfaction tracking
 if ( isSearchResultPage || search.cameFromSearch ) {
-	$( function () {
+	$( () => {
 		setup( setupSearchTest );
 	} );
 }
 
 // Autocomplete satisfaction tracking
-$( function () {
-	const initialize = atMostOnce( function () {
+$( () => {
+	const initialize = atMostOnce( () => {
 		setup( setupAutocompleteTest );
 	} );
 

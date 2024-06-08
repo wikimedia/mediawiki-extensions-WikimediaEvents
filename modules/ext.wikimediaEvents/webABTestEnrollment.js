@@ -26,10 +26,10 @@ function logEvent( data ) {
 }
 
 // On page load RIC, check whether to log A/B test initialization.
-mw.requestIdleCallback( function () {
+mw.requestIdleCallback( () => {
 	// Get data from hook to pass into log function.
 	// Callers of this hook must take care of sampling.
-	mw.hook( 'mediawiki.web_AB_test_enrollment' ).add( function ( data ) {
+	mw.hook( 'mediawiki.web_AB_test_enrollment' ).add( ( data ) => {
 		// Only initialize the instrument if config allows:
 		logEvent( data );
 	} );

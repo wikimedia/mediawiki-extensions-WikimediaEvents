@@ -114,16 +114,14 @@ function logClickEvent( event, entityId ) {
 	const searchData = $selector.data( 'entityselector' );
 	const suggestions = searchData._cache.suggestions;
 	// eslint-disable-next-line no-jquery/no-map-util
-	const resultIds = $.map( suggestions, function ( item ) {
-		return item.pageid;
-	} ).join( ',' );
+	const resultIds = $.map( suggestions, ( item ) => item.pageid ).join( ',' );
 
 	if ( !suggestions || suggestions.length < 2 || !searchData._term ) {
 		// Do not track events where there was no real choice
 		return;
 	}
 
-	if ( !suggestions.some( function ( item, idx ) {
+	if ( !suggestions.some( ( item, idx ) => {
 		if ( item.id === entityId ) {
 			clickIndex = idx;
 			clickPage = item.pageid;
@@ -155,7 +153,7 @@ function logSessionStartEvent( context, language, searchTerm ) {
 	} );
 }
 
-mw.hook( 'wikibase.entityselector.search.api-parameters' ).add( function ( data ) {
+mw.hook( 'wikibase.entityselector.search.api-parameters' ).add( ( data ) => {
 	let $entityview;
 	const testBucket = getTestBucket( data.type, data.language );
 	if ( testBucket.searchApiParameters ) {
@@ -172,12 +170,12 @@ mw.hook( 'wikibase.entityselector.search.api-parameters' ).add( function ( data 
 	}
 } );
 
-mw.hook( 'wikibase.entityPage.entityView.rendered' ).add( function () {
+mw.hook( 'wikibase.entityPage.entityView.rendered' ).add( () => {
 	// TODO: .wikibase-entityview doesn't exist on non-entity pages, such
 	// as Main Page, so no events are logged there.
 	const $entityview = $( '.wikibase-entityview' );
 	if ( $entityview.length ) {
-		$entityview.on( 'entityselectorselected.entitysearch', function ( event, entityId ) {
+		$entityview.on( 'entityselectorselected.entitysearch', ( event, entityId ) => {
 			searchSessionStarted = false;
 			return logClickEvent( event, entityId );
 		} );

@@ -157,9 +157,7 @@ function shouldIgnoreMessage( message ) {
 		// these should be excluded.
 		'Permission denied to access property',
 		'Permission denied to access object'
-	].some( function ( m ) {
-		return message.indexOf( m ) > -1;
-	} );
+	].some( ( m ) => message.indexOf( m ) > -1 );
 }
 
 /**
@@ -428,11 +426,7 @@ function log( intakeURL, descriptor, component ) {
 		errorContext.special_page = canonicalName;
 	}
 	// @ts-ignore https://github.com/wikimedia/typescript-types/issues/47
-	gadgets = mw.loader.getModuleNames().filter( function ( module ) {
-		return module.match( /^ext\.gadget\./ ) && mw.loader.getState( module ) !== 'registered';
-	} ).map( function ( /** @type string */ module ) {
-		return module.replace( /^ext\.gadget\./, '' );
-	} ).join( ',' );
+	gadgets = mw.loader.getModuleNames().filter( ( module ) => module.match( /^ext\.gadget\./ ) && mw.loader.getState( module ) !== 'registered' ).map( ( /** @type string */ module ) => module.replace( /^ext\.gadget\./, '' ) ).join( ',' );
 	if ( gadgets ) {
 		errorContext.gadgets = gadgets;
 	}
@@ -470,7 +464,7 @@ function log( intakeURL, descriptor, component ) {
 function install( intakeURL ) {
 	// Capture errors which were logged manually via
 	// mw.errorLogger.logError( <error>, <topic> )
-	mw.trackSubscribe( 'error.', function ( topic, error ) {
+	mw.trackSubscribe( 'error.', ( topic, error ) => {
 		if ( topic === 'error.uncaught' ) {
 			// Will be logged via global.error.
 			return;
@@ -491,7 +485,7 @@ function install( intakeURL ) {
 	// which is responsible for directly handling the browser's
 	// window.onerror events and producing equivalent messages to
 	// the 'global.error' topic.
-	mw.trackSubscribe( 'global.error', function ( _, obj ) {
+	mw.trackSubscribe( 'global.error', ( _, obj ) => {
 		const descriptor = processErrorLoggerObject( /** @type UnprocessedErrorObject */ ( obj ) );
 
 		if ( descriptor && shouldLog( descriptor ) ) {

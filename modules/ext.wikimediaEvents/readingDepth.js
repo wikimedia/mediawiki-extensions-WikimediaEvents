@@ -211,7 +211,7 @@ function onLoad() {
 		pause( visibilityListenersAdded );
 	}
 
-	$( document ).on( 'visibilitychange', function () {
+	$( document ).on( 'visibilitychange', () => {
 		if ( isHidden() ) {
 			pause();
 		} else {
@@ -244,7 +244,7 @@ function enableTracking() {
 	}
 }
 
-mw.requestIdleCallback( function () {
+mw.requestIdleCallback( () => {
 	// The schema should only run on Vector and Minerva skins.
 	if ( ignoredSkins.indexOf( skin ) === -1 ) {
 		sessionId = mw.user.sessionId();

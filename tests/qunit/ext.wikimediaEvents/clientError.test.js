@@ -6,7 +6,7 @@ const clientError = require( 'ext.wikimediaEvents/clientError.js' );
 
 QUnit.module( 'ext.wikimediaEvents/clientError', QUnit.newMwEnvironment() );
 
-QUnit.test( 'processErrorLoggerObject', function ( assert ) {
+QUnit.test( 'processErrorLoggerObject', ( assert ) => {
 	const error = new Error( 'foo' );
 	let expected, actual;
 
@@ -46,7 +46,7 @@ QUnit.test( 'processErrorLoggerObject', function ( assert ) {
 	assert.propEqual( actual, expected );
 } );
 
-QUnit.test( 'processErrorInstance', function ( assert ) {
+QUnit.test( 'processErrorInstance', ( assert ) => {
 	const errorWithoutStack = new Error( 'foo' );
 	const error = new Error( 'bar' );
 

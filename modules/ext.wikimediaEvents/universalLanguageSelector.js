@@ -317,7 +317,7 @@ function listen() {
 		onHide();
 	}
 
-	document.addEventListener( 'visibilitychange', function () {
+	document.addEventListener( 'visibilitychange', () => {
 		if ( document.hidden ) {
 			onHide();
 		} else {
@@ -326,7 +326,7 @@ function listen() {
 	} );
 
 	// Wait for DOMContentLoaded to ensure #p-lang is present.
-	$( function () {
+	$( () => {
 		// Log language switching event in legacy sidebar for modern Vector.
 		// eslint-disable-next-line no-jquery/no-global-selector
 		$( '.mw-workspace-container #p-lang' ).on( 'click', '.interlanguage-link-target', function () {

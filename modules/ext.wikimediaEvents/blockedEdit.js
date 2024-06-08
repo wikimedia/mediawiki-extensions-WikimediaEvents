@@ -1,7 +1,7 @@
 /* global ve */
 
 // visualeditor (visual and source)
-mw.hook( 've.activationComplete' ).add( function () {
+mw.hook( 've.activationComplete' ).add( () => {
 	if ( !ve.init.target.canEdit ) {
 		// might be a block or just a protected page; the API will work that out
 		( new mw.Api() ).post( {
@@ -15,7 +15,7 @@ mw.hook( 've.activationComplete' ).add( function () {
 } );
 
 // mobilefrontend editors
-mw.trackSubscribe( 'counter.MediaWiki.BlockNotices.' + mw.config.get( 'wgDBname' ) + '.MobileFrontend.shown', function () {
+mw.trackSubscribe( 'counter.MediaWiki.BlockNotices.' + mw.config.get( 'wgDBname' ) + '.MobileFrontend.shown', () => {
 	( new mw.Api() ).post( {
 		formatversion: 2,
 		action: 'wikimediaeventsblockededit',
@@ -26,7 +26,7 @@ mw.trackSubscribe( 'counter.MediaWiki.BlockNotices.' + mw.config.get( 'wgDBname'
 } );
 
 // discussiontools
-mw.trackSubscribe( 'dt.commentSetupError', function ( topic, code ) {
+mw.trackSubscribe( 'dt.commentSetupError', ( topic, code ) => {
 	if ( code === 'permissions-error' ) {
 		// might be a block or just a protected page; the API will work that out
 		( new mw.Api() ).post( {
