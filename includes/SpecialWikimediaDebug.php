@@ -4,12 +4,12 @@ namespace WikimediaEvents;
 
 use ErrorPageError;
 use ExtensionRegistry;
-use HTMLForm;
+use MediaWiki\Context\RequestContext;
+use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\MainConfigNames;
+use MediaWiki\Message\Message;
 use MediaWiki\SpecialPage\UnlistedSpecialPage;
 use MediaWiki\Utils\MWTimestamp;
-use Message;
-use RequestContext;
 
 /**
  * Manage the X-Wikimedia-Debug cookie, to enable verbose logging on production servers.

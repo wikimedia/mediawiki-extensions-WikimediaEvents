@@ -2,7 +2,7 @@
 
 namespace WikimediaEvents\WebABTest;
 
-use IContextSource;
+use MediaWiki\Context\IContextSource;
 use WikimediaEvents\PageSplitter\PageHashGenerate;
 use WikimediaEvents\PageSplitter\PageSplitterInstrumentation;
 

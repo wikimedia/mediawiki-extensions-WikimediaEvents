@@ -4,6 +4,7 @@ namespace WikimediaEvents;
 
 use ExtensionRegistry;
 use FormatJson;
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\BetaFeatures\BetaFeatures;
 use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\Extension\EventLogging\Libs\UserBucketProvider\UserBucketProvider;
@@ -12,7 +13,6 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\User\Options\Hook\SaveUserOptionsHook;
 use MediaWiki\User\UserIdentity;
 use MediaWiki\Utils\MWTimestamp;
-use RequestContext;
 use RuntimeException;
 
 /**

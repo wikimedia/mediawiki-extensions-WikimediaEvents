@@ -3,12 +3,12 @@
 namespace WikimediaEvents;
 
 use MediaWiki\Block\Block;
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Message\Message;
 use MediaWiki\Title\Title;
 use MediaWiki\User\User;
-use Message;
-use RequestContext;
 
 class BlockUtils {
 	// Possible block error keys from Block\BlockErrorFormatter::getBlockErrorMessageKey()

@@ -2,9 +2,9 @@
 
 namespace WikimediaEvents\Tests;
 
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\Title\Title;
-use RequestContext;
 use WikimediaEvents\PageSplitter\PageSplitterInstrumentation;
 use WikimediaEvents\WebABTest\WebABTestArticleIdFactory;
 

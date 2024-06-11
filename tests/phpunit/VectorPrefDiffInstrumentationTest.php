@@ -2,7 +2,8 @@
 
 namespace WikimediaEvents\Tests;
 
-use HTMLForm;
+use MediaWiki\HTMLForm\HTMLForm;
+use MediaWiki\HTMLForm\HTMLFormField;
 use MediaWiki\User\User;
 use MediaWiki\User\UserEditTracker;
 use MediaWikiIntegrationTestCase;
@@ -20,7 +21,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 	 * @return HTMLForm
 	 */
 	private function createFormWithDefaultValues( $skinDefault, $skinVersionDefault, $shouldIncludeVector2022 ) {
-		$skinField = $this->createMock( \HTMLFormField::class );
+		$skinField = $this->createMock( HTMLFormField::class );
 		$skinField->method( 'getDefault' )->willReturn( $skinDefault );
 		$skinOptions = [
 			"Vector ()" => "vector",
@@ -31,10 +32,10 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 			$skinOptions[ "Vector 2022 (<>)" ] = "vector-2022";
 		}
 		$skinField->method( 'getOptions' )->willReturn( $skinOptions );
-		$skinVersionField = $this->createMock( \HTMLFormField::class );
+		$skinVersionField = $this->createMock( HTMLFormField::class );
 		$skinVersionField->method( 'getDefault' )->willReturn( $skinVersionDefault );
 
-		$form = $this->createMock( \HTMLForm::class );
+		$form = $this->createMock( HTMLForm::class );
 		$form->method( 'hasField' )->willReturnMap( [
 			[ 'skin', true ],
 			[ 'VectorSkinVersion', true ]

@@ -3,13 +3,13 @@
 namespace WikimediaEvents;
 
 use MediaWiki\Auth\AuthenticationResponse;
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\Page\PageReference;
 use MediaWiki\SpecialPage\SpecialPageFactory;
 use MediaWiki\User\UserIdentity;
 use MediaWiki\User\UserIdentityUtils;
 use MediaWiki\WikiMap\WikiMap;
-use RequestContext;
 
 class AccountCreationLogger {
 

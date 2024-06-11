@@ -3,17 +3,17 @@
 namespace WikimediaEvents\BlockMetrics;
 
 use MediaWiki\Block\Block;
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\EventBus\EventFactory;
 use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\Linker\LinkTarget;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Message\Message;
 use MediaWiki\Permissions\Hook\PermissionErrorAuditHook;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserIdentity;
-use Message;
-use RequestContext;
 
 /**
  * Hooks related to T303995.

@@ -1,6 +1,7 @@
 <?php
 
 use MediaWiki\Auth\AuthenticationResponse;
+use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\SpecialPage\SpecialPageFactory;
 use MediaWiki\User\UserIdentity;
 use MediaWiki\User\UserIdentityUtils;

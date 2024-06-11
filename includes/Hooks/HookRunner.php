@@ -2,7 +2,7 @@
 
 namespace WikimediaEvents\Hooks;
 
-use IContextSource;
+use MediaWiki\Context\IContextSource;
 use MediaWiki\HookContainer\HookContainer;
 
 /**
