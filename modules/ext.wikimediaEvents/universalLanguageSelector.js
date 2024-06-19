@@ -74,7 +74,7 @@ function getSkinVersion() {
  * @param {Object} event Event action and optional fields
  */
 function log( event ) {
-	event = $.extend( {
+	event = Object.assign( {
 
 		// Note well that the version and token properties _could_ be removed as they've both been
 		// superseded: version has been superseded by the move to the Modern Event Platform; and

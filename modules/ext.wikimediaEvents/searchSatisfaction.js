@@ -342,10 +342,10 @@ function genLogEventFn( source, session, sourceExtraData ) {
 
 		// add any action specific data
 		if ( sourceExtraData ) {
-			$.extend( evt, sourceExtraData );
+			Object.assign( evt, sourceExtraData );
 		}
 		if ( extraData ) {
-			$.extend( evt, extraData );
+			Object.assign( evt, extraData );
 		}
 
 		// ship the event

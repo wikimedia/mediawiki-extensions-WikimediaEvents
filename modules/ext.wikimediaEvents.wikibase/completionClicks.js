@@ -96,7 +96,7 @@ function logEvent( action, context, language, data ) {
 		return;
 	}
 
-	data = $.extend( {
+	data = Object.assign( {
 		action: action,
 		context: context,
 		language: language,
@@ -157,7 +157,7 @@ mw.hook( 'wikibase.entityselector.search.api-parameters' ).add( ( data ) => {
 	let $entityview;
 	const testBucket = getTestBucket( data.type, data.language );
 	if ( testBucket.searchApiParameters ) {
-		$.extend( data, testBucket.searchApiParameters );
+		Object.assign( data, testBucket.searchApiParameters );
 	}
 	if ( !searchSessionStarted ) {
 		// We have to filter to the same set of pages click events are filtered

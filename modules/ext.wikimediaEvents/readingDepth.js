@@ -155,7 +155,7 @@ function logEvent( action ) {
 	const pageLength = mw.config.get( 'wgWMEPageLength', -1 );
 	const isMobile = mw.config.get( 'wgMFMode' );
 
-	const data = $.extend( {}, EVENT, {
+	const data = Object.assign( {}, EVENT, {
 		action: action,
 		dom_interactive_time: domInteractive ?
 			Math.round( domInteractive ) :
