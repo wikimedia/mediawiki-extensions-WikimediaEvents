@@ -13,5 +13,7 @@
 	"apihelp-wikimediaeventsblockededit-summary": "有關禁止編輯嘗試的日誌資訊",
 	"apihelp-wikimediaeventsblockededit-param-page": "嘗試做出編輯的頁面",
 	"apihelp-wikimediaeventsblockededit-param-interface": "用於編輯的介面",
-	"apihelp-wikimediaeventsblockededit-param-platform": "用於編輯的平台"
+	"apihelp-wikimediaeventsblockededit-param-platform": "用於編輯的平台",
+	"wikimediaevents-special-wikimediadebug-notenabled": "此特殊頁面未啟用。",
+	"wikimediaevents-special-wikimediadebug-submit-clear": "清除 cookie"
 }
