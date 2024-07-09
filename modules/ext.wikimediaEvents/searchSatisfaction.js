@@ -104,7 +104,7 @@ function SessionState() {
 	// persistent state keys that have a lifetime. unlisted
 	// keys are not persisted between page loads.
 	const ttl = 10 * 60 * 1000;
-	const persist = [ 'sessionId', 'subTest' ];
+	const persist = [ 'sessionId', 'subTest', '__EndTime__' ];
 
 	/**
 	 * Generates a cache key specific to this session and key type.
@@ -218,7 +218,7 @@ function SessionState() {
 	}
 
 	this.isActive = function () {
-		const end = +mw.storage.get( key( '__EndTime__' ) );
+		const end = +this.get( '__EndTime__' );
 		return end > Date.now() && this.get( 'sessionId' ) !== null;
 	};
 
