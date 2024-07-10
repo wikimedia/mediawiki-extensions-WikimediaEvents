@@ -39,7 +39,7 @@ class BlockMetricsHooksTest extends MediaWikiIntegrationTestCase {
 				$this->assertArraySubmapSame(
 					[
 						'$schema' => BlockMetricsHooks::SCHEMA,
-						'database' => $this->db->getDBname(),
+						'database' => $this->getDb()->getDBname(),
 						'block_id' => json_encode( $block->getId() ),
 						'block_type' => 'user',
 						'block_expiry' => 'infinity',
