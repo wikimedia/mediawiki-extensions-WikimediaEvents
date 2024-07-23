@@ -145,6 +145,10 @@ class SpecialWikimediaDebug extends UnlistedSpecialPage {
 	}
 
 	private function setCookie( array $cookieData ): void {
+		// These cookies get decoded by Varnish, which is generally not well-equipped to do
+		// decoding, so the current code relies on the details of the logic here; specifically,
+		// on = and ; being the only two characters that get percent-encoded. If you change that,
+		// you'll need to update the VCL in the operations/puppet repo.
 		$expiry = time() + self::DEFAULT_EXPIRY;
 		$cookieData['expire'] = $expiry;
 		$cookieStringParts = [];
