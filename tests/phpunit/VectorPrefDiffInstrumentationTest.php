@@ -268,7 +268,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function testNullSalt() {
-		$this->setMwGlobals( 'wgWMEVectorPrefDiffSalt', null );
+		$this->overrideConfigValue( 'WMEVectorPrefDiffSalt', null );
 		$userEditTracker = $this->createMock( UserEditTracker::class );
 		$userEditTracker->method( 'getUserEditCount' )
 			->willReturn( 42 );
@@ -292,7 +292,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 	 * @dataProvider providePrefDiff
 	 */
 	public function testCreateEventIfNecessary( $formData, $mockFormValues, $expect ) {
-		$this->setMwGlobals( 'wgWMEVectorPrefDiffSalt', 'secret' );
+		$this->overrideConfigValue( 'WMEVectorPrefDiffSalt', 'secret' );
 		$user = $this->createUser();
 		$form = $this->createFormWithDefaultValues( ...$mockFormValues );
 		$userEditTracker = $this->createMock( UserEditTracker::class );

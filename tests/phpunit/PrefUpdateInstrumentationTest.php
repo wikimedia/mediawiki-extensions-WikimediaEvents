@@ -2,6 +2,7 @@
 
 namespace WikimediaEvents\Tests;
 
+use MediaWiki\MainConfigNames;
 use MediaWiki\User\User;
 use MediaWiki\User\UserEditTracker;
 use Wikimedia\TestingAccessWrapper;
@@ -17,7 +18,7 @@ class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 
 	public function setUp(): void {
 		parent::setUp();
-		$this->setMwGlobals( 'wgDefaultSkin', 'fallback' );
+		$this->overrideConfigValue( MainConfigNames::DefaultSkin, 'fallback' );
 	}
 
 	public static function providePrefUpdate() {
