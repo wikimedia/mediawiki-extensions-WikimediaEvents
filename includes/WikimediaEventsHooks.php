@@ -66,9 +66,14 @@ class WikimediaEventsHooks implements
 
 {
 	private AccountCreationLogger $accountCreationLogger;
+	private Config $config;
 
-	public function __construct( AccountCreationLogger $accountCreationLogger ) {
+	public function __construct(
+		AccountCreationLogger $accountCreationLogger,
+		Config $config
+	) {
 		$this->accountCreationLogger = $accountCreationLogger;
+		$this->config = $config;
 	}
 
 	/**
@@ -422,7 +427,7 @@ class WikimediaEventsHooks implements
 	 */
 	public function onRecentChange_save( $rc ): void {
 		self::onRecentChangeSaveCrossWikiUpload( $rc );
-		self::onRecentChangeSaveEditCampaign( $rc );
+		$this->onRecentChangeSaveEditCampaign( $rc );
 	}
 
 	/**
@@ -466,16 +471,14 @@ class WikimediaEventsHooks implements
 	 *
 	 * @param RecentChange $rc
 	 */
-	public static function onRecentChangeSaveEditCampaign( RecentChange $rc ): void {
-		global $wgWMEEditCampaigns;
-
+	public function onRecentChangeSaveEditCampaign( RecentChange $rc ): void {
 		if ( !defined( 'MW_API' ) ) {
 			return;
 		}
 
 		$request = RequestContext::getMain()->getRequest();
 		$campaign = $request->getRawVal( 'campaign' );
-		if ( !in_array( $campaign, $wgWMEEditCampaigns ) ) {
+		if ( !in_array( $campaign, $this->config->get( 'WMEEditCampaigns' ) ) ) {
 			return;
 		}
 

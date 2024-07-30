@@ -25,7 +25,10 @@
 	"HookHandlers": {
 		"main": {
 			"class": "WikimediaEvents\\WikimediaEventsHooks",
-			"services": [ "AccountCreationLogger" ]
+			"services": [
+				"AccountCreationLogger",
+				"MainConfig"
+			]
 		},
 		"VectorInstrumentation": {
 			"class": "WikimediaEvents\\VectorPrefDiffInstrumentation"
