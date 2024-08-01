@@ -597,7 +597,7 @@ class WikimediaEventsHooks implements
 		$cookieName = 'wmdecampaign-' . $campaignPrefix;
 
 		$hasCampaignCookie = $request->getCookie( $cookieName ) !== null;
-		$hasCampaignQuery = strpos( $request->getRawVal( 'campaign' ), $campaignPrefix ) === 0;
+		$hasCampaignQuery = strpos( $request->getRawVal( 'campaign' ) ?? '', $campaignPrefix ) === 0;
 
 		// Get the campaign name from either the cookie or query param
 		// Cookie has precedence
