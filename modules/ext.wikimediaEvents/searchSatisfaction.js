@@ -275,6 +275,13 @@ function interval( checkinTimes, fn ) {
 }
 
 function genLogEventFn( source, session, sourceExtraData ) {
+	// These values are captured now, at initialization time, rather than when
+	// submitting the event because they are constant across a single page
+	// load, and session invalidation can make them go away.  When a session is
+	// invalidated we still need these values for checkin events.
+	const sessionId = session.get( 'sessionId' ),
+		pageViewId = session.get( 'pageViewId' );
+
 	return function ( action, extraData ) {
 		const scrollTop = $( window ).scrollTop();
 		const evt = {
@@ -284,12 +291,12 @@ function genLogEventFn( source, session, sourceExtraData ) {
 			source: source,
 			// identifies a single user performing searches within
 			// a limited time span.
-			searchSessionId: session.get( 'sessionId' ),
+			searchSessionId: sessionId,
 			// used to correlate actions that happen on the same
 			// page. Otherwise a user opening multiple search results
 			// in tabs would make their events overlap and the dwell
 			// time per page uncertain.
-			pageViewId: session.get( 'pageViewId' ),
+			pageViewId: pageViewId,
 			// identifies if a user has scrolled the page since the
 			// last event
 			scroll: scrollTop !== lastScrollTop,
@@ -320,7 +327,8 @@ function genLogEventFn( source, session, sourceExtraData ) {
 
 		const subTest = session.get( 'subTest' );
 		// Schema expects no subTest value to be provided when no test is active.
-		if ( subTest !== 'inactive' ) {
+		// subTest can be null if this is a checkin event fired after session close.
+		if ( subTest !== 'inactive' && subTest !== null ) {
 			evt.subTest = subTest;
 		}
 
