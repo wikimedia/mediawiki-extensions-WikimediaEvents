@@ -49,6 +49,9 @@ QUnit.test( 'processErrorLoggerObject', ( assert ) => {
 QUnit.test( 'processErrorInstance', ( assert ) => {
 	const errorWithoutStack = new Error( 'foo' );
 	const error = new Error( 'bar' );
+	error.error_context = {
+		custom_field: 'customValue'
+	};
 
 	assert.strictEqual( clientError.processErrorInstance( null ), null );
 	assert.strictEqual( clientError.processErrorInstance( {} ), null );
@@ -60,7 +63,10 @@ QUnit.test( 'processErrorInstance', ( assert ) => {
 		errorClass: 'Error',
 		errorMessage: 'bar',
 		stackTrace: clientError.getNormalizedStackTraceLines( error.stack ).join( '\n' ),
-		errorObject: error
+		errorObject: error,
+		customErrorContext: {
+			custom_field: 'customValue'
+		}
 	};
 	const actual = clientError.processErrorInstance( error );
 	const actualFileUrl = actual.fileUrl;
@@ -95,7 +101,10 @@ QUnit.test( 'log', function ( assert ) {
 		errorMessage: 'bar',
 		fileUrl: 'http://localhost:8080/wiki/Bar',
 		stackTrace: 'foo',
-		errorObject: new Error( 'bar' )
+		errorObject: new Error( 'bar' ),
+		customErrorContext: {
+			custom_field: 'customValue'
+		}
 	} );
 
 	const data = JSON.parse( sendBeacon.firstCall.args[ 1 ] );
@@ -112,7 +121,8 @@ QUnit.test( 'log', function ( assert ) {
 			is_logged_in: 'true',
 			namespace: 'Special',
 			debug: 'false',
-			special_page: 'Blank'
+			special_page: 'Blank',
+			custom_field: 'customValue'
 		}
 	} );
 } );

@@ -90,6 +90,7 @@ const regexGecko = /^\s*(?:(.*?)(?:\(.*?\))?@)?(.*:\d+:\d+)\s*$/i;
  * @property {string} [stackTrace] The normalized stack trace (see
  *  `getNormalizedStackTraceLines()`)
  * @property {Error} [errorObject] The underlying error if available
+ * @property {Object} [customErrorContext] Additional custom context to be logged with the error
  */
 
 /**
@@ -250,7 +251,8 @@ function processErrorInstance( error ) {
 		errorMessage: error.message,
 		fileUrl: fileUrl,
 		stackTrace: stackTraceLines.join( '\n' ),
-		errorObject: error
+		errorObject: error,
+		customErrorContext: /** @type {Error & {error_context?: Object}} */ ( error ).error_context
 	};
 }
 
@@ -431,6 +433,8 @@ function log( intakeURL, descriptor, component ) {
 		errorContext.gadgets = gadgets;
 	}
 
+	const customErrorContext = descriptor.customErrorContext ? descriptor.customErrorContext : {};
+
 	navigator.sendBeacon( intakeURL, JSON.stringify( {
 		meta: {
 			// Name of the stream
@@ -451,7 +455,7 @@ function log( intakeURL, descriptor, component ) {
 		// Normalized stack trace string
 		// We log undefined rather than empty string (consistent with file_url) to allow for filtering.
 		stack_trace: descriptor.stackTrace || 'undefined',
-		error_context: errorContext
+		error_context: Object.assign( {}, errorContext, customErrorContext )
 	} ) );
 }
 

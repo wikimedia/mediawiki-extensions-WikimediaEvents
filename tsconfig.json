@@ -4,6 +4,7 @@
 		"modules/index.d.ts"
 	],
 	"compilerOptions": {
+		"lib": [ "ES2015", "DOM" ],
 		"strict": true,
 		"allowJs": true,
 		"checkJs": true,
