@@ -381,14 +381,7 @@ class WikimediaEventsHooks implements
 	 * @param array &$tags
 	 */
 	public function onChangeTagsListActive( &$tags ): void {
-		if ( WikiMap::getCurrentWikiId() === 'commonswiki' ) {
-			$tags[] = 'cross-wiki-upload';
-			// For A/B test
-			$tags[] = 'cross-wiki-upload-1';
-			$tags[] = 'cross-wiki-upload-2';
-			$tags[] = 'cross-wiki-upload-3';
-			$tags[] = 'cross-wiki-upload-4';
-		}
+		$this->onListDefinedTags( $tags );
 	}
 
 	/**
