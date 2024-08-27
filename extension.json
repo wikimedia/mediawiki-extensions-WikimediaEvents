@@ -10,7 +10,7 @@
 	"descriptionmsg": "wikimediaevents-desc",
 	"license-name": "GPL-2.0-or-later",
 	"requires": {
-		"MediaWiki": ">= 1.42",
+		"MediaWiki": ">= 1.43",
 		"extensions": {
 			"EventLogging": "*",
 			"EventBus": "*"
@@ -66,7 +66,10 @@
 	"Hooks": {
 		"BeforeInitialize": "main",
 		"BeforePageDisplay": "main",
-		"PageSaveComplete": [ "main", "IPReputationHooks" ],
+		"PageSaveComplete": [
+			"main",
+			"IPReputationHooks"
+		],
 		"LocalUserCreated": "IPReputationHooks",
 		"PreferencesFormPreSave": "VectorInstrumentation",
 		"SaveUserOptions": "PrefInstrumentation",
@@ -346,7 +349,9 @@
 		"preauth": {
 			"AccountCreationEventProvider": {
 				"class": "WikimediaEvents\\AccountCreationEventProvider",
-				"services": [ "AccountCreationLogger" ],
+				"services": [
+					"AccountCreationLogger"
+				],
 				"sort": 0
 			}
 		}
