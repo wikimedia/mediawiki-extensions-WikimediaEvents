@@ -367,11 +367,6 @@ class WikimediaEventsHooks implements
 	public function onListDefinedTags( &$tags ): void {
 		if ( WikiMap::getCurrentWikiId() === 'commonswiki' ) {
 			$tags[] = 'cross-wiki-upload';
-			// For A/B test
-			$tags[] = 'cross-wiki-upload-1';
-			$tags[] = 'cross-wiki-upload-2';
-			$tags[] = 'cross-wiki-upload-3';
-			$tags[] = 'cross-wiki-upload-4';
 		}
 	}
 
@@ -445,16 +440,7 @@ class WikimediaEventsHooks implements
 			return;
 		}
 
-		// A/B test
-		$bucket = $request->getRawVal( 'bucket' );
-		if ( !in_array( $bucket, [ '1', '2', '3', '4' ] ) ) {
-			$bucket = null;
-		}
-
 		$tags = [ 'cross-wiki-upload' ];
-		if ( $bucket ) {
-			$tags[] = "cross-wiki-upload-$bucket";
-		}
 		$rc->addTags( $tags );
 	}
 
