@@ -4,5 +4,7 @@
 			"Xuacu"
 		]
 	},
-	"wikimediaevents-desc": "Rexistra socesos específicos de Wikimedia usando EventLogging"
+	"wikimediaevents-desc": "Rexistra socesos específicos de Wikimedia usando EventLogging",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Xubida ente wikis]]",
+	"tag-cross-wiki-upload-description": "Ficheros xubíos dende dientro del testu wiki y los editores visuales a otres wikis"
 }

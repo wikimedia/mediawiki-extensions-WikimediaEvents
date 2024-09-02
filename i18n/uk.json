@@ -9,5 +9,7 @@
 			"Ата"
 		]
 	},
-	"wikimediaevents-desc": "Записує у журнал події пов'язані з Вікімедіа, використовуючи EventLogging"
+	"wikimediaevents-desc": "Записує у журнал події пов'язані з Вікімедіа, використовуючи EventLogging",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Міжпроектне завантаження]]",
+	"tag-cross-wiki-upload-description": "Файли, завантажені всередині редактора вікірозмітки та візуального редактора в інших вікі"
 }

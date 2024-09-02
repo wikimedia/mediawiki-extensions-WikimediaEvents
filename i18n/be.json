@@ -5,5 +5,7 @@
 			"Chadyka"
 		]
 	},
-	"wikimediaevents-desc": "Запісвае падзеі, якія патрэбныя Вікімедыі, у журналы з дапамогай пашырэння EventLogging"
+	"wikimediaevents-desc": "Запісвае падзеі, якія патрэбныя Вікімедыі, у журналы з дапамогай пашырэння EventLogging",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Загрузка з іншага вікі-праекта («крос-вікі»)]]",
+	"tag-cross-wiki-upload-description": "Файлы, загружаныя з тэкставага і візуальнага рэдактараў іншых вікі-праектаў"
 }

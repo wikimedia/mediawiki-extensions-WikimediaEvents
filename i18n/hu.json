@@ -5,5 +5,7 @@
 			"Tgr"
 		]
 	},
-	"wikimediaevents-desc": "Wikimédia-specifikus eseményeket naplóz az EventLogging segítségével"
+	"wikimediaevents-desc": "Wikimédia-specifikus eseményeket naplóz az EventLogging segítségével",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Wikiközi feltöltés]]",
+	"tag-cross-wiki-upload-description": "Fájlok, amiket egy másik wiki wikikód-szerkesztőjéből vagy vizuális szerkesztőjéből töltöttek fel"
 }

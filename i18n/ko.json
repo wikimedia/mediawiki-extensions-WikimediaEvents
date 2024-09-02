@@ -13,6 +13,7 @@
 	"wikimediaevents-desc": "EventLogging을 사용하여 위키미디어 관련 이벤트를 기록합니다",
 	"apihelp-wikimediaeventsblockededit-summary": "차단된 편집 시도의 기록 정보입니다",
 	"apihelp-wikimediaeventsblockededit-param-interface": "편집에 사용된 인터페이스",
+	"tag-cross-wiki-upload-description": "다른 위키의 위키텍스트와 비주얼에디터의 내부에서 파일을 업로드",
 	"wikimediaevents-special-wikimediadebug-notenabled": "이 특수 문서는 활성화되어 있지 않습니다.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "$1 동안 디버그 쿠키 활성화",
 	"wikimediaevents-special-wikimediadebug-submit-renew": "$1 동안 쿠키 갱신",

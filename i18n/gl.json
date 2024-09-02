@@ -6,5 +6,7 @@
 			"Toliño"
 		]
 	},
-	"wikimediaevents-desc": "Rexistra os eventos específicos da Wikimedia mediante EventLogging"
+	"wikimediaevents-desc": "Rexistra os eventos específicos da Wikimedia mediante EventLogging",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Subida inter-wiki]]",
+	"tag-cross-wiki-upload-description": "Ficheiros subidos dende o texto wiki e editores visuais noutras wikis"
 }

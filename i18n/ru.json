@@ -15,6 +15,8 @@
 		]
 	},
 	"wikimediaevents-desc": "Ведёт журнал определённых Викимедиа событий с использованием EventLogging",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Загрузка через другой вики-проект («кросс-вики»)]]",
+	"tag-cross-wiki-upload-description": "Файлы, загруженные из текстового и визуального редакторов в других вики",
 	"wikimediaevents-special-wikimediadebug-notenabled": "Эта служебная страница не включена.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "Активируйте отладочный файл cookie за $1",
 	"wikimediaevents-special-wikimediadebug-submit-renew": "Продлить файл cookie за $1",

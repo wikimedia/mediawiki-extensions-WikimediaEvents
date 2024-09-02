@@ -4,5 +4,7 @@
 			"Giromin Cangiaxo"
 		]
 	},
-	"wikimediaevents-desc": "Registra di eventi speciffichi Wikimedia dœuviando EventLogging"
+	"wikimediaevents-desc": "Registra di eventi speciffichi Wikimedia dœuviando EventLogging",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Caregamento inter-wiki]]",
+	"tag-cross-wiki-upload-description": "File caregæ da-i editor wikitesto e vixoâ in scê atre wiki"
 }

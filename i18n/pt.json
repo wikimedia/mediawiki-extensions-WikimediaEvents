@@ -10,5 +10,7 @@
 	"apihelp-wikimediaeventsblockededit-summary": "Informações do registo sobre tentativas de edição bloqueadas",
 	"apihelp-wikimediaeventsblockededit-param-page": "Uma página na qual foi feita uma tentativa de edição",
 	"apihelp-wikimediaeventsblockededit-param-interface": "A interface que foi usada para editar",
-	"apihelp-wikimediaeventsblockededit-param-platform": "A plataforma que foi usada para editar"
+	"apihelp-wikimediaeventsblockededit-param-platform": "A plataforma que foi usada para editar",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Importações interwikis]]",
+	"tag-cross-wiki-upload-description": "Ficheiros importados a partir dos editores visuais e de texto wiki de outras wikis"
 }

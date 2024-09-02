@@ -4,5 +4,7 @@
 			"Praveenp"
 		]
 	},
-	"wikimediaevents-desc": "വിക്കിമീഡിയ സംബന്ധമായ സംഭവങ്ങൾ ഇവന്റ്‌ലോഗിങ് സൗകര്യമുപയോഗിച്ച് രേഖപ്പെടുത്തുന്നു"
+	"wikimediaevents-desc": "വിക്കിമീഡിയ സംബന്ധമായ സംഭവങ്ങൾ ഇവന്റ്‌ലോഗിങ് സൗകര്യമുപയോഗിച്ച് രേഖപ്പെടുത്തുന്നു",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|അന്തർവിക്കി അപ്‌ലോഡ്]]",
+	"tag-cross-wiki-upload-description": "മറ്റ് വിക്കികളിൽ വിക്കി എഴുത്തിൽ നിന്നോ കണ്ടുതിരുത്തൽ സൗകര്യത്തിനുള്ളിൽ നിന്നോ അപ്‌ലോഡ് ചെയ്ത പ്രമാണങ്ങൾ"
 }

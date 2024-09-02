@@ -8,5 +8,7 @@
 		]
 	},
 	"wikimediaevents-desc": "Registra eventi specifici Wikimedia utilizzando EventLogging",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Caricamento cross-wiki]]",
+	"tag-cross-wiki-upload-description": "File caricati dagli editor wikitesto e visuale su altri wiki",
 	"wikimediaevents-special-wikimediadebug-notenabled": "Questa pagina speciale non è abilitata."
 }

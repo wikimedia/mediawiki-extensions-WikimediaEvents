@@ -14,6 +14,8 @@
 	"apihelp-wikimediaeventsblockededit-param-page": "嘗試做出編輯的頁面",
 	"apihelp-wikimediaeventsblockededit-param-interface": "用於編輯的介面",
 	"apihelp-wikimediaeventsblockededit-param-platform": "用於編輯的平台",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|跨 wiki 上傳]]",
+	"tag-cross-wiki-upload-description": "檔案已在其他 wiki 由內建的 wikitext 與視覺化編輯器上傳",
 	"wikimediaevents-special-wikimediadebug-notenabled": "此特殊頁面未啟用。",
 	"wikimediaevents-special-wikimediadebug-submit-set": "啟動偵錯 cookie $1",
 	"wikimediaevents-special-wikimediadebug-submit-renew": "更新 cookie $1",

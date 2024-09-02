@@ -11,6 +11,8 @@
 	"apihelp-wikimediaeventsblockededit-param-page": "דף שבו נעשה ניסיון עריכה",
 	"apihelp-wikimediaeventsblockededit-param-interface": "הממשק ששימש לעריכה",
 	"apihelp-wikimediaeventsblockededit-param-platform": "הפלטפורמה ששימשה לעריכה",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|העלאה מאתר ויקי אחר]]",
+	"tag-cross-wiki-upload-description": "קבצים שהועלו מתוך העורך החזותי ועורך קוד המקור באתרי ויקי אחרים",
 	"wikimediaevents-special-wikimediadebug-desc": "ניפוי שגיאות לאתרי ויקימדיה",
 	"wikimediaevents-special-wikimediadebug-notenabled": "הדף המיוחד הזה אינו מופעל.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "הפעלת עוגייה לניפוי שגיאות למשך $1",

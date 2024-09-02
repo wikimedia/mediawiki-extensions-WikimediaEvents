@@ -7,5 +7,7 @@
 			"Violetanka"
 		]
 	},
-	"wikimediaevents-desc": "EventLogging kullanarak Wikimedia'ya özel olayları günlüğe kaydeder"
+	"wikimediaevents-desc": "EventLogging kullanarak Wikimedia'ya özel olayları günlüğe kaydeder",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Vikiarası yükleme]]",
+	"tag-cross-wiki-upload-description": "Vikimetinin içinden yüklenen dosyalar ve diğer vikilerdeki görsel editörler"
 }

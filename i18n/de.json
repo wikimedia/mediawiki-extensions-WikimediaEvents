@@ -12,6 +12,8 @@
 	"apihelp-wikimediaeventsblockededit-param-page": "Eine Seite, auf der ein Bearbeitungsversuch unternommen wurde",
 	"apihelp-wikimediaeventsblockededit-param-interface": "Die Schnittstelle, die zum Bearbeiten verwendet wurde",
 	"apihelp-wikimediaeventsblockededit-param-platform": "Die Plattform, die zum Bearbeiten verwendet wurde",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Wikiübergreifender Upload]]",
+	"tag-cross-wiki-upload-description": "Dateien, die von innerhalb des Wikitext- und visuellen Editors auf anderen Wikis hochgeladen wurden.",
 	"wikimediaevents-special-wikimediadebug-desc": "Wikimedia-Debug",
 	"wikimediaevents-special-wikimediadebug-notenabled": "Diese Spezialseite ist nicht aktiviert.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "Debug-Cookie für $1 aktivieren",
