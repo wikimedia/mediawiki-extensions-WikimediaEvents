@@ -19,15 +19,17 @@ class BlockUtils {
 		'systemblockedtext',
 		'blockedtext-composite'
 	];
-	// Possible block error keys from GlobalBlocking extension GlobalBlocking::getUserBlockDetails()
+	// Possible block error keys from GlobalBlocking extension
 	public const GLOBAL_ERROR_KEYS = [
-		'globalblocking-ipblocked',
-		'globalblocking-ipblocked-range',
-		'globalblocking-ipblocked-xff',
+		'globalblocking-blockedtext-ip',
+		'globalblocking-blockedtext-range',
+		'globalblocking-blockedtext-xff',
+		'globalblocking-blockedtext-user',
 		// WikimediaMessages versions
-		'wikimedia-globalblocking-ipblocked',
-		'wikimedia-globalblocking-ipblocked-range',
-		'wikimedia-globalblocking-ipblocked-xff',
+		'wikimedia-globalblocking-blockedtext-ip',
+		'wikimedia-globalblocking-blockedtext-range',
+		'wikimedia-globalblocking-blockedtext-xff',
+		'wikimedia-globalblocking-blockedtext-user',
 	];
 
 	/**
