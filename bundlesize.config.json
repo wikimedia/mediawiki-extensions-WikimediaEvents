@@ -1,0 +1,10 @@
+[
+	{
+		"resourceModule": "ext.wikimediaEvents",
+		"maxSize": null
+	},
+	{
+		"resourceModule": "ext.wikimediaEvents.wikibase",
+		"maxSize": null
+	}
+]
