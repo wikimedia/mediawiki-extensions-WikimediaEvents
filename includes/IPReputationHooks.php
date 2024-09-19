@@ -124,6 +124,7 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 			return null;
 		}
 		$sanitizedIp = IPUtils::sanitizeIP( $ip );
+		$fname = __METHOD__;
 		$data = $this->cache->getWithSetCallback(
 			$this->cache->makeGlobalKey( 'wikimediaevents-ipoid', $sanitizedIp ),
 			// IPoid data is refreshed every 24 hours and roughly 10% of its IPs drop out
@@ -132,7 +133,7 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 			// and also means that IPs for e.g. residential proxies are updated in our cache
 			// relatively quickly.
 			$this->cache::TTL_HOUR,
-			function () use ( $sanitizedIp ) {
+			function () use ( $sanitizedIp, $fname ) {
 				// If IPoid URL isn't configured, don't do any checks, let the user proceed.
 				$timeout = $this->config->get( 'WikimediaEventsIPoidRequestTimeoutSeconds' );
 				// Convert IPv6 to lowercase, to match IPoid storage format.
@@ -141,7 +142,7 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 					'method' => 'GET',
 					'timeout' => $timeout,
 					'connectTimeout' => $timeout,
-				] );
+				], $fname );
 				$response = $request->execute();
 				if ( !$response->isOK() ) {
 					// Probably a 404, which means IPoid doesn't know about the IP.
