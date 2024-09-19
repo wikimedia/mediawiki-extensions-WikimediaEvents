@@ -12,18 +12,18 @@ budget for other teams to deploy campaigns.
 
 * Since: March 2014
 * Files: deprecate.js
-* Contact: https://www.mediawiki.org/wiki/Wikimedia_Performance_Team
+* Contact: https://wikitech.wikimedia.org/wiki/MediaWiki_Engineering
 
-Powers <https://grafana.wikimedia.org/dashboard/db/mw-js-deprecate>.
+Powers <https://grafana.wikimedia.org/d/000000037/mw-js-deprecate>.
 
-## StatsD from JavaScript
+## StatsD JavaScript
 
 * Since: Dec 2014.
 * Files: statsd.js
-* Contact: Analytics team
+* Contact: https://wikitech.wikimedia.org/wiki/MediaWiki_Engineering
 
-Handles the mw-track topics for `counter.*`, `timing.*`, and `gauge.*`.
-Documentation at <https://wikitech.wikimedia.org/wiki/Graphite#statsv>.
+Handles the ResourceLoader `mw.track()` topics for `counter.*`, `timing.*`, and `gauge.*`.
+Documentation at <https://wikitech.wikimedia.org/wiki/Performance.wikimedia.org/Runbook#statsv>.
 
 ## Search satisfaction
 
