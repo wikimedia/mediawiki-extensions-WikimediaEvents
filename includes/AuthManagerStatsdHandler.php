@@ -34,6 +34,7 @@ use Monolog\Handler\AbstractHandler;
  * Events can include the following data in their context:
  *   - 'event': (string, required) the type of the event (e.g. 'login').
  *   - 'eventType': (string) a subtype for more complex events.
+ *   - 'accountType': (string, optional), a performer account type, one of `named`, `temp`, `anon`
  *   - 'successful': (bool) whether the attempt was successful.
  *   - 'status': (string) attempt status (such as an error message key).
  *     Will be ignored unless 'successful' is false.
@@ -51,6 +52,7 @@ use Monolog\Handler\AbstractHandler;
  *   - 'event': the type of the event
  *   - 'subtype': (can be 'n/a' if no subtype is found)
  *   - 'reason': failure reason, set only for errors
+ *   - 'accountType': the account type if passed
  *
  * Used to alert on sudden, unexplained changes in e.g. the number of login
  * errors.
@@ -66,6 +68,7 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 		$entrypoint = $this->getEntryPoint();
 		$status = $record['context']['status'] ?? null;
 		$successful = $record['context']['successful'] ?? null;
+		$accountType = $record['context']['accountType'] ?? null;
 
 		$error = null;
 		if ( $successful === false ) {
@@ -84,6 +87,11 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 
 		// some key parts can be null and will be removed by array_filter
 		$keyParts = [ 'authmanager', $event, $type, $entrypoint ];
+		// captcha stream is used to check for captcha effectiveness and there is no need to
+		// differentiate between account types
+		if ( $accountType !== null && $record['channel'] === 'authevents' ) {
+			$keyParts[] = $accountType;
+		}
 		if ( $successful === true ) {
 			$keyParts[] = 'success';
 			$counterName = 'authmanager_success_total';
@@ -105,6 +113,9 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 			->setLabel( 'subtype', $type ?? 'n/a' );
 		if ( $successful === false ) {
 			$counter->setLabel( 'reason', $error ?: 'n/a' );
+		}
+		if ( $accountType !== null ) {
+			$counter->setLabel( 'accountType', $accountType );
 		}
 		$counter->copyToStatsdAt( $statsdKey )
 			->increment();
