@@ -61,11 +61,12 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 	 * @inheritDoc
 	 */
 	public function handle( array $record ): bool {
-		$event = $this->getField( 'event', $record['context'] );
-		$type = $this->getField( [ 'eventType', 'type' ], $record['context'] );
+		$event = $record['context']['event'] ?? null;
+		$type = $record['context']['eventType'] ?? $record['context']['type'] ?? null;
 		$entrypoint = $this->getEntryPoint();
-		$status = $this->getField( 'status', $record['context'] );
-		$successful = $this->getField( 'successful', $record['context'] );
+		$status = $record['context']['status'] ?? null;
+		$successful = $record['context']['successful'] ?? null;
+
 		$error = null;
 		if ( $successful === false ) {
 			$error = strval( $status );
@@ -119,18 +120,4 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 		return defined( 'MW_API' ) ? 'api' : 'web';
 	}
 
-	/**
-	 * Get a field from an array without triggering errors if it does not exist
-	 * @param string|array $field Field name or list of field name + fallbacks
-	 * @param array $data
-	 * @return mixed Field value, or null if field was missing
-	 */
-	protected function getField( $field, array $data ) {
-		foreach ( (array)$field as $key ) {
-			if ( isset( $data[$key] ) ) {
-				return $data[$key];
-			}
-		}
-		return null;
-	}
 }
