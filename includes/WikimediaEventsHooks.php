@@ -502,8 +502,12 @@ class WikimediaEventsHooks implements
 
 			$measure = $timing->measure( 'viewResponseTime', 'requestStart', 'requestShutdown' );
 			if ( $measure !== false ) {
-				MediaWikiServices::getInstance()->getStatsdDataFactory()->timing(
-					"timing.viewResponseTime.{$platform}", $measure['duration'] * 1000 );
+				MediaWikiServices::getInstance()->getStatsFactory()
+					->withComponent( 'WikimediaEvents' )
+					->getTiming( 'viewResponseTime_seconds' )
+					->setLabel( 'platform', $platform )
+					->copyToStatsdAt( "timing.viewResponseTime.{$platform}" )
+					->observeSeconds( $measure['duration'] );
 			}
 		} );
 	}
