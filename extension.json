@@ -114,7 +114,7 @@
 				"DesktopWebUIActionsTracking": "/analytics/legacy/desktopwebuiactionstracking/1.4.3",
 				"EditAttemptStep": "/analytics/legacy/editattemptstep/2.0.2",
 				"VisualEditorFeatureUse": "/analytics/legacy/visualeditorfeatureuse/1.1.0",
-				"SearchSatisfaction": "/analytics/legacy/searchsatisfaction/1.4.0",
+				"SearchSatisfaction": "/analytics/legacy/searchsatisfaction/1.5.0",
 				"SpecialMuteSubmit": "/analytics/legacy/specialmutesubmit/1.0.0",
 				"MobileWebUIActionsTracking": "/analytics/legacy/mobilewebuiactionstracking/1.3.4",
 				"WMDEBannerEvents": "/analytics/legacy/wmdebannerevents/1.0.0",

@@ -553,6 +553,28 @@ function setupSearchTest( session ) {
 			}
 		);
 
+		// Virtual page views via Popups extension.
+		mw.trackSubscribe( 'event.VirtualPageView', ( _topic, value ) => {
+			// Logged in db key form, but anchor titles use text form.
+			// Also these are always the target page, never the redirect.
+			const title = mw.Title.newFromText( value.page_title );
+			const position = $( '.mw-search-result-heading a[title="' + title.getNameText() + '"]' ).data( 'serp-pos' );
+			// In testing this was always true, but seems plausible some link other
+			// than a search result could be hoverable.
+			if ( position !== undefined ) {
+				logEvent( 'virtualPageView', {
+					position: position,
+					// In a click event articleId would be logged, but that's documented
+					// as the current page so it seems inappropriate to override for one
+					// use case. Stuffing in extraParams is a reasonable substitute.
+					extraParams: JSON.stringify( {
+						namespace: value.page_namespace,
+						pageId: value.page_id
+					} )
+				} );
+			}
+		} );
+
 		logEvent( 'searchResultPage', createSerpEvent() );
 	}
 
