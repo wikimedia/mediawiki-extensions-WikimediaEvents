@@ -2,15 +2,11 @@
  * Track desktop web ui interactions
  *
  * Launch task: https://phabricator.wikimedia.org/T250282
- * Schema: https://schema.wikimedia.org/#!/secondary/jsonschema/analytics/legacy/desktopwebuiactionstracking
  */
-const config = require( '../config.json' );
 const util = require( './utils.js' );
 
 // Require web fragments from webAccessibilitySettings.js
 const webA11ySettings = require( '../webAccessibilitySettings.js' );
-let sampleSize = config.desktopWebUIActionsTracking || 0;
-const overSampleLoggedInUsers = config.desktopWebUIActionsTrackingOversampleLoggedInUsers || false;
 let skinVersion;
 const VIEWPORT_BUCKETS = {
 	below320: '<320px',
@@ -83,15 +79,6 @@ function logEvent( action, name ) {
 			data.name = name;
 		}
 
-		// Use Object.assign to merge data with webA11ySettings
-		const webA11ySettingsData = Object.assign(
-			{},
-			data,
-			webA11ySettings()
-		);
-
-		mw.eventLog.logEvent( 'DesktopWebUIActionsTracking', webA11ySettingsData );
-
 		// Prepare data to log event via Metrics Platform (T351298)
 		const metricsPlatformData = webA11ySettings();
 
@@ -107,24 +94,6 @@ function logEvent( action, name ) {
 			metricsPlatformData
 		);
 	}
-}
-
-// Don't initialize the instrument if:
-//
-// * The user isn't using the Vector skin - this module is only delivered when the user is using the
-//   Vector skin (see WikimediaEvents\WikimediaEventsHooks::getModuleFile)
-// * $wgWMEDesktopWebUIActionsTracking is falsy
-// * The pageview isn't in the sample
-//
-// Note well the schema works on skins other than Vector but for now it's limited to it to aid the
-// work of data analysts.
-//
-// Always log events for logged in users if overSample config is set (T292588)
-if ( overSampleLoggedInUsers && !mw.user.isAnon() ) {
-	sampleSize = 1;
-}
-if ( !sampleSize || !mw.eventLog.eventInSample( 1 / sampleSize ) ) {
-	return;
 }
 
 mw.trackSubscribe( 'webuiactions_log.', ( topic, value ) => {

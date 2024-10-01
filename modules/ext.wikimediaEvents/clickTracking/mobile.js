@@ -2,10 +2,7 @@
  * Track mobile web UI interactions
  *
  * Launch task: https://phabricator.wikimedia.org/T220016
- * Schema: https://schema.wikimedia.org/#!/secondary/jsonschema/analytics/legacy/mobilewebuiactionstracking
  */
-const moduleConfig = require( '../config.json' );
-const sampleSize = moduleConfig.mobileWebUIActionsTracking || 0;
 // Require common web fragments from webAccessibilitySettings.js
 const webA11ySettings = require( '../webAccessibilitySettings.js' );
 /**
@@ -47,14 +44,6 @@ function logEvent( action, name, destination ) {
 		event.destination = destination;
 	}
 
-	const webA11ySettingsEvent = Object.assign(
-		{},
-		event,
-		webA11ySettings()
-	);
-
-	mw.track( 'event.MobileWebUIActionsTracking', webA11ySettingsEvent );
-
 	// Prepare data to log event via Metrics Platform (T351298)
 	const metricsPlatformData = webA11ySettings();
 
@@ -68,10 +57,6 @@ function logEvent( action, name, destination ) {
 		action,
 		metricsPlatformData
 	);
-}
-
-if ( !mw.eventLog.eventInSample( 1 / sampleSize ) ) {
-	return;
 }
 
 mw.trackSubscribe( 'webuiactions_log.', ( topic, value ) => {

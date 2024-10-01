@@ -290,12 +290,7 @@ class WikimediaEventsHooks implements
 		$vars['newPHPSamplingRate'] = $config->get( 'WMENewPHPSamplingRate' );
 		$vars['newPHPVersion'] = $config->get( 'WMENewPHPVersion' );
 		$skin = $context->getSkin();
-		if ( $skin === 'minerva' ) {
-			$vars['mobileWebUIActionsTracking'] = $config->get( 'WMEMobileWebUIActionsTracking' );
-		} elseif ( in_array( $skin, [ 'vector', 'vector-2022' ] ) ) {
-			$vars['desktopWebUIActionsTracking'] = $config->get( 'WMEDesktopWebUIActionsTracking' );
-			$vars['desktopWebUIActionsTrackingOversampleLoggedInUsers'] =
-				$config->get( 'WMEDesktopWebUIActionsTrackingOversampleLoggedInUsers' );
+		if ( in_array( $skin, [ 'vector', 'vector-2022' ] ) ) {
 			$vars['webUIScrollTrackingSamplingRate'] = $config->get( 'WMEWebUIScrollTrackingSamplingRate' );
 			$vars['webUIScrollTrackingSamplingRateAnons'] = $config->get( 'WMEWebUIScrollTrackingSamplingRateAnons' );
 			$vars['webUIScrollTrackingTimeToWaitBeforeScrollUp'] =
