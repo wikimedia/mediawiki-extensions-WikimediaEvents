@@ -104,6 +104,12 @@ class AuthManagerStatsdHandlerTest extends MediaWikiIntegrationTestCase {
 				'context' => [ 'event' => 'autocreate', 'successful' => false, 'status' => 'snafu' ],
 			], [ 'authmanager_error_total',
 			   [ 'event' => 'autocreate', 'subtype' => 'n/a', 'reason' => 'snafu', 'entrypoint' => 'web' ] ] ],
+			'pass account type when present' => [ [
+					'channel' => 'authevents',
+					'context' => [ 'event' => 'autocreate', 'accountType' => 'temp' ],
+				], [ 'authmanager_event_total',
+					[ 'event' => 'autocreate', 'subtype' => 'n/a', 'entrypoint' => 'web', 'accountType' => 'temp' ]
+			] ],
 		];
 	}
 }
