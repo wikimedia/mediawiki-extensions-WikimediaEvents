@@ -12,8 +12,19 @@
  * @return {string} Wiki font preference, or "N/A" if not available.
  */
 function getFont() {
-	// Temporary conditionals - Pending cleanup in T349862.
-	return mw.user.clientPrefs.get( 'vector-feature-custom-font-size' ) || mw.user.clientPrefs.get( 'mf-font-size' ) || '0';
+	const size = mw.user.clientPrefs.get( 'vector-feature-custom-font-size' ) || mw.user.clientPrefs.get( 'mf-font-size' ) || '0';
+
+	// T349862: On mobile convert the new pref values to their desktop equivalents for logging consistency
+	switch ( size ) {
+		case 'large':
+			return '3';
+		case 'regular':
+			return '2';
+		case 'small':
+			return '1';
+		default:
+			return size;
+	}
 }
 
 /**
