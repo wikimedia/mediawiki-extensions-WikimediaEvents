@@ -9,6 +9,8 @@
 	"apihelp-wikimediaeventsblockededit-param-page": "Un pagina sur le qual un tentativa de modification esseva facite.",
 	"apihelp-wikimediaeventsblockededit-param-interface": "Le interfacie que esseva usate pro modificar.",
 	"apihelp-wikimediaeventsblockededit-param-platform": "Le platteforma que esseva usate pro modificar.",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Incargamento inter wikis]]",
+	"tag-cross-wiki-upload-description": "Files incargate desde le editores visual e de wikitexto sur altere wikis",
 	"wikimediaevents-special-wikimediadebug-notenabled": "Iste pagina special non es activate.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "Activar le cookie de depuration pro $1",
 	"wikimediaevents-special-wikimediadebug-submit-renew": "Renovar cookie pro $1",
