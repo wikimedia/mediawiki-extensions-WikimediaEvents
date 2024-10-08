@@ -61,6 +61,12 @@
 				"EventBus.EventFactory",
 				"EventLogging.EventSubmitter"
 			]
+		},
+		"TemporaryAccountsInstrumentation": {
+			"class": "WikimediaEvents\\TemporaryAccountsInstrumentation",
+			"services": [
+				"StatsFactory"
+			]
 		}
 	},
 	"Hooks": {
@@ -82,6 +88,7 @@
 		"RecentChange_save": "main",
 		"ResourceLoaderRegisterModules": "main",
 		"MakeGlobalVariablesScript": "main",
+		"PageDeleteComplete": "TemporaryAccountsInstrumentation",
 		"PermissionErrorAudit": "BlockMetricsHooks",
 		"EditPage::showReadOnlyForm:initial": "EditPageHooks",
 		"AuthManagerLoginAuthenticateAudit": "main"
