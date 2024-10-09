@@ -1,33 +1,182 @@
 <?php
 namespace WikimediaEvents\Tests\Integration;
 
+use Closure;
+use CommentStoreComment;
+use MediaWiki\Request\FauxRequest;
+use MediaWiki\Revision\SlotRecord;
+use MediaWiki\Storage\EditResult;
+use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
+use MediaWiki\User\User;
 use MediaWiki\WikiMap\WikiMap;
 use MediaWikiIntegrationTestCase;
 use Wikimedia\Stats\Metrics\CounterMetric;
+use WikimediaEvents\TemporaryAccountsInstrumentation;
 
 /**
  * @group Database
  * @covers \WikimediaEvents\TemporaryAccountsInstrumentation
  */
 class TemporaryAccountsInstrumentationTest extends MediaWikiIntegrationTestCase {
+
+	use TempUserTestTrait;
+
 	public function testShouldTrackPageDeletionRate(): void {
 		$page = $this->getExistingTestPage();
 
 		$this->deletePage( $page );
 
-		$wikiId = WikiMap::getCurrentWikiId();
+		$this->assertCounterIncremented( 'users_page_delete_total' );
+	}
 
+	/**
+	 * @dataProvider provideUsers
+	 */
+	public function testShouldTrackRollbacksForEdits( Closure $userProvider, string $userType ): void {
+		$this->enableAutoCreateTempUser();
+
+		$user = $userProvider->call( $this );
+
+		$page = $this->getExistingTestPage();
+		$this->editPage( $page, 'test', '', NS_MAIN, $user );
+
+		$status = $this->getServiceContainer()
+			->getRollbackPageFactory()
+			->newRollbackPage( $page, $this->getTestSysop()->getAuthority(), $user )
+			->rollback();
+
+		$this->assertStatusGood( $status );
+		$this->assertCounterIncremented( 'user_revert_total', [ $userType ] );
+	}
+
+	/**
+	 * @dataProvider provideUsers
+	 */
+	public function testShouldTrackRevertsForTemporaryOrAnonymousUserEdits(
+		Closure $userProvider,
+		string $userType
+	): void {
+		$this->enableAutoCreateTempUser();
+
+		$user = $userProvider->call( $this );
+
+		$page = $this->getExistingTestPage();
+		$prevRev = $page->getRevisionRecord();
+
+		$pageUpdateStatus = $this->editPage( $page, 'test', '', NS_MAIN, $user );
+
+		$this->getServiceContainer()
+			->getPageUpdaterFactory()
+			->newPageUpdater( $page, $this->getTestSysop()->getUserIdentity() )
+			->setContent( SlotRecord::MAIN, $prevRev->getContent( SlotRecord::MAIN ) )
+			->markAsRevert(
+				EditResult::REVERT_UNDO,
+				$pageUpdateStatus->getNewRevision()->getId(),
+				$prevRev->getId()
+			)
+			->saveRevision( CommentStoreComment::newUnsavedComment( 'test' ) );
+
+		$this->assertCounterIncremented( 'user_revert_total', [ $userType ] );
+	}
+
+	/**
+	 * @dataProvider provideUsers
+	 */
+	public function testShouldNotTrackNonRevertEdits( Closure $userProvider ): void {
+		$this->enableAutoCreateTempUser();
+
+		$user = $userProvider->call( $this );
+
+		$page = $this->getExistingTestPage();
+
+		$this->editPage( $page, 'test', '', NS_MAIN, $user );
+
+		$newContent = $this->getServiceContainer()
+			->getContentHandlerFactory()
+			->getContentHandler( CONTENT_MODEL_WIKITEXT )
+			->unserializeContent( 'new content' );
+
+		$this->getServiceContainer()
+			->getPageUpdaterFactory()
+			->newPageUpdater( $page, $this->getTestSysop()->getUserIdentity() )
+			->setContent( SlotRecord::MAIN, $newContent )
+			->saveRevision( CommentStoreComment::newUnsavedComment( 'test' ) );
+
+		$this->assertCounterNotIncremented( 'user_revert_total' );
+	}
+
+	public static function provideUsers(): iterable {
+		// phpcs:disable Squiz.Scope.StaticThisUsage.Found
+		yield 'anonymous user' => [
+			function (): User {
+				$this->disableAutoCreateTempUser();
+				return $this->getServiceContainer()
+					->getUserFactory()
+					->newAnonymous( '127.0.0.1' );
+			},
+			TemporaryAccountsInstrumentation::ACCOUNT_TYPE_ANON
+		];
+		yield 'temporary user' => [
+			function (): User {
+				$this->enableAutoCreateTempUser();
+
+				$req = new FauxRequest();
+				return $this->getServiceContainer()
+					->getTempUserCreator()
+					->create( null, $req )
+					->getUser();
+			},
+			TemporaryAccountsInstrumentation::ACCOUNT_TYPE_TEMPORARY
+		];
+		yield 'registered user' => [
+			fn () => $this->getTestUser()->getUser(),
+			TemporaryAccountsInstrumentation::ACCOUNT_TYPE_NORMAL
+		];
+		// phpcs:enable
+	}
+
+	/**
+	 * Convenience function to assert that the per-wiki counter with the given name
+	 * was incremented exactly once.
+	 *
+	 * @param string $metricName The name of the metric, without the component.
+	 * @param string[] $expectedLabels Optional list of additional expected label values.
+	 *
+	 * @return void
+	 */
+	private function assertCounterIncremented( string $metricName, array $expectedLabels = [] ): void {
 		$metric = $this->getServiceContainer()
 			->getStatsFactory()
 			->withComponent( 'WikimediaEvents' )
-			->getCounter( 'users_page_delete_total' );
+			->getCounter( $metricName );
+
+		$samples = $metric->getSamples();
 
 		$this->assertInstanceOf( CounterMetric::class, $metric );
 		$this->assertSame( 1, $metric->getSampleCount() );
-		$this->assertSame( 1.0, $metric->getSamples()[0]->getValue() );
-		$this->assertSame(
+		$this->assertSame( 1.0, $samples[0]->getValue() );
+
+		$wikiId = WikiMap::getCurrentWikiId();
+		$expectedLabels = array_merge(
 			[ strtr( $wikiId, [ '_' => '', '-' => '_' ] ) ],
-			$metric->getSamples()[0]->getLabelValues()
+			$expectedLabels
 		);
+
+		$this->assertSame( $expectedLabels, $samples[0]->getLabelValues() );
+	}
+
+	/**
+	 * Convenience function to assert that the counter with the given name was not incremented.
+	 * @param string $metricName
+	 * @return void
+	 */
+	private function assertCounterNotIncremented( string $metricName ): void {
+		$metric = $this->getServiceContainer()
+			->getStatsFactory()
+			->withComponent( 'WikimediaEvents' )
+			->getCounter( $metricName );
+
+		$this->assertInstanceOf( CounterMetric::class, $metric );
+		$this->assertSame( 0, $metric->getSampleCount() );
 	}
 }

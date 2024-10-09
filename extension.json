@@ -65,7 +65,10 @@
 		"TemporaryAccountsInstrumentation": {
 			"class": "WikimediaEvents\\TemporaryAccountsInstrumentation",
 			"services": [
-				"StatsFactory"
+				"StatsFactory",
+				"RevisionLookup",
+				"UserIdentityUtils",
+				"UserFactory"
 			]
 		}
 	},
@@ -74,7 +77,8 @@
 		"BeforePageDisplay": "main",
 		"PageSaveComplete": [
 			"main",
-			"IPReputationHooks"
+			"IPReputationHooks",
+			"TemporaryAccountsInstrumentation"
 		],
 		"LocalUserCreated": "IPReputationHooks",
 		"PreferencesFormPreSave": "VectorInstrumentation",

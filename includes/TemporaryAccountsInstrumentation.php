@@ -1,22 +1,44 @@
 <?php
 namespace WikimediaEvents;
 
+use IDBAccessObject;
 use ManualLogEntry;
 use MediaWiki\Page\Hook\PageDeleteCompleteHook;
 use MediaWiki\Page\ProperPageIdentity;
 use MediaWiki\Permissions\Authority;
+use MediaWiki\Revision\RevisionLookup;
 use MediaWiki\Revision\RevisionRecord;
+use MediaWiki\Storage\Hook\PageSaveCompleteHook;
+use MediaWiki\User\UserFactory;
+use MediaWiki\User\UserIdentity;
+use MediaWiki\User\UserIdentityUtils;
 use MediaWiki\WikiMap\WikiMap;
 use Wikimedia\Stats\StatsFactory;
 
 /**
  * Holds hook handlers emitting metrics related to the temporary accounts initiative (T357763).
  */
-class TemporaryAccountsInstrumentation implements PageDeleteCompleteHook {
-	private StatsFactory $statsFactory;
+class TemporaryAccountsInstrumentation implements PageDeleteCompleteHook, PageSaveCompleteHook {
+	public const ACCOUNT_TYPE_TEMPORARY = 'temp';
+	public const ACCOUNT_TYPE_ANON = 'anon';
+	public const ACCOUNT_TYPE_BOT = 'bot';
+	public const ACCOUNT_TYPE_NORMAL = 'normal';
 
-	public function __construct( StatsFactory $statsFactory ) {
+	private StatsFactory $statsFactory;
+	private RevisionLookup $revisionLookup;
+	private UserIdentityUtils $userIdentityUtils;
+	private UserFactory $userFactory;
+
+	public function __construct(
+		StatsFactory $statsFactory,
+		RevisionLookup $revisionLookup,
+		UserIdentityUtils $userIdentityUtils,
+		UserFactory $userFactory
+	) {
 		$this->statsFactory = $statsFactory;
+		$this->revisionLookup = $revisionLookup;
+		$this->userIdentityUtils = $userIdentityUtils;
+		$this->userFactory = $userFactory;
 	}
 
 	/**
@@ -38,5 +60,60 @@ class TemporaryAccountsInstrumentation implements PageDeleteCompleteHook {
 			->getCounter( 'users_page_delete_total' )
 			->setLabel( 'wiki', WikiMap::getCurrentWikiId() )
 			->increment();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function onPageSaveComplete( $wikiPage, $user, $summary, $flags, $revisionRecord, $editResult ) {
+		if ( !$editResult->isRevert() ) {
+			return;
+		}
+
+		$newestRevertedRevId = $editResult->getNewestRevertedRevisionId();
+		if ( $newestRevertedRevId === null ) {
+			return;
+		}
+
+		$newestRevertedRev = $this->revisionLookup->getRevisionById(
+			$newestRevertedRevId,
+			IDBAccessObject::READ_NORMAL,
+			$wikiPage
+		);
+		if ( $newestRevertedRev === null ) {
+			return;
+		}
+
+		$latestRevertedAuthor = $newestRevertedRev->getUser( $newestRevertedRev::RAW );
+
+		// Track reverts by user type (T375501)
+		$this->statsFactory
+			->withComponent( 'WikimediaEvents' )
+			->getCounter( 'user_revert_total' )
+			->setLabel( 'wiki', WikiMap::getCurrentWikiId() )
+			->setLabel( 'user', $this->getUserType( $latestRevertedAuthor ) )
+			->increment();
+	}
+
+	/**
+	 * Get the type of a given user for use as a prometheus label.
+	 * @param UserIdentity $user
+	 * @return string One of the TemporaryAccountsInstrumentation::ACCOUNT_TYPE_* constants
+	 */
+	private function getUserType( UserIdentity $user ): string {
+		if ( $this->userIdentityUtils->isTemp( $user ) ) {
+			return self::ACCOUNT_TYPE_TEMPORARY;
+		}
+
+		if ( !$user->isRegistered() ) {
+			return self::ACCOUNT_TYPE_ANON;
+		}
+
+		$user = $this->userFactory->newFromUserIdentity( $user );
+		if ( $user->isBot() ) {
+			return self::ACCOUNT_TYPE_BOT;
+		}
+
+		return self::ACCOUNT_TYPE_NORMAL;
 	}
 }
