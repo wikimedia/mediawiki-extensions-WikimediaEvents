@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = function ( grunt ) {
+	const conf = grunt.file.readJSON( 'extension.json' );
 	grunt.loadNpmTasks( 'grunt-banana-checker' );
 	grunt.loadNpmTasks( 'grunt-eslint' );
 
@@ -17,7 +18,7 @@ module.exports = function ( grunt ) {
 			]
 		},
 		banana: {
-			all: 'i18n/',
+			...conf.MessagesDirs,
 			options: {
 				// T213539
 				requireLowerCase: false
