@@ -176,7 +176,7 @@ class WikimediaEventsHooks implements
 		$revisionRecord,
 		$editResult
 	): void {
-		if ( PHP_SAPI === 'cli' ) {
+		if ( PHP_SAPI === 'cli' && !defined( 'MW_PHPUNIT_TEST' ) ) {
 			return; // ignore maintenance scripts
 		}
 
@@ -205,6 +205,10 @@ class WikimediaEventsHooks implements
 			$accType = 'bot'; // registered bot or script acting on behalf of a user
 		} elseif ( $request->getCheck( 'maxlag' ) ) {
 			$accType = 'throttled'; // probably an unregistered bot
+		} elseif ( $user->isTemp() ) {
+			$accType = 'temp';
+		} elseif ( $user->isAnon() ) {
+			$accType = 'anon';
 		} else {
 			$accType = 'normal';
 		}
@@ -235,7 +239,35 @@ class WikimediaEventsHooks implements
 
 		DeferredUpdates::addCallableUpdate(
 			static function () use ( $size, $nsType, $accType, $entry ) {
-				$reqCtxTiming = RequestContext::getMain()->getTiming();
+				$requestContext = RequestContext::getMain();
+				$reqCtxTiming = $requestContext->getTiming();
+				// It's possible to use Minerva on a desktop device, or Vector on a mobile
+				// device, but defining Minerva usage as a proxy for "is mobile" is good enough
+				// for monitoring.
+				$isMobile = $requestContext->getSkin()->getSkinName() === 'minerva' ? '1' : '0';
+
+				// Would make sense to gate the following lines behind $entry === 'api', but
+				// the entrypoint is hardcoded via MW_ENTRY_POINT, which can't be overridden in tests.
+
+				// Check if the request was Android/iOS/Commons app.
+				$userAgent = $requestContext->getRequest()->getHeader( "User-agent" );
+				$isWikipediaApp = strpos( $userAgent, "WikipediaApp/" ) === 0;
+				$isCommonsApp = strpos( $userAgent, "Commons/" ) === 0;
+				if ( $isWikipediaApp || $isCommonsApp ) {
+					// Consider apps to be "mobile" for instrumentation purposes
+					$isMobile = '1';
+				}
+				if ( $isCommonsApp ) {
+					$platform = 'commons';
+				} elseif ( strpos( $userAgent, "Android" ) > 0 ) {
+					$platform = 'android';
+				} elseif ( strpos( $userAgent, "iOS" ) > 0 || strpos( $userAgent, "iPadOS" ) > 0 ) {
+					$platform = 'ios';
+				} elseif ( $entry === 'index' ) {
+					$platform = 'web';
+				} else {
+					$platform = 'unknown';
+				}
 
 				$measure = $reqCtxTiming->measure(
 					'editResponseTime', 'requestStart', 'requestShutdown' );
@@ -251,6 +283,8 @@ class WikimediaEventsHooks implements
 				$statsFactory->getTiming( 'editResponseTime_seconds' )
 					->setLabel( 'page', $nsType )
 					->setLabel( 'user', $accType )
+					->setLabel( 'is_mobile', $isMobile )
+					->setLabel( 'platform', $platform )
 					->setLabel( 'entry', $entry )
 					->copyToStatsdAt( [
 						"timing.editResponseTime",
@@ -263,6 +297,8 @@ class WikimediaEventsHooks implements
 				$statsFactory->getTiming( 'editResponseTimePerKB_seconds' )
 					->setLabel( 'page', $nsType )
 					->setLabel( 'user', $accType )
+					->setLabel( 'platform', $platform )
+					->setLabel( 'is_mobile', $isMobile )
 					->setLabel( 'entry', $entry )
 					->copyToStatsdAt( [
 						"timing.editResponseTimePerKB.page.$nsType",
