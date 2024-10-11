@@ -113,7 +113,7 @@
 			"Schemas": {
 				"EditAttemptStep": "/analytics/legacy/editattemptstep/2.0.2",
 				"VisualEditorFeatureUse": "/analytics/legacy/visualeditorfeatureuse/1.1.0",
-				"SearchSatisfaction": "/analytics/legacy/searchsatisfaction/1.4.0",
+				"SearchSatisfaction": "/analytics/legacy/searchsatisfaction/1.5.0",
 				"SpecialMuteSubmit": "/analytics/legacy/specialmutesubmit/1.0.0",
 				"WMDEBannerEvents": "/analytics/legacy/wmdebannerevents/1.0.0",
 				"WMDEBannerInteractions": "/analytics/legacy/wmdebannerinteractions/1.0.0",
