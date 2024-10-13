@@ -24,8 +24,10 @@
 
 namespace WikimediaEvents;
 
+use MediaWiki\Extension\CentralAuth\SharedDomainUtils;
 use MediaWiki\MediaWikiServices;
 use Monolog\Handler\AbstractHandler;
+use RequestContext;
 
 /**
  * Counts authentication-related log events (those sent to the 'authevents'
@@ -58,6 +60,24 @@ use Monolog\Handler\AbstractHandler;
  * errors.
  */
 class AuthManagerStatsdHandler extends AbstractHandler {
+
+	/**
+	 * Temporary - used to mark metrics with SUL3 label. Should be removed after full migration
+	 * Technical Debt - Introduces hard coupling between WikimediaEvents and CentralAuth
+	 * @see https://phabricator.wikimedia.org/T375955
+	 * @return bool
+	 */
+	private function isSul3Enabled() {
+		$services = MediaWikiServices::getInstance();
+		if ( !$services->getExtensionRegistry()->isLoaded( 'CentralAuth' ) ) {
+			return false;
+		}
+		/** @var SharedDomainUtils $sharedDomainUtils */
+		$sharedDomainUtils = $services->get( 'CentralAuth.SharedDomainUtils' );
+		$context = RequestContext::getMain();
+
+		return $sharedDomainUtils->isSul3Enabled( $context->getRequest() );
+	}
 
 	/**
 	 * @inheritDoc
@@ -117,6 +137,8 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 		if ( $accountType !== null ) {
 			$counter->setLabel( 'accountType', $accountType );
 		}
+		$counter->setLabel( 'sul3', $this->isSul3Enabled() ? 'enabled' : 'disabled' );
+
 		$counter->copyToStatsdAt( $statsdKey )
 			->increment();
 
