@@ -75,6 +75,7 @@
 	"Hooks": {
 		"BeforeInitialize": "main",
 		"BeforePageDisplay": "main",
+		"BlockIpComplete": "TemporaryAccountsInstrumentation",
 		"PageSaveComplete": [
 			"main",
 			"IPReputationHooks",

@@ -3,6 +3,7 @@ namespace WikimediaEvents\Tests\Integration;
 
 use Closure;
 use CommentStoreComment;
+use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\Revision\SlotRecord;
 use MediaWiki\Storage\EditResult;
@@ -133,6 +134,58 @@ class TemporaryAccountsInstrumentationTest extends MediaWikiIntegrationTestCase 
 			TemporaryAccountsInstrumentation::ACCOUNT_TYPE_NORMAL
 		];
 		// phpcs:enable
+	}
+
+	public function testBlockIncrementIpUser() {
+		$userFactory = $this->getServiceContainer()->getUserFactory();
+		$ipUser = $userFactory->newAnonymous( '1.2.3.4' );
+		$blockUserFactory = $this->getServiceContainer()->getBlockUserFactory();
+		$block = $blockUserFactory->newBlockUser(
+			$ipUser,
+			$this->getTestSysop()->getAuthority(),
+			'infinity',
+		);
+		$block->placeBlock();
+		DeferredUpdates::doUpdates();
+		$this->assertCounterIncremented( 'block_target_total', [ 'anon' ] );
+	}
+
+	public function testBlockIncrementIpRangeUser() {
+		$blockUserFactory = $this->getServiceContainer()->getBlockUserFactory();
+		$block = $blockUserFactory->newBlockUser(
+			'1.2.3.0/24',
+			$this->getTestSysop()->getAuthority(),
+			'infinity',
+		);
+		$block->placeBlock();
+		DeferredUpdates::doUpdates();
+		$this->assertCounterIncremented( 'block_target_total', [ 'iprange' ] );
+	}
+
+	public function testBlockIncrementTempUser() {
+		$tempUser = $this->getServiceContainer()->getTempUserCreator()->create( '~2024-1', new FauxRequest() );
+		$blockUserFactory = $this->getServiceContainer()->getBlockUserFactory();
+		$block = $blockUserFactory->newBlockUser(
+			$tempUser->getUser(),
+			$this->getTestSysop()->getAuthority(),
+			'infinity'
+		);
+		$block->placeBlock();
+		DeferredUpdates::doUpdates();
+		$this->assertCounterIncremented( 'block_target_total', [ 'temp' ] );
+	}
+
+	public function testBlockIncrementNamedUser() {
+		$namedUser = $this->getTestUser()->getUser();
+		$blockUserFactory = $this->getServiceContainer()->getBlockUserFactory();
+		$block = $blockUserFactory->newBlockUser(
+			$namedUser,
+			$this->getTestSysop()->getAuthority(),
+			'infinity'
+		);
+		$block->placeBlock();
+		DeferredUpdates::doUpdates();
+		$this->assertCounterIncremented( 'block_target_total', [ 'normal' ] );
 	}
 
 	/**
