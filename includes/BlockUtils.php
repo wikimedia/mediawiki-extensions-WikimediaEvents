@@ -25,11 +25,15 @@ class BlockUtils {
 		'globalblocking-blockedtext-range',
 		'globalblocking-blockedtext-xff',
 		'globalblocking-blockedtext-user',
+		'globalblocking-blockedtext-autoblock',
+		'globalblocking-blockedtext-autoblock-xff',
 		// WikimediaMessages versions
 		'wikimedia-globalblocking-blockedtext-ip',
 		'wikimedia-globalblocking-blockedtext-range',
 		'wikimedia-globalblocking-blockedtext-xff',
 		'wikimedia-globalblocking-blockedtext-user',
+		'wikimedia-globalblocking-blockedtext-autoblock',
+		'wikimedia-globalblocking-blockedtext-autoblock-xff',
 	];
 
 	/**
