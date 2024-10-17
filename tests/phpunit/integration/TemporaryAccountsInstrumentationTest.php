@@ -16,6 +16,7 @@ use MediaWiki\WikiMap\WikiMap;
 use MediaWikiIntegrationTestCase;
 use Wikimedia\Stats\Metrics\CounterMetric;
 use WikimediaEvents\TemporaryAccountsInstrumentation;
+use WikiPage;
 
 /**
  * @group Database
@@ -31,6 +32,39 @@ class TemporaryAccountsInstrumentationTest extends MediaWikiIntegrationTestCase 
 		$this->deletePage( $page );
 
 		$this->assertCounterIncremented( 'users_page_delete_total' );
+	}
+
+	private function commonTestShouldTrackPageProtectionRate( WikiPage $page, array $limit, array $expiry ) {
+		$cascade = false;
+		$page->doUpdateRestrictions( $limit, $expiry, $cascade, 'Test', $this->getTestUser()->getUserIdentity() );
+		$this->assertCounterIncremented( 'users_page_protect_total' );
+	}
+
+	public function testShouldTrackPageProtectionRateForExistingPage() {
+		$this->commonTestShouldTrackPageProtectionRate(
+			$this->getExistingTestPage(), [ 'edit' => 'autoconfirmed' ], [ 'edit' => 'infinity' ]
+		);
+	}
+
+	public function testShouldTrackPageProtectionRateForNonExistingPage() {
+		$this->commonTestShouldTrackPageProtectionRate(
+			$this->getNonexistingTestPage(), [ 'create' => 'sysop' ], [ 'create' => 'infinity' ]
+		);
+	}
+
+	public function testShouldNotTrackPageUnprotection() {
+		$page = $this->getExistingTestPage();
+
+		// Protect the page and then unprotect it.
+		$cascade = false;
+		$testUser = $this->getTestUser()->getUserIdentity();
+		$page->doUpdateRestrictions(
+			[ 'edit' => 'autoconfirmed' ], [ 'edit' => 'infinity' ], $cascade, 'Test', $testUser
+		);
+		$page->doUpdateRestrictions( [], [], $cascade, 'Unprotect', $testUser );
+
+		// Assert that the counter was only incremented once for the page protection and not for the page unprotection.
+		$this->assertCounterIncremented( 'users_page_protect_total' );
 	}
 
 	/**

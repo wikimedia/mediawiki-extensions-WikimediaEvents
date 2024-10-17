@@ -4,6 +4,7 @@ namespace WikimediaEvents;
 use ManualLogEntry;
 use MediaWiki\Auth\Hook\AuthenticationAttemptThrottledHook;
 use MediaWiki\Hook\BlockIpCompleteHook;
+use MediaWiki\Page\Hook\ArticleProtectCompleteHook;
 use MediaWiki\Page\Hook\PageDeleteCompleteHook;
 use MediaWiki\Page\ProperPageIdentity;
 use MediaWiki\Permissions\Authority;
@@ -25,7 +26,8 @@ class TemporaryAccountsInstrumentation implements
 	PageDeleteCompleteHook,
 	PageSaveCompleteHook,
 	BlockIpCompleteHook,
-	AuthenticationAttemptThrottledHook
+	AuthenticationAttemptThrottledHook,
+	ArticleProtectCompleteHook
 {
 	public const ACCOUNT_TYPE_TEMPORARY = 'temp';
 	public const ACCOUNT_TYPE_ANON = 'anon';
@@ -131,6 +133,19 @@ class TemporaryAccountsInstrumentation implements
 			->setLabel( 'type', $type )
 			->setLabel( 'is_mobile', $platformDetails['isMobile'] )
 			->setLabel( 'platform', $platformDetails['platform'] )
+			->increment();
+	}
+
+	/** @inheritDoc */
+	public function onArticleProtectComplete( $wikiPage, $user, $protect, $reason ) {
+		// Don't count page un-protections as a protection.
+		if ( !count( array_filter( $protect ) ) ) {
+			return;
+		}
+
+		$this->statsFactory->withComponent( 'WikimediaEvents' )
+			->getCounter( 'users_page_protect_total' )
+			->setLabel( 'wiki', WikiMap::getCurrentWikiId() )
 			->increment();
 	}
 
