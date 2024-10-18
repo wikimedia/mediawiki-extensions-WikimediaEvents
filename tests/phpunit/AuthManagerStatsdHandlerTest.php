@@ -36,12 +36,13 @@ class AuthManagerStatsdHandlerTest extends MediaWikiIntegrationTestCase {
 			'entrypoint' => 'web',
 			'event' => 'autocreate',
 			'subtype' => 'n/a',
-			'sul3' => 'enabled'
+			'sul3' => 'enabled',
+			'accountType' => 'n/a'
 		];
 
 		$handler = new AuthManagerStatsdHandler();
 		$stats->expects( $this->once() )->method( 'getCounter' )->with( 'authmanager_event_total' );
-		$setLabelMock = $counter->expects( $this->exactly( 4 ) )->method( 'setLabel' );
+		$setLabelMock = $counter->expects( $this->exactly( 5 ) )->method( 'setLabel' );
 		$setLabelMock->willReturnCallback( function ( $key, $value ) use ( $expectedLabels ){
 			$this->assertSame( $expectedLabels[$key], $value, sprintf( "unexpected setLabel(%s, %s) call",
 				var_export( $key, true ), var_export( $value, true ) ) );
@@ -86,75 +87,114 @@ class AuthManagerStatsdHandlerTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public static function provideHandle() {
-		return [
-			'no event' => [ [
+		$defaultLabelSet = [
+			'subtype' => 'n/a',
+			'entrypoint' => 'web',
+			'sul3' => 'disabled',
+			'accountType' => 'n/a',
+			'event' => 'autocreate'
+		];
+
+		yield 'no event' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'foo' => 'bar' ],
-			], null ],
-			'wrong type' => [ [
+			], null ];
+
+		yield 'wrong type' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'type' => [ 'oops' ] ],
-			], null ],
+			], null ];
 
-			'right channel' => [ [
+		yield 'right channel' => [
+			[
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate' ],
-			], [ 'authmanager_event_total',
-			   [ 'event' => 'autocreate', 'subtype' => 'n/a', 'entrypoint' => 'web', 'sul3' => 'disabled' ] ] ],
-			'other channel' => [ [
+			], [
+				'authmanager_event_total',
+				$defaultLabelSet,
+			] ];
+
+		yield 'other channel' => [ [
 				'channel' => 'captcha',
 				'context' => [ 'event' => 'autocreate' ],
-			], [ 'authmanager_event_total',
-			   [ 'event' => 'autocreate', 'subtype' => 'n/a', 'entrypoint' => 'web', 'sul3' => 'disabled' ] ] ],
-			'wrong channel' => [ [
+			], [
+				'authmanager_event_total',
+				$defaultLabelSet,
+			]
+		];
+
+		yield 'wrong channel' => [ [
 				'channel' => 'authentication',
 				'context' => [ 'event' => 'autocreate' ],
-			], null ],
+			], null
+		];
 
-			'simple' => [ [
+		yield 'simple' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate' ],
-			], [ 'authmanager_event_total',
-			   [ 'event' => 'autocreate', 'subtype' => 'n/a', 'entrypoint' => 'web', 'sul3' => 'disabled' ] ] ],
-			'type' => [ [
+			], [
+				'authmanager_event_total',
+				 $defaultLabelSet,
+			] ];
+
+		yield 'type' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'eventType' => 'session', 'sul3' => 'disabled' ],
-			], [ 'authmanager_event_total',
-			   [ 'event' => 'autocreate', 'subtype' => 'session', 'entrypoint' => 'web', 'sul3' => 'disabled' ] ] ],
-			'type fallback' => [ [
+			], [
+				'authmanager_event_total',
+				array_merge( $defaultLabelSet, [ 'subtype' => 'session' ] ),
+			] ];
+
+		yield 'type fallback' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'type' => 'session' ],
-			], [ 'authmanager_event_total',
-			   [ 'event' => 'autocreate', 'subtype' => 'session', 'entrypoint' => 'web', 'sul3' => 'disabled' ] ] ],
-			'success' => [ [
+			], [
+				'authmanager_event_total',
+				array_merge( $defaultLabelSet, [ 'subtype' => 'session' ] ),
+			] ];
+
+		yield 'success' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'successful' => true ],
-			], [ 'authmanager_success_total',
-			   [ 'event' => 'autocreate', 'subtype' => 'n/a', 'entrypoint' => 'web', 'sul3' => 'disabled' ] ] ],
-			'failure' => [ [
+			], [
+				'authmanager_success_total',
+				$defaultLabelSet,
+			] ];
+
+		yield 'failure' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'successful' => false ],
-			], [ 'authmanager_error_total',
-			   [ 'event' => 'autocreate', 'subtype' => 'n/a', 'reason' => 'n/a',
-				   'entrypoint' => 'web', 'sul3' => 'disabled' ] ] ],
-			'success with status' => [ [
+			], [
+				'authmanager_error_total',
+				array_merge( $defaultLabelSet, [ 'reason' => 'n/a' ] ),
+			] ];
+
+		yield 'success with status' => [ [
 				'channel' => 'authevents',
 				'context' => [ 'event' => 'autocreate', 'successful' => true, 'status' => 'snafu' ],
-			], [ 'authmanager_success_total',
-			   [ 'event' => 'autocreate', 'subtype' => 'n/a', 'entrypoint' => 'web', 'sul3' => 'disabled' ] ] ],
-			'failure with status' => [ [
+			], [
+				'authmanager_success_total',
+				$defaultLabelSet,
+		] ];
+
+		yield 'failure with status' => [ [
 				'channel' => 'authevents',
-				'context' => [ 'event' => 'autocreate', 'successful' => false, 'status' => 'snafu' ],
+				'context' => [
+					'event' => 'autocreate',
+					'successful' => false,
+					'status' => 'snafu',
+					'accountType' => 'n/a'
+				],
 			], [ 'authmanager_error_total',
-			   [ 'event' => 'autocreate', 'subtype' => 'n/a', 'reason' => 'snafu',
-				   'entrypoint' => 'web', 'sul3' => 'disabled' ] ] ],
-			'pass account type when present' => [ [
+				array_merge( $defaultLabelSet, [ 'reason' => 'snafu' ] ),
+		] ];
+
+		yield 'pass account type when present' => [ [
 					'channel' => 'authevents',
 					'context' => [ 'event' => 'autocreate', 'accountType' => 'temp' ],
-				], [ 'authmanager_event_total',
-					[ 'event' => 'autocreate', 'subtype' => 'n/a', 'entrypoint' => 'web',
-						'accountType' => 'temp', 'sul3' => 'disabled' ]
-			] ],
-		];
+				], [
+					'authmanager_event_total',
+					array_merge( $defaultLabelSet, [ 'accountType' => 'temp' ] ),
+			] ];
 	}
 }

@@ -125,19 +125,20 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 		$statsdKey = implode( '.', array_filter( $keyParts ) );
 
 		// use of this class is set up in operations/mediawiki-config so no nice dependency injection
+		// NOTE: stat labels cannot be conditional, all stats with same `$counterName` need to have
+		// the same set of labels within request - @see T377476
 		$counter = MediaWikiServices::getInstance()->getStatsFactory()
 			->withComponent( 'WikimediaEvents' )
 			->getCounter( $counterName )
 			->setLabel( 'entrypoint', $entrypoint )
 			->setLabel( 'event', $event )
-			->setLabel( 'subtype', $type ?? 'n/a' );
+			->setLabel( 'subtype', $type ?? 'n/a' )
+			->setLabel( 'accountType', $accountType ?? 'n/a' )
+			// temporary, should be removed after successful SUL3 deployment
+			->setLabel( 'sul3', $this->isSul3Enabled() ? 'enabled' : 'disabled' );
 		if ( $successful === false ) {
 			$counter->setLabel( 'reason', $error ?: 'n/a' );
 		}
-		if ( $accountType !== null ) {
-			$counter->setLabel( 'accountType', $accountType );
-		}
-		$counter->setLabel( 'sul3', $this->isSul3Enabled() ? 'enabled' : 'disabled' );
 
 		$counter->copyToStatsdAt( $statsdKey )
 			->increment();
