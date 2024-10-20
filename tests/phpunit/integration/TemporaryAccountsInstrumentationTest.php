@@ -2,7 +2,7 @@
 namespace WikimediaEvents\Tests\Integration;
 
 use Closure;
-use CommentStoreComment;
+use MediaWiki\CommentStore\CommentStoreComment;
 use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\Revision\SlotRecord;

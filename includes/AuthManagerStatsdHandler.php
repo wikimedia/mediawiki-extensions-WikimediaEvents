@@ -24,10 +24,10 @@
 
 namespace WikimediaEvents;
 
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\CentralAuth\SharedDomainUtils;
 use MediaWiki\MediaWikiServices;
 use Monolog\Handler\AbstractHandler;
-use RequestContext;
 
 /**
  * Counts authentication-related log events (those sent to the 'authevents'

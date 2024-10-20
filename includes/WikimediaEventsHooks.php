@@ -5,7 +5,6 @@
 namespace WikimediaEvents;
 
 use Article;
-use ExtensionRegistry;
 use ISearchResultSet;
 use MediaWiki\Actions\ActionEntryPoint;
 use MediaWiki\Auth\AuthenticationResponse;
@@ -26,6 +25,7 @@ use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
 use MediaWiki\Output\OutputPage;
 use MediaWiki\Page\Hook\ArticleViewHeaderHook;
 use MediaWiki\Parser\ParserOutput;
+use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Request\WebRequest;
 use MediaWiki\ResourceLoader as RL;
 use MediaWiki\ResourceLoader\Hook\ResourceLoaderRegisterModulesHook;

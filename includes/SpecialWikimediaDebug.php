@@ -3,11 +3,11 @@
 namespace WikimediaEvents;
 
 use ErrorPageError;
-use ExtensionRegistry;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Message\Message;
+use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\SpecialPage\UnlistedSpecialPage;
 use MediaWiki\Utils\MWTimestamp;
 

@@ -2,7 +2,7 @@
 
 namespace WikimediaEvents;
 
-use ApiBase;
+use MediaWiki\Api\ApiBase;
 use MediaWiki\Title\Title;
 use Wikimedia\ParamValidator\ParamValidator;
 

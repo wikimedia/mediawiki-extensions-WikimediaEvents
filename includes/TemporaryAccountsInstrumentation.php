@@ -1,7 +1,6 @@
 <?php
 namespace WikimediaEvents;
 
-use IDBAccessObject;
 use ManualLogEntry;
 use MediaWiki\Hook\BlockIpCompleteHook;
 use MediaWiki\Page\Hook\PageDeleteCompleteHook;
@@ -14,6 +13,7 @@ use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserIdentity;
 use MediaWiki\User\UserIdentityUtils;
 use MediaWiki\WikiMap\WikiMap;
+use Wikimedia\Rdbms\IDBAccessObject;
 use Wikimedia\Stats\StatsFactory;
 
 /**
