@@ -27,7 +27,8 @@
 			"class": "WikimediaEvents\\WikimediaEventsHooks",
 			"services": [
 				"AccountCreationLogger",
-				"MainConfig"
+				"MainConfig",
+				"WikimediaEventsRequestDetailsLookup"
 			]
 		},
 		"VectorInstrumentation": {

@@ -41,6 +41,7 @@ use MobileContext;
 use RecentChange;
 use Skin;
 use WikimediaEvents\Hooks\HookRunner;
+use WikimediaEvents\Services\WikimediaEventsRequestDetailsLookup;
 use WikiPage;
 
 /**
@@ -67,13 +68,16 @@ class WikimediaEventsHooks implements
 {
 	private AccountCreationLogger $accountCreationLogger;
 	private Config $config;
+	private WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup;
 
 	public function __construct(
 		AccountCreationLogger $accountCreationLogger,
-		Config $config
+		Config $config,
+		WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup
 	) {
 		$this->accountCreationLogger = $accountCreationLogger;
 		$this->config = $config;
+		$this->wikimediaEventsRequestDetailsLookup = $wikimediaEventsRequestDetailsLookup;
 	}
 
 	/**
@@ -223,51 +227,16 @@ class WikimediaEventsHooks implements
 			$nsType = 'meta';
 		}
 
-		if ( MW_ENTRY_POINT === 'index' ) {
-			// non-AJAX submission from user interface
-			// (for non-WMF this could also mean jobrunner, since jobs run post-send
-			// from index.php by default)
-			$entry = 'index';
-		} elseif ( MW_ENTRY_POINT === 'api' || MW_ENTRY_POINT === 'rest' ) {
-			$entry = 'api';
-		} else {
-			// jobrunner, maint/cli
-			$entry = 'other';
-		}
+		$entry = $this->wikimediaEventsRequestDetailsLookup->getEntryPoint();
+
+		$platformDetails = $this->wikimediaEventsRequestDetailsLookup->getPlatformDetails();
 
 		$size = $content->getSize();
 
 		DeferredUpdates::addCallableUpdate(
-			static function () use ( $size, $nsType, $accType, $entry ) {
+			static function () use ( $size, $nsType, $accType, $entry, $platformDetails ) {
 				$requestContext = RequestContext::getMain();
 				$reqCtxTiming = $requestContext->getTiming();
-				// It's possible to use Minerva on a desktop device, or Vector on a mobile
-				// device, but defining Minerva usage as a proxy for "is mobile" is good enough
-				// for monitoring.
-				$isMobile = $requestContext->getSkin()->getSkinName() === 'minerva' ? '1' : '0';
-
-				// Would make sense to gate the following lines behind $entry === 'api', but
-				// the entrypoint is hardcoded via MW_ENTRY_POINT, which can't be overridden in tests.
-
-				// Check if the request was Android/iOS/Commons app.
-				$userAgent = $requestContext->getRequest()->getHeader( "User-agent" );
-				$isWikipediaApp = strpos( $userAgent, "WikipediaApp/" ) === 0;
-				$isCommonsApp = strpos( $userAgent, "Commons/" ) === 0;
-				if ( $isWikipediaApp || $isCommonsApp ) {
-					// Consider apps to be "mobile" for instrumentation purposes
-					$isMobile = '1';
-				}
-				if ( $isCommonsApp ) {
-					$platform = 'commons';
-				} elseif ( strpos( $userAgent, "Android" ) > 0 ) {
-					$platform = 'android';
-				} elseif ( strpos( $userAgent, "iOS" ) > 0 || strpos( $userAgent, "iPadOS" ) > 0 ) {
-					$platform = 'ios';
-				} elseif ( $entry === 'index' ) {
-					$platform = 'web';
-				} else {
-					$platform = 'unknown';
-				}
 
 				$measure = $reqCtxTiming->measure(
 					'editResponseTime', 'requestStart', 'requestShutdown' );
@@ -283,8 +252,8 @@ class WikimediaEventsHooks implements
 				$statsFactory->getTiming( 'editResponseTime_seconds' )
 					->setLabel( 'page', $nsType )
 					->setLabel( 'user', $accType )
-					->setLabel( 'is_mobile', $isMobile )
-					->setLabel( 'platform', $platform )
+					->setLabel( 'is_mobile', $platformDetails['isMobile'] )
+					->setLabel( 'platform', $platformDetails['platform'] )
 					->setLabel( 'entry', $entry )
 					->copyToStatsdAt( [
 						"timing.editResponseTime",
@@ -297,8 +266,8 @@ class WikimediaEventsHooks implements
 				$statsFactory->getTiming( 'editResponseTimePerKB_seconds' )
 					->setLabel( 'page', $nsType )
 					->setLabel( 'user', $accType )
-					->setLabel( 'platform', $platform )
-					->setLabel( 'is_mobile', $isMobile )
+					->setLabel( 'platform', $platformDetails['platform'] )
+					->setLabel( 'is_mobile', $platformDetails['isMobile'] )
 					->setLabel( 'entry', $entry )
 					->copyToStatsdAt( [
 						"timing.editResponseTimePerKB.page.$nsType",
