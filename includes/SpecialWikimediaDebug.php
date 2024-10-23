@@ -78,9 +78,8 @@ class SpecialWikimediaDebug extends UnlistedSpecialPage {
 			$form->addButton( [
 				'name' => 'renew',
 				'value' => '1',
-				'label-message' => [ 'wikimediaevents-special-wikimediadebug-submit-renew',
-					Message::durationParam( self::DEFAULT_EXPIRY )
-				],
+				'label-message' => $this->msg( 'wikimediaevents-special-wikimediadebug-submit-renew' )
+					->durationParams( self::DEFAULT_EXPIRY ),
 			] );
 		}
 
