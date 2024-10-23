@@ -346,6 +346,9 @@
 			"value": 90
 		}
 	},
+	"AutoloadClasses": {
+		"WikimediaEvents\\Maintenance\\UpdatePeriodicMetrics": "maintenance/UpdatePeriodicMetrics.php"
+	},
 	"ServiceWiringFiles": [
 		"includes/ServiceWiring.php"
 	],
