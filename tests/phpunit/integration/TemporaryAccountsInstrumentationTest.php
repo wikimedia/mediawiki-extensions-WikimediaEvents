@@ -2,8 +2,11 @@
 namespace WikimediaEvents\Tests\Integration;
 
 use Closure;
+use MediaWiki\Auth\Throttler;
 use MediaWiki\CommentStore\CommentStoreComment;
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Deferred\DeferredUpdates;
+use MediaWiki\MainConfigNames;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\Revision\SlotRecord;
 use MediaWiki\Storage\EditResult;
@@ -188,6 +191,79 @@ class TemporaryAccountsInstrumentationTest extends MediaWikiIntegrationTestCase 
 		$this->assertCounterIncremented( 'block_target_total', [ 'normal' ] );
 	}
 
+	public function testTemporaryAccountNameAcquisitionThrottled() {
+		$this->enableAutoCreateTempUser();
+		// Set the name throttle to be very small to allow easier testing.
+		$this->overrideConfigValue( MainConfigNames::TempAccountNameAcquisitionThrottle, [
+			[ 'count' => 1, 'seconds' => 86400 ],
+		] );
+		$mainRequest = RequestContext::getMain()->getRequest();
+		$mainRequest->setHeader( 'User-Agent', 'WikipediaApp/Android' );
+		// Acquire a temporary account name
+		$this->assertNotNull(
+			$this->getServiceContainer()->getTempUserCreator()->acquireAndStashName( $mainRequest->getSession() )
+		);
+		// Check that no counter has been incremented yet.
+		$this->assertCounterNotIncremented( 'temp_account_creation_throttled_total' );
+		// Acquire another temporary account name, which should fail by being throttled.
+		$mainRequest->getSession()->clear();
+		$this->assertNull(
+			$this->getServiceContainer()->getTempUserCreator()->acquireAndStashName( $mainRequest->getSession() )
+		);
+		$this->assertCounterIncremented(
+			'temp_account_creation_throttled_total',
+			[ 'tempacctnameacquisition', '1', 'android' ]
+		);
+	}
+
+	public function testTemporaryAccountCreationThrottled() {
+		$this->enableAutoCreateTempUser();
+		// Set the name throttle to be very small to allow easier testing.
+		$this->overrideConfigValue( MainConfigNames::TempAccountCreationThrottle, [
+			[ 'count' => 1, 'seconds' => 86400 ],
+		] );
+		$mainRequest = RequestContext::getMain()->getRequest();
+		$mainRequest->setHeader( 'User-Agent', 'Mozilla ... iOS' );
+		// Create a temporary account, which should pass.
+		$this->assertStatusGood(
+			$this->getServiceContainer()->getTempUserCreator()->create( null, $mainRequest )
+		);
+		// Check that no counter has been incremented yet.
+		$this->assertCounterNotIncremented( 'temp_account_creation_throttled_total' );
+		// Create another temporary account, which should fail by being throttled.
+		$mainRequest->getSession()->clear();
+		$this->assertStatusNotGood(
+			$this->getServiceContainer()->getTempUserCreator()->create( null, $mainRequest )
+		);
+		$this->assertCounterIncremented(
+			'temp_account_creation_throttled_total',
+			[ 'tempacctcreate', '0', 'ios' ]
+		);
+	}
+
+	public function testNormalAccountCreationThrottled() {
+		// Check that the AuthenticationAttemptThrottled hook is actually run, otherwise our test would still pass
+		// if the hook wasn't actually called.
+		$hookCalled = false;
+		$this->setTemporaryHook(
+			'AuthenticationAttemptThrottled',
+			function ( $type ) use ( &$hookCalled ) {
+				$hookCalled = true;
+				$this->assertSame( 'acctcreate', $type );
+			},
+			false
+		);
+		// Cause the account creation throttler to throttle.
+		$accountCreationThrottler = new Throttler(
+			[ [ 'count' => 1, 'seconds' => 86400 ] ], [ 'type' => 'acctcreate' ]
+		);
+		$accountCreationThrottler->increase( null, '1.2.3.4' );
+		$accountCreationThrottler->increase( null, '1.2.3.4' );
+		$this->assertTrue( $hookCalled );
+		// Expect no calls to increase the counter, as this is not increased for normal account creations.
+		$this->assertCounterNotIncremented( 'temp_account_creation_throttled_total' );
+	}
+
 	/**
 	 * Convenience function to assert that the per-wiki counter with the given name
 	 * was incremented exactly once.
@@ -211,7 +287,7 @@ class TemporaryAccountsInstrumentationTest extends MediaWikiIntegrationTestCase 
 
 		$wikiId = WikiMap::getCurrentWikiId();
 		$expectedLabels = array_merge(
-			[ strtr( $wikiId, [ '_' => '', '-' => '_' ] ) ],
+			[ rtrim( strtr( $wikiId, [ '-' => '_' ] ), '_' ) ],
 			$expectedLabels
 		);
 

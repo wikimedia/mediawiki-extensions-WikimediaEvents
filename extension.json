@@ -69,11 +69,13 @@
 				"StatsFactory",
 				"RevisionLookup",
 				"UserIdentityUtils",
-				"UserFactory"
+				"UserFactory",
+				"WikimediaEventsRequestDetailsLookup"
 			]
 		}
 	},
 	"Hooks": {
+		"AuthenticationAttemptThrottled": "TemporaryAccountsInstrumentation",
 		"BeforeInitialize": "main",
 		"BeforePageDisplay": "main",
 		"BlockIpComplete": "TemporaryAccountsInstrumentation",

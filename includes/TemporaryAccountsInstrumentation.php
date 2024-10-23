@@ -2,6 +2,7 @@
 namespace WikimediaEvents;
 
 use ManualLogEntry;
+use MediaWiki\Auth\Hook\AuthenticationAttemptThrottledHook;
 use MediaWiki\Hook\BlockIpCompleteHook;
 use MediaWiki\Page\Hook\PageDeleteCompleteHook;
 use MediaWiki\Page\ProperPageIdentity;
@@ -15,11 +16,17 @@ use MediaWiki\User\UserIdentityUtils;
 use MediaWiki\WikiMap\WikiMap;
 use Wikimedia\Rdbms\IDBAccessObject;
 use Wikimedia\Stats\StatsFactory;
+use WikimediaEvents\Services\WikimediaEventsRequestDetailsLookup;
 
 /**
  * Holds hook handlers emitting metrics related to the temporary accounts initiative (T357763).
  */
-class TemporaryAccountsInstrumentation implements PageDeleteCompleteHook, PageSaveCompleteHook, BlockIpCompleteHook {
+class TemporaryAccountsInstrumentation implements
+	PageDeleteCompleteHook,
+	PageSaveCompleteHook,
+	BlockIpCompleteHook,
+	AuthenticationAttemptThrottledHook
+{
 	public const ACCOUNT_TYPE_TEMPORARY = 'temp';
 	public const ACCOUNT_TYPE_ANON = 'anon';
 	public const ACCOUNT_TYPE_IP_RANGE = 'iprange';
@@ -30,17 +37,20 @@ class TemporaryAccountsInstrumentation implements PageDeleteCompleteHook, PageSa
 	private RevisionLookup $revisionLookup;
 	private UserIdentityUtils $userIdentityUtils;
 	private UserFactory $userFactory;
+	private WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup;
 
 	public function __construct(
 		StatsFactory $statsFactory,
 		RevisionLookup $revisionLookup,
 		UserIdentityUtils $userIdentityUtils,
-		UserFactory $userFactory
+		UserFactory $userFactory,
+		WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup
 	) {
 		$this->statsFactory = $statsFactory;
 		$this->revisionLookup = $revisionLookup;
 		$this->userIdentityUtils = $userIdentityUtils;
 		$this->userFactory = $userFactory;
+		$this->wikimediaEventsRequestDetailsLookup = $wikimediaEventsRequestDetailsLookup;
 	}
 
 	/**
@@ -104,6 +114,23 @@ class TemporaryAccountsInstrumentation implements PageDeleteCompleteHook, PageSa
 			->getCounter( 'block_target_total' )
 			->setLabel( 'wiki', WikiMap::getCurrentWikiId() )
 			->setLabel( 'user', $this->getUserType( $target ) )
+			->increment();
+	}
+
+	/** @inheritDoc */
+	public function onAuthenticationAttemptThrottled( string $type, ?string $username, ?string $ip ) {
+		// Only interested in temporary account related throttling.
+		if ( !in_array( $type, [ 'tempacctcreate', 'tempacctnameacquisition' ] ) ) {
+			return;
+		}
+
+		$platformDetails = $this->wikimediaEventsRequestDetailsLookup->getPlatformDetails();
+		$this->statsFactory->withComponent( 'WikimediaEvents' )
+			->getCounter( 'temp_account_creation_throttled_total' )
+			->setLabel( 'wiki', WikiMap::getCurrentWikiId() )
+			->setLabel( 'type', $type )
+			->setLabel( 'is_mobile', $platformDetails['isMobile'] )
+			->setLabel( 'platform', $platformDetails['platform'] )
 			->increment();
 	}
 
