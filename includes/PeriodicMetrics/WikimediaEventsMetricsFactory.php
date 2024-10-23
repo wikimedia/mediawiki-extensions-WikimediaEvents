@@ -17,6 +17,7 @@ class WikimediaEventsMetricsFactory {
 	/** @var string[] */
 	private const METRICS = [
 		LocallyAutoEnrolledTemporaryAccountIPViewersMetric::class,
+		LocalTemporaryAccountIPViewersMetric::class,
 	];
 
 	private GroupPermissionsLookup $groupPermissionsLookup;
@@ -52,6 +53,10 @@ class WikimediaEventsMetricsFactory {
 		switch ( $className ) {
 			case LocallyAutoEnrolledTemporaryAccountIPViewersMetric::class:
 				return new LocallyAutoEnrolledTemporaryAccountIPViewersMetric(
+					$this->groupPermissionsLookup, $this->userGroupManager, $this->dbProvider
+				);
+			case LocalTemporaryAccountIPViewersMetric::class:
+				return new LocalTemporaryAccountIPViewersMetric(
 					$this->groupPermissionsLookup, $this->userGroupManager, $this->dbProvider
 				);
 			default:

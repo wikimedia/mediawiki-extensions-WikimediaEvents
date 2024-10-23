@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use MediaWiki\Tests\Unit\MockServiceDependenciesTrait;
 use MediaWikiUnitTestCase;
 use WikimediaEvents\PeriodicMetrics\LocallyAutoEnrolledTemporaryAccountIPViewersMetric;
+use WikimediaEvents\PeriodicMetrics\LocalTemporaryAccountIPViewersMetric;
 use WikimediaEvents\PeriodicMetrics\WikimediaEventsMetricsFactory;
 
 /**
@@ -18,6 +19,7 @@ class WikimediaEventsMetricsFactoryTest extends MediaWikiUnitTestCase {
 	public static function validMetricClasses() {
 		return [
 			LocallyAutoEnrolledTemporaryAccountIPViewersMetric::class,
+			LocalTemporaryAccountIPViewersMetric::class,
 		];
 	}
 
