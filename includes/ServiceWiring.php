@@ -27,6 +27,7 @@ use MaxMind\Db\Reader\InvalidDatabaseException;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use WikimediaEvents\AccountCreationLogger;
+use WikimediaEvents\PeriodicMetrics\WikimediaEventsMetricsFactory;
 use WikimediaEvents\Services\WikimediaEventsRequestDetailsLookup;
 use WikimediaEvents\WebABTest\WebABTestArticleIdFactory;
 use WikimediaEvents\WikimediaEventsCountryCodeLookup;
@@ -55,5 +56,12 @@ return [
 	},
 	'WikimediaEventsRequestDetailsLookup' => static function (): WikimediaEventsRequestDetailsLookup {
 		return new WikimediaEventsRequestDetailsLookup();
+	},
+	'WikimediaEventsMetricsFactory' => static function ( MediaWikiServices $services ): WikimediaEventsMetricsFactory {
+		return new WikimediaEventsMetricsFactory(
+			$services->getGroupPermissionsLookup(),
+			$services->getUserGroupManager(),
+			$services->getConnectionProvider()
+		);
 	},
 ];
