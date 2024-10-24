@@ -18,6 +18,7 @@ class WikimediaEventsMetricsFactory {
 	private const METRICS = [
 		LocallyAutoEnrolledTemporaryAccountIPViewersMetric::class,
 		LocalTemporaryAccountIPViewersMetric::class,
+		ActiveTemporaryAccountIPViewersMetric::class,
 	];
 
 	private GroupPermissionsLookup $groupPermissionsLookup;
@@ -59,6 +60,8 @@ class WikimediaEventsMetricsFactory {
 				return new LocalTemporaryAccountIPViewersMetric(
 					$this->groupPermissionsLookup, $this->userGroupManager, $this->dbProvider
 				);
+			case ActiveTemporaryAccountIPViewersMetric::class:
+				return new ActiveTemporaryAccountIPViewersMetric( $this->dbProvider );
 			default:
 				throw new InvalidArgumentException( 'Unsupported metric class name' );
 		}
