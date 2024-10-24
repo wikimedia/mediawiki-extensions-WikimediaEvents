@@ -25,6 +25,7 @@ use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
 use MediaWiki\Output\OutputPage;
 use MediaWiki\Page\Hook\ArticleViewHeaderHook;
 use MediaWiki\Parser\ParserOutput;
+use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Request\WebRequest;
 use MediaWiki\ResourceLoader as RL;
@@ -33,6 +34,7 @@ use MediaWiki\ResourceLoader\ResourceLoader;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Storage\EditResult;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
+use MediaWiki\Title\NamespaceInfo;
 use MediaWiki\Title\Title;
 use MediaWiki\User\User;
 use MediaWiki\User\UserIdentity;
@@ -68,15 +70,21 @@ class WikimediaEventsHooks implements
 {
 	private AccountCreationLogger $accountCreationLogger;
 	private Config $config;
+	private NamespaceInfo $namespaceInfo;
+	private PermissionManager $permissionManager;
 	private WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup;
 
 	public function __construct(
 		AccountCreationLogger $accountCreationLogger,
 		Config $config,
+		NamespaceInfo $namespaceInfo,
+		PermissionManager $permissionManager,
 		WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup
 	) {
 		$this->accountCreationLogger = $accountCreationLogger;
 		$this->config = $config;
+		$this->namespaceInfo = $namespaceInfo;
+		$this->permissionManager = $permissionManager;
 		$this->wikimediaEventsRequestDetailsLookup = $wikimediaEventsRequestDetailsLookup;
 	}
 
@@ -195,16 +203,13 @@ class WikimediaEventsHooks implements
 		$title = $wikiPage->getTitle();
 
 		$request = RequestContext::getMain()->getRequest();
-		$services = MediaWikiServices::getInstance();
-		$nsInfo = $services->getNamespaceInfo();
-		$permMgr = $services->getPermissionManager();
 
 		$user = User::newFromIdentity( $userIdentity );
 		$content = $wikiPage->getContent();
 
 		if (
 			$user->isBot() ||
-			( $request->getCheck( 'bot' ) && $permMgr->userHasRight( $user, 'bot' ) )
+			( $request->getCheck( 'bot' ) && $this->permissionManager->userHasRight( $user, 'bot' ) )
 		) {
 			$accType = 'bot'; // registered bot or script acting on behalf of a user
 		} elseif ( $request->getCheck( 'maxlag' ) ) {
@@ -219,9 +224,9 @@ class WikimediaEventsHooks implements
 
 		if ( in_array( $content->getModel(), [ 'wikibase-item', 'wikibase-property' ] ) ) {
 			$nsType = 'entity';
-		} elseif ( $nsInfo->isContent( $title->getNamespace() ) ) {
+		} elseif ( $this->namespaceInfo->isContent( $title->getNamespace() ) ) {
 			$nsType = 'content';
-		} elseif ( $nsInfo->isTalk( $title->getNamespace() ) ) {
+		} elseif ( $this->namespaceInfo->isTalk( $title->getNamespace() ) ) {
 			$nsType = 'talk';
 		} else {
 			$nsType = 'meta';

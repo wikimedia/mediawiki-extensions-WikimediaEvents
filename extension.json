@@ -28,6 +28,8 @@
 			"services": [
 				"AccountCreationLogger",
 				"MainConfig",
+				"NamespaceInfo",
+				"PermissionManager",
 				"WikimediaEventsRequestDetailsLookup"
 			]
 		},
