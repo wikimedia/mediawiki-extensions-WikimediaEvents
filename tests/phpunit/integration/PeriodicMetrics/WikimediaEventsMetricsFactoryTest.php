@@ -8,6 +8,7 @@ use MediaWiki\Tests\Unit\MockServiceDependenciesTrait;
 use MediaWikiIntegrationTestCase;
 use WikimediaEvents\PeriodicMetrics\ActiveTemporaryAccountIPViewersMetric;
 use WikimediaEvents\PeriodicMetrics\GloballyAutoEnrolledTemporaryAccountIPViewersMetric;
+use WikimediaEvents\PeriodicMetrics\GlobalTemporaryAccountIPViewersMetric;
 use WikimediaEvents\PeriodicMetrics\LocallyAutoEnrolledTemporaryAccountIPViewersMetric;
 use WikimediaEvents\PeriodicMetrics\LocalTemporaryAccountIPViewersMetric;
 use WikimediaEvents\PeriodicMetrics\WikimediaEventsMetricsFactory;
@@ -30,6 +31,7 @@ class WikimediaEventsMetricsFactoryTest extends MediaWikiIntegrationTestCase {
 	public static function validCentralAuthOnlyMetricClasses() {
 		return [
 			GloballyAutoEnrolledTemporaryAccountIPViewersMetric::class,
+			GlobalTemporaryAccountIPViewersMetric::class,
 		];
 	}
 
