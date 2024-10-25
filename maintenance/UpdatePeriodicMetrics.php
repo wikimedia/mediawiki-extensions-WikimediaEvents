@@ -33,6 +33,11 @@ class UpdatePeriodicMetrics extends Maintenance {
 
 		$this->addDescription( 'Generates a snapshot of several metrics which can then be pulled by Prometheus.' );
 		$this->addOption( 'verbose', 'Output values of metrics calculated. Default is to not output.' );
+		$this->addOption(
+			'global-metrics',
+			'Generates metrics which are global (i.e. not per-wiki). ' .
+			'Without specifying this option the script will only generate per-wiki metrics.'
+		);
 	}
 
 	/**
@@ -48,7 +53,13 @@ class UpdatePeriodicMetrics extends Maintenance {
 	public function execute() {
 		$this->initServices();
 
-		foreach ( $this->wikimediaEventsMetricsFactory->getAllMetrics() as $metricName ) {
+		if ( $this->hasOption( 'global-metrics' ) ) {
+			$metrics = $this->wikimediaEventsMetricsFactory->getAllGlobalMetrics();
+		} else {
+			$metrics = $this->wikimediaEventsMetricsFactory->getAllPerWikiMetrics();
+		}
+
+		foreach ( $metrics as $metricName ) {
 			try {
 				$metric = $this->wikimediaEventsMetricsFactory->newMetric( $metricName );
 			} catch ( InvalidArgumentException $_ ) {
@@ -71,10 +82,12 @@ class UpdatePeriodicMetrics extends Maintenance {
 			$gaugeMetric->set( $metricValue );
 
 			if ( $this->hasOption( 'verbose' ) ) {
-				$this->output(
-					$metric->getName() . ' with label(s) ' . implode( ',', $metric->getLabels() ) .
-					' is ' . $metricValue . '.' . PHP_EOL
-				);
+				$outputString = $metric->getName();
+				if ( count( $metric->getLabels() ) ) {
+					$outputString .= ' with label(s) ' . implode( ',', $metric->getLabels() );
+				}
+				$outputString .= ' is ' . $metricValue . '.' . PHP_EOL;
+				$this->output( $outputString );
 			}
 		}
 	}

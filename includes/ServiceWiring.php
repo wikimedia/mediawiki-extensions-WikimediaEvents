@@ -61,7 +61,8 @@ return [
 		return new WikimediaEventsMetricsFactory(
 			$services->getGroupPermissionsLookup(),
 			$services->getUserGroupManager(),
-			$services->getConnectionProvider()
+			$services->getConnectionProvider(),
+			$services->getExtensionRegistry()
 		);
 	},
 ];
