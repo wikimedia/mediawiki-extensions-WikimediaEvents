@@ -48,6 +48,14 @@ class LocallyAutoEnrolledTemporaryAccountIPViewersMetricTest extends MediaWikiIn
 		$this->assertSame( 2, $this->getObjectUnderTest()->calculate() );
 	}
 
+	public function testCalculateWhenNoRelevantGroups() {
+		// Set wgGroupPermissions to have no group with the checkuser-temporary-account-no-preference group.
+		$this->setGroupPermissions( [
+			'checkuser' => [ 'checkuser-temporary-account-no-preference' => false ],
+		] );
+		$this->assertSame( 0, $this->getObjectUnderTest()->calculate() );
+	}
+
 	public function testGetName() {
 		$this->assertSame(
 			'locally_auto_enrolled_temporary_account_ip_viewers_total',

@@ -48,6 +48,15 @@ class LocalTemporaryAccountIPViewersMetricTest extends MediaWikiIntegrationTestC
 		$this->assertSame( 3, $this->getObjectUnderTest()->calculate() );
 	}
 
+	public function testCalculateWhenNoRelevantGroups() {
+		// Set wgGroupPermissions to have no group with the rights needed to IP reveal.
+		$this->setGroupPermissions( [
+			'checkuser' => [ 'checkuser-temporary-account-no-preference' => false ],
+			'checkuser-temporary-account-viewer' => [ 'checkuser-temporary-account' => false ],
+		] );
+		$this->assertSame( 0, $this->getObjectUnderTest()->calculate() );
+	}
+
 	public function testGetName() {
 		$this->assertSame(
 			'local_temporary_account_ip_viewers_total',
