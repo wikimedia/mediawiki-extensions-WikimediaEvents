@@ -5,6 +5,7 @@ namespace WikimediaEvents;
 use MediaWiki\Block\Block;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\EventLogging\EventLogging;
+use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Message\Message;
 use MediaWiki\Title\Title;
@@ -71,8 +72,6 @@ class BlockUtils {
 	 * @param string $platform
 	 */
 	public static function logBlockedEditAttempt( $user, $title, $interface, $platform ) {
-		global $wgDBname;
-
 		// Prefer the local block over the global one if both are set. This is
 		// somewhat arbitrary, but is consistent with account creation block
 		// logging.
@@ -115,7 +114,7 @@ class BlockUtils {
 			'interface' => $interface,
 			'country_code' => WikimediaEventsCountryCodeLookup::getCountryCodeFormattedForEvent( $countryCode ),
 			// http.client_ip is handled by eventgate-wikimedia
-			'database' => $wgDBname,
+			'database' => MediaWikiServices::getInstance()->getMainConfig()->get( MainConfigNames::DBname ),
 			'page_id' => $title->getId(),
 			'page_namespace' => $title->getNamespace(),
 			'rev_id' => $title->getLatestRevID(),
