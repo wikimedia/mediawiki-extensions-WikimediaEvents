@@ -37,6 +37,9 @@ class LocalTemporaryAccountIPViewersMetric extends PerWikiMetric {
 			$this->groupPermissionsLookup->getGroupsWithPermission( 'checkuser-temporary-account' )
 		);
 		$groupsWithAccess = array_unique( $groupsWithAccess );
+		if ( !count( $groupsWithAccess ) ) {
+			return 0;
+		}
 
 		// Fetch the number of users which have any of the groups which give access to temporary account IP addresses.
 		return $this->userGroupManager->newQueryBuilder( $this->dbProvider->getReplicaDatabase() )

@@ -28,14 +28,17 @@ class LocallyAutoEnrolledTemporaryAccountIPViewersMetric extends PerWikiMetric {
 
 	/** @inheritDoc */
 	public function calculate(): int {
+		$groupsWithRelevantPermission = $this->groupPermissionsLookup->getGroupsWithPermission(
+			'checkuser-temporary-account-no-preference'
+		);
+		if ( !count( $groupsWithRelevantPermission ) ) {
+			return 0;
+		}
+
 		return $this->userGroupManager->newQueryBuilder( $this->dbProvider->getReplicaDatabase() )
 			->clearFields()
 			->select( 'COUNT(DISTINCT ug_user)' )
-			->where( [
-				'ug_group' => $this->groupPermissionsLookup->getGroupsWithPermission(
-					'checkuser-temporary-account-no-preference'
-				),
-			] )
+			->where( [ 'ug_group' => $groupsWithRelevantPermission ] )
 			->caller( __METHOD__ )
 			->fetchField();
 	}
