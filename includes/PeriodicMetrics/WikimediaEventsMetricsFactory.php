@@ -26,6 +26,7 @@ class WikimediaEventsMetricsFactory {
 	/** @var string[] */
 	private const GLOBAL_METRICS = [
 		GloballyAutoEnrolledTemporaryAccountIPViewersMetric::class,
+		GlobalTemporaryAccountIPViewersMetric::class,
 	];
 
 	private GroupPermissionsLookup $groupPermissionsLookup;
@@ -79,6 +80,10 @@ class WikimediaEventsMetricsFactory {
 			switch ( $className ) {
 				case GloballyAutoEnrolledTemporaryAccountIPViewersMetric::class:
 					return new GloballyAutoEnrolledTemporaryAccountIPViewersMetric(
+						CentralAuthServices::getGlobalGroupLookup(), CentralAuthServices::getDatabaseManager()
+					);
+				case GlobalTemporaryAccountIPViewersMetric::class:
+					return new GlobalTemporaryAccountIPViewersMetric(
 						CentralAuthServices::getGlobalGroupLookup(), CentralAuthServices::getDatabaseManager()
 					);
 			}
