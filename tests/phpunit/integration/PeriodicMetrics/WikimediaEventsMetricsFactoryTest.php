@@ -9,6 +9,7 @@ use MediaWikiIntegrationTestCase;
 use WikimediaEvents\PeriodicMetrics\ActiveTemporaryAccountIPViewersMetric;
 use WikimediaEvents\PeriodicMetrics\GloballyAutoEnrolledTemporaryAccountIPViewersMetric;
 use WikimediaEvents\PeriodicMetrics\GlobalTemporaryAccountIPViewersMetric;
+use WikimediaEvents\PeriodicMetrics\GlobalTemporaryAccountIPViewersWithEnabledPreferenceMetric;
 use WikimediaEvents\PeriodicMetrics\LocallyAutoEnrolledTemporaryAccountIPViewersMetric;
 use WikimediaEvents\PeriodicMetrics\LocalTemporaryAccountIPViewersMetric;
 use WikimediaEvents\PeriodicMetrics\WikimediaEventsMetricsFactory;
@@ -32,6 +33,12 @@ class WikimediaEventsMetricsFactoryTest extends MediaWikiIntegrationTestCase {
 		return [
 			GloballyAutoEnrolledTemporaryAccountIPViewersMetric::class,
 			GlobalTemporaryAccountIPViewersMetric::class,
+		];
+	}
+
+	public static function validCentralAuthAndGlobalPreferencesOnlyMetricClasses() {
+		return [
+			GlobalTemporaryAccountIPViewersWithEnabledPreferenceMetric::class,
 		];
 	}
 
@@ -91,9 +98,30 @@ class WikimediaEventsMetricsFactoryTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
+	/** @dataProvider provideCentralAuthAndGlobalPreferencesMetricClasses */
+	public function testNewMetricForCentralAuthAndGlobalPreferencesOnlyMetrics( $className ) {
+		$this->markTestSkippedIfExtensionNotLoaded( 'CentralAuth' );
+		$this->markTestSkippedIfExtensionNotLoaded( 'GlobalPreferences' );
+		$this->assertInstanceOf(
+			$className,
+			$this->getObjectUnderTest()->newMetric( $className ),
+			'::newMetric returned an object where the class name was not as expected.'
+		);
+	}
+
+	public static function provideCentralAuthAndGlobalPreferencesMetricClasses() {
+		foreach ( self::validCentralAuthAndGlobalPreferencesOnlyMetricClasses() as $class ) {
+			yield $class => [ $class ];
+		}
+	}
+
 	public function testGetMetrics() {
 		$this->assertSame(
-			array_merge( self::validMetricClasses(), self::validCentralAuthOnlyMetricClasses() ),
+			array_merge(
+				self::validMetricClasses(),
+				self::validCentralAuthOnlyMetricClasses(),
+				self::validCentralAuthAndGlobalPreferencesOnlyMetricClasses()
+			),
 			$this->getObjectUnderTest()->getAllMetrics()
 		);
 	}
@@ -104,7 +132,10 @@ class WikimediaEventsMetricsFactoryTest extends MediaWikiIntegrationTestCase {
 
 	public function testGetGlobalMetrics() {
 		$this->assertSame(
-			self::validCentralAuthOnlyMetricClasses(),
+			array_merge(
+				self::validCentralAuthOnlyMetricClasses(),
+				self::validCentralAuthAndGlobalPreferencesOnlyMetricClasses()
+			),
 			$this->getObjectUnderTest()->getAllGlobalMetrics()
 		);
 	}

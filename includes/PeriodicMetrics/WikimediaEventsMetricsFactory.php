@@ -2,8 +2,10 @@
 
 namespace WikimediaEvents\PeriodicMetrics;
 
+use GlobalPreferences\GlobalPreferencesServices;
 use InvalidArgumentException;
 use MediaWiki\Extension\CentralAuth\CentralAuthServices;
+use MediaWiki\MediaWikiServices;
 use MediaWiki\Permissions\GroupPermissionsLookup;
 use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\User\UserGroupManager;
@@ -27,6 +29,7 @@ class WikimediaEventsMetricsFactory {
 	private const GLOBAL_METRICS = [
 		GloballyAutoEnrolledTemporaryAccountIPViewersMetric::class,
 		GlobalTemporaryAccountIPViewersMetric::class,
+		GlobalTemporaryAccountIPViewersWithEnabledPreferenceMetric::class,
 	];
 
 	private GroupPermissionsLookup $groupPermissionsLookup;
@@ -77,14 +80,30 @@ class WikimediaEventsMetricsFactory {
 	 */
 	public function newMetric( string $className ): IMetric {
 		if ( $this->extensionRegistry->isLoaded( 'CentralAuth' ) ) {
+			$globalGroupLookup = CentralAuthServices::getGlobalGroupLookup();
+			$centralAuthDatabaseManager = CentralAuthServices::getDatabaseManager();
+
+			if ( $this->extensionRegistry->isLoaded( 'GlobalPreferences' ) ) {
+				$globalPreferencesServices = GlobalPreferencesServices::wrap( MediaWikiServices::getInstance() );
+				$globalPreferencesConnectionProvider = $globalPreferencesServices
+					->getGlobalPreferencesConnectionProvider();
+
+				switch ( $className ) {
+					case GlobalTemporaryAccountIPViewersWithEnabledPreferenceMetric::class:
+						return new GlobalTemporaryAccountIPViewersWithEnabledPreferenceMetric(
+							$globalGroupLookup, $centralAuthDatabaseManager, $globalPreferencesConnectionProvider
+						);
+				}
+			}
+
 			switch ( $className ) {
 				case GloballyAutoEnrolledTemporaryAccountIPViewersMetric::class:
 					return new GloballyAutoEnrolledTemporaryAccountIPViewersMetric(
-						CentralAuthServices::getGlobalGroupLookup(), CentralAuthServices::getDatabaseManager()
+						$globalGroupLookup, $centralAuthDatabaseManager
 					);
 				case GlobalTemporaryAccountIPViewersMetric::class:
 					return new GlobalTemporaryAccountIPViewersMetric(
-						CentralAuthServices::getGlobalGroupLookup(), CentralAuthServices::getDatabaseManager()
+						$globalGroupLookup, $centralAuthDatabaseManager
 					);
 			}
 		}
