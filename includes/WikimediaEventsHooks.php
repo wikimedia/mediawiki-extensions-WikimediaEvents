@@ -255,6 +255,7 @@ class WikimediaEventsHooks implements
 					->withComponent( 'WikimediaEvents' );
 
 				$statsFactory->getTiming( 'editResponseTime_seconds' )
+					->setLabel( 'wiki', WikiMap::getCurrentWikiId() )
 					->setLabel( 'page', $nsType )
 					->setLabel( 'user', $accType )
 					->setLabel( 'is_mobile', $platformDetails['isMobile'] )
@@ -269,6 +270,7 @@ class WikimediaEventsHooks implements
 
 				$msPerKb = $timeMs / ( max( $size, 1 ) / 1e3 ); // T224686
 				$statsFactory->getTiming( 'editResponseTimePerKB_seconds' )
+					->setLabel( 'wiki', WikiMap::getCurrentWikiId() )
 					->setLabel( 'page', $nsType )
 					->setLabel( 'user', $accType )
 					->setLabel( 'platform', $platformDetails['platform'] )
