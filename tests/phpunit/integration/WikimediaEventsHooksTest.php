@@ -5,7 +5,9 @@ namespace WikimediaEvents\Tests\Integration;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
+use MediaWiki\WikiMap\WikiMap;
 use Skin;
+use Wikimedia\Stats\StatsUtils;
 
 /**
  * @covers \WikimediaEvents\WikimediaEventsHooks
@@ -48,6 +50,8 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 			->getTiming( 'editResponseTime_seconds' );
 		$sample = $timer->getSamples()[0];
 		$labelValues = $sample->getLabelValues();
+		$wikiIdLabel = array_shift( $labelValues );
+		$this->assertSame( StatsUtils::normalizeString( WikiMap::getCurrentWikiId() ), $wikiIdLabel );
 		$this->assertArrayEquals( $expectedLabelValues, $labelValues );
 	}
 
