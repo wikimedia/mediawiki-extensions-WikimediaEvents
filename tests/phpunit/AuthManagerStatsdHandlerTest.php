@@ -3,6 +3,7 @@
 namespace WikimediaEvents\Tests;
 
 use MediaWiki\Extension\CentralAuth\SharedDomainUtils;
+use MediaWiki\WikiMap\WikiMap;
 use MediaWikiIntegrationTestCase;
 use Wikimedia\Stats\Metrics\CounterMetric;
 use Wikimedia\Stats\StatsFactory;
@@ -33,6 +34,7 @@ class AuthManagerStatsdHandlerTest extends MediaWikiIntegrationTestCase {
 		$stats->method( 'getCounter' )->willReturn( $counter );
 
 		$expectedLabels = [
+			'wiki' => WikiMap::getCurrentWikiId(),
 			'entrypoint' => 'web',
 			'event' => 'autocreate',
 			'subtype' => 'n/a',
@@ -42,7 +44,7 @@ class AuthManagerStatsdHandlerTest extends MediaWikiIntegrationTestCase {
 
 		$handler = new AuthManagerStatsdHandler();
 		$stats->expects( $this->once() )->method( 'getCounter' )->with( 'authmanager_event_total' );
-		$setLabelMock = $counter->expects( $this->exactly( 5 ) )->method( 'setLabel' );
+		$setLabelMock = $counter->expects( $this->exactly( 6 ) )->method( 'setLabel' );
 		$setLabelMock->willReturnCallback( function ( $key, $value ) use ( $expectedLabels ){
 			$this->assertSame( $expectedLabels[$key], $value, sprintf( "unexpected setLabel(%s, %s) call",
 				var_export( $key, true ), var_export( $value, true ) ) );
@@ -73,6 +75,7 @@ class AuthManagerStatsdHandlerTest extends MediaWikiIntegrationTestCase {
 			$counter->expects( $this->never() )->method( 'increment' );
 		} else {
 			[ $metricName, $metricLabels ] = $expectedMetric;
+			$metricLabels['wiki'] = WikiMap::getCurrentWikiId();
 			$stats->expects( $this->once() )->method( 'getCounter' )->with( $metricName );
 			// Check $metricLabels matches setLabel() arguments and call count
 			$setLabelMock = $counter->expects( $this->exactly( count( $metricLabels ) ) )->method( 'setLabel' );
