@@ -27,6 +27,7 @@ namespace WikimediaEvents;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\CentralAuth\SharedDomainUtils;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\WikiMap\WikiMap;
 use Monolog\Handler\AbstractHandler;
 
 /**
@@ -132,6 +133,7 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 			->getCounter( $counterName )
 			->setLabel( 'entrypoint', $entrypoint )
 			->setLabel( 'event', $event )
+			->setLabel( 'wiki', WikiMap::getCurrentWikiId() )
 			->setLabel( 'subtype', $type ?? 'n/a' )
 			->setLabel( 'accountType', $accountType ?? 'n/a' )
 			// temporary, should be removed after successful SUL3 deployment
