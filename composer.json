@@ -3,7 +3,7 @@
 		"geoip2/geoip2": "2.13.0"
 	},
 	"require-dev": {
-		"facebook/webdriver": "1.1.1",
+		"php-webdriver/webdriver": "1.1.1",
 		"mediawiki/mediawiki-codesniffer": "45.0.0",
 		"mediawiki/mediawiki-phan-config": "0.14.0",
 		"mediawiki/minus-x": "1.1.3",
