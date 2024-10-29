@@ -73,7 +73,8 @@ function logEvent( action, name ) {
 			viewportSizeBucket: getUserViewportBucket(),
 			pageNamespace: mw.config.get( 'wgNamespaceNumber' ),
 			pageToken: mw.user.getPageviewToken(),
-			token: mw.user.sessionId()
+			token: mw.user.sessionId(),
+			isTemp: mw.user.isTemp()
 		};
 		if ( name ) {
 			data.name = name;

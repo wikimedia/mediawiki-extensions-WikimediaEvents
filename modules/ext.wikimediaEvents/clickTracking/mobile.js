@@ -38,7 +38,8 @@ function logEvent( action, name, destination ) {
 		isAnon: mw.user.isAnon(),
 		userGroups: mw.config.get( 'wgUserGroups' ).join( ',' ),
 		editCountBucket: mw.config.get( 'wgUserEditCountBucket' ) || '0 edits',
-		skin: mw.config.get( 'skin' )
+		skin: mw.config.get( 'skin' ),
+		isTemp: mw.user.isTemp()
 	};
 	if ( destination ) {
 		event.destination = destination;
