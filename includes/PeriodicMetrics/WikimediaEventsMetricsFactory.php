@@ -8,7 +8,9 @@ use MediaWiki\Extension\CentralAuth\CentralAuthServices;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Permissions\GroupPermissionsLookup;
 use MediaWiki\Registration\ExtensionRegistry;
+use MediaWiki\User\CentralId\CentralIdLookup;
 use MediaWiki\User\UserGroupManager;
+use MediaWiki\User\UserIdentityLookup;
 use Wikimedia\Rdbms\IConnectionProvider;
 
 /**
@@ -23,6 +25,7 @@ class WikimediaEventsMetricsFactory {
 		LocallyAutoEnrolledTemporaryAccountIPViewersMetric::class,
 		LocalTemporaryAccountIPViewersMetric::class,
 		ActiveTemporaryAccountIPViewersMetric::class,
+		LocalTemporaryAccountIPViewersWithEnabledPreferenceMetric::class,
 	];
 
 	/** @var string[] */
@@ -36,17 +39,23 @@ class WikimediaEventsMetricsFactory {
 	private UserGroupManager $userGroupManager;
 	private IConnectionProvider $dbProvider;
 	private ExtensionRegistry $extensionRegistry;
+	private CentralIdLookup $centralIdLookup;
+	private UserIdentityLookup $userIdentityLookup;
 
 	public function __construct(
 		GroupPermissionsLookup $groupPermissionsLookup,
 		UserGroupManager $userGroupManager,
 		IConnectionProvider $dbProvider,
-		ExtensionRegistry $extensionRegistry
+		ExtensionRegistry $extensionRegistry,
+		CentralIdLookup $centralIdLookup,
+		UserIdentityLookup $userIdentityLookup
 	) {
 		$this->groupPermissionsLookup = $groupPermissionsLookup;
 		$this->userGroupManager = $userGroupManager;
 		$this->dbProvider = $dbProvider;
 		$this->extensionRegistry = $extensionRegistry;
+		$this->centralIdLookup = $centralIdLookup;
+		$this->userIdentityLookup = $userIdentityLookup;
 	}
 
 	/**
@@ -119,6 +128,11 @@ class WikimediaEventsMetricsFactory {
 				);
 			case ActiveTemporaryAccountIPViewersMetric::class:
 				return new ActiveTemporaryAccountIPViewersMetric( $this->dbProvider );
+			case LocalTemporaryAccountIPViewersWithEnabledPreferenceMetric::class:
+				return new LocalTemporaryAccountIPViewersWithEnabledPreferenceMetric(
+					$this->groupPermissionsLookup, $this->userGroupManager, $this->dbProvider,
+					$this->extensionRegistry, $this->centralIdLookup, $this->userIdentityLookup
+				);
 			default:
 				throw new InvalidArgumentException( 'Unsupported metric class name' );
 		}

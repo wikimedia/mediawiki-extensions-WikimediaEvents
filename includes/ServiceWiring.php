@@ -62,7 +62,9 @@ return [
 			$services->getGroupPermissionsLookup(),
 			$services->getUserGroupManager(),
 			$services->getConnectionProvider(),
-			$services->getExtensionRegistry()
+			$services->getExtensionRegistry(),
+			$services->getCentralIdLookup(),
+			$services->getUserIdentityLookup()
 		);
 	},
 ];

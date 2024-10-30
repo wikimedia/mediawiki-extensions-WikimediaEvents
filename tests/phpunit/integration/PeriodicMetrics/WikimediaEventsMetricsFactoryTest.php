@@ -12,6 +12,7 @@ use WikimediaEvents\PeriodicMetrics\GlobalTemporaryAccountIPViewersMetric;
 use WikimediaEvents\PeriodicMetrics\GlobalTemporaryAccountIPViewersWithEnabledPreferenceMetric;
 use WikimediaEvents\PeriodicMetrics\LocallyAutoEnrolledTemporaryAccountIPViewersMetric;
 use WikimediaEvents\PeriodicMetrics\LocalTemporaryAccountIPViewersMetric;
+use WikimediaEvents\PeriodicMetrics\LocalTemporaryAccountIPViewersWithEnabledPreferenceMetric;
 use WikimediaEvents\PeriodicMetrics\WikimediaEventsMetricsFactory;
 
 /**
@@ -26,6 +27,7 @@ class WikimediaEventsMetricsFactoryTest extends MediaWikiIntegrationTestCase {
 			LocallyAutoEnrolledTemporaryAccountIPViewersMetric::class,
 			LocalTemporaryAccountIPViewersMetric::class,
 			ActiveTemporaryAccountIPViewersMetric::class,
+			LocalTemporaryAccountIPViewersWithEnabledPreferenceMetric::class,
 		];
 	}
 
