@@ -7,7 +7,7 @@ const util = require( './utils.js' );
 
 // Require web fragments from webAccessibilitySettings.js
 const webA11ySettings = require( '../webAccessibilitySettings.js' );
-let skinVersion;
+
 const VIEWPORT_BUCKETS = {
 	below320: '<320px',
 	between320and719: '320px-719px',
@@ -51,56 +51,58 @@ function getUserViewportBucket() {
 }
 
 /**
- * @param {string} action of event either `init` or `click`
- * @param {string} [name]
+ * Helper function to build comma-separated list of all enabled mobile modes
+ *
+ * @return {string[]}
  */
-function logEvent( action, name ) {
-	const checkbox = document.getElementById( 'mw-sidebar-checkbox' );
-
-	if ( !skinVersion ) {
-		skinVersion = document.body.classList.contains( 'skin-vector-legacy' ) ?
-			1 : 2;
+function getModes() {
+	const mode = mw.config.get( 'wgMFMode' ) || 'desktop';
+	const modes = [ mode ];
+	if ( mode !== 'desktop' && mw.config.get( 'wgMFAmc' ) ) {
+		modes.push( 'amc' );
 	}
+	return modes;
+}
+
+/**
+ * @param {string} action of event either `init` or `click`
+ * @param {string|null} name Uniquely describes the thing that was interacted.
+ * @param {string|null} destination If defined, where the interaction will take the user.
+ */
+function logEvent( action, name, destination ) {
 	if ( name || action === 'init' ) {
+		const modes = getModes().join( ',' );
 		const data = {
-			action: action,
+			action,
+			name,
+			destination: destination || null,
 			isAnon: mw.user.isAnon(),
-			// Ideally this would use an mw.config value but this will do for now
-			skinVersion: skinVersion,
+			isTemp: mw.user.isTemp(),
+			userGroups: mw.config.get( 'wgUserGroups' ).join( ',' ),
 			skin: mw.config.get( 'skin' ),
 			editCountBucket: mw.config.get( 'wgUserEditCountBucket' ) || '0 edits',
-			isSidebarCollapsed: checkbox ? !checkbox.checked : false,
 			viewportSizeBucket: getUserViewportBucket(),
 			pageNamespace: mw.config.get( 'wgNamespaceNumber' ),
 			pageToken: mw.user.getPageviewToken(),
-			token: mw.user.sessionId(),
-			isTemp: mw.user.isTemp()
+			token: mw.user.sessionId()
 		};
-		if ( name ) {
-			data.name = name;
-		}
 
 		// Prepare data to log event via Metrics Platform (T351298)
 		const metricsPlatformData = webA11ySettings();
 
-		metricsPlatformData.is_sidebar_collapsed = data.isSidebarCollapsed;
+		metricsPlatformData.action_context = modes;
 		metricsPlatformData.viewport_size_bucket = data.viewportSizeBucket;
 		metricsPlatformData.action_source = name;
 
 		// Log event via Metrics Platform (T351298)
 		mw.eventLog.submitInteraction(
 			'mediawiki.web_ui_actions',
-			'/analytics/mediawiki/product_metrics/web_ui_actions/1.0.1',
+			'/analytics/mediawiki/product_metrics/web_ui_actions/1.0.2',
 			action,
 			metricsPlatformData
 		);
 	}
 }
-
-mw.trackSubscribe( 'webuiactions_log.', ( topic, value ) => {
-	// e.g. webuiactions_log.click value=event-name
-	logEvent( topic.slice( 'webuiactions_log.'.length ), value );
-} );
 
 /**
  * Retrieves an array of skin-specific JavaScript dependencies based on the
@@ -138,11 +140,9 @@ function getInstrumentationDependencies() {
 	const popupsState = mw.loader.getState( 'ext.popups.main' );
 
 	if (
-
 		// mw.loader.getState() returns null if the module isn't known to the ResourceLoader but
 		// is documented as returning 'missing'.
 		popupsState &&
-
 		popupsState !== 'registered' &&
 		popupsState !== 'error'
 	) {
@@ -151,12 +151,19 @@ function getInstrumentationDependencies() {
 	return dependencies;
 }
 
-// Wait for DOM ready because logEvent() requires
-// knowing sidebar state and body classes.
+mw.trackSubscribe( 'webuiactions_log.', ( topic, value ) => {
+	// e.g. webuiactions_log.click value=event-name
+	logEvent( topic.slice( 'webuiactions_log.'.length ), value );
+} );
+
+// Wait for DOM ready because logEvent() requires knowing body classes.
 $( () => {
 	// Wait for ext.popups.main to be loaded.
 	mw.loader.using( getInstrumentationDependencies() ).then( () => {
-		logEvent( 'init' );
+		// Log the page load.
+		// ns= allows us to tell the namespace this occurred in.
+		logEvent( 'init', 'ns=' + mw.config.get( 'wgNamespaceNumber' ) );
+
 		$( document )
 			// Track clicks to elements with `data-event-name`
 			// and children of elements that have the attribute

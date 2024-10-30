@@ -58,7 +58,7 @@ Details at <https://phabricator.wikimedia.org/T332024>.
 ## Click-tracking for Vector and Minerva
 
 * Since: July 2019
-* Files: desktop.js, mobile.js, utils.js
+* Files: webUIClick.js, utils.js
 * Contact: Readers Web
 
 Details at <https://phabricator.wikimedia.org/T220016>.
