@@ -176,6 +176,7 @@
 				"deprecate.js",
 				"clientError.js",
 				"sessionTick.js",
+				"sessionLength/mixin.js",
 				"webABTestEnrollment.js",
 				"webCommon.js",
 				"webAccessibilitySettings.js",
@@ -293,7 +294,8 @@
 		"scripts": [
 			"clickTracking.test.js",
 			"clientError.test.js",
-			"statsd.test.js"
+			"statsd.test.js",
+			"sessionLength/mixin.test.js"
 		],
 		"dependencies": [
 			"ext.wikimediaEvents"
