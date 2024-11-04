@@ -63,21 +63,24 @@ use Monolog\Handler\AbstractHandler;
 class AuthManagerStatsdHandler extends AbstractHandler {
 
 	/**
-	 * Temporary - used to mark metrics with SUL3 label. Should be removed after full migration
-	 * Technical Debt - Introduces hard coupling between WikimediaEvents and CentralAuth
 	 * @see https://phabricator.wikimedia.org/T375955
-	 * @return bool
+	 * @return array
 	 */
-	private function isSul3Enabled() {
+	private function getSulLabels(): array {
 		$services = MediaWikiServices::getInstance();
 		if ( !$services->getExtensionRegistry()->isLoaded( 'CentralAuth' ) ) {
-			return false;
+			return [];
 		}
 		/** @var SharedDomainUtils $sharedDomainUtils */
 		$sharedDomainUtils = $services->get( 'CentralAuth.SharedDomainUtils' );
 		$context = RequestContext::getMain();
+		$isSul3Enabled = $sharedDomainUtils->isSul3Enabled( $context->getRequest() );
 
-		return $sharedDomainUtils->isSul3Enabled( $context->getRequest() );
+		return [
+			// Temporary - used to mark metrics with SUL3 label. Should be removed after full migration
+			'sul3' => $isSul3Enabled ? 'enabled' : 'disabled',
+			'domain' => $sharedDomainUtils->isSharedDomain() ? 'local' : 'shared'
+		];
 	}
 
 	/**
@@ -135,9 +138,11 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 			->setLabel( 'event', $event )
 			->setLabel( 'wiki', WikiMap::getCurrentWikiId() )
 			->setLabel( 'subtype', $type ?? 'n/a' )
-			->setLabel( 'accountType', $accountType ?? 'n/a' )
-			// temporary, should be removed after successful SUL3 deployment
-			->setLabel( 'sul3', $this->isSul3Enabled() ? 'enabled' : 'disabled' );
+			->setLabel( 'accountType', $accountType ?? 'n/a' );
+
+		foreach ( $this->getSulLabels() as $label => $value ) {
+			$counter->setLabel( $label, $value );
+		}
 		if ( $successful === false ) {
 			$counter->setLabel( 'reason', $error ?: 'n/a' );
 		}
