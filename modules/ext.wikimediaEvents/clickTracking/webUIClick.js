@@ -93,6 +93,7 @@ function logEvent( action, name, destination ) {
 		metricsPlatformData.action_context = modes;
 		metricsPlatformData.viewport_size_bucket = data.viewportSizeBucket;
 		metricsPlatformData.action_source = name;
+		metricsPlatformData.is_temp = data.isTemp;
 
 		// Log event via Metrics Platform (T351298)
 		mw.eventLog.submitInteraction(
