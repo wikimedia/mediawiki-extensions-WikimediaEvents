@@ -6,13 +6,11 @@ require( './webABTestEnrollment.js' );
 require( './readingDepth.js' );
 require( './phpEngine.js' );
 require( './blockedEdit.js' );
+require( './clickTracking/webUIClick.js' );
 
 const skin = mw.config.get( 'skin' );
-if ( skin === 'minerva' ) {
-	require( './clickTracking/mobile.js' );
-} else if ( skin === 'vector-2022' || skin === 'vector' ) {
+if ( skin === 'vector-2022' || skin === 'vector' ) {
 	require( './searchSatisfaction.js' );
-	require( './clickTracking/desktop.js' );
 	require( './universalLanguageSelector.js' );
 	require( './webUIScroll.js' );
 } else {

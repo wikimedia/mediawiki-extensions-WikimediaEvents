@@ -74,7 +74,8 @@ const onClickTrack = function ( logEvent ) {
 			// T352075
 			// Click tracking of this kind is restricted to certain types of elements to avoid duplicate events.
 			if ( [ 'A', 'BUTTON', 'INPUT' ].indexOf( $closest[ 0 ].tagName ) > -1 ) {
-				logEvent( 'click', $closest.attr( 'data-event-name' ) );
+				const destination = $closest.attr( 'href' );
+				logEvent( 'click', $closest.attr( 'data-event-name' ), destination );
 			}
 		} else {
 			const eventName = getMenuLinkEventName( $target );

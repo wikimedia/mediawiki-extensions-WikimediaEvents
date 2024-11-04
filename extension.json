@@ -176,14 +176,9 @@
 					"callbackParam": "searchSli"
 				},
 				{
-					"name": "clickTracking/desktop.js",
+					"name": "clickTracking/webUIClick.js",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
-					"callbackParam": "clickTracking/desktop"
-				},
-				{
-					"name": "clickTracking/mobile.js",
-					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
-					"callbackParam": "clickTracking/mobile"
+					"callbackParam": "clickTracking/webUIClick"
 				},
 				{
 					"name": "universalLanguageSelector.js",

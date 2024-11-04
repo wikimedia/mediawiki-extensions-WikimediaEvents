@@ -339,7 +339,7 @@ class WikimediaEventsHooks implements
 			case 'vector':
 			case 'vector-2022':
 				switch ( $param ) {
-					case 'clickTracking/desktop':
+					case 'clickTracking/webUIClick':
 					case 'searchSatisfaction':
 					case 'searchSli':
 					case 'universalLanguageSelector':
@@ -350,7 +350,7 @@ class WikimediaEventsHooks implements
 				}
 			case 'minerva':
 				switch ( $param ) {
-					case 'clickTracking/mobile':
+					case 'clickTracking/webUIClick':
 						return new RL\FilePath( $param . '.js' );
 					default:
 						return '';
