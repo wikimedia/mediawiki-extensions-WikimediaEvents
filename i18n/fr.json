@@ -13,7 +13,8 @@
 			"Urhixidur",
 			"Verdy p",
 			"Wladek92",
-			"SleaY"
+			"SleaY",
+			"Mahabarata"
 		]
 	},
 	"wikimediaevents-desc": "Trace les événements spécifiques à Wikimedia en utilisant EventLogging",
@@ -21,5 +22,10 @@
 	"apihelp-wikimediaeventsblockededit-param-page": "Une page sur laquelle une tentative de modification a été faite",
 	"apihelp-wikimediaeventsblockededit-param-interface": "L’interface qui a été utilisée pour modifier",
 	"apihelp-wikimediaeventsblockededit-param-platform": "La plateforme qui a été utilisée pour modifier",
-	"wikimediaevents-special-wikimediadebug-notenabled": "Cette page spéciale n'est pas activée."
+	"wikimediaevents-special-wikimediadebug-notenabled": "Cette page spéciale n'est pas activée.",
+	"wikimediaevents-special-wikimediadebug-submit-set": "Activer le cookie de débogage pour une durée de $1",
+	"wikimediaevents-special-wikimediadebug-submit-renew": "Renouveler le cookie pour une durée de $1",
+	"wikimediaevents-special-wikimediadebug-submit-clear": "Supprimer le cookie",
+	"wikimediaevents-special-wikimediadebug-header-active": "Le cookie [https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] est actuellement '''activé''' sur <code>$1</code>.\n\nIl expire à $2.\n\nCliquez sur le bouton pour le supprimer de cet appareil. Notez que cela supprimera uniquement le cookie sur ce domaine - si vous l'avez activé sur d'autres domaines, vous devez le supprimer séparément via la page spéciale sur ces domaines (ou utilisez la fonctionnalité de suppression des cookies de votre navigateur).",
+	"wikimediaevents-special-wikimediadebug-header-inactive": "Cliquez sur le bouton pour activer le cookie [https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] sur <code>$1</code> .\n\nLorsqu'il est activé, les requêtes Internet de votre appareil pour ce wiki '''enverront des journaux de débogage contenant des informations personnelles''' aux développeurs. Veuillez activer cette option uniquement si un développeur vous l'a demandé. Notez que cela ralentira votre navigateur.\n\nSi vous testez la fonctionnalité inter-domaines, n'oubliez pas d'activer également le cookie via la page spéciale sur l'autre ou les autres domaines."
 }
