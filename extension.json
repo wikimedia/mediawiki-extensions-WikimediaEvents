@@ -22,6 +22,9 @@
 	"TestAutoloadNamespaces": {
 		"WikimediaEvents\\Tests\\": "tests/phpunit/"
 	},
+	"TestAutoloadClasses": {
+		"WikimediaEvents\\Tests\\Integration\\TemporaryAccountsInstrumentationTrait": "tests/phpunit/integration/TemporaryAccountsInstrumentationTrait.php"
+	},
 	"HookHandlers": {
 		"main": {
 			"class": "WikimediaEvents\\WikimediaEventsHooks",
@@ -74,6 +77,12 @@
 				"UserFactory",
 				"WikimediaEventsRequestDetailsLookup"
 			]
+		},
+		"FlaggedRevsTemporaryAccountsInstrumentation": {
+			"class": "WikimediaEvents\\FlaggedRevsTemporaryAccountsInstrumentation",
+			"services": [
+				"StatsFactory"
+			]
 		}
 	},
 	"Hooks": {
@@ -82,6 +91,7 @@
 		"BeforeInitialize": "main",
 		"BeforePageDisplay": "main",
 		"BlockIpComplete": "TemporaryAccountsInstrumentation",
+		"FlaggedRevsStabilitySettingsChanged": "FlaggedRevsTemporaryAccountsInstrumentation",
 		"PageSaveComplete": [
 			"main",
 			"IPReputationHooks",

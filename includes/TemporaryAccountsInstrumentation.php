@@ -146,6 +146,7 @@ class TemporaryAccountsInstrumentation implements
 		$this->statsFactory->withComponent( 'WikimediaEvents' )
 			->getCounter( 'users_page_protect_total' )
 			->setLabel( 'wiki', WikiMap::getCurrentWikiId() )
+			->setLabel( 'source', 'core' )
 			->increment();
 	}
 
