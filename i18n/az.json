@@ -4,5 +4,7 @@
 			"Nemoralis"
 		]
 	},
-	"wikimediaevents-desc": "EventLogging istifadə edərək, Vikimediaya aid tədbirləri qeyd edir"
+	"wikimediaevents-desc": "EventLogging istifadə edərək, Vikimediaya aid tədbirləri qeyd edir",
+	"apihelp-wikimediaeventsblockededit-summary": "Bloklanmış redaktə cəhdləri haqqında məlumat jurnalı",
+	"apihelp-wikimediaeventsblockededit-param-page": "Redaktə cəhdinin edildiyi səhifə"
 }
