@@ -142,3 +142,13 @@ More details at <https://phabricator.wikimedia.org/T311388>
 
 Previously maintained in VisualEditor and other extensions since 2014.
 Moved here in <https://phabricator.wikimedia.org/T332438>.
+
+# Code ownership for other code in WikimediaEvents
+
+## Temporary account instrumentation
+
+* Since: October 2024
+* Files: TemporaryAccountsInstrumentation.php, PeriodicMetrics/*
+* Contact: Trust & Safety Product Team
+
+More details at <https://phabricator.wikimedia.org/T357763>

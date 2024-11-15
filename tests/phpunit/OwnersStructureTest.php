@@ -99,7 +99,9 @@ class OwnersStructureTest extends \PHPUnit\Framework\TestCase {
 		$ownedFiles = [];
 		foreach ( self::$ownerSections as $section ) {
 			foreach ( $section['Files'] as $file ) {
-				$ownedFiles[] = $file;
+				if ( str_ends_with( $file, '.js' ) ) {
+					$ownedFiles[] = $file;
+				}
 			}
 		}
 
