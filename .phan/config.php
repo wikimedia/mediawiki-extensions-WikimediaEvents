@@ -14,6 +14,7 @@ $cfg['directory_list'] = array_merge(
 		'../../extensions/BetaFeatures',
 		'../../extensions/CheckUser',
 		'../../extensions/FlaggedRevs',
+		'../../extensions/GlobalBlocking',
 	]
 );
 
@@ -29,6 +30,7 @@ $cfg['exclude_analysis_directory_list'] = array_merge(
 		'../../extensions/BetaFeatures',
 		'../../extensions/CheckUser',
 		'../../extensions/FlaggedRevs',
+		'../../extensions/GlobalBlocking',
 	]
 );
 

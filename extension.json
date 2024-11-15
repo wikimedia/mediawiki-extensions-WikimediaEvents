@@ -23,7 +23,7 @@
 		"WikimediaEvents\\Tests\\": "tests/phpunit/"
 	},
 	"TestAutoloadClasses": {
-		"WikimediaEvents\\Tests\\Integration\\TemporaryAccountsInstrumentationTrait": "tests/phpunit/integration/TemporaryAccountsInstrumentationTrait.php"
+		"WikimediaEvents\\Tests\\Integration\\TemporaryAccounts\\TemporaryAccountsInstrumentationTrait": "tests/phpunit/integration/TemporaryAccounts/TemporaryAccountsInstrumentationTrait.php"
 	},
 	"HookHandlers": {
 		"main": {
@@ -69,7 +69,7 @@
 			]
 		},
 		"TemporaryAccountsInstrumentation": {
-			"class": "WikimediaEvents\\TemporaryAccountsInstrumentation",
+			"class": "WikimediaEvents\\TemporaryAccounts\\TemporaryAccountsInstrumentation",
 			"services": [
 				"StatsFactory",
 				"RevisionLookup",
@@ -79,8 +79,16 @@
 			]
 		},
 		"FlaggedRevsTemporaryAccountsInstrumentation": {
-			"class": "WikimediaEvents\\FlaggedRevsTemporaryAccountsInstrumentation",
+			"class": "WikimediaEvents\\TemporaryAccounts\\FlaggedRevsTemporaryAccountsInstrumentation",
 			"services": [
+				"StatsFactory"
+			]
+		},
+		"GlobalBlockingTemporaryAccountsInstrumentation": {
+			"class": "WikimediaEvents\\TemporaryAccounts\\GlobalBlockingTemporaryAccountsInstrumentation",
+			"services": [
+				"UserIdentityUtils",
+				"UserFactory",
 				"StatsFactory"
 			]
 		}
@@ -92,6 +100,7 @@
 		"BeforePageDisplay": "main",
 		"BlockIpComplete": "TemporaryAccountsInstrumentation",
 		"FlaggedRevsStabilitySettingsChanged": "FlaggedRevsTemporaryAccountsInstrumentation",
+		"GlobalBlockingGlobalBlockAudit": "GlobalBlockingTemporaryAccountsInstrumentation",
 		"PageSaveComplete": [
 			"main",
 			"IPReputationHooks",

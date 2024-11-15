@@ -1,5 +1,5 @@
 <?php
-namespace WikimediaEvents\Tests\Integration;
+namespace WikimediaEvents\Tests\Integration\TemporaryAccounts;
 
 use MediaWiki\WikiMap\WikiMap;
 use Wikimedia\Stats\Metrics\CounterMetric;
@@ -14,10 +14,13 @@ trait TemporaryAccountsInstrumentationTrait {
 	 *
 	 * @param string $metricName The name of the metric, without the component.
 	 * @param string[] $expectedLabels Optional list of additional expected label values.
+	 * @param bool $expectWikiLabel Whether a label for the current wiki ID is expected.
 	 *
 	 * @return void
 	 */
-	protected function assertCounterIncremented( string $metricName, array $expectedLabels = [] ): void {
+	protected function assertCounterIncremented(
+		string $metricName, array $expectedLabels = [], bool $expectWikiLabel = true
+	): void {
 		$metric = $this->getServiceContainer()
 			->getStatsFactory()
 			->withComponent( 'WikimediaEvents' )
@@ -29,11 +32,13 @@ trait TemporaryAccountsInstrumentationTrait {
 		$this->assertSame( 1, $metric->getSampleCount() );
 		$this->assertSame( 1.0, $samples[0]->getValue() );
 
-		$wikiId = WikiMap::getCurrentWikiId();
-		$expectedLabels = array_merge(
-			[ rtrim( strtr( $wikiId, [ '-' => '_' ] ), '_' ) ],
-			$expectedLabels
-		);
+		if ( $expectWikiLabel ) {
+			$wikiId = WikiMap::getCurrentWikiId();
+			$expectedLabels = array_merge(
+				[ rtrim( strtr( $wikiId, [ '-' => '_' ] ), '_' ) ],
+				$expectedLabels
+			);
+		}
 
 		$this->assertSame( $expectedLabels, $samples[0]->getLabelValues() );
 	}
