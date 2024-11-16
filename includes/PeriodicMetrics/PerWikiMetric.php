@@ -2,7 +2,7 @@
 
 namespace WikimediaEvents\PeriodicMetrics;
 
-use WikiMap;
+use MediaWiki\WikiMap\WikiMap;
 
 /**
  * A base class used for metrics which are grouped per-wiki.
