@@ -4,6 +4,7 @@ namespace WikimediaEvents\Tests;
 
 use MediaWiki\Block\DatabaseBlock;
 use MediaWiki\Permissions\PermissionManager;
+use MediaWiki\Permissions\PermissionStatus;
 use MediaWiki\Title\Title;
 use MediaWikiIntegrationTestCase;
 use WikimediaEvents\BlockMetrics\BlockMetricsHooks;
@@ -14,7 +15,7 @@ use WikimediaEvents\BlockMetrics\BlockMetricsHooks;
  */
 class BlockMetricsHooksTest extends MediaWikiIntegrationTestCase {
 
-	public function testOnPermissionErrorAudit() {
+	public function testOnPermissionStatusAudit() {
 		$this->markTestSkippedIfExtensionNotLoaded( 'EventBus' );
 
 		$user = $this->getMutableTestUser()->getUser();
@@ -57,8 +58,8 @@ class BlockMetricsHooksTest extends MediaWikiIntegrationTestCase {
 					$event
 				);
 			} );
-		$blockMetricsHooks->onPermissionErrorAudit( Title::newMainPage(), $user, 'createaccount',
-			PermissionManager::RIGOR_SECURE, [ 'blockedtext' ] );
+		$blockMetricsHooks->onPermissionStatusAudit( Title::newMainPage(), $user, 'createaccount',
+			PermissionManager::RIGOR_SECURE, PermissionStatus::newFatal( 'blockedtext' ) );
 	}
 
 }
