@@ -1,71 +1,67 @@
 /*!
- * mw.track subscribers for statsd timers and counters.
+ * mw.track subscribers for StatsD counters and timers.
  *
- * Track events of the form mw.track( 'timing.foo', 1234.56 ); are logged as foo=1235ms
- * The time is assumed to be in milliseconds and is rounded to the nearest integer.
- *
- * Track events of the form mw.track( 'counter.bar', 5 ); are logged as bar=5c
- * The shorthand mw.track( 'counter.baz' ); is equivalent to mw.track( 'counter.baz', 1 );
- *
- * Track events of the form mw.track( 'gauge.baz', 42 ); are logged as baz=42g.
- * The value is assumed to be an integer (and rounded if not).
+ * These do not support labels. Instead, labels are stored as unnamed
+ * dot-separated portions inside the stat names. These are intended for
+ * use with StatsD and Graphite.
  *
  * $wgWMEStatsdBaseUri must point to a URL that accepts query strings,
  * such as `?foo=1235ms&bar=5c&baz=42g`.
+ *
+ * ```js
+ * mw.track( 'counter.foo.quux', 5 );
+ * // logged as foo.quux=5c
+ *
+ * mw.track( 'counter.foo.quux' );
+ * // Shorthand, equivalent to mw.track( 'counter.foo.quux', 1 )
+ *
+ * mw.track( 'timing.bar', 1234.56 );
+ * // logged as bar=1235ms
+ * // The time is assumed to be in milliseconds and is rounded to the nearest integer.
+ *
+ * mw.track( 'gauge.baz', 42 );
+ * // logged as baz=42g
+ * // The value is assumed to be an integer (and rounded if not).
+ * ```
  */
-const queue = [];
-const batchSize = 50;
-const baseUrl = require( './config.json' ).statsdBaseUri;
+const config = require( './config.json' );
+const BATCH_SIZE = 5000;
+let statsdBuffer = '';
+let statsdFlushPending = false;
 
-// Statsv not configured
-if ( !baseUrl ) {
-	// Do nothing
-	return;
+function statsdFlush() {
+	mw.eventLog.sendBeacon( config.statsdBaseUri + '?' + statsdBuffer );
+	statsdBuffer = '';
 }
 
-function flush() {
-	let values;
-
-	while ( queue.length ) {
-		values = queue.splice( 0, batchSize );
-		mw.eventLog.sendBeacon( baseUrl + '?' + values.join( '&' ) );
-	}
-}
-
-function enqueue( k, v ) {
-	queue.push( k + '=' + v );
-	// if the queue was empty, this was the first call to enqueue since
-	// the beginning or a flush, so enqueue another flush
-	if ( queue.length === 1 ) {
-		mw.eventLog.enqueue( flush );
+function statsdAdd( line ) {
+	if ( config.statsdBaseUri ) {
+		if ( statsdBuffer && ( statsdBuffer.length + line.length ) > BATCH_SIZE ) {
+			statsdFlush();
+		}
+		statsdBuffer += ( statsdBuffer ? '&' : '' ) + line;
+		if ( !statsdFlushPending ) {
+			statsdFlushPending = true;
+			mw.eventLog.enqueue( () => {
+				statsdFlushPending = false;
+				statsdFlush();
+			} );
+		}
 	}
 }
 
 mw.trackSubscribe( 'timing.', ( topic, time ) => {
-	enqueue(
-		topic.slice( 'timing.'.length ),
-		Math.round( time ) + 'ms'
-	);
+	statsdAdd( topic.slice( 'timing.'.length ) + '=' + Math.round( time ) + 'ms' );
 } );
 
 mw.trackSubscribe( 'counter.', ( topic, count ) => {
-	count = Math.round( count );
-	if ( isNaN( count ) ) {
-		count = 1;
-	}
-	enqueue(
-		topic.slice( 'counter.'.length ),
-		count + 'c'
-	);
+	count = isNaN( count ) ? 1 : Math.round( count );
+	statsdAdd( topic.slice( 'counter.'.length ) + '=' + count + 'c' );
 } );
 
 mw.trackSubscribe( 'gauge.', ( topic, value ) => {
-	value = Math.round( value );
 	if ( isNaN( value ) ) {
 		return;
 	}
-	enqueue(
-		topic.slice( 'gauge.'.length ),
-		value + 'g'
-	);
+	statsdAdd( topic.slice( 'gauge.'.length ) + '=' + Math.round( value ) + 'g' );
 } );
