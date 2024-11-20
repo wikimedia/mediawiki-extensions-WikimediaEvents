@@ -244,7 +244,8 @@
 		"remoteExtPath": "WikimediaEvents/tests/qunit/ext.wikimediaEvents/",
 		"scripts": [
 			"clickTracking.test.js",
-			"clientError.test.js"
+			"clientError.test.js",
+			"statsd.test.js"
 		],
 		"dependencies": [
 			"ext.wikimediaEvents"

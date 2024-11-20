@@ -23,6 +23,7 @@ Powers <https://grafana.wikimedia.org/d/000000037/mw-js-deprecate>.
 * Contact: https://wikitech.wikimedia.org/wiki/MediaWiki_Engineering
 
 Handles the ResourceLoader `mw.track()` topics for `counter.*`, `timing.*`, and `gauge.*`.
+Prometheus support <https://phabricator.wikimedia.org/T355837>.
 Documentation at <https://wikitech.wikimedia.org/wiki/Performance.wikimedia.org/Runbook#statsv>.
 
 ## Search satisfaction
