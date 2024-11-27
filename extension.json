@@ -211,6 +211,7 @@
 					"config": [
 						"WMEClientErrorIntakeURL",
 						"WMEStatsdBaseUri",
+						"WMEStatsBeaconUri",
 						"WMEWikidataCompletionSearchClicks",
 						"WMESessionTick",
 						"WMEReadingDepthSamplingRate",
@@ -301,6 +302,9 @@
 			"value": 0
 		},
 		"WMEStatsdBaseUri": {
+			"value": false
+		},
+		"WMEStatsBeaconUri": {
 			"value": false
 		},
 		"WMEEditCampaigns": {

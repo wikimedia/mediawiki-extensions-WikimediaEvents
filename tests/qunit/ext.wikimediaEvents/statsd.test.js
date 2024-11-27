@@ -6,8 +6,9 @@ QUnit.module( 'ext.wikimediaEvents/statsd', ( hooks ) => {
 	let original;
 	let stub;
 	hooks.beforeEach( function () {
-		original = config.WMEStatsdBaseUri;
+		original = Object.assign( {}, config );
 		config.WMEStatsdBaseUri = '/beacon/statsv';
+		config.WMEStatsBeaconUri = '/beacon/stats';
 
 		this.sandbox.useFakeTimers();
 		this.sandbox.stub( mw.eventLog, 'enqueue', ( fn ) => {
@@ -17,7 +18,9 @@ QUnit.module( 'ext.wikimediaEvents/statsd', ( hooks ) => {
 		stub = this.sandbox.stub( navigator, 'sendBeacon' );
 	} );
 	hooks.afterEach( () => {
-		config.WMEStatsdBaseUri = original;
+		delete config.WMEStatsdBaseUri;
+		delete config.WMEStatsBeaconUri;
+		Object.assign( config, original );
 	} );
 
 	QUnit.test( 'counter [single]', function ( assert ) {
@@ -84,5 +87,134 @@ QUnit.module( 'ext.wikimediaEvents/statsd', ( hooks ) => {
 		assert.propEqual( stub.getCall( 0 ).args, [
 			'/beacon/statsv?bar=42g'
 		] );
+	} );
+
+	QUnit.test( 'stats [invalid name]', function ( assert ) {
+		this.sandbox.stub( mw.errorLogger, 'logError' );
+		this.sandbox.stub( mw.log, 'error', ( err ) => {
+			assert.step( err.message );
+		} );
+
+		mw.track( 'stats.foo_bar', 5 );
+		this.sandbox.clock.tick( 1 );
+
+		assert.verifySteps( [
+			'Invalid stat name foo_bar'
+		] );
+		assert.strictEqual( stub.callCount, 0, 'beacons' );
+	} );
+
+	QUnit.test.each( 'stats [invalid counter]', [ null, 3.14, 0, -1 ], function ( assert, count ) {
+		this.sandbox.stub( mw.errorLogger, 'logError' );
+		this.sandbox.stub( mw.log, 'error', ( err ) => {
+			assert.step( err.message );
+		} );
+
+		mw.track( 'stats.mediawiki_foo_bar_total', count );
+		this.sandbox.clock.tick( 1 );
+
+		assert.verifySteps( [
+			'Invalid stat count for mediawiki_foo_bar_total'
+		] );
+		assert.strictEqual( stub.callCount, 0, 'beacons' );
+	} );
+
+	QUnit.test( 'stats [invalid label key]', function ( assert ) {
+		this.sandbox.stub( mw.errorLogger, 'logError' );
+		this.sandbox.stub( mw.log, 'error', ( err ) => {
+			assert.step( err.message );
+		} );
+
+		mw.track( 'stats.mediawiki_foo_bar_total', 5, { 'Main Page': 'title' } );
+		this.sandbox.clock.tick( 1 );
+
+		assert.verifySteps( [
+			'Invalid stat label "Main Page"'
+		] );
+		assert.strictEqual( stub.callCount, 0, 'beacons' );
+	} );
+
+	QUnit.test.each( 'stats [invalid label value]', {
+		space: 'Main Page',
+		colon: ':',
+		empty: ''
+	}, function ( assert, invalidValue ) {
+		this.sandbox.stub( mw.errorLogger, 'logError' );
+		this.sandbox.stub( mw.log, 'error', ( err ) => {
+			assert.step( 'error: ' + err.message );
+		} );
+		this.sandbox.stub( mw.log, 'warn', ( message ) => {
+			assert.step( 'warn: ' + message );
+		} );
+
+		mw.track( 'stats.mediawiki_foo_bar_total', 5, { title: invalidValue } );
+		this.sandbox.clock.tick( 1 );
+
+		assert.verifySteps( [
+			`warn: Invalid stat label value for mediawiki_foo_bar_total title "${ invalidValue }"`
+		] );
+		assert.strictEqual( stub.callCount, 1, 'beacons' );
+		assert.propEqual( stub.getCall( 0 ).args, [
+			'/beacon/stats?mediawiki_foo_bar_total:5|c%7C%23title:_invalid_value'
+		], 'beacon' );
+	} );
+
+	QUnit.test( 'stats [count]', function ( assert ) {
+		this.sandbox.stub( mw.errorLogger, 'logError' );
+		this.sandbox.stub( mw.log, 'error', ( err ) => {
+			assert.step( err.message );
+		} );
+
+		mw.track( 'stats.mediawiki_foo_bar_total', 5, { kind: 'main', ding: 'dong' } );
+		this.sandbox.clock.tick( 1 );
+
+		assert.verifySteps( [], 'errors' );
+		assert.strictEqual( stub.callCount, 1, 'beacons' );
+		assert.propEqual( stub.getCall( 0 ).args, [
+			'/beacon/stats?mediawiki_foo_bar_total:5|c%7C%23kind:main,ding:dong'
+		], 'beacon' );
+	} );
+
+	QUnit.test( 'stats [multiple counts]', function ( assert ) {
+		this.sandbox.stub( mw.errorLogger, 'logError' );
+		this.sandbox.stub( mw.log, 'error', ( err ) => {
+			assert.step( err.message );
+		} );
+
+		mw.track( 'stats.mediawiki_bar_total' );
+		mw.track( 'stats.mediawiki_foo_bar_total', 5, { kind: 'main', ding: 'dong' } );
+		mw.track( 'stats.mediawiki_example_thing_total', 42, { a: 'A', b: 'B' } );
+		this.sandbox.clock.tick( 1 );
+
+		assert.verifySteps( [], 'errors' );
+		assert.strictEqual( stub.callCount, 1, 'beacons' );
+		assert.propEqual( stub.getCall( 0 ).args, [
+			'/beacon/stats?mediawiki_bar_total:1|c' +
+				'%0Amediawiki_foo_bar_total:5|c%7C%23kind:main,ding:dong' +
+				'%0Amediawiki_example_thing_total:42|c%7C%23a:A,b:B'
+		], 'beacon' );
+	} );
+
+	QUnit.test( 'stats [batching]', function ( assert ) {
+		this.sandbox.stub( mw.errorLogger, 'logError' );
+		this.sandbox.stub( mw.log, 'error', ( err ) => {
+			assert.step( err.message );
+		} );
+
+		const LONG = 'x'.repeat( 3000 );
+		mw.track( 'stats.mediawiki_bar_total' );
+		mw.track( 'stats.mediawiki_foo_bar_total', 5, { kind: 'main', ding: LONG } );
+		mw.track( 'stats.mediawiki_example_thing_total', 42, { a: 'A', b: LONG } );
+		this.sandbox.clock.tick( 1 );
+
+		assert.verifySteps( [], 'errors' );
+		assert.strictEqual( stub.callCount, 2, 'beacons' );
+		assert.propEqual( stub.getCall( 0 ).args, [
+			'/beacon/stats?mediawiki_bar_total:1|c' +
+				`%0Amediawiki_foo_bar_total:5|c%7C%23kind:main,ding:${ LONG }`
+		], 'beacon 1' );
+		assert.propEqual( stub.getCall( 1 ).args, [
+			`/beacon/stats?mediawiki_example_thing_total:42|c%7C%23a:A,b:${ LONG }`
+		], 'beacon 2' );
 	} );
 } );
