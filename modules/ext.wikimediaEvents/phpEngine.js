@@ -8,7 +8,7 @@
 
 function phpEngine() {
 	const moduleConfig = require( './config.json' );
-	const version = moduleConfig.newPHPVersion;
+	const version = moduleConfig.WMENewPHPVersion;
 	if ( !version ) {
 		// No-op if a "new" PHP version is not yet (or no longer) defined.
 		// Optimization: Avoid cookie I/O for removal here,
@@ -17,7 +17,7 @@ function phpEngine() {
 	}
 
 	const hasCookie = $.cookie( 'PHP_ENGINE' ) !== null;
-	const inSample = mw.eventLog.sessionInSample( moduleConfig.newPHPSamplingRate );
+	const inSample = mw.eventLog.sessionInSample( moduleConfig.WMENewPHPSamplingRate );
 
 	// Ensure the PHP_ENGINE cookie is at the desired version.
 	// In order for reductions in sampling rate to take immediate effect,

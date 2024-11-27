@@ -1,13 +1,13 @@
 /* eslint-env qunit */
 'use strict';
 
-QUnit.module( 'ext.wikimediaEvents/stats', ( hooks ) => {
+QUnit.module( 'ext.wikimediaEvents/statsd', ( hooks ) => {
 	const config = require( 'ext.wikimediaEvents/config.json' );
 	let original;
 	let stub;
 	hooks.beforeEach( function () {
-		original = config.statsdBaseUri;
-		config.statsdBaseUri = '/beacon/statsv';
+		original = config.WMEStatsdBaseUri;
+		config.WMEStatsdBaseUri = '/beacon/statsv';
 
 		this.sandbox.useFakeTimers();
 		this.sandbox.stub( mw.eventLog, 'enqueue', ( fn ) => {
@@ -17,7 +17,7 @@ QUnit.module( 'ext.wikimediaEvents/stats', ( hooks ) => {
 		stub = this.sandbox.stub( navigator, 'sendBeacon' );
 	} );
 	hooks.afterEach( () => {
-		config.statsdBaseUri = original;
+		config.WMEStatsdBaseUri = original;
 	} );
 
 	QUnit.test( 'counter [single]', function ( assert ) {

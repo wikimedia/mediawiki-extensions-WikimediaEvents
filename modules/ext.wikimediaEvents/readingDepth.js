@@ -7,7 +7,7 @@
  * @see https://schema.wikimedia.org/repositories//secondary/jsonschema/analytics/mediawiki/web_ui_reading_depth/current.yaml
  */
 
-const localConfig = require( './config.json' );
+const moduleConfig = require( './config.json' );
 const skin = mw.config.get( 'skin' );
 const ignoredSkins = [ 'cologneblue', 'modern', 'monobook', 'timeless' ];
 const eventData = {};
@@ -249,7 +249,7 @@ mw.requestIdleCallback( () => {
 	if ( ignoredSkins.indexOf( skin ) === -1 ) {
 		sessionId = mw.user.sessionId();
 		// check if user has been selected for the default ReadingDepth sample group
-		if ( isInSample( localConfig.readingDepthSamplingRate ) ) {
+		if ( isInSample( moduleConfig.WMEReadingDepthSamplingRate ) ) {
 			// WikimediaEvents itself wishes to report the default sample group.
 			// No need to verify. Set the known, valid, default sample group.
 			eventData[ DEFAULT_SAMPLE_GROUP ] = true;

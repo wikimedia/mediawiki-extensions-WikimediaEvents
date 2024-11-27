@@ -8,9 +8,9 @@
  *
  * Task: https://phabricator.wikimedia.org/T292586
  */
-const sampleRate = require( './config.json' ).webUIScrollTrackingSamplingRate || 0;
-const sampleRateAnons = require( './config.json' ).webUIScrollTrackingSamplingRateAnons || 0;
-const timeToWaitBeforeScrollUp = require( './config.json' ).webUIScrollTrackingTimeToWaitBeforeScrollUp || 0;
+const sampleRate = require( './data.json' ).webUIScrollTrackingSamplingRate || 0;
+const sampleRateAnons = require( './data.json' ).webUIScrollTrackingSamplingRateAnons || 0;
+const timeToWaitBeforeScrollUp = require( './data.json' ).webUIScrollTrackingTimeToWaitBeforeScrollUp || 0;
 const isMobile = mw.config.get( 'wgMFMode' );
 let waitBeforeScrollUp = true;
 let timer;
