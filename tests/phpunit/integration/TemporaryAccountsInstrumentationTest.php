@@ -12,9 +12,7 @@ use MediaWiki\Revision\SlotRecord;
 use MediaWiki\Storage\EditResult;
 use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
 use MediaWiki\User\User;
-use MediaWiki\WikiMap\WikiMap;
 use MediaWikiIntegrationTestCase;
-use Wikimedia\Stats\Metrics\CounterMetric;
 use WikimediaEvents\TemporaryAccountsInstrumentation;
 use WikiPage;
 
@@ -25,6 +23,7 @@ use WikiPage;
 class TemporaryAccountsInstrumentationTest extends MediaWikiIntegrationTestCase {
 
 	use TempUserTestTrait;
+	use TemporaryAccountsInstrumentationTrait;
 
 	public function testShouldTrackPageDeletionRate(): void {
 		$page = $this->getExistingTestPage();
@@ -37,7 +36,7 @@ class TemporaryAccountsInstrumentationTest extends MediaWikiIntegrationTestCase 
 	private function commonTestShouldTrackPageProtectionRate( WikiPage $page, array $limit, array $expiry ) {
 		$cascade = false;
 		$page->doUpdateRestrictions( $limit, $expiry, $cascade, 'Test', $this->getTestUser()->getUserIdentity() );
-		$this->assertCounterIncremented( 'users_page_protect_total' );
+		$this->assertCounterIncremented( 'users_page_protect_total', [ 'core' ] );
 	}
 
 	public function testShouldTrackPageProtectionRateForExistingPage() {
@@ -64,7 +63,7 @@ class TemporaryAccountsInstrumentationTest extends MediaWikiIntegrationTestCase 
 		$page->doUpdateRestrictions( [], [], $cascade, 'Unprotect', $testUser );
 
 		// Assert that the counter was only incremented once for the page protection and not for the page unprotection.
-		$this->assertCounterIncremented( 'users_page_protect_total' );
+		$this->assertCounterIncremented( 'users_page_protect_total', [ 'core' ] );
 	}
 
 	/**
@@ -296,50 +295,5 @@ class TemporaryAccountsInstrumentationTest extends MediaWikiIntegrationTestCase 
 		$this->assertTrue( $hookCalled );
 		// Expect no calls to increase the counter, as this is not increased for normal account creations.
 		$this->assertCounterNotIncremented( 'temp_account_creation_throttled_total' );
-	}
-
-	/**
-	 * Convenience function to assert that the per-wiki counter with the given name
-	 * was incremented exactly once.
-	 *
-	 * @param string $metricName The name of the metric, without the component.
-	 * @param string[] $expectedLabels Optional list of additional expected label values.
-	 *
-	 * @return void
-	 */
-	private function assertCounterIncremented( string $metricName, array $expectedLabels = [] ): void {
-		$metric = $this->getServiceContainer()
-			->getStatsFactory()
-			->withComponent( 'WikimediaEvents' )
-			->getCounter( $metricName );
-
-		$samples = $metric->getSamples();
-
-		$this->assertInstanceOf( CounterMetric::class, $metric );
-		$this->assertSame( 1, $metric->getSampleCount() );
-		$this->assertSame( 1.0, $samples[0]->getValue() );
-
-		$wikiId = WikiMap::getCurrentWikiId();
-		$expectedLabels = array_merge(
-			[ rtrim( strtr( $wikiId, [ '-' => '_' ] ), '_' ) ],
-			$expectedLabels
-		);
-
-		$this->assertSame( $expectedLabels, $samples[0]->getLabelValues() );
-	}
-
-	/**
-	 * Convenience function to assert that the counter with the given name was not incremented.
-	 * @param string $metricName
-	 * @return void
-	 */
-	private function assertCounterNotIncremented( string $metricName ): void {
-		$metric = $this->getServiceContainer()
-			->getStatsFactory()
-			->withComponent( 'WikimediaEvents' )
-			->getCounter( $metricName );
-
-		$this->assertInstanceOf( CounterMetric::class, $metric );
-		$this->assertSame( 0, $metric->getSampleCount() );
 	}
 }
