@@ -1,5 +1,6 @@
 <?php
-namespace WikimediaEvents;
+
+namespace WikimediaEvents\TemporaryAccounts;
 
 use ManualLogEntry;
 use MediaWiki\Auth\Hook\AuthenticationAttemptThrottledHook;
@@ -12,7 +13,6 @@ use MediaWiki\Revision\RevisionLookup;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
 use MediaWiki\User\UserFactory;
-use MediaWiki\User\UserIdentity;
 use MediaWiki\User\UserIdentityUtils;
 use MediaWiki\WikiMap\WikiMap;
 use Wikimedia\Rdbms\IDBAccessObject;
@@ -22,23 +22,16 @@ use WikimediaEvents\Services\WikimediaEventsRequestDetailsLookup;
 /**
  * Holds hook handlers emitting metrics related to the temporary accounts initiative (T357763).
  */
-class TemporaryAccountsInstrumentation implements
+class TemporaryAccountsInstrumentation extends AbstractTemporaryAccountsInstrumentation implements
 	PageDeleteCompleteHook,
 	PageSaveCompleteHook,
 	BlockIpCompleteHook,
 	AuthenticationAttemptThrottledHook,
 	ArticleProtectCompleteHook
 {
-	public const ACCOUNT_TYPE_TEMPORARY = 'temp';
-	public const ACCOUNT_TYPE_ANON = 'anon';
-	public const ACCOUNT_TYPE_IP_RANGE = 'iprange';
-	public const ACCOUNT_TYPE_BOT = 'bot';
-	public const ACCOUNT_TYPE_NORMAL = 'normal';
 
 	private StatsFactory $statsFactory;
 	private RevisionLookup $revisionLookup;
-	private UserIdentityUtils $userIdentityUtils;
-	private UserFactory $userFactory;
 	private WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup;
 
 	public function __construct(
@@ -48,10 +41,9 @@ class TemporaryAccountsInstrumentation implements
 		UserFactory $userFactory,
 		WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup
 	) {
+		parent::__construct( $userIdentityUtils, $userFactory );
 		$this->statsFactory = $statsFactory;
 		$this->revisionLookup = $revisionLookup;
-		$this->userIdentityUtils = $userIdentityUtils;
-		$this->userFactory = $userFactory;
 		$this->wikimediaEventsRequestDetailsLookup = $wikimediaEventsRequestDetailsLookup;
 	}
 
@@ -148,32 +140,5 @@ class TemporaryAccountsInstrumentation implements
 			->setLabel( 'wiki', WikiMap::getCurrentWikiId() )
 			->setLabel( 'source', 'core' )
 			->increment();
-	}
-
-	/**
-	 * Get the type of user for use as a Prometheus label.
-	 * @param UserIdentity|string $user For single IP addresses, temporary accounts, named accounts,
-	 *  and bot accounts, this will be a user identity. For IP ranges, this will be a string.
-	 * @return string One of the TemporaryAccountsInstrumentation::ACCOUNT_TYPE_* constants
-	 */
-	private function getUserType( $user ): string {
-		if ( !$user instanceof UserIdentity ) {
-			// Must be an IP range.
-			return self::ACCOUNT_TYPE_IP_RANGE;
-		}
-		if ( $this->userIdentityUtils->isTemp( $user ) ) {
-			return self::ACCOUNT_TYPE_TEMPORARY;
-		}
-
-		if ( !$user->isRegistered() ) {
-			return self::ACCOUNT_TYPE_ANON;
-		}
-
-		$user = $this->userFactory->newFromUserIdentity( $user );
-		if ( $user->isBot() ) {
-			return self::ACCOUNT_TYPE_BOT;
-		}
-
-		return self::ACCOUNT_TYPE_NORMAL;
 	}
 }

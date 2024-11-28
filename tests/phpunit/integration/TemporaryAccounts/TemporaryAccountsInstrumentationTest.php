@@ -1,5 +1,5 @@
 <?php
-namespace WikimediaEvents\Tests\Integration;
+namespace WikimediaEvents\Tests\Integration\TemporaryAccounts;
 
 use Closure;
 use MediaWiki\Auth\Throttler;
@@ -13,12 +13,13 @@ use MediaWiki\Storage\EditResult;
 use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
 use MediaWiki\User\User;
 use MediaWikiIntegrationTestCase;
-use WikimediaEvents\TemporaryAccountsInstrumentation;
+use WikimediaEvents\TemporaryAccounts\TemporaryAccountsInstrumentation;
 use WikiPage;
 
 /**
  * @group Database
- * @covers \WikimediaEvents\TemporaryAccountsInstrumentation
+ * @covers \WikimediaEvents\TemporaryAccounts\TemporaryAccountsInstrumentation
+ * @covers \WikimediaEvents\TemporaryAccounts\AbstractTemporaryAccountsInstrumentation
  */
 class TemporaryAccountsInstrumentationTest extends MediaWikiIntegrationTestCase {
 

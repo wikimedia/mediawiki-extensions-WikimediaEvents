@@ -1,5 +1,5 @@
 <?php
-namespace WikimediaEvents\Tests\Integration;
+namespace WikimediaEvents\Tests\Integration\TemporaryAccounts;
 
 use MediaWiki\Title\Title;
 use MediaWiki\User\User;
@@ -8,7 +8,8 @@ use PageStabilityProtectForm;
 
 /**
  * @group Database
- * @covers \WikimediaEvents\FlaggedRevsTemporaryAccountsInstrumentation
+ * @covers \WikimediaEvents\TemporaryAccounts\FlaggedRevsTemporaryAccountsInstrumentation
+ * @covers \WikimediaEvents\TemporaryAccounts\AbstractTemporaryAccountsInstrumentation
  */
 class FlaggedRevsTemporaryAccountsInstrumentationTest extends MediaWikiIntegrationTestCase {
 
