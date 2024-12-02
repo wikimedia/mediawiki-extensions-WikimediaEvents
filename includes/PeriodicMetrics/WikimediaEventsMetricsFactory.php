@@ -2,10 +2,10 @@
 
 namespace WikimediaEvents\PeriodicMetrics;
 
-use ExtensionRegistry;
 use InvalidArgumentException;
 use MediaWiki\Extension\CentralAuth\CentralAuthServices;
 use MediaWiki\Permissions\GroupPermissionsLookup;
+use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\User\UserGroupManager;
 use Wikimedia\Rdbms\IConnectionProvider;
 

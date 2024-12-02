@@ -2,7 +2,7 @@
 
 namespace WikimediaEvents\Services;
 
-use RequestContext;
+use MediaWiki\Context\RequestContext;
 
 /**
  * Looks up information about the current request, such as the platform and entry point. Used to de-duplicate code.

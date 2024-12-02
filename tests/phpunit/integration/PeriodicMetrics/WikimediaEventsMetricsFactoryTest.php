@@ -2,8 +2,8 @@
 
 namespace WikimediaEvents\Tests\Unit\PeriodicMetrics;
 
-use ExtensionRegistry;
 use InvalidArgumentException;
+use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Tests\Unit\MockServiceDependenciesTrait;
 use MediaWikiIntegrationTestCase;
 use WikimediaEvents\PeriodicMetrics\ActiveTemporaryAccountIPViewersMetric;

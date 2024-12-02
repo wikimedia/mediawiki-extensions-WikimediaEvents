@@ -3,8 +3,8 @@
 namespace WikimediaEvents\Maintenance;
 
 use InvalidArgumentException;
-use Maintenance;
 use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\Maintenance\Maintenance;
 use Psr\Log\LoggerInterface;
 use Wikimedia\Stats\StatsFactory;
 use WikimediaEvents\PeriodicMetrics\WikimediaEventsMetricsFactory;
