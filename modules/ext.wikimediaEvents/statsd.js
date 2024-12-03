@@ -30,12 +30,12 @@ let statsdBuffer = '';
 let statsdFlushPending = false;
 
 function statsdFlush() {
-	mw.eventLog.sendBeacon( config.statsdBaseUri + '?' + statsdBuffer );
+	mw.eventLog.sendBeacon( config.WMEStatsdBaseUri + '?' + statsdBuffer );
 	statsdBuffer = '';
 }
 
 function statsdAdd( line ) {
-	if ( config.statsdBaseUri ) {
+	if ( config.WMEStatsdBaseUri ) {
 		if ( statsdBuffer && ( statsdBuffer.length + line.length ) > BATCH_SIZE ) {
 			statsdFlush();
 		}

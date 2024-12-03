@@ -208,7 +208,24 @@
 				"editAttemptStep.js",
 				{
 					"name": "config.json",
-					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleConfig"
+					"config": [
+						"WMEClientErrorIntakeURL",
+						"WMEStatsdBaseUri",
+						"WMEWikidataCompletionSearchClicks",
+						"WMESessionTick",
+						"WMEReadingDepthSamplingRate",
+						"WMENewPHPSamplingRate",
+						"WMENewPHPVersion",
+						"WMESchemaEditAttemptStepSamplingRate",
+						"WMESchemaVisualEditorFeatureUseSamplingRate",
+						"DTSchemaEditAttemptStepSamplingRate",
+						"DTSchemaEditAttemptStepOversample",
+						"MFSchemaEditAttemptStepOversample"
+					]
+				},
+				{
+					"name": "data.json",
+					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleData"
 				}
 			],
 			"dependencies": [

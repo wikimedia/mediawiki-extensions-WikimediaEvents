@@ -286,42 +286,22 @@ class WikimediaEventsHooks implements
 	}
 
 	/**
-	 * Callback for ext.wikimediaEvents virtual config.json file.
+	 * Callback for ext.wikimediaEvents virtual data.json file.
 	 *
 	 * @param RL\Context $context
 	 * @param Config $config
 	 * @return array
 	 */
-	public static function getModuleConfig( RL\Context $context, Config $config ) {
-		$vars = [];
-		$vars['clientErrorIntakeURL'] = $config->get( 'WMEClientErrorIntakeURL' );
-		$vars['statsdBaseUri'] = $config->get( 'WMEStatsdBaseUri' );
-		$vars['wikidataCompletionSearchClicks'] = $config->get( 'WMEWikidataCompletionSearchClicks' );
-		$vars['sessionTick'] = $config->get( 'WMESessionTick' );
-		$vars['readingDepthSamplingRate'] = $config->get( 'WMEReadingDepthSamplingRate' );
-		$vars['newPHPSamplingRate'] = $config->get( 'WMENewPHPSamplingRate' );
-		$vars['newPHPVersion'] = $config->get( 'WMENewPHPVersion' );
+	public static function getModuleData( RL\Context $context, Config $config ) {
+		$data = [];
 		$skin = $context->getSkin();
 		if ( in_array( $skin, [ 'vector', 'vector-2022' ] ) ) {
-			$vars['webUIScrollTrackingSamplingRate'] = $config->get( 'WMEWebUIScrollTrackingSamplingRate' );
-			$vars['webUIScrollTrackingSamplingRateAnons'] = $config->get( 'WMEWebUIScrollTrackingSamplingRateAnons' );
-			$vars['webUIScrollTrackingTimeToWaitBeforeScrollUp'] =
+			$data['webUIScrollTrackingSamplingRate'] = $config->get( 'WMEWebUIScrollTrackingSamplingRate' );
+			$data['webUIScrollTrackingSamplingRateAnons'] = $config->get( 'WMEWebUIScrollTrackingSamplingRateAnons' );
+			$data['webUIScrollTrackingTimeToWaitBeforeScrollUp'] =
 				$config->get( 'WMEWebUIScrollTrackingTimeToWaitBeforeScrollUp' );
 		}
-
-		// editAttemptStep.js
-		$vars['WMESchemaEditAttemptStepSamplingRate'] =
-			$config->get( 'WMESchemaEditAttemptStepSamplingRate' );
-		$vars['WMESchemaVisualEditorFeatureUseSamplingRate'] =
-			$config->get( 'WMESchemaVisualEditorFeatureUseSamplingRate' );
-		$vars['DTSchemaEditAttemptStepSamplingRate'] =
-			$config->get( 'DTSchemaEditAttemptStepSamplingRate' );
-		$vars['DTSchemaEditAttemptStepOversample'] =
-			$config->get( 'DTSchemaEditAttemptStepOversample' );
-		$vars['MFSchemaEditAttemptStepOversample'] =
-			$config->get( 'MFSchemaEditAttemptStepOversample' );
-
-		return $vars;
+		return $data;
 	}
 
 	/**

@@ -7,7 +7,7 @@
 /* eslint-disable max-len */
 /**
  * @typedef ModuleConfig
- * @property {string} clientErrorIntakeURL
+ * @property {string} WMEClientErrorIntakeURL
  */
 const moduleConfig = /** @type {ModuleConfig} */ require( /** @type {string} */ ( './config.json' ) );
 // Only log up to this many errors per page (T259371)
@@ -510,7 +510,7 @@ if (
 	// @ts-ignore
 	!window.QUnit &&
 	navigator.sendBeacon !== undefined &&
-	moduleConfig.clientErrorIntakeURL
+	moduleConfig.WMEClientErrorIntakeURL
 ) {
 	// Only install the logger if:
 	//
@@ -518,5 +518,5 @@ if (
 	// - The module has been properly configured; and
 	// - The client supports the necessary browser features.
 
-	install( moduleConfig.clientErrorIntakeURL );
+	install( moduleConfig.WMEClientErrorIntakeURL );
 }

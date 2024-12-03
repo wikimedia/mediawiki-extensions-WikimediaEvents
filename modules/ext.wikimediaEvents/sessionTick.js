@@ -34,7 +34,7 @@
  * remain inactive.
  */
 const moduleConfig = require( './config.json' );
-const enabled = moduleConfig.sessionTick;
+const enabled = moduleConfig.WMESessionTick;
 
 // Milliseconds between ticks
 const TICK_MS = 60000;
