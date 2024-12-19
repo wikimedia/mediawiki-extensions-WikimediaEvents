@@ -12,5 +12,9 @@
 	"apihelp-wikimediaeventsblockededit-summary": "معلومات تسجيل حول محاولات التحرير المحظورة",
 	"apihelp-wikimediaeventsblockededit-param-page": "صفحة تم إجراء محاولة تحرير عليها",
 	"apihelp-wikimediaeventsblockededit-param-interface": "الواجهة التي تم استخدامها للتحرير",
-	"apihelp-wikimediaeventsblockededit-param-platform": "المنصة التي تم استخدامها للتحرير"
+	"apihelp-wikimediaeventsblockededit-param-platform": "المنصة التي تم استخدامها للتحرير",
+	"wikimediaevents-special-wikimediadebug-notenabled": "هذه الصفحة الخاصة غير مفعلة.",
+	"wikimediaevents-special-wikimediadebug-submit-set": "تفعيل ملف تعريف الارتباط التصحيحي مقابل $1",
+	"wikimediaevents-special-wikimediadebug-submit-renew": "تجديد ملف تعريف الارتباط مقابل $1",
+	"wikimediaevents-special-wikimediadebug-submit-clear": "مسح ملف تعريف الارتباط"
 }
