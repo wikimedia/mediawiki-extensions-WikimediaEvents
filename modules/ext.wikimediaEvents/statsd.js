@@ -34,10 +34,6 @@
  * mw.track( 'timing.MediaWiki.baz', 1234.56 );
  * // logged as MediaWiki.bar=1235ms
  * // The time is assumed to be in milliseconds and is rounded to the nearest integer.
- *
- * mw.track( 'gauge.MediaWiki.quux', 42 );
- * // logged as MediaWiki.quux=42g
- * // The value is assumed to be an integer (and rounded if not).
  * ```
  */
 const config = require( './config.json' );
@@ -73,13 +69,6 @@ mw.trackSubscribe( 'timing.', ( topic, time ) => {
 mw.trackSubscribe( 'counter.', ( topic, count ) => {
 	count = isNaN( count ) ? 1 : Math.round( count );
 	statsdAdd( topic.slice( 'counter.'.length ) + '=' + count + 'c' );
-} );
-
-mw.trackSubscribe( 'gauge.', ( topic, value ) => {
-	if ( isNaN( value ) ) {
-		return;
-	}
-	statsdAdd( topic.slice( 'gauge.'.length ) + '=' + Math.round( value ) + 'g' );
 } );
 
 let statsBuffer = '';

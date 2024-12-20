@@ -80,15 +80,6 @@ QUnit.module( 'ext.wikimediaEvents/statsd', ( hooks ) => {
 		] );
 	} );
 
-	QUnit.test( 'gauge', function ( assert ) {
-		mw.track( 'gauge.bar', 42 );
-		this.sandbox.clock.tick( 1 );
-		assert.strictEqual( stub.callCount, 1, 'scheduled flush' );
-		assert.propEqual( stub.getCall( 0 ).args, [
-			'/beacon/statsv?bar=42g'
-		] );
-	} );
-
 	QUnit.test( 'stats [invalid name]', function ( assert ) {
 		this.sandbox.stub( mw.errorLogger, 'logError' );
 		this.sandbox.stub( mw.log, 'error', ( err ) => {
