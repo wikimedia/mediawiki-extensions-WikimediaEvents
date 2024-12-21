@@ -19,7 +19,8 @@ function wfLog( string $str ): void {
 }
 
 if ( $path !== '/beacon/statsv' ) {
-	http_response_code( 404 /* Not Found */ );
+	/* Not Found */
+	http_response_code( 404 );
 	wfLog( "ERROR: Reject request to $path" );
 	return;
 }
@@ -37,4 +38,5 @@ foreach ( $metrics as $bucket => $valueType ) {
 	wfLog( "DEBUG: $message" );
 }
 
-http_response_code( 204 /* No Content */ );
+/* No Content */
+http_response_code( 204 );

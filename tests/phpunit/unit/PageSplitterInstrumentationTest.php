@@ -145,7 +145,7 @@ class PageSplitterInstrumentationTest extends MediaWikiUnitTestCase {
 	public function testScenarioAb1() {
 		// "control" / "treatment" A/B test with 1% sampling.
 		$sampling = 0.01;
-		$buckets = [ /*A*/ 'control', /*B*/ 'treatment' ];
+		$buckets = [ 'control', 'treatment' ];
 		$subject = new PageSplitterInstrumentation( $sampling, $buckets );
 
 		// Supply page_random at different values.

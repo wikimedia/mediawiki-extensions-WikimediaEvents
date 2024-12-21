@@ -127,7 +127,8 @@ class AccountCreationLogger {
 		$stream = $this->determineStreamForPage( $pageReference );
 
 		if ( !$stream ) {
-			return; // Not an instrumented page, do nothing.
+			// Not an instrumented page, do nothing.
+			return;
 		}
 
 		$additionalData = [

@@ -148,7 +148,7 @@ class WikimediaEventsHooks implements
 				$headerItems['page_id'] = $pageId;
 			}
 			if ( $title->isSpecialPage() ) {
-				[ $name, /* $subpage */ ] = MediaWikiServices::getInstance()->getSpecialPageFactory()
+				[ $name, ] = MediaWikiServices::getInstance()->getSpecialPageFactory()
 					->resolveAlias( $title->getDBkey() );
 
 				$headerItems['special'] = $name ?? 'unknown';
@@ -189,7 +189,8 @@ class WikimediaEventsHooks implements
 		$editResult
 	): void {
 		if ( PHP_SAPI === 'cli' && !defined( 'MW_PHPUNIT_TEST' ) ) {
-			return; // ignore maintenance scripts
+			// ignore maintenance scripts
+			return;
 		}
 
 		// Discard null edits from these metrics as they do not produce a
@@ -211,9 +212,11 @@ class WikimediaEventsHooks implements
 			$user->isBot() ||
 			( $request->getCheck( 'bot' ) && $this->permissionManager->userHasRight( $user, 'bot' ) )
 		) {
-			$accType = 'bot'; // registered bot or script acting on behalf of a user
+			// registered bot or script acting on behalf of a user
+			$accType = 'bot';
 		} elseif ( $request->getCheck( 'maxlag' ) ) {
-			$accType = 'throttled'; // probably an unregistered bot
+			// probably an unregistered bot
+			$accType = 'throttled';
 		} elseif ( $user->isTemp() ) {
 			$accType = 'temp';
 		} elseif ( $user->isAnon() ) {
@@ -268,7 +271,8 @@ class WikimediaEventsHooks implements
 						"timing.editResponseTime.entry.$entry",
 					] )->observe( $timeMs );
 
-				$msPerKb = $timeMs / ( max( $size, 1 ) / 1e3 ); // T224686
+				// T224686
+				$msPerKb = $timeMs / ( max( $size, 1 ) / 1e3 );
 				$statsFactory->getTiming( 'editResponseTimePerKB_seconds' )
 					->setLabel( 'wiki', WikiMap::getCurrentWikiId() )
 					->setLabel( 'page', $nsType )
