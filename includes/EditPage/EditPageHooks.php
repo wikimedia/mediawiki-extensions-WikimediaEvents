@@ -44,7 +44,5 @@ class EditPageHooks implements EditPage__showReadOnlyForm_initialHook {
 		if ( $errorMsgs['all'] ) {
 			BlockUtils::logBlockedEditAttempt( $user, $title, 'wikieditor', 'desktop' );
 		}
-
-		return true; // ignored
 	}
 }
