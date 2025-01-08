@@ -22,7 +22,7 @@ Powers <https://grafana.wikimedia.org/d/000000037/mw-js-deprecate>.
 * Files: statsd.js
 * Contact: https://wikitech.wikimedia.org/wiki/MediaWiki_Engineering
 
-Handles the ResourceLoader `mw.track()` topics for `counter.*`, `timing.*`, and `gauge.*`.
+Handles the ResourceLoader `mw.track()` topics for `counter.*`, `timing.*`, and `stats.*`.
 Prometheus support <https://phabricator.wikimedia.org/T355837>.
 Documentation at <https://wikitech.wikimedia.org/wiki/Performance.wikimedia.org/Runbook#statsv>.
 
