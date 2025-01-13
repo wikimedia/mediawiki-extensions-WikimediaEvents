@@ -171,3 +171,14 @@ More details at <https://phabricator.wikimedia.org/T357763>
 A collection of standardized instruments, including:
 
 1. Click Through Rate (CTR)
+
+## Experimentation Lab Tests
+
+* Since: January 2025
+* Files: ExLabTest1.js
+* Contact: Experiment Platform
+
+These files test the Experimentation Lab end-to-end.
+These files are temporary and will be removed soon after being added.
+
+https://phabricator.wikimedia.org/T383801 tracks the removal of `ExLabTest1.js`.

@@ -272,12 +272,19 @@
 				"mediawiki.cookie"
 			]
 		},
-		"ext.wikimediaEvents.experimentPlatform": {
-			"localBasePath": "modules/ext.wikimediaEvents.experimentPlatform",
-			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.experimentPlatform",
+		"ext.wikimediaEvents.exLab": {
+			"localBasePath": "modules/ext.wikimediaEvents.exLab",
+			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.exLab",
 			"packageFiles": [
 				"index.js",
-				"ClickThroughRateInstrument.js"
+				"ClickThroughRateInstrument.js",
+				"ExLabTest1.js",
+				{
+					"name": "config.json",
+					"config": {
+						"exLabTest1Enabled": "WMEExLabTest1Enabled"
+					}
+				}
 			],
 			"dependencies": [
 				"ext.eventLogging"
@@ -384,6 +391,10 @@
 		"WMEGeoIP2Path": {
 			"value": "/usr/share/GeoIP/GeoIP2-Country.mmdb",
 			"description": "The path to the GeoIP2 country database file. For Wikimedia production, suggested value is '/usr/share/GeoIP/GeoIP2-Country.mmdb'. Null means that we make no attempt to use GeoIP2 to look up country codes for an IP address."
+		},
+		"WMEExLabTest1Enabled": {
+			"value": false,
+			"description": "Enable the first Experimentation Lab test experiment."
 		},
 		"WikimediaEventsIPoidUrl": {
 			"value": null,

@@ -122,6 +122,11 @@ class WikimediaEventsHooks implements
 			$out->getTitle(),
 			$out->getRequest()->getSession()->getUser()
 		);
+
+		if ( ExtensionRegistry::getInstance()->isLoaded( 'MetricsPlatform' ) &&
+			$this->config->get( 'WMEExLabTest1Enabled' ) ) {
+				$out->addModules( 'ext.wikimediaEvents.exLab' );
+		}
 	}
 
 	/**
