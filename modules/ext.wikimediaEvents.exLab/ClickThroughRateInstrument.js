@@ -26,7 +26,7 @@ const intersectionObserver = new IntersectionObserver(
 			if ( state.has( target ) ) {
 				const {
 					funnelEntryToken,
-					elementFriendlyName
+					friendlyName
 				} = state.get( target );
 
 				mw.eventLog.submitInteraction(
@@ -37,7 +37,7 @@ const intersectionObserver = new IntersectionObserver(
 						action_source: 'ClickThroughRateInstrument',
 						funnel_entry_token: funnelEntryToken,
 						funnel_event_sequence_position: 1,
-						element_friendly_name: elementFriendlyName
+						element_friendly_name: friendlyName
 					}
 				);
 			}
