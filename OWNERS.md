@@ -76,7 +76,7 @@ Details at <https://phabricator.wikimedia.org/T292587>.
 
 * Since: January 2025
 * Suggested Removal: March 2025
-* Files: webABTestInteractions.js
+* Files: webABTestInteractions.js, index.js
 * Contact: Web Team
 
 A schema for evaluating the search recommendations

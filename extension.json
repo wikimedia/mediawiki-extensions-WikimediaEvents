@@ -187,6 +187,7 @@
 				"networkProbe.js",
 				"clickTracking/utils.js",
 				"searchRecommendations/webABTestInteractions.js",
+				"searchRecommendations/index.js",
 				{
 					"name": "searchSatisfaction.js",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
@@ -304,6 +305,7 @@
 			"clientError.test.js",
 			"statsd.test.js",
 			"sessionLength/mixin.test.js",
+			"searchRecommendations/index.test.js",
 			"searchRecommendations/webABTestInteractions.test.js"
 		],
 		"dependencies": [
