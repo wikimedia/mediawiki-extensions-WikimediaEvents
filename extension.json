@@ -186,6 +186,7 @@
 				"blockedEdit.js",
 				"networkProbe.js",
 				"clickTracking/utils.js",
+				"searchRecommendations/webABTestInteractions.js",
 				{
 					"name": "searchSatisfaction.js",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
@@ -302,7 +303,8 @@
 			"clickTracking.test.js",
 			"clientError.test.js",
 			"statsd.test.js",
-			"sessionLength/mixin.test.js"
+			"sessionLength/mixin.test.js",
+			"searchRecommendations/webABTestInteractions.test.js"
 		],
 		"dependencies": [
 			"ext.wikimediaEvents"

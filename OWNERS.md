@@ -72,6 +72,18 @@ Details at <https://phabricator.wikimedia.org/T220016>.
 
 Details at <https://phabricator.wikimedia.org/T292587>.
 
+## Search recommendations A/B test
+
+* Since: January 2025
+* Suggested Removal: March 2025
+* Files: webABTestInteractions.js
+* Contact: Web Team
+
+A schema for evaluating the search recommendations
+experiment A/B test (T378094)
+
+Details at <https://phabricator.wikimedia.org/T383611>.
+
 ## CommonJS for Web
 
 * Since: May 2023
