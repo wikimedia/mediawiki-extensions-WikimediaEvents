@@ -12,8 +12,6 @@
  * on sessionTick.js for modular reuse across core.
  */
 
-const moduleConfig = require( '../config.json' );
-
 // Constants for session timing, idle, reset, and tick limits.
 const NOOP = function () { };
 
@@ -166,12 +164,8 @@ function regulator() {
 regulator();
 
 const SessionLengthInstrumentMixin = {
-	enabled: moduleConfig.sessionTick,
 	state,
 	start( streamName, schemaID ) {
-		if ( !this.enabled ) {
-			return;
-		}
 		state.set( streamName, schemaID );
 	},
 	stop( streamName ) {
