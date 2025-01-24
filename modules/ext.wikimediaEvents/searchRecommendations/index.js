@@ -9,7 +9,8 @@ function resetSearchSession() {
 
 function setupInstrumentation( { group, experimentName } ) {
 	// This name must be synced with RelatedArticles extension.json
-	if ( experimentName === 'RelatedArticles test experiment' ) {
+	// We use indexOf as on beta cluster we suffix with beta cluster.
+	if ( experimentName.indexOf( 'RelatedArticles test' ) > -1 ) {
 		// This should be defined by ext.relatedArticles.readMore.bootstrap/index.js
 		// If it doesn't exist, RelatedArticles for some reason didn't store a token so fall back
 		// to sessionId.
