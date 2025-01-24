@@ -3,10 +3,15 @@
 The code in this repository is loaded globally for all users of Wikipedia and other public Wikimedia
 Foundation wikis. Including for all page types, namespaces, skins, and devices.
 
-Shipping code comes at a cost. It is important that campaigns leave a trace to contact their owners
+Shipping code comes at a cost. It is important that instruments leave a trace to contact their owners
 so that, if optimisations are proposed, there is a way to contact them for code review, and also to
 routinely evaluate whether gathered data is still actively being used and providing value to free up
-budget for other teams to deploy campaigns.
+budget for other teams to deploy instruments.
+
+Instrument owners can document the ownership of their instruments by ResourceLoader module, folder,
+or file(s). The sections below give examples of all three. Note well that files named `"index.js"`
+and non-JavaScript files, e.g. `"config.json"`, is not required. Therefore, instrument owners
+should take care when naming and organizing their instrumentation files.
 
 ## mw-js-deprecate
 
@@ -43,7 +48,7 @@ Details at <https://phabricator.wikimedia.org/T294777>.
 ## Wikibase
 
 * Since: July 2018
-* Files: completionClicks.js
+* Modules: ext.wikimediaEvents.wikibase
 * Contact: Search Platform
 
 Details at <https://phabricator.wikimedia.org/T196186>.
@@ -51,7 +56,8 @@ Details at <https://phabricator.wikimedia.org/T196186>.
 ## Network Probe
 
 * Since: April 2023
-* Files: init.js, probenet.js, recipe.js, networkProbe.js
+* Files: networkProbe.js
+* Modules: ext.wikimediaEvents.networkprobe
 * Contact: Infrastructure Foundations
 
 Details at <https://phabricator.wikimedia.org/T332024>.
@@ -59,7 +65,7 @@ Details at <https://phabricator.wikimedia.org/T332024>.
 ## Click-tracking for Vector and Minerva
 
 * Since: July 2019
-* Files: webUIClick.js, utils.js
+* Folders: ext.wikimediaEvents/clickTracking
 * Contact: Readers Web
 
 Details at <https://phabricator.wikimedia.org/T220016>.
@@ -76,7 +82,7 @@ Details at <https://phabricator.wikimedia.org/T292587>.
 
 * Since: January 2025
 * Suggested Removal: March 2025
-* Files: webABTestInteractions.js, index.js
+* Folders: ext.wikimediaEvents/searchRecommendations
 * Contact: Web Team
 
 A schema for evaluating the search recommendations
@@ -127,7 +133,7 @@ Details at <https://phabricator.wikimedia.org/T248987>.
 ## Session Length Mixin
 
 * Since: November 2024
-* Files: mixin.js
+* Folders: ext.wikimediaEvents/sessionLength
 * Contact: Web team
 
 Details at <https://phabricator.wikimedia.org/T378072>.
@@ -177,7 +183,7 @@ More details at <https://phabricator.wikimedia.org/T357763>
 ## Experiment Platform Standardized Instruments
 
 * Since: January 2025
-* Files: ClickThroughRateInstrument.js
+* Modules: ext.wikimediaEvents.exLab
 * Contact: Experiment Platform
 
 A collection of standardized instruments, including:

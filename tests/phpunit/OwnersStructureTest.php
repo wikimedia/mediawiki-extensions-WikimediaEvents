@@ -2,8 +2,6 @@
 
 namespace WikimediaEvents\Tests;
 
-use LogicException;
-
 /**
  * @coversNothing
  */
@@ -19,7 +17,11 @@ class OwnersStructureTest extends \PHPUnit\Framework\TestCase {
 		foreach ( $lines as $line ) {
 			if ( strpos( $line, '* ' ) === 0 ) {
 				[ $label, $value ] = explode( ':', substr( $line, 2 ), 2 );
-				if ( $label === 'Files' ) {
+				if (
+					$label === 'Files' ||
+					$label === 'Folders' ||
+					$label === 'Modules'
+				) {
 					$section[$label] = array_map( 'trim', explode( ',', $value ) );
 				} else {
 					$section[$label] = trim( $value );
@@ -41,82 +43,108 @@ class OwnersStructureTest extends \PHPUnit\Framework\TestCase {
 		self::$ownerSections = $sections;
 	}
 
-	private function getResources(): array {
-		$extension = json_decode(
-			file_get_contents( __DIR__ . '/../../extension.json' ),
-			JSON_OBJECT_AS_ARRAY
-		);
-		$modules = $extension['ResourceModules'];
-		$resources = [];
-		foreach ( $modules as $moduleName => $moduleInfo ) {
-			foreach ( $moduleInfo as $key => $value ) {
-				$files = [];
-				switch ( $key ) {
-					case 'packageFiles':
-						foreach ( $value as $entry ) {
-							if ( is_string( $entry ) && $entry !== 'index.js' ) {
-								$files[] = $entry;
-							}
-							if (
-								is_array( $entry ) &&
-								isset( $entry['name'] ) &&
-								str_ends_with( $entry['name'], '.js' )
-							) {
-								$files[] = $entry['name'];
-							}
-						}
-						break;
-					case 'localBasePath':
-					case 'remoteExtPath':
-					case 'dependencies':
-					case 'targets':
-					case 'es6':
-						// ignore
-						break;
-					default:
-						throw new LogicException( "Unknown module info key: {$key}" );
-				}
-				foreach ( $files as $file ) {
-					$resources[ basename( $file ) ] = $moduleName;
-				}
-			}
-		}
-		return $resources;
-	}
-
 	public function testOwnersFile() {
-		$expected = [ 'Files', 'Contact', 'Since' ];
+		$expectedResourceLabels = [ 'Modules', 'Folders', 'Files' ];
+
 		foreach ( self::$ownerSections as $title => $section ) {
-			$actual = array_intersect( $expected, array_keys( $section ) );
-			$this->assertSame( $expected, $actual, "Labels under OWNERS.md § $title" );
+			$this->assertArrayHasKey( 'Contact', $section, "OWNERS.md § $title has Contact label" );
+			$this->assertArrayHasKey( 'Since', $section, "OWNERS.md § $title has Since label" );
+
+			$actualResourceLabels = array_intersect( $expectedResourceLabels, array_keys( $section ) );
+
+			$this->assertTrue(
+				count( $actualResourceLabels ) >= 1,
+				"OWNERS.md § $title has either a Files, Folders, or Modules label"
+			);
 		}
 	}
 
 	/**
 	 * @depends testOwnersFile
 	 */
-	public function testResourceOwnersFile() {
+	public function testResourcesAreOwned() {
+		$ownedModules = [];
+		$ownedFolders = [];
 		$ownedFiles = [];
+
 		foreach ( self::$ownerSections as $section ) {
-			foreach ( $section['Files'] as $file ) {
-				if ( str_ends_with( $file, '.js' ) ) {
-					$ownedFiles[] = $file;
+			if ( isset( $section['Modules'] ) ) {
+				$ownedModules = array_merge( $ownedModules, array_fill_keys( $section['Modules'], true ) );
+			}
+
+			if ( isset( $section['Folders'] ) ) {
+				foreach ( $section['Folders'] as $folder ) {
+					if ( !str_starts_with( $folder, 'modules' ) ) {
+						$folder = 'modules/' . $folder;
+					}
+
+					$ownedFolders[] = $folder;
+				}
+			}
+
+			if ( isset( $section['Files'] ) ) {
+				$ownedFiles = array_merge( $ownedFiles, $section['Files'] );
+			}
+		}
+
+		$extension = json_decode(
+			file_get_contents( __DIR__ . '/../../extension.json' ),
+			JSON_OBJECT_AS_ARRAY
+		);
+		$modules = $extension['ResourceModules'];
+		foreach ( $modules as $moduleName => $moduleInfo ) {
+			// #1: Is the module owned?
+			if ( isset( $ownedModules[ $moduleName ] ) ) {
+				continue;
+			}
+
+			foreach ( $moduleInfo['packageFiles'] as $entry ) {
+				$name = $entry;
+
+				// Skip index.js
+				if ( is_array( $name ) ) {
+					if ( !isset( $name['name'] ) ) {
+						continue;
+					}
+
+					$name = $name['name'];
+				}
+
+				if ( !is_string( $name ) || !str_ends_with( $name, '.js' ) || $name === 'index.js' ) {
+					continue;
+				}
+
+				// $relativePath is the path to the file relative to the project root.
+				$relativePath = $moduleInfo['localBasePath'] . '/' . $name;
+
+				// #2: Is the resource in an owned folder?
+				$found = false;
+
+				foreach ( $ownedFolders as $ownedFolder ) {
+					if ( str_starts_with( $relativePath, $ownedFolder ) ) {
+						$found = true;
+
+						break;
+					}
+				}
+
+				// #3: Finally, is the resource an owned file?
+				if ( !$found ) {
+					foreach ( $ownedFiles as $ownedFile ) {
+						if ( str_ends_with( $relativePath, $ownedFile ) ) {
+							$found = true;
+
+							break;
+						}
+					}
+				}
+
+				if ( !$found ) {
+					$this->fail( "Resource $relativePath ($moduleName) isn't document as owned in OWNERS.md" );
 				}
 			}
 		}
 
-		$resources = $this->getResources();
-		foreach ( $resources as $file => $moduleName ) {
-			$this->assertContains(
-				$file, $ownedFiles,
-				"File $file in $moduleName has an owner"
-			);
-		}
-		foreach ( $ownedFiles as $file ) {
-			$this->assertTrue(
-				isset( $resources[$file] ),
-				"Owned file $file is a registered resource"
-			);
-		}
+		$this->assertTrue( true, 'OWNERS.md documents ownership of all resources' );
 	}
 }
