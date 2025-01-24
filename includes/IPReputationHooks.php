@@ -6,7 +6,6 @@ use MediaWiki\Auth\Hook\LocalUserCreatedHook;
 use MediaWiki\Config\Config;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Deferred\DeferredUpdates;
-use MediaWiki\Extension\EventBus\EventFactory;
 use MediaWiki\Extension\EventBus\Serializers\MediaWiki\UserEntitySerializer;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Http\HttpRequestFactory;
@@ -33,7 +32,7 @@ use Wikimedia\Timestamp\ConvertibleTimestamp;
 class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 
 	private const STREAM = 'mediawiki.ip_reputation.score';
-	private const SCHEMA = '/analytics/mediawiki/ip_reputation/score/1.2.0';
+	private const SCHEMA = '/analytics/mediawiki/ip_reputation/score/1.3.0';
 
 	private FormatterFactory $formatterFactory;
 	private HttpRequestFactory $httpRequestFactory;
@@ -41,10 +40,15 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 
 	private LoggerInterface $logger;
 	private Config $config;
-	private EventFactory $eventFactory;
 	private UserFactory $userFactory;
 	private UserGroupManager $userGroupManager;
 	private EventSubmitter $eventSubmitter;
+	/**
+	 * Callable that returns the entry point for this event as defined in MW_ENTRY_POINT.
+	 * Useful for testing.
+	 * @var callable
+	 */
+	private $entryPointProvider;
 
 	public function __construct(
 		Config $config,
@@ -53,8 +57,8 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 		WANObjectCache $cache,
 		UserFactory $userFactory,
 		UserGroupManager $userGroupManager,
-		EventFactory $eventFactory,
-		EventSubmitter $eventSubmitter
+		EventSubmitter $eventSubmitter,
+		?callable $entryPointProvider = null
 	) {
 		$this->config = $config;
 		$this->formatterFactory = $formatterFactory;
@@ -63,8 +67,8 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 		$this->logger = LoggerFactory::getInstance( 'WikimediaEvents' );
 		$this->userFactory = $userFactory;
 		$this->userGroupManager = $userGroupManager;
-		$this->eventFactory = $eventFactory;
 		$this->eventSubmitter = $eventSubmitter;
+		$this->entryPointProvider = $entryPointProvider ?? static fn (): string => MW_ENTRY_POINT;
 	}
 
 	/** @inheritDoc */
@@ -266,6 +270,7 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 			'http' => [ 'client_ip' => $ip ],
 			'performer' => $userEntitySerializer->toArray( $user ),
 			'action' => $action,
+			'mw_entry_point' => ( $this->entryPointProvider )(),
 			'identifier' => $identifier,
 		];
 		$this->eventSubmitter->submit( self::STREAM, $event );
