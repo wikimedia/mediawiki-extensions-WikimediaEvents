@@ -74,9 +74,9 @@ document.addEventListener( 'click', ( { target } ) => {
 // ===
 
 /**
- * An instrument that tracks impressions and clicks of a DOM element.
- *
- * When an element
+ * An instrument that tracks clickthrough rate of DOM elements. See
+ * https://meta.wikimedia.org/wiki/Research_and_Decision_Science/Data_glossary/Clickthrough_Rate for
+ * the definition and specification of clickthrough rate.
  *
  * ## Usage
  *
@@ -88,7 +88,7 @@ document.addEventListener( 'click', ( { target } ) => {
  *     'pinnable-header.vector-main-menu.unpin'
  * );
  *
- * // A few moments later…
+ * // If you want to stop the instrument for any reason:
  *
  * ClickThroughRateInstrument.stop( result );
  * ```
@@ -148,7 +148,7 @@ const ClickThroughRateInstrument = {
 		const e = document.querySelector( selector );
 
 		if ( !e ) {
-			mw.log.warn( 'Experiment Platform: selector does not exist - ' + e );
+			mw.log.warn( 'ClickThroughRateInstrument: selector does not exist - ' + selector );
 			return null;
 		}
 
