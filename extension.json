@@ -64,7 +64,6 @@
 				"MainWANObjectCache",
 				"UserFactory",
 				"UserGroupManager",
-				"EventBus.EventFactory",
 				"EventLogging.EventSubmitter"
 			]
 		},

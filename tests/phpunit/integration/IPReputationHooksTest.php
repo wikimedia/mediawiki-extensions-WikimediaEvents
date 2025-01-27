@@ -51,8 +51,8 @@ class IPReputationHooksTest extends MediaWikiIntegrationTestCase {
 				$services->getMainWANObjectCache(),
 				$services->getUserFactory(),
 				$services->getUserGroupManager(),
-				$services->getService( 'EventBus.EventFactory' ),
-				$services->getService( 'EventLogging.EventSubmitter' )
+				$services->getService( 'EventLogging.EventSubmitter' ),
+				fn () => 'index'
 			)
 		);
 		$user = $this->createPartialMock( User::class, [
