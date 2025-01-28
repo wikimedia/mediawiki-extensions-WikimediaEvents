@@ -4,6 +4,7 @@ namespace WikimediaEvents\BlockMetrics;
 
 use MediaWiki\Block\Block;
 use MediaWiki\Context\RequestContext;
+use MediaWiki\Extension\CentralAuth\SharedDomainUtils;
 use MediaWiki\Extension\EventBus\EventFactory;
 use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\Linker\LinkTarget;
@@ -12,6 +13,7 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Message\Message;
 use MediaWiki\Permissions\Hook\PermissionErrorAuditHook;
 use MediaWiki\Permissions\PermissionManager;
+use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserIdentity;
 
@@ -20,7 +22,7 @@ use MediaWiki\User\UserIdentity;
  */
 class BlockMetricsHooks implements PermissionErrorAuditHook {
 
-	public const SCHEMA = '/analytics/mediawiki/accountcreation/block/4.0.0';
+	public const SCHEMA = '/analytics/mediawiki/accountcreation/block/4.1.0';
 
 	/** @var UserFactory */
 	private $userFactory;
@@ -112,6 +114,15 @@ class BlockMetricsHooks implements PermissionErrorAuditHook {
 			} else {
 				$expiry = wfTimestamp( TS_ISO_8601, $rawExpiry );
 			}
+
+			$sul3Enabled = false;
+			if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
+				/** @var SharedDomainUtils $sharedDomainUtils */
+				$sharedDomainUtils = MediaWikiServices::getInstance()
+					->getService( 'CentralAuth.SharedDomainUtils' );
+				$sul3Enabled = $sharedDomainUtils->isSul3Enabled( $user->getRequest() );
+			}
+
 			$event = [
 				'$schema' => self::SCHEMA,
 				'block_id' => json_encode( $block->getIdentifier() ),
@@ -127,6 +138,7 @@ class BlockMetricsHooks implements PermissionErrorAuditHook {
 				}, $allErrorMsgs ),
 				'user_ip' => $user->getRequest()->getIP(),
 				'is_api' => $isApi,
+				'sul3_enabled' => $sul3Enabled,
 			];
 			$event += $this->eventFactory->createMediaWikiCommonAttrs( $user );
 			$this->submitEvent( 'mediawiki.accountcreation_block', $event );
