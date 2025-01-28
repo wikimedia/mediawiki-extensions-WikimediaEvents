@@ -209,7 +209,7 @@ class PrefUpdateInstrumentation implements SaveUserOptionsHook {
 		if ( $trackType === self::VALUE_WELLKNOWN_SHORT ||
 			$trackType === self::VALUE_BETA_FEATURE
 		) {
-			if ( strlen( $optValue ) > self::SHORT_MAX_LEN ) {
+			if ( is_string( $optValue ) && strlen( $optValue ) > self::SHORT_MAX_LEN ) {
 				trigger_error( "Unexpected value for $optName in PrefUpdate", E_USER_WARNING );
 				return false;
 			}
