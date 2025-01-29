@@ -9,12 +9,30 @@ const SCHEMA_ID = '/analytics/product_metrics/web/base/1.3.0';
  * @property {string} selector
  * @property {string} friendlyName
  * @property {Element} element
- * @property {number} elementClickCount
  * @property {string} funnelEntryToken
+ * @property {Instrument} instrument
  */
 
 /** @type {Map<HTMLElement,StateEntry>} */
 const state = new WeakMap();
+
+/**
+ * @param {Object} stateEntry
+ * @param {string} action
+ */
+function submitInteraction( stateEntry, action ) {
+	const {
+		funnelEntryToken,
+		friendlyName,
+		instrument
+	} = stateEntry;
+
+	instrument.submitInteraction( action, {
+		action_source: 'ClickThroughRateInstrument',
+		funnel_entry_token: funnelEntryToken,
+		element_friendly_name: friendlyName
+	} );
+}
 
 // Event Listeners
 // ===============
@@ -24,22 +42,7 @@ const intersectionObserver = new IntersectionObserver(
 	( entries, observer ) => {
 		entries.forEach( ( { target } ) => {
 			if ( state.has( target ) ) {
-				const {
-					funnelEntryToken,
-					friendlyName
-				} = state.get( target );
-
-				mw.eventLog.submitInteraction(
-					STREAM_NAME,
-					SCHEMA_ID,
-					'impression',
-					{
-						action_source: 'ClickThroughRateInstrument',
-						funnel_entry_token: funnelEntryToken,
-						funnel_event_sequence_position: 1,
-						element_friendly_name: friendlyName
-					}
-				);
+				submitInteraction( state.get( target ), 'impression' );
 			}
 
 			observer.unobserve( target );
@@ -53,20 +56,7 @@ const intersectionObserver = new IntersectionObserver(
 document.addEventListener( 'click', ( { target } ) => {
 	if ( state.has( target ) ) {
 		const entry = state.get( target );
-
-		mw.eventLog.submitInteraction(
-			STREAM_NAME,
-			SCHEMA_ID,
-			'click',
-			{
-				action_source: 'ClickThroughRateInstrument',
-				funnel_entry_token: entry.funnelEntryToken,
-				funnel_event_sequence_position: 2 + entry.elementClickCount,
-				element_friendly_name: entry.friendlyName
-			}
-		);
-
-		++entry.elementClickCount;
+		submitInteraction( entry, 'click' );
 	}
 } );
 
@@ -86,6 +76,16 @@ document.addEventListener( 'click', ( { target } ) => {
  * const result = ClickThroughRateInstrument.start(
  *     '[data-pinnable-element-id="vector-main-menu"] .vector-pinnable-header-unpin-button',
  *     'pinnable-header.vector-main-menu.unpin'
+ * );
+ *
+ * // ClickThroughRateInstrument also accepts an optional Instrument parameter:
+ *
+ * const thisInstrument = instrument || mw.eventLog.newInstrument( STREAM_NAME, SCHEMA_ID );
+ *
+ * const result = ClickThroughRateInstrument.start(
+ *     '[data-pinnable-element-id="vector-main-menu"] .vector-pinnable-header-unpin-button',
+ *     'pinnable-header.vector-main-menu.unpin',
+ *     thisInstrument
  * );
  *
  * // If you want to stop the instrument for any reason:
@@ -142,15 +142,18 @@ const ClickThroughRateInstrument = {
 	/**
 	 * @param {string} selector
 	 * @param {string} friendlyName
+	 * @param {Instrument} [instrument]
 	 * @return {StateEntry|null}
 	 */
-	start( selector, friendlyName ) {
+	start( selector, friendlyName, instrument ) {
 		const e = document.querySelector( selector );
 
 		if ( !e ) {
 			mw.log.warn( 'ClickThroughRateInstrument: selector does not exist - ' + selector );
 			return null;
 		}
+
+		const i = instrument || mw.eventLog.newInstrument( STREAM_NAME, SCHEMA_ID );
 
 		let result;
 
@@ -161,8 +164,8 @@ const ClickThroughRateInstrument = {
 				selector,
 				friendlyName,
 				element: e,
-				elementClickCount: 0,
-				funnelEntryToken: mw.user.generateRandomSessionId()
+				funnelEntryToken: mw.user.generateRandomSessionId(),
+				instrument: i
 			};
 
 			state.set( e, result );
