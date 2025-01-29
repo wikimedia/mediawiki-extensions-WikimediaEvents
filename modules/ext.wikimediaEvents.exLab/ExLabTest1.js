@@ -3,6 +3,8 @@ const selector = '[data-pinnable-element-id="vector-main-menu"] .vector-pinnable
 const friendlyName = 'pinnable-header.vector-main-menu.unpin';
 const experimentName = 'experimentation-lab-test-1-experiment';
 const featureName = 'experimentation_lab_test_1_feature';
+const STREAM_NAME = 'product_metrics.web_base';
+const SCHEMA_ID = '/analytics/product_metrics/web/base/1.3.0';
 
 /**
  * Experimentation Lab's first test module
@@ -21,7 +23,9 @@ const ExLabTest1 = {
 		const ClickThroughRateInstrument = require( './ClickThroughRateInstrument.js' );
 
 		if ( userExperiments.assigned[ featureName ] === 'true' ) {
-			ClickThroughRateInstrument.start( selector, friendlyName );
+			const instrument = mw.eventLog.newInstrument( STREAM_NAME, SCHEMA_ID );
+			instrument.setInstrumentName( experimentName );
+			ClickThroughRateInstrument.start( selector, friendlyName, instrument );
 		}
 	}
 };
