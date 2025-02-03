@@ -657,7 +657,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		$logPosition = $this->getEventLogPosition();
 		try {
 			foreach ( $actions as $action ) {
-				call_user_func( $action, $this->webDriver );
+				$action( $this->webDriver );
 			}
 		} catch ( \Exception $e ) {
 			// This delay is necessary to ensure all events have been collected
