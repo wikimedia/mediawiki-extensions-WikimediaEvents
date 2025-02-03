@@ -76,9 +76,8 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 				break;
 			default:
 				$url = '';
-				$capClass = 'Facebook\WebDriver\Remote\DesiredCapabilities';
-				if ( $browser && method_exists( $capClass, $browser ) ) {
-					$cap = call_user_func( [ $capClass, $browser ] );
+				if ( $browser && method_exists( DesiredCapabilities::class, $browser ) ) {
+					$cap = DesiredCapabilities::$browser();
 				} else {
 					throw new \RuntimeException(
 						'SELENIUM_BROWSER environment var must be set to a known browser' );
@@ -113,9 +112,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 		}
 
 		static $initializedSuggester = null;
-		if ( $initializedSuggester === null ) {
-			$initializedSuggester = (bool)getenv( 'SKIP_SUGGESTER_INIT' );
-		}
+		$initializedSuggester ??= (bool)getenv( 'SKIP_SUGGESTER_INIT' );
 		if ( !$initializedSuggester ) {
 			// The autocomplete tests expect nothing more than 'Main Page' to exist, so
 			// no other setup is necessary.
@@ -1067,9 +1064,7 @@ class SearchSatisfactionTest extends PHPUnit\Framework\TestCase {
 	 */
 	protected static function byExtendedCss( $selector ) {
 		static $conv;
-		if ( $conv === null ) {
-			$conv = new CssSelectorConverter();
-		}
+		$conv ??= new CssSelectorConverter();
 		return WebDriverBy::xpath( $conv->toXPath( $selector ) );
 	}
 
