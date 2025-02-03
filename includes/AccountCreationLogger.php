@@ -4,8 +4,11 @@ namespace WikimediaEvents;
 
 use MediaWiki\Auth\AuthenticationResponse;
 use MediaWiki\Context\RequestContext;
+use MediaWiki\Extension\CentralAuth\SharedDomainUtils;
 use MediaWiki\Extension\EventLogging\EventLogging;
+use MediaWiki\MediaWikiServices;
 use MediaWiki\Page\PageReference;
+use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\SpecialPage\SpecialPageFactory;
 use MediaWiki\User\UserIdentity;
 use MediaWiki\User\UserIdentityUtils;
@@ -13,7 +16,7 @@ use MediaWiki\WikiMap\WikiMap;
 
 class AccountCreationLogger {
 
-	private const SCHEMA_VERSIONED = '/analytics/mediawiki/accountcreation/account_conversion/1.0.0';
+	private const SCHEMA_VERSIONED = '/analytics/mediawiki/accountcreation/account_conversion/1.1.0';
 	private const STREAM_REGISTER = 'mediawiki.accountcreation.account_conversion';
 	private const STREAM_LOGIN = 'mediawiki.accountcreation.login';
 	private SpecialPageFactory $specialPageFactory;
@@ -68,7 +71,19 @@ class AccountCreationLogger {
 	 * @param UserIdentity $user The user associated with the event.
 	 */
 	private function doLogEvent(
-		string $stream, string $eventType, UserIdentity $user, array $additionalData ): void {
+		string $stream,
+		string $eventType,
+		UserIdentity $user,
+		array $additionalData
+	): void {
+		$sul3Enabled = false;
+		if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
+			/** @var SharedDomainUtils $sharedDomainUtils */
+			$sharedDomainUtils = MediaWikiServices::getInstance()
+				->getService( 'CentralAuth.SharedDomainUtils' );
+			$sul3Enabled = $sharedDomainUtils->isSul3Enabled( RequestContext::getMain()->getRequest() );
+		}
+
 		$eventData = [
 			'$schema' => self::SCHEMA_VERSIONED,
 			'event_type' => $eventType,
@@ -77,7 +92,8 @@ class AccountCreationLogger {
 				'user_text' => $user->getName(),
 				'is_temp' => $this->userIdentityUtils->isTemp( $user )
 			],
-			'source_wiki' => WikiMap::getCurrentWikiId()
+			'source_wiki' => WikiMap::getCurrentWikiId(),
+			'sul3_enabled' => $sul3Enabled,
 		];
 		$eventData = array_merge( $eventData, $additionalData );
 		$this->submitEvent( $stream, $eventData );
