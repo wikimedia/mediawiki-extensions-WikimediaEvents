@@ -75,7 +75,7 @@ QUnit.test( 'processErrorInstance', ( assert ) => {
 
 	let uri = null;
 	try {
-		uri = new mw.Uri( actualFileUrl, { strictMode: true } );
+		uri = new URL( actualFileUrl );
 	} catch ( e ) {}
 	assert.notStrictEqual( uri, null, 'The processed URL can be parsed.' );
 } );
