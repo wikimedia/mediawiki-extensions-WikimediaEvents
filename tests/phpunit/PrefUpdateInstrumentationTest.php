@@ -2,10 +2,14 @@
 
 namespace WikimediaEvents\Tests;
 
+use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\MainConfigNames;
+use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\User;
 use MediaWiki\User\UserEditTracker;
+use RequestContext;
 use Wikimedia\TestingAccessWrapper;
+use Wikimedia\Timestamp\ConvertibleTimestamp;
 use WikimediaEvents\PrefUpdateInstrumentation;
 
 /**
@@ -19,6 +23,83 @@ class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 	public function setUp(): void {
 		parent::setUp();
 		$this->overrideConfigValue( MainConfigNames::DefaultSkin, 'fallback' );
+	}
+
+	public function testPreferencesReset(): void {
+		// Use a deterministic set of preferences for this test.
+		$this->overrideConfigValue(
+			MainConfigNames::DefaultUserOptions,
+			[ 'editrecovery' => null ]
+		);
+		$this->clearHook( 'UserGetDefaultOptions' );
+
+		$mockTime = '20250101000000';
+		ConvertibleTimestamp::setFakeTime( $mockTime );
+
+		// Simulate being on Special:Preferences so that the instrumentation handler
+		// considers this a user-triggered event.
+		RequestContext::getMain()->setTitle(
+			SpecialPage::getTitleFor( 'Preferences' )
+		);
+
+		$eventSubmitter = $this->createMock( EventSubmitter::class );
+		$this->setService(
+			'EventLogging.EventSubmitter',
+			$eventSubmitter
+		);
+
+		$events = [];
+
+		$eventSubmitter->expects( $this->exactly( 2 ) )
+			->method( 'submit' )
+			->willReturnCallback( function ( string $streamName, array $event ) use ( &$events ) {
+				$this->assertSame( 'eventlogging_PrefUpdate', $streamName );
+				$events[] = $event;
+			} );
+
+		$userOptionsManager = $this->getServiceContainer()->getUserOptionsManager();
+
+		$user = $this->getTestUser()->getUser();
+		$userOptionsManager->setOption( $user, 'editrecovery', '1' );
+		$user->saveSettings();
+
+		$this->getServiceContainer()
+			->getUserOptionsManager()
+			->resetAllOptions( $user );
+
+		$user->saveSettings();
+
+		$this->assertSame(
+			[
+				// initial preference value
+				[
+					'$schema' => '/analytics/legacy/prefupdate/1.0.0',
+					'event' => [
+						'version' => '2',
+						'userId' => $user->getId(),
+						'saveTimestamp' => $mockTime,
+						'property' => 'editrecovery',
+						'value' => '"1"',
+						'isDefault' => false,
+						'bucketedUserEditCount' => '0 edits',
+					]
+				],
+				// triggered by reset
+				[
+					'$schema' => '/analytics/legacy/prefupdate/1.0.0',
+					'event' => [
+						'version' => '2',
+						'userId' => $user->getId(),
+						'saveTimestamp' => $mockTime,
+						'property' => 'editrecovery',
+						'value' => 'null',
+						'isDefault' => true,
+						'bucketedUserEditCount' => '0 edits',
+					]
+				]
+			],
+			$events
+		);
 	}
 
 	public static function providePrefUpdate() {
