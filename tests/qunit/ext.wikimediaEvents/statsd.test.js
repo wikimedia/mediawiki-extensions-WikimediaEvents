@@ -109,6 +109,26 @@ QUnit.module( 'ext.wikimediaEvents/statsd', ( hooks ) => {
 		assert.strictEqual( stub.callCount, 0, 'beacons' );
 	} );
 
+	QUnit.test.each( 'stats [invalid timing value]', [ null, -1, -0.314, 'bla' ], function ( assert, count ) {
+		mw.track( 'stats.mediawiki_foo_bar_seconds', count );
+		this.sandbox.clock.tick( 1 );
+
+		assert.verifySteps( [
+			'Invalid timing value for mediawiki_foo_bar_seconds'
+		] );
+		assert.strictEqual( stub.callCount, 0, 'beacons' );
+	} );
+
+	QUnit.test( 'stats [missing timing value]', function ( assert ) {
+		mw.track( 'stats.mediawiki_foo_bar_seconds' );
+		this.sandbox.clock.tick( 1 );
+
+		assert.verifySteps( [
+			'Invalid timing value for mediawiki_foo_bar_seconds'
+		] );
+		assert.strictEqual( stub.callCount, 0, 'beacons' );
+	} );
+
 	QUnit.test( 'stats [invalid label key]', function ( assert ) {
 		mw.track( 'stats.mediawiki_foo_bar_total', 5, { 'Main Page': 'title' } );
 		this.sandbox.clock.tick( 1 );
@@ -144,6 +164,21 @@ QUnit.module( 'ext.wikimediaEvents/statsd', ( hooks ) => {
 		assert.strictEqual( stub.callCount, 1, 'beacons' );
 		assert.propEqual( stub.getCall( 0 ).args, [
 			'/beacon/stats?mediawiki_foo_bar_total:5|c%7C%23kind:main,ding:dong'
+		], 'beacon' );
+	} );
+
+	QUnit.test.each( 'stats [timing]', {
+		'round timing': [ 4.20, 4 ],
+		'round to zero': [ 0.314, 0 ],
+		'pre-rounded to zero': [ 0, 0 ]
+	}, function ( assert, [ value, expected ] ) {
+		mw.track( 'stats.mediawiki_foo_bar_seconds', value, { kind: 'main', ding: 'dong' } );
+		this.sandbox.clock.tick( 1 );
+
+		assert.verifySteps( [], 'errors' );
+		assert.strictEqual( stub.callCount, 1, 'beacons' );
+		assert.propEqual( stub.getCall( 0 ).args, [
+			`/beacon/stats?mediawiki_foo_bar_seconds:${ expected }|ms%7C%23kind:main,ding:dong`
 		], 'beacon' );
 	} );
 

@@ -1,40 +1,65 @@
 /*!
  * mw.track subscribers for StatsD counters and timers.
  *
- * ## Stats
+ * ## Prometheus
  *
- * These are logged in the DogStatsD format, which is optimized for use
- * with Prometheus via statsv.py and prometheus/statsd_exporter.
+ * Example counter:
  *
  * ```js
- * mw.track( 'stats.mediawiki_foo_total', 42, { key1: 'quux' } );
- * // logged as mediawiki_foo_total:42|c|#key1:quux
- *
  * // The default increment is 1. These two are equivalent.
  * mw.track( 'stats.mediawiki_bar_total' );
  * mw.track( 'stats.mediawiki_bar_total', 1 );
+ *
+ * // Increment by 42 with labels
+ * mw.track( 'stats.mediawiki_foo_total', 42, { key1: 'quux' } );
  * ```
  *
- * ## Legacy statsd
+ * Example timer:
  *
- * These do not support labels. Instead, labels are stored as unnamed
+ * The value must be in milliseconds and is automatically rounded to the nearest
+ * whole number. In the backend, each sample is stored by incrementing the matching
+ * histogram bucket in Prometheus (webperf::processors::histogram_buckets).
+ *
+ * ```js
+ * // Observe duration of 1235ms
+ * mw.track( 'stats.mediawiki_bar_seconds', 1234.56 );
+ * ```
+ *
+ * ## Graphite
+ *
+ * These do not support named labels. Instead, labels are stored as unnamed
  * dot-separated portions inside the stat names. These are intended for
  * use with StatsD and Graphite.
  *
- * $wgWMEStatsdBaseUri must point to a URL that accepts query strings,
- * such as `?foo=1235ms&bar=5c&baz=42g`.
+ * Example counter:
  *
  * ```js
- * mw.track( 'counter.MediaWiki.foo.quux', 5 );
- * // logged as MediaWiki.foo.quux=5c
- *
+ * // The default increment is 1. These two are equivalent.
  * mw.track( 'counter.MediaWiki.bar' );
- * // Shorthand, equivalent to mw.track( 'counter.MediaWiki.bar', 1 )
+ * mw.track( 'counter.MediaWiki.bar', 1 );
  *
- * mw.track( 'timing.MediaWiki.baz', 1234.56 );
- * // logged as MediaWiki.bar=1235ms
- * // The time is assumed to be in milliseconds and is rounded to the nearest integer.
+ * // Increment by 5
+ * mw.track( 'counter.MediaWiki.foo.quux', 5 );
  * ```
+ *
+ * Example timer:
+ *
+ * ```js
+ * // Observe duration of 1235ms
+ * mw.track( 'timing.MediaWiki.baz', 1234.56 );
+ * ```
+ *
+ * ## System administration
+ *
+ * The `stats` topic is enabled via the $wgWMEStatsBeaconUri variable,
+ * which must point to a URL that accepts a query string in the
+ * DogStatsD format. This format is optimized for use with Prometheus,
+ * via the wikimedia/statsv and prometheus/statsd_exporter services.
+ *
+ * The `counter` and `timing` topics are enabled via the $wgWMEStatsdBaseUri
+ * variable, which must point to a URL that accepts query strings in the
+ * plain StatsD format, like `?MediaWiki.foo=1235ms`. This format is designed
+ * for use with Graphite, via the wikimedia/statsv and statsd services.
  */
 const config = require( './config.json' );
 const BATCH_SIZE = 5000;
@@ -151,6 +176,11 @@ mw.trackSubscribe( 'stats.', ( topic, value, labels = {} ) => {
 			return error( new TypeError( `Invalid counter value for ${ name }` ) );
 		}
 		line = formatDogstatsd( name, value + '|c', labels );
+	} else if ( /^mediawiki_[A-Za-z0-9_]+_seconds/.test( name ) ) {
+		if ( isNaN( value ) || typeof value !== 'number' || value < 0 ) {
+			return error( new TypeError( `Invalid timing value for ${ name }` ) );
+		}
+		line = formatDogstatsd( name, Math.round( value ) + '|ms', labels );
 	} else {
 		return error( new TypeError( `Invalid stat name ${ name }` ) );
 	}
