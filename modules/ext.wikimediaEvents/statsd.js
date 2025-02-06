@@ -101,7 +101,7 @@ function error( err ) {
 	mw.errorLogger.logError( err );
 }
 
-function formatDogstatsd( name, count = 1, labels = {} ) {
+function formatDogstatsd( name, value, labels = {} ) {
 	// Example of produced output:
 	//
 	//   mediawiki_example_thing_total:42|c|#key1:value1,key2:value2
@@ -110,13 +110,6 @@ function formatDogstatsd( name, count = 1, labels = {} ) {
 	// * Other producer: Wikimedia\Stats\Formatters\DogStatsdFormatter in MediaWiki core
 	// * Consumer: https://github.com/prometheus/statsd_exporter/blob/v0.28.0/pkg/mapper/escape.go#L21
 	// * Spec: https://docs.datadoghq.com/developers/dogstatsd/datagram_shell?tab=metrics
-
-	if ( !/^mediawiki_[A-Za-z0-9_]+_total$/.test( name ) ) {
-		return error( new TypeError( `Invalid stat name ${ name }` ) );
-	}
-	if ( isNaN( count ) || Math.round( count ) !== count || count < 1 ) {
-		return error( new TypeError( `Invalid stat count for ${ name }` ) );
-	}
 	const rLegal = /^[A-Za-z0-9_]+$/;
 	let labelStr = '';
 	for ( const labelKey in labels ) {
@@ -139,16 +132,28 @@ function formatDogstatsd( name, count = 1, labels = {} ) {
 		// This substitution is similar to statsd_exporter's normalization, but stricter,
 		// to strongly discourage high-cardinality labels.
 		if ( !rLegal.test( val ) ) {
-			mw.log.warn( `Invalid stat label value for ${ name } ${ labelKey } "${ val }"` );
+			mw.log.warn( `Invalid label value for ${ name } ${ labelKey } "${ val }"` );
 			val = '_invalid_value';
 		}
 		labelStr += `${ !labelStr ? encodeURIComponent( '|#' ) : ',' }${ labelKey }:${ val }`;
 	}
-	return `${ name }:${ count }|c${ labelStr }`;
+	return `${ name }:${ value }${ labelStr }`;
 }
 
-mw.trackSubscribe( 'stats.', ( topic, count = 1, labels = {} ) => {
-	const line = formatDogstatsd( topic.slice( 'stats.'.length ), count, labels );
+mw.trackSubscribe( 'stats.', ( topic, value, labels = {} ) => {
+	const name = topic.slice( 'stats.'.length );
+	let line;
+	if ( /^mediawiki_[A-Za-z0-9_]+_total$/.test( name ) ) {
+		if ( value === undefined ) {
+			value = 1;
+		}
+		if ( isNaN( value ) || Math.round( value ) !== value || value < 1 ) {
+			return error( new TypeError( `Invalid counter value for ${ name }` ) );
+		}
+		line = formatDogstatsd( name, value + '|c', labels );
+	} else {
+		return error( new TypeError( `Invalid stat name ${ name }` ) );
+	}
 	if ( line ) {
 		statsAdd( line );
 	}

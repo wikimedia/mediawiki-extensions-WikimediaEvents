@@ -5,7 +5,7 @@ QUnit.module( 'ext.wikimediaEvents/statsd', ( hooks ) => {
 	const config = require( 'ext.wikimediaEvents/config.json' );
 	let original;
 	let stub;
-	hooks.beforeEach( function () {
+	hooks.beforeEach( function ( assert ) {
 		original = Object.assign( {}, config );
 		config.WMEStatsdBaseUri = '/beacon/statsv';
 		config.WMEStatsBeaconUri = '/beacon/stats';
@@ -13,6 +13,14 @@ QUnit.module( 'ext.wikimediaEvents/statsd', ( hooks ) => {
 		this.sandbox.useFakeTimers();
 		this.sandbox.stub( mw.eventLog, 'enqueue', ( fn ) => {
 			setTimeout( fn, 1 );
+		} );
+
+		this.sandbox.stub( mw.errorLogger, 'logError' );
+		this.sandbox.stub( mw.log, 'error', ( err ) => {
+			assert.step( err.message );
+		} );
+		this.sandbox.stub( mw.log, 'warn', ( message ) => {
+			assert.step( 'warn: ' + message );
 		} );
 
 		stub = this.sandbox.stub( navigator, 'sendBeacon' );
@@ -81,10 +89,6 @@ QUnit.module( 'ext.wikimediaEvents/statsd', ( hooks ) => {
 	} );
 
 	QUnit.test( 'stats [invalid name]', function ( assert ) {
-		this.sandbox.stub( mw.errorLogger, 'logError' );
-		this.sandbox.stub( mw.log, 'error', ( err ) => {
-			assert.step( err.message );
-		} );
 
 		mw.track( 'stats.foo_bar', 5 );
 		this.sandbox.clock.tick( 1 );
@@ -95,27 +99,17 @@ QUnit.module( 'ext.wikimediaEvents/statsd', ( hooks ) => {
 		assert.strictEqual( stub.callCount, 0, 'beacons' );
 	} );
 
-	QUnit.test.each( 'stats [invalid counter]', [ null, 3.14, 0, -1 ], function ( assert, count ) {
-		this.sandbox.stub( mw.errorLogger, 'logError' );
-		this.sandbox.stub( mw.log, 'error', ( err ) => {
-			assert.step( err.message );
-		} );
-
+	QUnit.test.each( 'stats [invalid counter value]', [ null, 3.14, 0, -1 ], function ( assert, count ) {
 		mw.track( 'stats.mediawiki_foo_bar_total', count );
 		this.sandbox.clock.tick( 1 );
 
 		assert.verifySteps( [
-			'Invalid stat count for mediawiki_foo_bar_total'
+			'Invalid counter value for mediawiki_foo_bar_total'
 		] );
 		assert.strictEqual( stub.callCount, 0, 'beacons' );
 	} );
 
 	QUnit.test( 'stats [invalid label key]', function ( assert ) {
-		this.sandbox.stub( mw.errorLogger, 'logError' );
-		this.sandbox.stub( mw.log, 'error', ( err ) => {
-			assert.step( err.message );
-		} );
-
 		mw.track( 'stats.mediawiki_foo_bar_total', 5, { 'Main Page': 'title' } );
 		this.sandbox.clock.tick( 1 );
 
@@ -130,19 +124,11 @@ QUnit.module( 'ext.wikimediaEvents/statsd', ( hooks ) => {
 		colon: ':',
 		empty: ''
 	}, function ( assert, invalidValue ) {
-		this.sandbox.stub( mw.errorLogger, 'logError' );
-		this.sandbox.stub( mw.log, 'error', ( err ) => {
-			assert.step( 'error: ' + err.message );
-		} );
-		this.sandbox.stub( mw.log, 'warn', ( message ) => {
-			assert.step( 'warn: ' + message );
-		} );
-
 		mw.track( 'stats.mediawiki_foo_bar_total', 5, { title: invalidValue } );
 		this.sandbox.clock.tick( 1 );
 
 		assert.verifySteps( [
-			`warn: Invalid stat label value for mediawiki_foo_bar_total title "${ invalidValue }"`
+			`warn: Invalid label value for mediawiki_foo_bar_total title "${ invalidValue }"`
 		] );
 		assert.strictEqual( stub.callCount, 1, 'beacons' );
 		assert.propEqual( stub.getCall( 0 ).args, [
@@ -150,12 +136,7 @@ QUnit.module( 'ext.wikimediaEvents/statsd', ( hooks ) => {
 		], 'beacon' );
 	} );
 
-	QUnit.test( 'stats [count]', function ( assert ) {
-		this.sandbox.stub( mw.errorLogger, 'logError' );
-		this.sandbox.stub( mw.log, 'error', ( err ) => {
-			assert.step( err.message );
-		} );
-
+	QUnit.test( 'stats [counter]', function ( assert ) {
 		mw.track( 'stats.mediawiki_foo_bar_total', 5, { kind: 'main', ding: 'dong' } );
 		this.sandbox.clock.tick( 1 );
 
@@ -166,12 +147,7 @@ QUnit.module( 'ext.wikimediaEvents/statsd', ( hooks ) => {
 		], 'beacon' );
 	} );
 
-	QUnit.test( 'stats [multiple counts]', function ( assert ) {
-		this.sandbox.stub( mw.errorLogger, 'logError' );
-		this.sandbox.stub( mw.log, 'error', ( err ) => {
-			assert.step( err.message );
-		} );
-
+	QUnit.test( 'stats [multiple counters]', function ( assert ) {
 		mw.track( 'stats.mediawiki_bar_total' );
 		mw.track( 'stats.mediawiki_foo_bar_total', 5, { kind: 'main', ding: 'dong' } );
 		mw.track( 'stats.mediawiki_example_thing_total', 42, { a: 'A', b: 'B' } );
@@ -187,11 +163,6 @@ QUnit.module( 'ext.wikimediaEvents/statsd', ( hooks ) => {
 	} );
 
 	QUnit.test( 'stats [batching]', function ( assert ) {
-		this.sandbox.stub( mw.errorLogger, 'logError' );
-		this.sandbox.stub( mw.log, 'error', ( err ) => {
-			assert.step( err.message );
-		} );
-
 		const LONG = 'x'.repeat( 3000 );
 		mw.track( 'stats.mediawiki_bar_total' );
 		mw.track( 'stats.mediawiki_foo_bar_total', 5, { kind: 'main', ding: LONG } );
