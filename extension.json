@@ -187,15 +187,16 @@
 				"clickTracking/utils.js",
 				"searchRecommendations/webABTestInteractions.js",
 				"searchRecommendations/index.js",
+				"searchSatisfaction/index.js",
 				{
-					"name": "searchSatisfaction.js",
+					"name": "searchSatisfaction/searchSatisfaction.js",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
-					"callbackParam": "searchSatisfaction"
+					"callbackParam": "searchSatisfaction/searchSatisfaction"
 				},
 				{
-					"name": "searchSli.js",
+					"name": "searchSatisfaction/searchSli.js",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
-					"callbackParam": "searchSli"
+					"callbackParam": "searchSatisfaction/searchSli"
 				},
 				{
 					"name": "clickTracking/webUIClick.js",
@@ -236,7 +237,6 @@
 				"ext.eventLogging",
 				"mediawiki.user",
 				"mediawiki.cookie",
-				"mediawiki.Uri",
 				"mediawiki.experiments",
 				"mediawiki.storage",
 				"mediawiki.visibleTimeout"
@@ -304,6 +304,8 @@
 			"clientError.test.js",
 			"statsd.test.js",
 			"sessionLength/mixin.test.js",
+			"searchSatisfaction/searchSatisfaction.test.js",
+			"searchSatisfaction/searchSli.test.js",
 			"searchRecommendations/index.test.js",
 			"searchRecommendations/webABTestInteractions.test.js"
 		],

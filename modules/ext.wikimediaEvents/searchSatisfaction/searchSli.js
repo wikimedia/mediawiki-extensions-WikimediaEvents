@@ -31,7 +31,10 @@ function trackAutocomplete( _topic, data ) {
 		mw.track( 'timing.Search.AutocompleteResults', took );
 	}
 }
-// Old style jquery.suggestions module, and modern Vector Vue app
-mw.trackSubscribe( 'mediawiki.searchSuggest', trackAutocomplete );
-// Old style OOUI suggestions widget
-mw.trackSubscribe( 'mw.widgets.SearchInputWidget', trackAutocomplete );
+
+module.exports = () => {
+	// Old style jquery.suggestions module, and modern Vector Vue app
+	mw.trackSubscribe( 'mediawiki.searchSuggest', trackAutocomplete );
+	// Old style OOUI suggestions widget
+	mw.trackSubscribe( 'mw.widgets.SearchInputWidget', trackAutocomplete );
+};
