@@ -2,21 +2,27 @@
 const { logInteraction } = require( './webABTestInteractions.js' );
 const SessionLengthInstrumentMixin = require( '../sessionLength/mixin.js' );
 
+let searchActivityId;
 let firstQuery = false;
-function resetSearchSession() {
+function resetSearchActivity() {
+	searchActivityId = randomToken();
 	firstQuery = false;
+}
+
+/**
+ * Generate a unique token. Appends timestamp in base 36 to increase
+ * uniqueness of the token.
+ *
+ * @return {string}
+ */
+function randomToken() {
+	return mw.user.generateRandomSessionId() + Date.now().toString( 36 );
 }
 
 function setupInstrumentation( { group, experimentName } ) {
 	// This name must be synced with RelatedArticles extension.json
 	// We use indexOf as on beta cluster we suffix with beta cluster.
 	if ( experimentName.indexOf( 'RelatedArticles test' ) > -1 ) {
-		// This should be defined by ext.relatedArticles.readMore.bootstrap/index.js
-		// If it doesn't exist, RelatedArticles for some reason didn't store a token so fall back
-		// to sessionId.
-		// @todo: Clarify with Jennifer and Bernard whether this should be replaced by T383936
-		const funnelEntryToken = mw.storage.get( 'relatedArticles.token' ) || mw.user.sessionId();
-
 		/**
 		 * Expands data with shared data.
 		 *
@@ -25,7 +31,7 @@ function setupInstrumentation( { group, experimentName } ) {
 		 */
 		const makeInstrumentationData = ( data ) => Object.assign( {
 			funnel_name: 'Search related articles',
-			funnel_entry_token: funnelEntryToken,
+			funnel_entry_token: searchActivityId,
 			experiments: {
 				enrolled: [ experimentName ],
 				assigned: {
@@ -55,7 +61,7 @@ function setupInstrumentation( { group, experimentName } ) {
 		// The users clicked the empty search box
 		// The search overlay was opened.
 		mw.hook( 'ext.MobileFrontend.searchOverlay.open' ).add( () => {
-			resetSearchSession();
+			resetSearchActivity();
 			logInteraction(
 				'click',
 				makeInstrumentationData( {
