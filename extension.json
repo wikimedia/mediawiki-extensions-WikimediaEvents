@@ -118,7 +118,7 @@
 		"ResourceLoaderRegisterModules": "main",
 		"MakeGlobalVariablesScript": "main",
 		"PageDeleteComplete": "TemporaryAccountsInstrumentation",
-		"PermissionErrorAudit": "BlockMetricsHooks",
+		"PermissionStatusAudit": "BlockMetricsHooks",
 		"EditPage::showReadOnlyForm:initial": "EditPageHooks",
 		"AuthManagerLoginAuthenticateAudit": "main"
 	},

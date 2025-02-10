@@ -10,17 +10,18 @@ use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\Linker\LinkTarget;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
-use MediaWiki\Message\Message;
-use MediaWiki\Permissions\Hook\PermissionErrorAuditHook;
+use MediaWiki\Permissions\Hook\PermissionStatusAuditHook;
 use MediaWiki\Permissions\PermissionManager;
+use MediaWiki\Permissions\PermissionStatus;
 use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserIdentity;
+use Wikimedia\Message\MessageSpecifier;
 
 /**
  * Hooks related to T303995.
  */
-class BlockMetricsHooks implements PermissionErrorAuditHook {
+class BlockMetricsHooks implements PermissionStatusAuditHook {
 
 	public const SCHEMA = '/analytics/mediawiki/accountcreation/block/4.1.0';
 
@@ -43,12 +44,12 @@ class BlockMetricsHooks implements PermissionErrorAuditHook {
 	}
 
 	/** @inheritDoc */
-	public function onPermissionErrorAudit(
+	public function onPermissionStatusAudit(
 		LinkTarget $title,
 		UserIdentity $user,
 		string $action,
 		string $rigor,
-		array $errors
+		PermissionStatus $status
 	): void {
 		// Ignore RIGOR_QUICK checks for performance; those won't check blocks anyway.
 		if ( $action !== 'createaccount' || $rigor === PermissionManager::RIGOR_QUICK ) {
@@ -77,8 +78,7 @@ class BlockMetricsHooks implements PermissionErrorAuditHook {
 		$isApi = defined( 'MW_API' ) || defined( 'MW_REST_API' );
 
 		$blockedErrorMsgs = $globalBlockedErrorMsgs = [];
-		foreach ( $errors as $error ) {
-			$errorMsg = Message::newFromSpecifier( $error );
+		foreach ( $status->getMessages() as $errorMsg ) {
 			$errorKey = $errorMsg->getKey();
 			if ( in_array( $errorKey, $blockedErrorKeys, true ) ) {
 				$blockedErrorMsgs[] = $errorMsg;
@@ -104,10 +104,6 @@ class BlockMetricsHooks implements PermissionErrorAuditHook {
 		}
 
 		if ( $block ) {
-			$context = RequestContext::getMain();
-			foreach ( $allErrorMsgs as $msg ) {
-				$msg->setContext( $context )->useDatabase( false )->inLanguage( 'en' );
-			}
 			$rawExpiry = $block->getExpiry();
 			if ( wfIsInfinity( $rawExpiry ) ) {
 				$expiry = 'infinity';
@@ -130,11 +126,11 @@ class BlockMetricsHooks implements PermissionErrorAuditHook {
 				'block_type' => Block::BLOCK_TYPES[ $block->getType() ] ?? 'other',
 				'block_expiry' => $expiry,
 				'block_scope' => $blockedErrorMsgs ? 'local' : 'global',
-				'error_message_keys' => array_map( static function ( Message $msg ) {
+				'error_message_keys' => array_map( static function ( MessageSpecifier $msg ) {
 					return $msg->getKey();
 				}, $allErrorMsgs ),
-				'error_messages' => array_map( static function ( Message $msg ) {
-					return $msg->plain();
+				'error_messages' => array_map( static function ( MessageSpecifier $msg ) {
+					return wfMessage( $msg )->useDatabase( false )->inLanguage( 'en' )->plain();
 				}, $allErrorMsgs ),
 				'user_ip' => $user->getRequest()->getIP(),
 				'is_api' => $isApi,
@@ -144,7 +140,7 @@ class BlockMetricsHooks implements PermissionErrorAuditHook {
 			$this->submitEvent( 'mediawiki.accountcreation_block', $event );
 		} else {
 			LoggerFactory::getInstance( 'WikimediaEvents' )->warning( 'Could not find block', [
-				'errorKeys' => implode( ',', array_map( static function ( Message $msg ) {
+				'errorKeys' => implode( ',', array_map( static function ( MessageSpecifier $msg ) {
 					return $msg->getKey();
 				}, $allErrorMsgs ) ),
 			] );
