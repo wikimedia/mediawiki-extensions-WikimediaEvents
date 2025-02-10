@@ -18,6 +18,7 @@ use MediaWiki\User\UserGroupManager;
 use MediaWiki\User\UserIdentity;
 use MediaWiki\WikiMap\WikiMap;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Wikimedia\IPUtils;
 use Wikimedia\LightweightObjectStore\ExpirationAwareness;
 use Wikimedia\ObjectCache\WANObjectCache;
@@ -153,7 +154,9 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 					// If not a 404, log it, so we can figure out what happened.
 					if ( $request->getStatus() !== 404 ) {
 						$statusFormatter = $this->formatterFactory->getStatusFormatter( RequestContext::getMain() );
-						$this->logger->error( ...$statusFormatter->getPsr3MessageAndContext( $response ) );
+						$this->logger->error( ...$statusFormatter->getPsr3MessageAndContext( $response, [
+							'exception' => new RuntimeException(),
+						] ) );
 					}
 					return null;
 				}
