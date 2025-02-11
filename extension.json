@@ -176,7 +176,6 @@
 				"clientError.js",
 				"sessionTick.js",
 				"sessionLength/mixin.js",
-				"webABTestEnrollment.js",
 				"webCommon.js",
 				"webAccessibilitySettings.js",
 				"webUIScroll.js",

@@ -71,15 +71,15 @@ function sessionTick( incr ) {
 	const count = ( Number( mw.storage.get( KEY_COUNT ) ) || 0 );
 	mw.storage.set( KEY_COUNT, count + incr );
 
-	state.forEach( ( schemaID, streamName ) => {
+	state.forEach( ( { schemaID, data }, streamName ) => {
 		mw.eventLog.submitInteraction(
 			streamName,
 			schemaID,
 			'tick',
-			{
+			Object.assign( {
 				action_source: 'SessionLengthInstrumentMixin',
 				action_context: ( count + incr ).toString()
-			}
+			}, data )
 		);
 	} );
 }
@@ -165,8 +165,8 @@ regulator();
 
 const SessionLengthInstrumentMixin = {
 	state,
-	start( streamName, schemaID ) {
-		state.set( streamName, schemaID );
+	start( streamName, schemaID, data = {} ) {
+		state.set( streamName, { schemaID, data } );
 	},
 	stop( streamName ) {
 		state.delete( streamName );

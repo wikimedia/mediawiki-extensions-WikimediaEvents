@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 const { logInteraction } = require( './webABTestInteractions.js' );
 const SessionLengthInstrumentMixin = require( '../sessionLength/mixin.js' );
 
@@ -23,6 +22,15 @@ function setupInstrumentation( { group, experimentName } ) {
 	// This name must be synced with RelatedArticles extension.json
 	// We use indexOf as on beta cluster we suffix with beta cluster.
 	if ( experimentName.indexOf( 'RelatedArticles test' ) > -1 ) {
+		const experimentData = {
+			experiments: {
+				enrolled: [ experimentName ],
+				assigned: {
+					[ experimentName ]: group
+				}
+			}
+		};
+
 		/**
 		 * Expands data with shared data.
 		 *
@@ -31,32 +39,16 @@ function setupInstrumentation( { group, experimentName } ) {
 		 */
 		const makeInstrumentationData = ( data ) => Object.assign( {
 			funnel_name: 'Search related articles',
-			funnel_entry_token: searchActivityId,
-			experiments: {
-				enrolled: [ experimentName ],
-				assigned: {
-					[ experimentName ]: group
-				}
-			}
-		}, data );
+			funnel_entry_token: searchActivityId
+		}, data, experimentData );
 
-		// Start session length tracking.
-		SessionLengthInstrumentMixin.start( 'product_metrics.web_base.search_ab_test_session_ticks', '/analytics/product_metrics/web/base/1.3.0' );
-
-		// Stop tracking when the session ends.
-		window.addEventListener( 'beforeunload', () => {
-			SessionLengthInstrumentMixin.stop( 'searchRecommendationsStream' );
-		} );
-
-		// Search sessions initiations
-		// e.g. the experiment is running
-		// This event fires for both groups regardless of whether empty search shows or not.
-		logInteraction(
-			'init',
-			makeInstrumentationData( {
-				action_subtype: 'init_search_box'
-			} )
-		);
+		// If the session tick has already started when
+		// the overlay was opened, resume logging session length on pageload.
+		const KEY_COUNT = 'mp-sessionTickTickCount';
+		const existingSessionTick = Number( mw.storage.get( KEY_COUNT ) );
+		if ( existingSessionTick ) {
+			SessionLengthInstrumentMixin.start( 'product_metrics.web_base.search_ab_test_session_ticks', '/analytics/product_metrics/web/base/1.3.0', experimentData );
+		}
 
 		// The users clicked the empty search box
 		// The search overlay was opened.
@@ -68,6 +60,8 @@ function setupInstrumentation( { group, experimentName } ) {
 					action_source: 'search_box'
 				} )
 			);
+
+			SessionLengthInstrumentMixin.start( 'product_metrics.web_base.search_ab_test_session_ticks', '/analytics/product_metrics/web/base/1.3.0', experimentData );
 		} );
 
 		// The list of the empty-state recommendations appears

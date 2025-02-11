@@ -2,7 +2,6 @@ require( './statsd.js' );
 require( './deprecate.js' );
 require( './clientError.js' );
 require( './sessionTick.js' );
-require( './webABTestEnrollment.js' );
 require( './readingDepth.js' );
 require( './phpEngine.js' );
 require( './blockedEdit.js' );

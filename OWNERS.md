@@ -70,14 +70,6 @@ Details at <https://phabricator.wikimedia.org/T332024>.
 
 Details at <https://phabricator.wikimedia.org/T220016>.
 
-## A/B Test initialization for Vector
-
-* Since: October 2021
-* Files: webABTestEnrollment.js
-* Contact: Readers Web
-
-Details at <https://phabricator.wikimedia.org/T292587>.
-
 ## Search recommendations A/B test
 
 * Since: January 2025

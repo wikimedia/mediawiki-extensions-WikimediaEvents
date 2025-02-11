@@ -18,7 +18,6 @@ QUnit.test( 'setupInstrumentation for different A/B test', function ( assert ) {
 } );
 
 QUnit.test( 'setupInstrumentation for our A/B test', function ( assert ) {
-	const stub = this.sandbox.stub( mw.eventLog, 'submitInteraction' );
 	mw.hook = this.sandbox.stub( mw, 'hook' ).returns( {
 		add: this.sandbox.spy(),
 		fire: this.sandbox.spy()
@@ -28,10 +27,6 @@ QUnit.test( 'setupInstrumentation for our A/B test', function ( assert ) {
 		experimentName: 'RelatedArticles test experiment'
 	} );
 
-	assert.true(
-		stub.calledOnce,
-		'calling setupInstrumentation fires the init event'
-	);
 	[
 		'ext.MobileFrontend.searchOverlay.open',
 		'ext.MobileFrontend.searchOverlay.empty',
