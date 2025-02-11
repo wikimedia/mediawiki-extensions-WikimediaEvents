@@ -31,15 +31,14 @@ class EditPageHooks implements EditPage__showReadOnlyForm_initialHook {
 		$user = $out->getUser();
 		$title = $editor->getTitle();
 
-		// $errors = $editor->getEditPermissionErrors( PermissionManager::RIGOR_FULL );
-		$errors = $this->permManager->getPermissionErrors(
+		// $status = $editor->getEditPermissionStatus( PermissionManager::RIGOR_FULL );
+		$status = $this->permManager->getPermissionStatus(
 			'edit',
 			$user,
 			$title,
-			PermissionManager::RIGOR_FULL,
-			[]
+			PermissionManager::RIGOR_FULL
 		);
-		$errorMsgs = BlockUtils::getBlockErrorMsgs( $errors );
+		$errorMsgs = BlockUtils::getBlockErrorMsgs( $status );
 
 		if ( $errorMsgs['all'] ) {
 			BlockUtils::logBlockedEditAttempt( $user, $title, 'wikieditor', 'desktop' );
