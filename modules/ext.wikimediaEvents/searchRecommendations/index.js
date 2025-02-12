@@ -41,7 +41,7 @@ function setupInstrumentation( { group, experimentName } ) {
 		}, data );
 
 		// Start session length tracking.
-		SessionLengthInstrumentMixin.start( 'searchRecommendationsStream', 'searchRecommendationsSchema' );
+		SessionLengthInstrumentMixin.start( 'product_metrics.web_base.search_ab_test_session_ticks', '/analytics/product_metrics/web/base/1.3.0' );
 
 		// Stop tracking when the session ends.
 		window.addEventListener( 'beforeunload', () => {
