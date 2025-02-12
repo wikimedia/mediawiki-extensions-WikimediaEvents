@@ -73,12 +73,12 @@ function sessionTick( incr ) {
 
 	state.forEach( ( schemaID, streamName ) => {
 		mw.eventLog.submitInteraction(
-			schemaID,
 			streamName,
+			schemaID,
 			'tick',
 			{
 				action_source: 'SessionLengthInstrumentMixin',
-				action_context: count + incr
+				action_context: ( count + incr ).toString()
 			}
 		);
 	} );
