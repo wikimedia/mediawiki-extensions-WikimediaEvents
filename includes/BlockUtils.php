@@ -7,9 +7,10 @@ use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
-use MediaWiki\Message\Message;
+use MediaWiki\Permissions\PermissionStatus;
 use MediaWiki\Title\Title;
 use MediaWiki\User\User;
+use Wikimedia\Message\MessageSpecifier;
 
 class BlockUtils {
 	// Possible block error keys from Block\BlockErrorFormatter::getBlockErrorMessageKey()
@@ -40,13 +41,12 @@ class BlockUtils {
 	/**
 	 * Build error messages for error keys
 	 *
-	 * @param array[] $errors from PermissionManager getPermissionErrors
-	 * @return array<string, Message[]>
+	 * @param PermissionStatus $status
+	 * @return array<string, MessageSpecifier[]>
 	 */
-	public static function getBlockErrorMsgs( $errors ) {
+	public static function getBlockErrorMsgs( PermissionStatus $status ) {
 		$blockedErrorMsgs = $globalBlockedErrorMsgs = [];
-		foreach ( $errors as $error ) {
-			$errorMsg = Message::newFromSpecifier( $error );
+		foreach ( $status->getMessages() as $errorMsg ) {
 			$errorKey = $errorMsg->getKey();
 			if ( in_array( $errorKey, self::LOCAL_ERROR_KEYS, true ) ) {
 				$blockedErrorMsgs[] = $errorMsg;
