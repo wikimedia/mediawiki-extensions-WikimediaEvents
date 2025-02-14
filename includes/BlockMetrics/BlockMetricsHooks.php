@@ -2,13 +2,12 @@
 
 namespace WikimediaEvents\BlockMetrics;
 
+use MediaWiki\Api\IApiMessage;
 use MediaWiki\Block\Block;
-use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\CentralAuth\SharedDomainUtils;
 use MediaWiki\Extension\EventBus\EventFactory;
 use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\Linker\LinkTarget;
-use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Permissions\Hook\PermissionStatusAuditHook;
 use MediaWiki\Permissions\PermissionManager;
@@ -55,55 +54,27 @@ class BlockMetricsHooks implements PermissionStatusAuditHook {
 		if ( $action !== 'createaccount' || $rigor === PermissionManager::RIGOR_QUICK ) {
 			return;
 		}
-		// Possible block error keys from Block\BlockErrorFormatter::getBlockErrorMessageKey()
-		$blockedErrorKeys = [
-			'blockedtext',
-			'autoblockedtext',
-			'blockedtext-partial',
-			'systemblockedtext',
-			'blockedtext-composite'
-		];
-		// Possible block error keys from GlobalBlocking extension
-		$globalBlockedErrorKeys = [
-			'globalblocking-blockedtext-ip',
-			'globalblocking-blockedtext-range',
-			'globalblocking-blockedtext-xff',
-			'globalblocking-blockedtext-user',
-			// WikimediaMessages versions
-			'wikimedia-globalblocking-blockedtext-ip',
-			'wikimedia-globalblocking-blockedtext-range',
-			'wikimedia-globalblocking-blockedtext-xff',
-			'wikimedia-globalblocking-blockedtext-user',
-		];
-		$isApi = defined( 'MW_API' ) || defined( 'MW_REST_API' );
-
-		$blockedErrorMsgs = $globalBlockedErrorMsgs = [];
-		foreach ( $status->getMessages() as $errorMsg ) {
-			$errorKey = $errorMsg->getKey();
-			if ( in_array( $errorKey, $blockedErrorKeys, true ) ) {
-				$blockedErrorMsgs[] = $errorMsg;
-			} elseif ( in_array( $errorKey, $globalBlockedErrorKeys, true ) ) {
-				$globalBlockedErrorMsgs[] = $errorMsg;
-			}
-		}
-		$allErrorMsgs = array_merge( $blockedErrorMsgs, $globalBlockedErrorMsgs );
-
-		if ( !$allErrorMsgs ) {
-			return;
-		}
-
-		$user = $this->userFactory->newFromUserIdentity( $user );
-
-		$block = null;
-		// Prefer the local block over the global one if both are set. This is somewhat arbitrary.
-		if ( $blockedErrorMsgs ) {
-			$block = MediaWikiServices::getInstance()->getBlockManager()
-				->getCreateAccountBlock( $user, RequestContext::getMain()->getRequest(), true );
-		} elseif ( $globalBlockedErrorMsgs ) {
-			$block = $user->getGlobalBlock();
-		}
+		$block = $status->getBlock();
 
 		if ( $block ) {
+			$isApi = defined( 'MW_API' ) || defined( 'MW_REST_API' );
+			$user = $this->userFactory->newFromUserIdentity( $user );
+			// Prefer the local block over the global one if both are set (instanceof CompositeBlock).
+			// This is somewhat arbitrary, and may not always be correct for other kinds of multi-blocks.
+			// (Keep in sync with edit attempt block logging in BlockUtils::logBlockedEditAttempt().)
+			$local = !( $block instanceof \MediaWiki\Extension\GlobalBlocking\GlobalBlock );
+
+			$allErrorMsgs = [];
+			foreach ( $status->getMessages() as $errorMsg ) {
+				// This is a bit ugly, but less than listing all of the error message keys associated with blocks
+				if (
+					$errorMsg instanceof IApiMessage &&
+					in_array( $errorMsg->getApiCode(), [ 'autoblocked', 'blocked' ], true )
+				) {
+					$allErrorMsgs[] = $errorMsg;
+				}
+			}
+
 			$rawExpiry = $block->getExpiry();
 			if ( wfIsInfinity( $rawExpiry ) ) {
 				$expiry = 'infinity';
@@ -125,7 +96,7 @@ class BlockMetricsHooks implements PermissionStatusAuditHook {
 				// @phan-suppress-next-line PhanTypeMismatchDimFetchNullable
 				'block_type' => Block::BLOCK_TYPES[ $block->getType() ] ?? 'other',
 				'block_expiry' => $expiry,
-				'block_scope' => $blockedErrorMsgs ? 'local' : 'global',
+				'block_scope' => $local ? 'local' : 'global',
 				'error_message_keys' => array_map( static function ( MessageSpecifier $msg ) {
 					return $msg->getKey();
 				}, $allErrorMsgs ),
@@ -138,12 +109,6 @@ class BlockMetricsHooks implements PermissionStatusAuditHook {
 			];
 			$event += $this->eventFactory->createMediaWikiCommonAttrs( $user );
 			$this->submitEvent( 'mediawiki.accountcreation_block', $event );
-		} else {
-			LoggerFactory::getInstance( 'WikimediaEvents' )->warning( 'Could not find block', [
-				'errorKeys' => implode( ',', array_map( static function ( MessageSpecifier $msg ) {
-					return $msg->getKey();
-				}, $allErrorMsgs ) ),
-			] );
 		}
 	}
 

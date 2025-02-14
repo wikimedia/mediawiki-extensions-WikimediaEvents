@@ -2,6 +2,7 @@
 
 namespace WikimediaEvents\Tests;
 
+use MediaWiki\Api\ApiMessage;
 use MediaWiki\Block\DatabaseBlock;
 use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\Permissions\PermissionStatus;
@@ -26,6 +27,10 @@ class BlockMetricsHooksTest extends MediaWikiIntegrationTestCase {
 		$this->assertStatusGood( $status );
 		/** @var DatabaseBlock $block */
 		$block = $status->getValue();
+
+		$permissionStatus = PermissionStatus::newEmpty();
+		$permissionStatus->fatal( ApiMessage::create( 'blockedtext', 'blocked' ) );
+		$permissionStatus->setBlock( $block );
 
 		$userFactory = $this->getServiceContainer()->getUserFactory();
 		$eventFactory = $this->getServiceContainer()->get( 'EventBus.EventFactory' );
@@ -59,7 +64,7 @@ class BlockMetricsHooksTest extends MediaWikiIntegrationTestCase {
 				);
 			} );
 		$blockMetricsHooks->onPermissionStatusAudit( Title::newMainPage(), $user, 'createaccount',
-			PermissionManager::RIGOR_SECURE, PermissionStatus::newFatal( 'blockedtext' ) );
+			PermissionManager::RIGOR_SECURE, $permissionStatus );
 	}
 
 }
