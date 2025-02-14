@@ -34,7 +34,7 @@ Documentation at <https://wikitech.wikimedia.org/wiki/Performance.wikimedia.org/
 ## Search satisfaction
 
 * Since: October 2015
-* Files: searchSatisfaction.js, searchSli.js
+* Folders: ext.wikimediaEvents/searchSatisfaction
 * Contact: https://www.mediawiki.org/wiki/Wikimedia_Search_Platform
 
 ## Reading depth

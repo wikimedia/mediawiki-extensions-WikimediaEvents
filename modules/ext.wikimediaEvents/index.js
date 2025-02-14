@@ -7,7 +7,6 @@ require( './readingDepth.js' );
 require( './phpEngine.js' );
 require( './blockedEdit.js' );
 require( './clickTracking/webUIClick.js' );
-require( './searchSatisfaction.js' );
 
 const skin = mw.config.get( 'skin' );
 if ( skin === 'vector-2022' || skin === 'vector' ) {
@@ -20,4 +19,7 @@ if ( skin === 'minerva' ) {
 
 require( './editAttemptStep.js' );
 require( './networkProbe.js' );
-require( './searchSli.js' );
+
+if ( !window.QUnit ) {
+	require( './searchSatisfaction/index.js' )();
+}

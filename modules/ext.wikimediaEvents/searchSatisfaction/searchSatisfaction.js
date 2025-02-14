@@ -717,7 +717,7 @@ if ( isSearchResultPage || search.cameFromSearch ) {
 }
 
 // Autocomplete satisfaction tracking
-$( () => {
+module.exports = ( () => {
 	const initialize = atMostOnce( () => {
 		setup( setupAutocompleteTest );
 	} );
