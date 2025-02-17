@@ -29,7 +29,7 @@ const hasOwn = Object.prototype.hasOwnProperty;
 const isSearchResultPage = mw.config.get( 'wgIsSearchResultPage' );
 const uri = ( function () {
 	try {
-		return new mw.Uri( location.href );
+		return new URL( location.href );
 	} catch ( e ) {
 		return null;
 	}
@@ -52,15 +52,25 @@ if ( uri === null ) {
 	return;
 }
 
+/**
+ * @param {URL} uri
+ * @param {string} wprovPrefix
+ * @return {Number}
+ */
 function extractResultPosition( uri, wprovPrefix ) {
-	return parseInt( uri.query.wprov &&
-		uri.query.wprov.slice( 0, wprovPrefix.length ) === wprovPrefix &&
-		uri.query.wprov.slice( wprovPrefix.length ), 10 );
+	const wprov = uri.searchParams.get( 'wprov' );
+	return parseInt( wprov &&
+		wprov.slice( 0, wprovPrefix.length ) === wprovPrefix &&
+		wprov.slice( wprovPrefix.length ), 10 );
 }
 
+/**
+ * @param {string} wprovPrefix
+ * @return {Object}
+ */
 function initFromWprov( wprovPrefix ) {
 	const res = {
-		wprovPrefix: wprovPrefix,
+		wprovPrefix,
 		resultPosition: extractResultPosition( uri, wprovPrefix )
 	};
 	res.cameFromSearch = !isNaN( res.resultPosition );
@@ -78,19 +88,20 @@ function randomToken() {
 }
 
 const search = initFromWprov( 'srpw1_' );
-search.didYouMean = uri.query.wprov &&
-	uri.query.wprov.slice( 0, search.wprovPrefix.length ) === search.wprovPrefix &&
-	didYouMeanList.indexOf( uri.query.wprov.slice( search.wprovPrefix.length ) ) >= 0 &&
-	uri.query.wprov.slice( search.wprovPrefix.length );
+const wprov = uri.searchParams.get( 'wprov' );
+search.didYouMean = wprov &&
+	wprov.slice( 0, search.wprovPrefix.length ) === search.wprovPrefix &&
+	didYouMeanList.indexOf( wprov.slice( search.wprovPrefix.length ) ) >= 0 &&
+	wprov.slice( search.wprovPrefix.length );
 
 const autoComplete = initFromWprov( 'acrw1_' );
 // with no position appended indicates the user submitted the
 // autocomplete form.
-autoComplete.cameFromAutocomplete = uri.query.wprov === 'acrw1';
+autoComplete.cameFromAutocomplete = wprov === 'acrw1';
 
 // Cleanup the location bar in supported browsers.
-if ( window.history.replaceState && uri.query.wprov ) {
-	delete uri.query.wprov;
+if ( window.history.replaceState && wprov ) {
+	uri.searchParams.delete( 'wprov' );
 	window.history.replaceState( {}, '', uri.toString() );
 }
 
@@ -363,8 +374,8 @@ function genLogEventFn( source, session, sourceExtraData ) {
 
 function genAttachWprov( value ) {
 	return function () {
-		const uri = new mw.Uri( this.href );
-		uri.query.wprov = value;
+		const uri = new URL( this.href );
+		uri.searchParams.set( 'wprov', value );
 		this.href = uri.toString();
 	};
 }
@@ -376,24 +387,24 @@ function createVisitPageEvent() {
 
 	// Attach helpfull information for tieing together various events in the backend
 	try {
-		const referrer = new mw.Uri( document.referrer );
-		if ( referrer.query.searchToken ) {
-			evt.searchToken = referrer.query.searchToken;
+		const referrer = document.referrer ? new URL( document.referrer ) : null;
+		const searchQuery = referrer.searchParams.getAll( 'search' );
+		const searchToken = referrer.searchParams.get( 'searchToken' );
+		if ( searchToken ) {
+			evt.searchToken = searchToken;
 		}
-		if ( referrer.query.search ) {
+		if ( searchQuery.length ) {
 			// Some wikis might use a custom search implementation and/or deliver gadgets to the
 			// user that modify the search form. In the case of wikidatawiki, something is
 			// adding a hidden input named "search" to the form, which results in
 			// referrer.query.search being an array of duplicate strings rather than a string.
 			//
 			// See https://phabricator.wikimedia.org/T276474 for more detail.
-			evt.query = Array.isArray( referrer.query.search ) ?
-				referrer.query.search[ 0 ] :
-				referrer.query.search;
+			evt.query = searchQuery[ 0 ];
 		}
 	} catch ( e ) {
-		// Happens when document.referrer is not a proper url. Probably
-		// Some sort of privacy plugin in the browser or some such.
+		// Happens when document.referrer is not a proper url or an empty string.
+		// If non-empty probably some sort of privacy plugin in the browser or some such.
 	}
 	return evt;
 }
