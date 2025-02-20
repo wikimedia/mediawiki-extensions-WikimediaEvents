@@ -15,7 +15,7 @@
 // Constants for session timing, idle, reset, and tick limits.
 const NOOP = function () { };
 
-const TICK_MS = 60000;
+const TICK_MS = 30000;
 const IDLE_MS = 100000;
 const RESET_MS = 1800000;
 const DEBOUNCE_MS = 5000;
@@ -69,7 +69,6 @@ function sessionTick( incr ) {
 	}
 
 	const count = ( Number( mw.storage.get( KEY_COUNT ) ) || 0 );
-	mw.storage.set( KEY_COUNT, count + incr );
 
 	state.forEach( ( { schemaID, data }, streamName ) => {
 		mw.eventLog.submitInteraction(
@@ -78,10 +77,12 @@ function sessionTick( incr ) {
 			'tick',
 			Object.assign( {
 				action_source: 'SessionLengthInstrumentMixin',
-				action_context: ( count + incr ).toString()
+				action_context: count.toString()
 			}, data )
 		);
 	} );
+
+	mw.storage.set( KEY_COUNT, count + incr );
 }
 
 // Main regulator function to manage session ticking.
@@ -94,16 +95,15 @@ function regulator() {
 	function run() {
 		const now = Date.now();
 		const gap = now - ( Number( mw.storage.get( KEY_LAST_TIME ) ) || 0 );
-
-		if ( gap > RESET_MS ) {
+		const count = Number( mw.storage.get( KEY_COUNT ) ) || 0;
+		if ( count === 0 || gap > RESET_MS ) {
 			// Reset session if idle time exceeds limit.
 			mw.storage.set( KEY_LAST_TIME, now );
 			sessionReset();
 			sessionTick( 1 ); // Start tick
 		} else if ( gap > TICK_MS ) {
-			// Ticks based on elapsed time since last tick.
-			mw.storage.set( KEY_LAST_TIME, now - ( gap % TICK_MS ) );
-			sessionTick( Math.floor( gap / TICK_MS ) );
+			mw.storage.set( KEY_LAST_TIME, now );
+			sessionTick( 1 );
 		}
 		// Schedule next tick.
 		tickTimeout = setTimeout( run, TICK_MS );
@@ -160,13 +160,12 @@ function regulator() {
 // API
 // ===
 
-// Start algorithm
-regulator();
-
 const SessionLengthInstrumentMixin = {
 	state,
 	start( streamName, schemaID, data = {} ) {
 		state.set( streamName, { schemaID, data } );
+		// Start algorithm
+		regulator();
 	},
 	stop( streamName ) {
 		state.delete( streamName );

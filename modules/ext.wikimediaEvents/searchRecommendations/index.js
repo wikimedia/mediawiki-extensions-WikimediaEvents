@@ -18,6 +18,12 @@ function randomToken() {
 	return mw.user.generateRandomSessionId() + Date.now().toString( 36 );
 }
 
+function hasExistingSessionTick() {
+	const KEY_COUNT = 'mp-sessionTickTickCount';
+	const existingSessionTick = Number( mw.storage.get( KEY_COUNT ) );
+	return !!existingSessionTick;
+}
+
 function setupInstrumentation( { group, experimentName } ) {
 	// This name must be synced with RelatedArticles extension.json
 	// We use indexOf as on beta cluster we suffix with beta cluster.
@@ -44,9 +50,7 @@ function setupInstrumentation( { group, experimentName } ) {
 
 		// If the session tick has already started when
 		// the overlay was opened, resume logging session length on pageload.
-		const KEY_COUNT = 'mp-sessionTickTickCount';
-		const existingSessionTick = Number( mw.storage.get( KEY_COUNT ) );
-		if ( existingSessionTick ) {
+		if ( hasExistingSessionTick() ) {
 			SessionLengthInstrumentMixin.start( 'product_metrics.web_base.search_ab_test_session_ticks', '/analytics/product_metrics/web/base/1.3.0', experimentData );
 		}
 
@@ -61,7 +65,9 @@ function setupInstrumentation( { group, experimentName } ) {
 				} )
 			);
 
-			SessionLengthInstrumentMixin.start( 'product_metrics.web_base.search_ab_test_session_ticks', '/analytics/product_metrics/web/base/1.3.0', experimentData );
+			if ( !hasExistingSessionTick() ) {
+				SessionLengthInstrumentMixin.start( 'product_metrics.web_base.search_ab_test_session_ticks', '/analytics/product_metrics/web/base/1.3.0', experimentData );
+			}
 		} );
 
 		// The list of the empty-state recommendations appears
