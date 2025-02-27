@@ -12,35 +12,27 @@ QUnit.test( 'Initial tick fires at zero seconds', function ( assert ) {
 	// START mw.storage mock. Sets and gets an in-memory storage key.
 	// Copied from mediawiki.storage.test.js in MediaWiki core.
 	const storageData = {};
+
 	const mwStorageStub = {
-		setItem: function ( k, v ) {
+		get: function ( k ) {
+			return Object.prototype.hasOwnProperty.call( storageData, k ) ? storageData[ k ] : null;
+		},
+		getObject: () => {},
+		set: function ( k, v ) {
 			storageData[ k ] = v;
 			return true;
 		},
-		getItem: function ( k ) {
-			return Object.prototype.hasOwnProperty.call( storageData, k ) ? storageData[ k ] : null;
-		},
-		removeItem: function ( k ) {
-			delete storageData[ k ];
-			return true;
-		},
-		key: function ( i ) {
-			return Object.keys( storageData )[ i ];
-		}
+		setObject: () => {},
+		remove: () => {}
 	};
-	Object.defineProperty( mwStorageStub, 'length', {
-		get: function () {
-			return Object.keys( storageData ).length;
-		}
-	} );
-	this.sandbox.stub( mw.storage, 'store', mwStorageStub );
-	// END mw.storage mock.
 
-	mw.storage.set( 'mp-sessionTickTickCount', null );
+	this.sandbox.stub( mw.storage, 'session', mwStorageStub );
+
+	mw.storage.session.set( 'mp-sessionTickTickCount', null );
 	const streamName = 'testStream';
 	const schemaID = 'testSchema';
 	sessionLengthMixin.start( streamName, schemaID );
-	assert.strictEqual( Number( mw.storage.get( 'mp-sessionTickTickCount' ) ), 1,
+	assert.strictEqual( Number( mw.storage.session.get( 'mp-sessionTickTickCount' ) ), 1,
 		'First tick should set count to 1'
 	);
 } );
