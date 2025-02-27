@@ -20,7 +20,7 @@ function randomToken() {
 
 function hasExistingSessionTick() {
 	const KEY_COUNT = 'mp-sessionTickTickCount';
-	const existingSessionTick = Number( mw.storage.get( KEY_COUNT ) );
+	const existingSessionTick = Number( mw.storage.session.get( KEY_COUNT ) );
 	return !!existingSessionTick;
 }
 
