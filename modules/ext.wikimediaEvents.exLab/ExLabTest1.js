@@ -18,7 +18,7 @@ const ExLabTest1 = {
 			return;
 		}
 		const ClickThroughRateInstrument = require( './ClickThroughRateInstrument.js' );
-		const instrument = mw.eventLog.newInstrument( STREAM_NAME, SCHEMA_ID, experimentName );
+		const instrument = mw.eventLog.newInstrument( experimentName, STREAM_NAME, SCHEMA_ID );
 		ClickThroughRateInstrument.start( selector, friendlyName, instrument );
 	}
 };
