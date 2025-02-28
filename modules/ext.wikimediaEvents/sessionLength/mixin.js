@@ -60,7 +60,7 @@ if ( document.hidden === undefined && !supportsPassiveEventListeners() ) {
 }
 
 function sessionReset() {
-	mw.storage.set( KEY_COUNT, 0 );
+	mw.storage.session.set( KEY_COUNT, 0 );
 }
 
 function sessionTick( incr ) {
@@ -68,7 +68,7 @@ function sessionTick( incr ) {
 		throw new Error( 'Session ticks exceed limit' );
 	}
 
-	const count = ( Number( mw.storage.get( KEY_COUNT ) ) || 0 );
+	const count = ( Number( mw.storage.session.get( KEY_COUNT ) ) || 0 );
 
 	state.forEach( ( { schemaID, data }, streamName ) => {
 		mw.eventLog.submitInteraction(
@@ -82,7 +82,7 @@ function sessionTick( incr ) {
 		);
 	} );
 
-	mw.storage.set( KEY_COUNT, count + incr );
+	mw.storage.session.set( KEY_COUNT, count + incr );
 }
 
 // Main regulator function to manage session ticking.
@@ -94,15 +94,15 @@ function regulator() {
 	// Runs tick logic based on time gap since last activity.
 	function run() {
 		const now = Date.now();
-		const gap = now - ( Number( mw.storage.get( KEY_LAST_TIME ) ) || 0 );
-		const count = Number( mw.storage.get( KEY_COUNT ) ) || 0;
+		const gap = now - ( Number( mw.storage.session.get( KEY_LAST_TIME ) ) || 0 );
+		const count = Number( mw.storage.session.get( KEY_COUNT ) ) || 0;
 		if ( count === 0 || gap > RESET_MS ) {
 			// Reset session if idle time exceeds limit.
-			mw.storage.set( KEY_LAST_TIME, now );
+			mw.storage.session.set( KEY_LAST_TIME, now );
 			sessionReset();
 			sessionTick( 1 ); // Start tick
 		} else if ( gap > TICK_MS ) {
-			mw.storage.set( KEY_LAST_TIME, now );
+			mw.storage.session.set( KEY_LAST_TIME, now );
 			sessionTick( 1 );
 		}
 		// Schedule next tick.
@@ -171,5 +171,9 @@ const SessionLengthInstrumentMixin = {
 		state.delete( streamName );
 	}
 };
+
+// Cleanup old local storage data
+mw.storage.remove( KEY_COUNT );
+mw.storage.remove( KEY_LAST_TIME );
 
 module.exports = SessionLengthInstrumentMixin;
