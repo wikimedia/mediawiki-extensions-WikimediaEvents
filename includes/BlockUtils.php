@@ -7,62 +7,10 @@ use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
-use MediaWiki\Permissions\PermissionStatus;
 use MediaWiki\Title\Title;
 use MediaWiki\User\User;
-use Wikimedia\Message\MessageSpecifier;
 
 class BlockUtils {
-	// Possible block error keys from Block\BlockErrorFormatter::getBlockErrorMessageKey()
-	public const LOCAL_ERROR_KEYS = [
-		'blockedtext',
-		'autoblockedtext',
-		'blockedtext-partial',
-		'systemblockedtext',
-		'blockedtext-composite'
-	];
-	// Possible block error keys from GlobalBlocking extension
-	public const GLOBAL_ERROR_KEYS = [
-		'globalblocking-blockedtext-ip',
-		'globalblocking-blockedtext-range',
-		'globalblocking-blockedtext-xff',
-		'globalblocking-blockedtext-user',
-		'globalblocking-blockedtext-autoblock',
-		'globalblocking-blockedtext-autoblock-xff',
-		// WikimediaMessages versions
-		'wikimedia-globalblocking-blockedtext-ip',
-		'wikimedia-globalblocking-blockedtext-range',
-		'wikimedia-globalblocking-blockedtext-xff',
-		'wikimedia-globalblocking-blockedtext-user',
-		'wikimedia-globalblocking-blockedtext-autoblock',
-		'wikimedia-globalblocking-blockedtext-autoblock-xff',
-	];
-
-	/**
-	 * Build error messages for error keys
-	 *
-	 * @param PermissionStatus $status
-	 * @return array<string, MessageSpecifier[]>
-	 */
-	public static function getBlockErrorMsgs( PermissionStatus $status ) {
-		$blockedErrorMsgs = $globalBlockedErrorMsgs = [];
-		foreach ( $status->getMessages() as $errorMsg ) {
-			$errorKey = $errorMsg->getKey();
-			if ( in_array( $errorKey, self::LOCAL_ERROR_KEYS, true ) ) {
-				$blockedErrorMsgs[] = $errorMsg;
-			} elseif ( in_array( $errorKey, self::GLOBAL_ERROR_KEYS, true ) ) {
-				$globalBlockedErrorMsgs[] = $errorMsg;
-			}
-		}
-		$allErrorMsgs = array_merge( $blockedErrorMsgs, $globalBlockedErrorMsgs );
-
-		return [
-			'local' => $blockedErrorMsgs,
-			'global' => $globalBlockedErrorMsgs,
-			'all' => $allErrorMsgs,
-		];
-	}
-
 	/**
 	 * Log a blocked edit attempt
 	 *
@@ -72,19 +20,15 @@ class BlockUtils {
 	 * @param string $platform
 	 */
 	public static function logBlockedEditAttempt( $user, $title, $interface, $platform ) {
-		// Prefer the local block over the global one if both are set. This is
-		// somewhat arbitrary, but is consistent with account creation block
-		// logging.
-		$local = MediaWikiServices::getInstance()->getPermissionManager()->isBlockedFrom( $user, $title, true );
-		if ( $local ) {
-			$block = $user->getBlock();
-		} else {
-			$block = $user->getGlobalBlock();
-		}
-
+		$block = $user->getBlock();
 		if ( !$block ) {
 			return;
 		}
+
+		// Prefer the local block over the global one if both are set (instanceof CompositeBlock).
+		// This is somewhat arbitrary, and may not always be correct for other kinds of multi-blocks.
+		// (Keep in sync with account creation block logging in PermissionStatusAudit hook handler.)
+		$local = !( $block instanceof \MediaWiki\Extension\GlobalBlocking\GlobalBlock );
 
 		$rawExpiry = $block->getExpiry();
 		if ( wfIsInfinity( $rawExpiry ) ) {
