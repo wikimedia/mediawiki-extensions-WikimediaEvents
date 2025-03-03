@@ -14,6 +14,7 @@
 	"apihelp-wikimediaeventsblockededit-param-platform": "{{doc-apihelp-param|wikimediaeventsblockededit|platform}}",
 	"tag-cross-wiki-upload": "Tag on cross-wiki uploads",
 	"tag-cross-wiki-upload-description": "Description for the cross-wiki-upload tag.",
+	"tag-cross-wiki-upload-helppage": "{{notranslate}}",
 	"wikimediaevents-special-wikimediadebug-desc": "{{doc-special|WikimediaDebug}}",
 	"wikimediaevents-special-wikimediadebug-notenabled": "Error message shown when Special:WikimediaDebug is disabled.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "Button text for setting the WikimediaDebug cookie.\n\nParameters:\n* $1 - the duration of the cookie (e.g. 1 hour)",
