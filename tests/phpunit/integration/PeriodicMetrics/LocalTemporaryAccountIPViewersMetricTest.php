@@ -2,6 +2,7 @@
 
 namespace WikimediaEvents\Tests\Integration\PeriodicMetrics;
 
+use MediaWiki\MainConfigNames;
 use MediaWikiIntegrationTestCase;
 use WikimediaEvents\PeriodicMetrics\LocalTemporaryAccountIPViewersMetric;
 use WikimediaEvents\PeriodicMetrics\WikimediaEventsMetricsFactory;
@@ -50,10 +51,7 @@ class LocalTemporaryAccountIPViewersMetricTest extends MediaWikiIntegrationTestC
 
 	public function testCalculateWhenNoRelevantGroups() {
 		// Set wgGroupPermissions to have no group with the rights needed to IP reveal.
-		$this->setGroupPermissions( [
-			'checkuser' => [ 'checkuser-temporary-account-no-preference' => false ],
-			'checkuser-temporary-account-viewer' => [ 'checkuser-temporary-account' => false ],
-		] );
+		$this->overrideConfigValue( MainConfigNames::GroupPermissions, [ 'user' => [ 'read' ] ] );
 		$this->assertSame( 0, $this->getObjectUnderTest()->calculate() );
 	}
 
