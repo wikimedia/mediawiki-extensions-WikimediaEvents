@@ -112,6 +112,7 @@ class LocalTemporaryAccountIPViewersWithEnabledPreferenceMetric extends PerWikiM
 				$userIdToCentralId = [];
 				$batchOfLocalUserIdentities = $this->userIdentityLookup->newSelectQueryBuilder()
 					->whereUserIds( $batchOfUserIds )
+					->caller( __METHOD__ )
 					->fetchUserIdentities();
 				foreach ( $batchOfLocalUserIdentities as $localUser ) {
 					$centralId = $this->centralIdLookup->centralIdFromLocalUser(
