@@ -154,6 +154,16 @@ class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 			'isDefault' => true,
 			'bucketedUserEditCount' => '5-99 edits',
 		] ];
+
+		yield 'Add "0" to email-blacklist' => [ 'email-blacklist', '0', [
+			'version' => '2',
+			'userId' => 4,
+			'saveTimestamp' => '20110401080000',
+			'property' => 'email-blacklist',
+			'value' => '1',
+			'isDefault' => false,
+			'bucketedUserEditCount' => '5-99 edits',
+		] ];
 	}
 
 	/**

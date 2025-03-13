@@ -215,11 +215,8 @@ class PrefUpdateInstrumentation implements SaveUserOptionsHook {
 			}
 			$trackedValue = $optValue;
 		} elseif ( $trackType === self::VALUE_NEWLINE_COUNT ) {
-			// NOTE!  PrefUpdate has been migrated to Event Platform,
-			// and is no longer using the metawiki based schema.  This -1 revision_id
-			// will be overridden by the value of the EventLogging Schemas extension attribute
-			// set in extension.json.
-			$trackedValue = count( preg_split( '/\n/', $optValue, -1, PREG_SPLIT_NO_EMPTY ) );
+			$trackedValue =
+				is_string( $optValue ) ? count( preg_split( '/\n/', $optValue, -1, PREG_SPLIT_NO_EMPTY ) ) : 0;
 		} else {
 			trigger_error( "Unknown handler for $optName in PrefUpdate", E_USER_WARNING );
 			return false;
