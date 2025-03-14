@@ -29,13 +29,9 @@ use MediaWiki\MediaWikiServices;
 use WikimediaEvents\AccountCreationLogger;
 use WikimediaEvents\PeriodicMetrics\WikimediaEventsMetricsFactory;
 use WikimediaEvents\Services\WikimediaEventsRequestDetailsLookup;
-use WikimediaEvents\WebABTest\WebABTestArticleIdFactory;
 use WikimediaEvents\WikimediaEventsCountryCodeLookup;
 
 return [
-	'WikimediaEvents.WebABTestArticleIdFactory' => static function (): WebABTestArticleIdFactory {
-		return new WebABTestArticleIdFactory();
-	},
 	'WikimediaEventsCountryCodeLookup' => static function (
 		MediaWikiServices $mediaWikiServices
 	): WikimediaEventsCountryCodeLookup {
