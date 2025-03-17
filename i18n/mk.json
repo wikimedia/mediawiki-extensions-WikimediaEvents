@@ -9,7 +9,7 @@
 	"apihelp-wikimediaeventsblockededit-param-page": "Страница на која е направен обидот за уредување",
 	"apihelp-wikimediaeventsblockededit-param-interface": "Посредникот употребен при уредувањето",
 	"apihelp-wikimediaeventsblockededit-param-platform": "Подлогата употребен при уредувањето",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Подигање на сите викија]]",
+	"tag-cross-wiki-upload": "Подигање на сите викија",
 	"tag-cross-wiki-upload-description": "Податотеки подигнати од викитекстуалниот и нагледниот уредник на други викија",
 	"wikimediaevents-special-wikimediadebug-notenabled": "Оваа службена страница не е овозможена.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "Активирај колаче за отстранување грешки за $1",

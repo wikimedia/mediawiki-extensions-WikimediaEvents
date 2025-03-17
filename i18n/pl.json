@@ -9,6 +9,6 @@
 		]
 	},
 	"wikimediaevents-desc": "Rejestruje operacje specyficzne dla Fundacji Wikimedii przy użyciu rozszerzenia EventLogging",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Przesłanie z innej wiki]]",
+	"tag-cross-wiki-upload": "Przesłanie z innej wiki",
 	"tag-cross-wiki-upload-description": "Pliki przesłane z poziomu edytora wikikodu lub wizualnego na innej wiki"
 }

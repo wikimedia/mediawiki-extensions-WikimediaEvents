@@ -11,6 +11,6 @@
 		]
 	},
 	"wikimediaevents-desc": "Pomocí EventLogging zaznamenává události specifické pro Wikimedia",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Nahráno z jiné wiki]]",
+	"tag-cross-wiki-upload": "Nahráno z jiné wiki",
 	"tag-cross-wiki-upload-description": "Soubory načtené z prostředí wikitextového a Vizuálního editoru na jiných wiki"
 }

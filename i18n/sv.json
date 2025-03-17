@@ -10,6 +10,6 @@
 		]
 	},
 	"wikimediaevents-desc": "Loggar Wikimedia-specifika händelser med hjälp av EventLogging",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Uppladdning över flera wikier]]",
+	"tag-cross-wiki-upload": "Uppladdning över flera wikier",
 	"tag-cross-wiki-upload-description": "Filer som laddades upp från wikitext-redigeraren och den visuella redigeraren på andra wikier"
 }

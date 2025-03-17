@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Gomoko",
+			"JLTRY",
 			"Jules78120",
 			"Ltrlg",
 			"Mahabarata",
@@ -22,7 +23,7 @@
 	"apihelp-wikimediaeventsblockededit-param-page": "Une page sur laquelle une tentative de modification a été faite",
 	"apihelp-wikimediaeventsblockededit-param-interface": "L’interface qui a été utilisée pour modifier",
 	"apihelp-wikimediaeventsblockededit-param-platform": "La plateforme qui a été utilisée pour modifier",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Téléversement inter-wiki]]",
+	"tag-cross-wiki-upload": "Téléversement inter-wiki",
 	"tag-cross-wiki-upload-description": "Fichiers téléversés directement depuis l’éditeur de wikicode ou l’éditeur visuel sur d’autres wikis",
 	"wikimediaevents-special-wikimediadebug-notenabled": "Cette page spéciale n'est pas activée.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "Activer le cookie de débogage pour une durée de $1",

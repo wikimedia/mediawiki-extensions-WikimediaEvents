@@ -4,6 +4,7 @@
 			"Anterdc99",
 			"Diskdance",
 			"Googology",
+			"GuoPC",
 			"Liuxinyu970226",
 			"Sunny00217",
 			"Tranve",
@@ -11,7 +12,7 @@
 		]
 	},
 	"wikimediaevents-desc": "使用EventLogging的维基媒体特定事件日志",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|跨wiki上传]]",
+	"tag-cross-wiki-upload": "跨wiki上传",
 	"tag-cross-wiki-upload-description": "在其他wiki上使用wikitext和可视化编辑器上传的文件",
 	"wikimediaevents-special-wikimediadebug-notenabled": "此特殊页面未启用。",
 	"wikimediaevents-special-wikimediadebug-submit-renew": "更新$1的cookie",

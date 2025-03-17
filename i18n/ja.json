@@ -8,6 +8,6 @@
 		]
 	},
 	"wikimediaevents-desc": "ウィキメディア特有のイベントを、EventLogging を使用して記録する",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|ウィキ間アップロード]]",
+	"tag-cross-wiki-upload": "ウィキ間アップロード",
 	"tag-cross-wiki-upload-description": "他ウィキからアップロードしたファイルで、出処はウィキテキストの中ならびにビジュアルエディター内"
 }

@@ -13,7 +13,7 @@
 	"apihelp-wikimediaeventsblockededit-param-page": "صفحة تم إجراء محاولة تحرير عليها",
 	"apihelp-wikimediaeventsblockededit-param-interface": "الواجهة التي تم استخدامها للتحرير",
 	"apihelp-wikimediaeventsblockededit-param-platform": "المنصة التي تم استخدامها للتحرير",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|رفع عبر الويكي]]",
+	"tag-cross-wiki-upload": "رفع عبر الويكي",
 	"tag-cross-wiki-upload-description": "الملفات التي تم تحميلها من داخل محرر نصوص الويكي والمحرر المرئي على مواقع الويكي الأخرى",
 	"wikimediaevents-special-wikimediadebug-notenabled": "هذه الصفحة الخاصة غير مفعلة.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "تفعيل ملف تعريف الارتباط التصحيحي مقابل $1",

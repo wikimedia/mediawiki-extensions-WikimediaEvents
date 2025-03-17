@@ -5,6 +5,6 @@
 		]
 	},
 	"wikimediaevents-desc": "Ghi các sự kiện đặc biệt của Wikimedia vào nhật trình dùng EventLogging",
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Tải lên liên wiki]]",
+	"tag-cross-wiki-upload": "Tải lên liên wiki",
 	"tag-cross-wiki-upload-description": "Các tập tin được tải lên từ bên trong trang sửa đổi văn bản hoặc trình soạn thảo trực quan trên các wiki khác"
 }
