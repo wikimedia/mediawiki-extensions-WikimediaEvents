@@ -6,5 +6,9 @@
 			"Toliño"
 		]
 	},
-	"wikimediaevents-desc": "Rexistra os eventos específicos da Wikimedia mediante EventLogging"
+	"wikimediaevents-desc": "Rexistra os eventos específicos da Wikimedia mediante EventLogging",
+	"apihelp-wikimediaeventsblockededit-summary": "Rexistrar a información sobre os intentos de edición bloqueados",
+	"apihelp-wikimediaeventsblockededit-param-page": "Unha páxina na que se realizou un intento de edición",
+	"apihelp-wikimediaeventsblockededit-param-interface": "A interface que se utilizou para editar",
+	"apihelp-wikimediaeventsblockededit-param-platform": "A plataforma que se utilizou para editar"
 }
