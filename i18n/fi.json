@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+			"Samoasambia"
+		]
+	},
+	"wikimediaevents-desc": "Kirjaa Wikimedia-erityisiä tapahtumia lokiin EventLogging-laajennuksella",
+	"wikimediaevents-special-wikimediadebug-desc": "WikimediaDebug",
+	"wikimediaevents-special-wikimediadebug-notenabled": "Tämä toimintasivu ei ole käytössä."
+}
