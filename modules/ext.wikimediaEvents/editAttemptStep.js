@@ -24,8 +24,10 @@ let vefuOversample = easOversample;
  * Initialize data we need to log events.
  *
  * This must be called before any other processing in this file.
+ *
+ * @param {Object} event
  */
-function handleFirstEvent() {
+function handleFirstEvent( event ) {
 	session = {
 		// Editing session ID.
 		// Will be reset upon every session init after the first.
@@ -40,9 +42,9 @@ function handleFirstEvent() {
 
 		// Editor mode ('visualeditor', 'wikitext-2017', 'wikitext'),
 		// should be defined in an init event
-		editor_interface: null,
+		editor_interface: event.editor_interface || null,
 		// Editor being used ('page', 'discussiontools'), should be defined in an init event
-		integration: null,
+		integration: event.integration || null,
 		// T249944 may someday change this to not hang from MobileFrontend
 		platform: mw.config.get( 'wgMFMode' ) !== null ? 'phone' : 'desktop'
 	};
@@ -250,7 +252,7 @@ function editAttemptStepHandler( topic, data ) {
 	}
 
 	if ( !session ) {
-		handleFirstEvent();
+		handleFirstEvent( data );
 	}
 
 	// Update the rolling session properties
