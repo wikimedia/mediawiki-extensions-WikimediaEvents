@@ -124,7 +124,7 @@ $.ajaxPrefilter( ( options ) => {
 			options.data.append( 'editingStatsId', session.editing_session_id );
 		} else if ( typeof options.data === 'string' ) {
 			options.data += '&editingStatsId=' + encodeURIComponent( session.editing_session_id );
-		} else if ( options.url.indexOf( '?' ) !== -1 ) {
+		} else if ( options.url.includes( '?' ) ) {
 			options.url += '&editingStatsId=' + encodeURIComponent( session.editing_session_id );
 		} else {
 			mw.errorLogger.logError( new Error( 'editAttemptStep: Unable to add editingStatsId' ), 'error.wikimediaevents' );

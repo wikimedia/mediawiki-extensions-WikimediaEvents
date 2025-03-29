@@ -246,7 +246,7 @@ function enableTracking() {
 
 mw.requestIdleCallback( () => {
 	// The schema should only run on Vector and Minerva skins.
-	if ( ignoredSkins.indexOf( skin ) === -1 ) {
+	if ( !ignoredSkins.includes( skin ) ) {
 		sessionId = mw.user.sessionId();
 		// check if user has been selected for the default ReadingDepth sample group
 		if ( isInSample( moduleConfig.WMEReadingDepthSamplingRate ) ) {

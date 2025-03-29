@@ -27,7 +27,7 @@ function hasExistingSessionTick() {
 function setupInstrumentation( { group, experimentName } ) {
 	// This name must be synced with RelatedArticles extension.json
 	// We use indexOf as on beta cluster we suffix with beta cluster.
-	if ( experimentName.indexOf( 'RelatedArticles test' ) > -1 ) {
+	if ( experimentName.includes( 'RelatedArticles test' ) ) {
 		const experimentData = {
 			experiments: {
 				enrolled: [ experimentName ],

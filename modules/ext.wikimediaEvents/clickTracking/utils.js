@@ -47,7 +47,7 @@ function getMenuLinkEventName( $target ) {
 	 * called 'ui.sidebar-toc'
 	 */
 	let id = linkListItem.id;
-	if ( id.indexOf( 'toc' ) !== -1 ) {
+	if ( id.includes( 'toc' ) ) {
 		// Replaces TOC heading ID with a generic prefix called 'toc-heading'.
 		id = id.slice( 0, id.indexOf( 'toc-' ) ) + 'toc-heading';
 	}
@@ -73,7 +73,7 @@ const onClickTrack = function ( logEvent ) {
 		if ( $closest.length ) {
 			// T352075
 			// Click tracking of this kind is restricted to certain types of elements to avoid duplicate events.
-			if ( [ 'A', 'BUTTON', 'INPUT' ].indexOf( $closest[ 0 ].tagName ) > -1 ) {
+			if ( [ 'A', 'BUTTON', 'INPUT' ].includes( $closest[ 0 ].tagName ) ) {
 				const destination = $closest.attr( 'href' );
 				logEvent( 'click', $closest.attr( 'data-event-name' ), destination );
 			}

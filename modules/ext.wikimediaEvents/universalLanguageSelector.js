@@ -56,7 +56,7 @@ let skinVersion;
  */
 function getSkinVersion() {
 	if ( skinVersion === undefined ) {
-		if ( [ 'vector', 'vector-2022' ].indexOf( String( skin ) ) > -1 ) {
+		if ( [ 'vector', 'vector-2022' ].includes( String( skin ) ) ) {
 			skinVersion = document.body.classList.contains( 'skin-vector-legacy' ) ? 'legacy' : 'latest';
 		} else {
 			skinVersion = null;
@@ -131,7 +131,7 @@ function ulsSettingsOpen( context ) {
  */
 function ulsCompactLanguageLinksOpen( $trigger ) {
 	let context = 'other';
-	const isVector = [ 'vector', 'vector-2022' ].indexOf( String( skin ) ) > -1;
+	const isVector = [ 'vector', 'vector-2022' ].includes( String( skin ) );
 	if ( isVector && $trigger.is( '#p-lang-btn-checkbox' ) ) {
 		context = 'header';
 	} else if ( isVector && $trigger.is( '#p-lang-btn-sticky-header' ) ) {

@@ -55,7 +55,7 @@ if ( uri === null ) {
 /**
  * @param {URL} uri
  * @param {string} wprovPrefix
- * @return {Number}
+ * @return {number}
  */
 function extractResultPosition( uri, wprovPrefix ) {
 	const wprov = uri.searchParams.get( 'wprov' );
@@ -91,7 +91,7 @@ const search = initFromWprov( 'srpw1_' );
 const wprov = uri.searchParams.get( 'wprov' );
 search.didYouMean = wprov &&
 	wprov.slice( 0, search.wprovPrefix.length ) === search.wprovPrefix &&
-	didYouMeanList.indexOf( wprov.slice( search.wprovPrefix.length ) ) >= 0 &&
+	didYouMeanList.includes( wprov.slice( search.wprovPrefix.length ) ) &&
 	wprov.slice( search.wprovPrefix.length );
 
 const autoComplete = initFromWprov( 'acrw1_' );
@@ -168,7 +168,7 @@ function SessionState() {
 		}
 
 		function set( type, value ) {
-			if ( persist.indexOf( type ) >= 0 ) {
+			if ( persist.includes( type ) ) {
 				if ( !mw.storage.set( key( type ), value ) ) {
 					return false;
 				}
@@ -235,7 +235,7 @@ function SessionState() {
 
 	this.get = function ( type ) {
 		if ( !hasOwn.call( state, type ) ) {
-			if ( persist.indexOf( type ) >= 0 ) {
+			if ( persist.includes( type ) ) {
 				state[ type ] = mw.storage.get( key( type ) );
 			} else {
 				state[ type ] = null;
@@ -355,7 +355,7 @@ function genLogEventFn( source, session, sourceExtraData ) {
 		// they're using and which version of the search widget they're seeing.
 		//
 		// See https://phabricator.wikimedia.org/T256100 for detail.
-		if ( [ 'vector', 'vector-2022' ].indexOf( String( skin ) ) > -1 ) {
+		if ( [ 'vector', 'vector-2022' ].includes( String( skin ) ) ) {
 			evt.skinVersion = document.body.classList.contains( 'skin-vector-legacy' ) ? 'legacy' : 'latest';
 		}
 

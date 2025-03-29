@@ -7,7 +7,7 @@
  */
 function isUserBot() {
 	const userGroups = mw.config.get( 'wgUserGroups' ) || [];
-	return userGroups.indexOf( 'bot' ) !== -1;
+	return userGroups.includes( 'bot' );
 }
 
 /**
