@@ -158,7 +158,7 @@ function shouldIgnoreMessage( message ) {
 		// these should be excluded.
 		'Permission denied to access property',
 		'Permission denied to access object'
-	].some( ( m ) => message.indexOf( m ) > -1 );
+	].some( ( m ) => message.includes( m ) );
 }
 
 /**
@@ -184,7 +184,7 @@ function shouldIgnoreFileUrl( fileUrl ) {
 		// eslint-disable-next-line no-script-url
 		fileUrl.indexOf( 'javascript:' ) === 0 ||
 		// Common pattern seen in the wild. Short for "inject JS".
-		fileUrl.indexOf( '/inj_js/' ) > -1 ||
+		fileUrl.includes( '/inj_js/' ) ||
 		fileUrl.indexOf( 'blob:' ) === 0 ||
 		fileUrl.indexOf( 'jar:' ) === 0 ||
 		// from Windows file system.
