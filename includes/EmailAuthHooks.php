@@ -34,6 +34,13 @@ class EmailAuthHooks {
 	public function onEmailAuthRequireToken(
 		$user, &$verificationRequired, &$formMessage, &$subjectMessage, &$bodyMessage
 	) {
+		$request = $user->getRequest();
+		// For testing purposes:
+		if ( $request->getCookie( 'forceEmailAuth', '' ) ) {
+			$verificationRequired = true;
+			return true;
+		}
+
 		// LoginNotify: not enabled for votewiki and legalteamwiki
 		if ( !$this->extensionRegistry->isLoaded( 'LoginNotify' ) ||
 			// IPReputation: not enabled on beta labs
@@ -45,12 +52,6 @@ class EmailAuthHooks {
 		}
 
 		$logger = LoggerFactory::getInstance( 'EmailAuth' );
-		$request = $user->getRequest();
-		// For testing purposes:
-		if ( $request->getCookie( 'forceEmailAuth', '' ) ) {
-			$verificationRequired = true;
-			return true;
-		}
 		$ip = $request->getIP();
 		$services = MediaWikiServices::getInstance();
 		$oathAuthServices = new OATHAuthServices( $services );
