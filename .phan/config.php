@@ -5,9 +5,12 @@ $cfg = require __DIR__ . '/../vendor/mediawiki/mediawiki-phan-config/src/config.
 $cfg['directory_list'] = array_merge(
 	$cfg['directory_list'],
 	[
+		'../../extensions/EmailAuth',
 		'../../extensions/EventBus',
 		'../../extensions/EventLogging',
+		'../../extensions/IPReputation',
 		'../../extensions/MobileFrontend',
+		'../../extensions/LoginNotify',
 		'../../extensions/GlobalPreferences',
 		'../../extensions/GrowthExperiments',
 		'../../extensions/AbuseFilter',
@@ -16,15 +19,19 @@ $cfg['directory_list'] = array_merge(
 		'../../extensions/CheckUser',
 		'../../extensions/FlaggedRevs',
 		'../../extensions/GlobalBlocking',
+		'../../extensions/OATHAuth',
 	]
 );
 
 $cfg['exclude_analysis_directory_list'] = array_merge(
 	$cfg['exclude_analysis_directory_list'],
 	[
+		'../../extensions/EmailAuth',
 		'../../extensions/EventBus',
 		'../../extensions/EventLogging',
+		'../../extensions/IPReputation',
 		'../../extensions/MobileFrontend',
+		'../../extensions/LoginNotify',
 		'../../extensions/GlobalPreferences',
 		'../../extensions/GrowthExperiments',
 		'../../extensions/AbuseFilter',
@@ -33,6 +40,7 @@ $cfg['exclude_analysis_directory_list'] = array_merge(
 		'../../extensions/CheckUser',
 		'../../extensions/FlaggedRevs',
 		'../../extensions/GlobalBlocking',
+		'../../extensions/OATHAuth',
 	]
 );
 

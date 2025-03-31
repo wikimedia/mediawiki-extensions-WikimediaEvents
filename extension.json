@@ -55,6 +55,13 @@
 				"PermissionManager"
 			]
 		},
+		"EmailAuthHooks": {
+			"class": "WikimediaEvents\\EmailAuthHooks",
+			"services": [
+				"ExtensionRegistry",
+				"MainConfig"
+			]
+		},
 		"IPReputationHooks": {
 			"class": "WikimediaEvents\\IPReputationHooks",
 			"services": [
@@ -105,6 +112,7 @@
 			"IPReputationHooks",
 			"TemporaryAccountsInstrumentation"
 		],
+		"EmailAuthRequireToken": "EmailAuthHooks",
 		"LocalUserCreated": "IPReputationHooks",
 		"PreferencesFormPreSave": "VectorInstrumentation",
 		"SaveUserOptions": "PrefInstrumentation",
@@ -385,6 +393,10 @@
 		"WikimediaEventsIPReputationAccountAgeThreshold": {
 			"description": "Number (in days) to use as a cut off for recording IP reputation data on edits. User accounts older than this number of days will not be included in logging of IP reputation data on edit.",
 			"value": 90
+		},
+		"WikimediaEventsEmailAuthEnforce": {
+			"description": "Whether to enforce email auth verification. Default is false, so log-only mode.",
+			"value": false
 		}
 	},
 	"AutoloadClasses": {
