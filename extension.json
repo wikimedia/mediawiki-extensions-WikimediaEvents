@@ -57,10 +57,7 @@
 		},
 		"EmailAuthHooks": {
 			"class": "WikimediaEvents\\EmailAuthHooks",
-			"services": [
-				"ExtensionRegistry",
-				"MainConfig"
-			]
+			"factory": "WikimediaEvents\\EmailAuthHooks::factory"
 		},
 		"IPReputationHooks": {
 			"class": "WikimediaEvents\\IPReputationHooks",
