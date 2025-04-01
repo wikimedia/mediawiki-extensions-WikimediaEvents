@@ -199,6 +199,12 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 		bool $shouldEnforceVerification,
 		string $knownLoginNotify
 	): void {
+		$knownLoginNotify = [
+			'LoginNotify::USER_KNOWN' => LoginNotify::USER_KNOWN,
+			'LoginNotify::USER_NOT_KNOWN' => LoginNotify::USER_NOT_KNOWN,
+			'LoginNotify::USER_NO_INFO' => LoginNotify::USER_NO_INFO,
+		][ $knownLoginNotify ];
+
 		$this->extensionRegistry->method( 'isLoaded' )
 			->willReturnMap( [
 				[ 'IPReputation', '*', true ],
@@ -302,9 +308,10 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			[ true, false ],
 			// Whether the IP is a known IP according to LoginNotify
 			[
-				LoginNotify::USER_KNOWN,
-				LoginNotify::USER_NOT_KNOWN,
-				LoginNotify::USER_NO_INFO,
+				// LoginNotify is not guaranteed to be installed at this point
+				'LoginNotify::USER_KNOWN',
+				'LoginNotify::USER_NOT_KNOWN',
+				'LoginNotify::USER_NO_INFO',
 			]
 		);
 
