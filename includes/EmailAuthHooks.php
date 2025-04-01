@@ -70,7 +70,7 @@ class EmailAuthHooks {
 
 	/**
 	 * @param User $user
-	 * @param bool &$verificationRequired
+	 * @param bool &$verificationRequired Set to true to require email verification
 	 * @param string &$formMessage
 	 * @param string &$subject
 	 * @param string &$body
@@ -81,86 +81,71 @@ class EmailAuthHooks {
 		$user, &$verificationRequired, &$formMessage, &$subject, &$body, &$bodyHtml
 	) {
 		$request = $user->getRequest();
-		// For testing purposes:
-		if ( $request->getCookie( 'forceEmailAuth', '' ) ) {
-			$verificationRequired = true;
-			return true;
-		}
-
-		// LoginNotify: not enabled for votewiki and legalteamwiki
-		if ( !$this->extensionRegistry->isLoaded( 'LoginNotify' ) ||
-			// IPReputation: not enabled on beta labs
-			!$this->extensionRegistry->isLoaded( 'IPReputation' ) ||
-			// OATHAuth: Enabled everywhere
-			!$this->extensionRegistry->isLoaded( 'OATHAuth' )
-		) {
-			return true;
-		}
-
 		$ip = $request->getIP();
-
-		$oathUser = $this->userRepository->findByUser( $user );
-		$knownToIPoid = (bool)$this->ipReputationDataLookup->getIPoidDataForIp( $ip, __METHOD__ );
-		$knownLoginNotify = $this->loginNotify->isKnownSystemFast( $user, $request );
-
 		$userName = $user->getName();
-		$isEmailConfirmed = $user->isEmailConfirmed();
 		$userAgent = $request->getHeader( 'User-Agent' );
+		$forceEmailAuth = (bool)$request->getCookie( 'forceEmailAuth', '' );
 
-		if ( $user->isBot() ) {
-			// For now, we can ignore users that are marked as bots.
-			$this->logger->info( 'Email verification skipped for bot {user}', [
-				'user' => $userName,
-				'eventType' => 'emailauth-verification-skipped-bot',
-				'ua' => $userAgent,
-				'ip' => $ip,
-				'knownIPoid' => $knownToIPoid,
-				'knownLoginNotify' => $knownLoginNotify,
-			] );
-			return true;
+		$isEmailConfirmed = $user->isEmailConfirmed();
+		$isBot = $user->isBot();
+		// one of the LoginNotify::USER_* constants
+		$knownLoginNotify = 'no info';
+		$knownToIPoid = false;
+		$hasTwoFactorAuth = false;
+
+		if ( $this->extensionRegistry->isLoaded( 'LoginNotify' ) ) {
+			$knownLoginNotify = $this->loginNotify->isKnownSystemFast( $user, $request );
+		}
+		if ( $this->extensionRegistry->isLoaded( 'IPReputation' ) ) {
+			$knownToIPoid = (bool)$this->ipReputationDataLookup->getIPoidDataForIp( $ip, __METHOD__ );
+		}
+		if ( $this->extensionRegistry->isLoaded( 'OATHAuth' ) ) {
+			$oathUser = $this->userRepository->findByUser( $user );
+			$hasTwoFactorAuth = $oathUser->isTwoFactorAuthEnabled();
 		}
 
-		if ( $oathUser->isTwoFactorAuthEnabled() ) {
-			$this->logger->info( 'Email verification skipped for {user} with 2FA enabled', [
-				'user' => $userName,
-				'eventType' => 'emailauth-verification-skipped-2fa',
-				'ua' => $userAgent,
-				'ip' => $ip,
-				'knownIPoid' => $knownToIPoid,
-				'knownLoginNotify' => $knownLoginNotify,
-			] );
-			return true;
-		}
+		$logData = [
+			'user' => $userName,
+			'ua' => $userAgent,
+			'ip' => $ip,
+			'emailVerified' => $isEmailConfirmed,
+			'isBot' => $isBot,
+			'knownIPoid' => $knownToIPoid,
+			'knownLoginNotify' => $knownLoginNotify,
+			'hasTwoFactorAuth' => $hasTwoFactorAuth,
+			'forceEmailAuth' => $forceEmailAuth,
+		];
 
-		if ( $knownLoginNotify !== LoginNotify::USER_KNOWN && $knownToIPoid ) {
+		if ( $forceEmailAuth ) {
+			// Test mode, always require verification.
+			$logMessage = 'Email verification skipped for {user} via test cookie';
+			$eventType = 'emailauth-verification-forced';
+			$verificationRequired = true;
+		} elseif ( $isBot ) {
+			$logMessage = 'Email verification skipped for bot {user}';
+			$eventType = 'emailauth-verification-skipped-bot';
+			$verificationRequired = false;
+		} elseif ( $hasTwoFactorAuth ) {
+			$logMessage = 'Email verification skipped for {user} with 2FA enabled';
+			$eventType = 'emailauth-verification-skipped-2fa';
+			$verificationRequired = false;
+		} elseif ( $knownLoginNotify === LoginNotify::USER_KNOWN ) {
+			$logMessage = 'Email verification skipped for {user} with known IP or device';
+			$eventType = 'emailauth-verification-skipped-known-loginnotify';
+			$verificationRequired = false;
+		} elseif ( !$knownToIPoid ) {
+			$logMessage = 'Email verification skipped for {user} with no bad IP reputation';
+			$eventType = 'emailauth-verification-skipped-nobadip';
+			$verificationRequired = false;
+		} else {
 			// If we are in "enforce" mode, then actually require the email verification here.
 			$verificationRequired = $this->config->get( 'WikimediaEventsEmailAuthEnforce' );
-			$this->logger->info(
-				'Email verification required for {user} without 2FA, not in LoginNotify, IP in IPoid',
-				[
-					'user' => $userName,
-					'eventType' => 'emailauth-verification-required',
-					'ip' => $ip,
-					'emailVerified' => $isEmailConfirmed,
-					'ua' => $userAgent,
-					'knownIPoid' => $knownToIPoid,
-					'knownLoginNotify' => $knownLoginNotify,
-				]
-			);
-			return true;
+			$logMessage = 'Email verification required for {user} without 2FA, unknown IP and device, '
+				. 'bad IP reputation';
+			$eventType = 'emailauth-verification-required';
 		}
-		$this->logger->info(
-			'Email verification not required for {user}',
-			[
-				'user' => $userName,
-				'ip' => $ip,
-				'eventType' => 'emailauth-verification-not-required',
-				'emailVerified' => $isEmailConfirmed,
-				'ua' => $userAgent,
-				'knownIPoid' => $knownToIPoid,
-				'knownLoginNotify' => $knownLoginNotify,
-			]
-		);
+
+		$this->logger->info( $logMessage, $logData + [ 'eventType' => $eventType ] );
 		return true;
 	}
 }

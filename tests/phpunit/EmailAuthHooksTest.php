@@ -1,7 +1,6 @@
 <?php
 namespace WikimediaEvents\Tests\Unit;
 
-use ArrayUtils;
 use LoginNotify\LoginNotify;
 use MediaWiki\Config\HashConfig;
 use MediaWiki\Config\MutableConfig;
@@ -60,19 +59,12 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider provideExtensionDependenciesNotMet
-	 */
-	public function testShouldDoNothingIfExtensionDependenciesNotMet(
-		bool $ipReputationLoaded,
-		bool $oathAuthLoaded,
-		bool $loginNotifyLoaded
-	): void {
+	public function testShouldDoNothingIfExtensionDependenciesNotMet(): void {
 		$this->extensionRegistry->method( 'isLoaded' )
 			->willReturnMap( [
-				[ 'IPReputation', '*', $ipReputationLoaded ],
-				[ 'OATHAuth', '*', $oathAuthLoaded ],
-				[ 'LoginNotify', '*', $loginNotifyLoaded ],
+				[ 'IPReputation', '*', false ],
+				[ 'OATHAuth', '*', false ],
+				[ 'LoginNotify', '*', false ],
 			] );
 
 		$this->user->method( 'getRequest' )
@@ -85,9 +77,6 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			->method( $this->anything() );
 
 		$this->loginNotify->expects( $this->never() )
-			->method( $this->anything() );
-
-		$this->logger->expects( $this->never() )
 			->method( $this->anything() );
 
 		$verificationRequired = false;
@@ -104,25 +93,12 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( $verificationRequired );
 	}
 
-	public static function provideExtensionDependenciesNotMet(): iterable {
-		yield 'IPReputation not loaded' => [ false, true, true ];
-		yield 'OATHAuth not loaded' => [ true, false, true ];
-		yield 'LoginNotify not loaded' => [ true, true, false ];
-	}
-
-	/**
-	 * @dataProvider provideDependencyStatusWhenForcedVerification
-	 */
-	public function testShouldAllowForcingVerificationViaCookieIrrespectiveOfDependencyStatus(
-		bool $ipReputationLoaded,
-		bool $oathAuthLoaded,
-		bool $loginNotifyLoaded
-	): void {
+	public function testShouldAllowForcingVerificationViaCookie(): void {
 		$this->extensionRegistry->method( 'isLoaded' )
 			->willReturnMap( [
-				[ 'IPReputation', '*', $ipReputationLoaded ],
-				[ 'OATHAuth', '*', $oathAuthLoaded ],
-				[ 'LoginNotify', '*', $loginNotifyLoaded ],
+				[ 'IPReputation', '*', false ],
+				[ 'OATHAuth', '*', false ],
+				[ 'LoginNotify', '*', false ],
 			] );
 
 		$request = new FauxRequest();
@@ -130,18 +106,6 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 
 		$this->user->method( 'getRequest' )
 			->willReturn( $request );
-
-		$this->userRepository->expects( $this->never() )
-			->method( $this->anything() );
-
-		$this->ipReputationDataLookup->expects( $this->never() )
-			->method( $this->anything() );
-
-		$this->loginNotify->expects( $this->never() )
-			->method( $this->anything() );
-
-		$this->logger->expects( $this->never() )
-			->method( $this->anything() );
 
 		$verificationRequired = false;
 		$res = $this->hooks->onEmailAuthRequireToken(
@@ -157,41 +121,13 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 		$this->assertTrue( $verificationRequired );
 	}
 
-	public static function provideDependencyStatusWhenForcedVerification(): iterable {
-		$testCases = ArrayUtils::cartesianProduct(
-			// Whether IPReputation is loaded
-			[ true, false ],
-			// Whether OATHAuth is loaded
-			[ true, false ],
-			// Whether LoginNotify is loaded
-			[ true, false ]
-		);
-
-		foreach ( $testCases as $params ) {
-			[
-				$ipReputationLoaded,
-				$oathAuthLoaded,
-				$loginNotifyLoaded
-			] = $params;
-
-			$description = sprintf(
-				'IPReputation %s, OATHAuth %s, LoginNotify %s',
-				$ipReputationLoaded ? 'loaded' : 'not loaded',
-				$oathAuthLoaded ? 'loaded' : 'not loaded',
-				$loginNotifyLoaded ? 'loaded' : 'not loaded'
-			);
-
-			yield $description => $params;
-		}
-	}
-
 	/**
 	 * @dataProvider provideVerificationCases
 	 *
 	 * @param bool $hasEnabledTwoFactorAuth Whether the user has 2FA enabled
 	 * @param bool $isEmailConfirmed Whether the user's email is confirmed
 	 * @param bool $isKnownToIpoid Whether the user's IP is known to ipoid/Spur
-	 * @param string $isBotUser If the user is a bot.
+	 * @param bool $isBotUser If the user is a bot.
 	 * @param bool $shouldEnforceVerification The value of $wgWikimediaEventsEmailAuthEnforce
 	 * @param string $knownLoginNotify The status of the user's IP according to LoginNotify
 	 */
@@ -248,54 +184,45 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			$isKnownToIpoid &&
 			$knownLoginNotify !== LoginNotify::USER_KNOWN;
 
+		$logData = [
+			'user' => $this->user->getName(),
+			'ua' => 'Mozilla/5.0',
+			'ip' => $request->getIP(),
+			'emailVerified' => $isEmailConfirmed,
+			'isBot' => $isBotUser,
+			'knownLoginNotify' => $knownLoginNotify,
+			'knownIPoid' => $isKnownToIpoid,
+			'hasTwoFactorAuth' => $hasEnabledTwoFactorAuth,
+			'forceEmailAuth' => false,
+		];
+
+		$logExpectation = $this->logger->expects( $this->once() )->method( 'info' );
+
 		if ( $isBotUser ) {
-			$this->logger->expects( $this->once() )
-				->method( 'info' )
-				->with( 'Email verification skipped for bot {user}',
-					[
-						'user' => $this->user->getName(),
-						'eventType' => 'emailauth-verification-skipped-bot',
-						'ua' => 'Mozilla/5.0',
-						'ip' => $request->getIP(),
-						'knownLoginNotify' => $knownLoginNotify,
-						'knownIPoid' => $isKnownToIpoid,
-					]
-				);
+			$logExpectation->with(
+				'Email verification skipped for bot {user}',
+				$logData + [ 'eventType' => 'emailauth-verification-skipped-bot' ]
+			);
 		} elseif ( $hasEnabledTwoFactorAuth ) {
-			$this->logger->expects( $this->once() )
-				->method( 'info' )
-				->with(
-					'Email verification skipped for {user} with 2FA enabled',
-					[
-						'user' => $this->user->getName(),
-						'eventType' => 'emailauth-verification-skipped-2fa',
-						'ua' => 'Mozilla/5.0',
-						'ip' => $request->getIP(),
-						'knownIPoid' => $isKnownToIpoid,
-						'knownLoginNotify' => $knownLoginNotify,
-					]
-				);
+			$logExpectation->with(
+				'Email verification skipped for {user} with 2FA enabled',
+				$logData + [ 'eventType' => 'emailauth-verification-skipped-2fa' ]
+			);
+		} elseif ( $knownLoginNotify === LoginNotify::USER_KNOWN ) {
+			$logExpectation->with(
+				'Email verification skipped for {user} with known IP or device',
+				$logData + [ 'eventType' => 'emailauth-verification-skipped-known-loginnotify' ]
+			);
+		} elseif ( !$isKnownToIpoid ) {
+			$logExpectation->with(
+				'Email verification skipped for {user} with no bad IP reputation',
+				$logData + [ 'eventType' => 'emailauth-verification-skipped-nobadip' ]
+			);
 		} else {
-			$logMsg = $shouldRequireVerification ?
-				'Email verification required for {user} without 2FA, not in LoginNotify, IP in IPoid' :
-				'Email verification not required for {user}';
-			$eventType = $shouldRequireVerification ?
-				'emailauth-verification-required' :
-				'emailauth-verification-not-required';
-			$this->logger->expects( $this->once() )
-				->method( 'info' )
-				->with(
-					$logMsg,
-					[
-						'user' => $this->user->getName(),
-						'eventType' => $eventType,
-						'emailVerified' => $isEmailConfirmed,
-						'ua' => 'Mozilla/5.0',
-						'ip' => $request->getIP(),
-						'knownIPoid' => $isKnownToIpoid,
-						'knownLoginNotify' => $knownLoginNotify,
-					]
-				);
+			$logExpectation->with(
+				'Email verification required for {user} without 2FA, unknown IP and device, bad IP reputation',
+				$logData + [ 'eventType' => 'emailauth-verification-required' ]
+			);
 		}
 
 		$verificationRequired = false;
@@ -316,25 +243,16 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public static function provideVerificationCases(): iterable {
-		$testCases = ArrayUtils::cartesianProduct(
-			// 2FA status
-			[ true, false ],
-			// Email confirmation status
-			[ true, false ],
-			// Whether the IP is known to ipoid
-			[ true, false ],
-			// Whether the user is a bot
-			[ true, false ],
-			// $wgWikimediaEventsEmailAuthEnforce
-			[ true, false ],
-			// Whether the IP is a known IP according to LoginNotify
-			[
-				// LoginNotify is not guaranteed to be installed at this point
-				'LoginNotify::USER_KNOWN',
-				'LoginNotify::USER_NOT_KNOWN',
-				'LoginNotify::USER_NO_INFO',
-			]
-		);
+		$testCases = [
+			[ false, false, false, false, false, 'LoginNotify::USER_NOT_KNOWN' ],
+			[ true, false, false, false, false, 'LoginNotify::USER_NOT_KNOWN' ],
+			[ false, true, false, false, false, 'LoginNotify::USER_NOT_KNOWN' ],
+			[ false, false, true, false, false, 'LoginNotify::USER_NOT_KNOWN' ],
+			[ false, false, false, true, false, 'LoginNotify::USER_NOT_KNOWN' ],
+			[ false, false, false, false, true, 'LoginNotify::USER_NOT_KNOWN' ],
+			[ false, false, false, false, false, 'LoginNotify::USER_KNOWN' ],
+			[ false, false, false, false, false, 'LoginNotify::USER_NO_INFO' ],
+		];
 
 		foreach ( $testCases as $params ) {
 			[
