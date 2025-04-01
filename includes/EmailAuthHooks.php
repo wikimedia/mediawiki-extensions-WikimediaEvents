@@ -11,29 +11,38 @@ use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\User\User;
+use MediaWiki\User\UserEditTracker;
 use Psr\Log\LoggerInterface;
+use Wikimedia\Timestamp\ConvertibleTimestamp;
 
 class EmailAuthHooks {
 	private ExtensionRegistry $extensionRegistry;
 	private Config $config;
-	private ?OATHUserRepository $userRepository;
+	private UserEditTracker $userEditTracker;
+	private ?OATHUserRepository $oathUserRepository;
 	private ?IPReputationIPoidDataLookup $ipReputationDataLookup;
 	private ?LoginNotify $loginNotify;
+	/** @var callable|null */
+	private $getPrivilegedGroupsCallback;
 	private LoggerInterface $logger;
 
 	public function __construct(
 		ExtensionRegistry $extensionRegistry,
 		Config $config,
-		?OATHUserRepository $userRepository,
+		UserEditTracker $userEditTracker,
+		?OATHUserRepository $oathUserRepository,
 		?IPReputationIPoidDataLookup $ipReputationDataLookup,
 		?LoginNotify $loginNotify,
+		?callable $getPrivilegedGroupsCallback,
 		LoggerInterface $logger
 	) {
 		$this->extensionRegistry = $extensionRegistry;
 		$this->config = $config;
-		$this->userRepository = $userRepository;
+		$this->userEditTracker = $userEditTracker;
+		$this->oathUserRepository = $oathUserRepository;
 		$this->ipReputationDataLookup = $ipReputationDataLookup;
 		$this->loginNotify = $loginNotify;
+		$this->getPrivilegedGroupsCallback = $getPrivilegedGroupsCallback;
 		$this->logger = $logger;
 	}
 
@@ -61,9 +70,12 @@ class EmailAuthHooks {
 		return new self(
 			$services->getExtensionRegistry(),
 			$services->getMainConfig(),
+			$services->getUserEditTracker(),
 			$userRepository,
 			$ipReputationDataLookup,
 			$loginNotify,
+			// defined in wmf-config/CommonSettings.php in the operations/mediawiki-config repo
+			function_exists( 'wmfGetPrivilegedGroups' ) ? 'wmfGetPrivilegedGroups' : null,
 			LoggerFactory::getInstance( 'EmailAuth' )
 		);
 	}
@@ -92,6 +104,15 @@ class EmailAuthHooks {
 		$knownLoginNotify = 'no info';
 		$knownToIPoid = false;
 		$hasTwoFactorAuth = false;
+		$privilegedGroups = [];
+
+		$activeOnLocalWikiInLast90Days = false;
+		$latestEditTimestamp = $this->userEditTracker->getLatestEditTimestamp( $user );
+		if ( $latestEditTimestamp ) {
+			$timeSinceLastEdit = ( new ConvertibleTimestamp( $latestEditTimestamp ) )
+				->diff( new ConvertibleTimestamp() );
+			$activeOnLocalWikiInLast90Days = $timeSinceLastEdit->format( '%a' ) <= 90;
+		}
 
 		if ( $this->extensionRegistry->isLoaded( 'LoginNotify' ) ) {
 			$knownLoginNotify = $this->loginNotify->isKnownSystemFast( $user, $request );
@@ -100,8 +121,11 @@ class EmailAuthHooks {
 			$knownToIPoid = (bool)$this->ipReputationDataLookup->getIPoidDataForIp( $ip, __METHOD__ );
 		}
 		if ( $this->extensionRegistry->isLoaded( 'OATHAuth' ) ) {
-			$oathUser = $this->userRepository->findByUser( $user );
+			$oathUser = $this->oathUserRepository->findByUser( $user );
 			$hasTwoFactorAuth = $oathUser->isTwoFactorAuthEnabled();
+		}
+		if ( is_callable( $this->getPrivilegedGroupsCallback ) ) {
+			$privilegedGroups = ( $this->getPrivilegedGroupsCallback )( $user );
 		}
 
 		$logData = [
@@ -114,6 +138,8 @@ class EmailAuthHooks {
 			'knownLoginNotify' => $knownLoginNotify,
 			'hasTwoFactorAuth' => $hasTwoFactorAuth,
 			'forceEmailAuth' => $forceEmailAuth,
+			'privilegedGroups' => array_fill_keys( $privilegedGroups, 1 ),
+			'activeOnLocalWikiInLast90Days' => $activeOnLocalWikiInLast90Days,
 		];
 
 		if ( $forceEmailAuth ) {
