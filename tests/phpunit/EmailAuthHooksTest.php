@@ -189,6 +189,7 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 	 * @param bool $hasEnabledTwoFactorAuth Whether the user has 2FA enabled
 	 * @param bool $isEmailConfirmed Whether the user's email is confirmed
 	 * @param bool $isKnownToIpoid Whether the user's IP is known to ipoid/Spur
+	 * @param string $isBotUser If the user is a bot.
 	 * @param bool $shouldEnforceVerification The value of $wgWikimediaEventsEmailAuthEnforce
 	 * @param string $knownLoginNotify The status of the user's IP according to LoginNotify
 	 */
@@ -196,6 +197,7 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 		bool $hasEnabledTwoFactorAuth,
 		bool $isEmailConfirmed,
 		bool $isKnownToIpoid,
+		bool $isBotUser,
 		bool $shouldEnforceVerification,
 		string $knownLoginNotify
 	): void {
@@ -222,6 +224,7 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			->willReturn( $request );
 		$this->user->method( 'isEmailConfirmed' )
 			->willReturn( $isEmailConfirmed );
+		$this->user->method( 'isBot' )->willReturn( $isBotUser );
 
 		$oathUser = $this->createMock( OATHUser::class );
 		$oathUser->method( 'isTwoFactorAuthEnabled' )
@@ -239,11 +242,24 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			->with( $this->user, $request )
 			->willReturn( $knownLoginNotify );
 
-		$shouldRequireVerification = !$hasEnabledTwoFactorAuth &&
+		$shouldRequireVerification = !$isBotUser && !$hasEnabledTwoFactorAuth &&
 			$isKnownToIpoid &&
 			$knownLoginNotify !== LoginNotify::USER_KNOWN;
 
-		if ( $hasEnabledTwoFactorAuth ) {
+		if ( $isBotUser ) {
+			$this->logger->expects( $this->once() )
+				->method( 'info' )
+				->with( 'Email verification skipped for bot {user}',
+					[
+						'user' => $this->user->getName(),
+						'eventType' => 'emailauth-verification-skipped-bot',
+						'ua' => 'Mozilla/5.0',
+						'ip' => $request->getIP(),
+						'knownLoginNotify' => $knownLoginNotify,
+						'knownIPoid' => $isKnownToIpoid,
+					]
+				);
+		} elseif ( $hasEnabledTwoFactorAuth ) {
 			$this->logger->expects( $this->once() )
 				->method( 'info' )
 				->with(
@@ -304,6 +320,8 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			[ true, false ],
 			// Whether the IP is known to ipoid
 			[ true, false ],
+			// Whether the user is a bot
+			[ true, false ],
 			// $wgWikimediaEventsEmailAuthEnforce
 			[ true, false ],
 			// Whether the IP is a known IP according to LoginNotify
@@ -320,15 +338,17 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 				$hasEnabledTwoFactorAuth,
 				$isEmailConfirmed,
 				$isKnownToIpoid,
+				$isBotUser,
 				$shouldEnforceVerification,
 				$knownLoginNotify
 			] = $params;
 
 			$description = sprintf(
-				'2FA %s, %s, %s, $wgWikimediaEventsEmailAuthEnforce: %s, LoginNotify status: %s',
+				'2FA %s, %s, %s, %s, $wgWikimediaEventsEmailAuthEnforce: %s, LoginNotify status: %s',
 				$hasEnabledTwoFactorAuth ? 'enabled' : 'disabled',
 				$isEmailConfirmed ? 'email confirmed' : 'email not confirmed',
 				$isKnownToIpoid ? 'known to ipoid' : 'not known to ipoid',
+				$isBotUser ? 'bot user' : 'not bot user',
 				$shouldEnforceVerification ? 'true' : 'false',
 				$knownLoginNotify
 			);
