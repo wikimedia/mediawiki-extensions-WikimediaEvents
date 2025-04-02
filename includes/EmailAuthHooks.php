@@ -106,6 +106,19 @@ class EmailAuthHooks {
 		$isEmailConfirmed = $user->isEmailConfirmed();
 		$userAgent = $request->getHeader( 'User-Agent' );
 
+		if ( $user->isBot() ) {
+			// For now, we can ignore users that are marked as bots.
+			$this->logger->info( 'Email verification skipped for bot {user}', [
+				'user' => $userName,
+				'eventType' => 'emailauth-verification-skipped-bot',
+				'ua' => $userAgent,
+				'ip' => $ip,
+				'knownIPoid' => $knownToIPoid,
+				'knownLoginNotify' => $knownLoginNotify,
+			] );
+			return true;
+		}
+
 		if ( $oathUser->isTwoFactorAuthEnabled() ) {
 			$this->logger->info( 'Email verification skipped for {user} with 2FA enabled', [
 				'user' => $userName,
