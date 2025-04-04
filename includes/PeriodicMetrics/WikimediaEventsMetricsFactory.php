@@ -30,6 +30,8 @@ class WikimediaEventsMetricsFactory {
 
 	/** @var string[] */
 	private const GLOBAL_METRICS = [
+		CheckUserCentralTempEditIndexRowCountMetric::class,
+		CheckUserCentralUserIndexRowCountMetric::class,
 		GloballyAutoEnrolledTemporaryAccountIPViewersMetric::class,
 		GlobalTemporaryAccountIPViewersMetric::class,
 		GlobalTemporaryAccountIPViewersWithEnabledPreferenceMetric::class,
@@ -133,6 +135,10 @@ class WikimediaEventsMetricsFactory {
 					$this->groupPermissionsLookup, $this->userGroupManager, $this->dbProvider,
 					$this->extensionRegistry, $this->centralIdLookup, $this->userIdentityLookup
 				);
+			case CheckUserCentralUserIndexRowCountMetric::class:
+				return new CheckUserCentralUserIndexRowCountMetric( $this->dbProvider );
+			case CheckUserCentralTempEditIndexRowCountMetric::class:
+				return new CheckUserCentralTempEditIndexRowCountMetric( $this->dbProvider );
 			default:
 				throw new InvalidArgumentException( 'Unsupported metric class name' );
 		}
