@@ -41,6 +41,7 @@ class LocalTemporaryAccountIPViewersWithEnabledPreferenceMetricTest extends Medi
 
 	public function testCalculateForOnlyGlobalPreferencesChecked() {
 		$this->markTestSkippedIfExtensionNotLoaded( 'GlobalPreferences' );
+
 		$this->setUpLocalGroupPermissions();
 		$this->getDb()->newInsertQueryBuilder()
 			->insertInto( 'global_preferences' )
@@ -73,6 +74,8 @@ class LocalTemporaryAccountIPViewersWithEnabledPreferenceMetricTest extends Medi
 	}
 
 	public function testCalculateForOnlyLocalPreferencesChecked() {
+		$this->markTestSkippedIfExtensionNotLoaded( 'GlobalPreferences' );
+
 		$this->setUpLocalGroupPermissions();
 		$this->getDb()->newInsertQueryBuilder()
 			->insertInto( 'user_properties' )
