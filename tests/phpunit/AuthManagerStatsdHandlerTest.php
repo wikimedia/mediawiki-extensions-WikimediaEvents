@@ -61,6 +61,8 @@ class AuthManagerStatsdHandlerTest extends MediaWikiIntegrationTestCase {
 	 * @dataProvider provideHandle
 	 */
 	public function testHandle( $record, $expectedMetric ) {
+		$this->markTestSkippedIfExtensionNotLoaded( 'CentralAuth' );
+
 		$counter = $this->createMock( CounterMetric::class );
 		$counter->method( 'setLabel' )->willReturnSelf();
 		$counter->method( 'copyToStatsdAt' )->willReturnSelf();
