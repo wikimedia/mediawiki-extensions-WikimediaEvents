@@ -5,9 +5,9 @@ namespace WikimediaEvents\Tests\Integration;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
-use MediaWiki\WikiMap\WikiMap;
 use Skin;
-use Wikimedia\Stats\StatsUtils;
+use Wikimedia\Stats\StatsFactory;
+use Wikimedia\TestingAccessWrapper;
 
 /**
  * @covers \WikimediaEvents\WikimediaEventsHooks
@@ -21,90 +21,104 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 	 * @dataProvider provideStatsFactoryOnPageSaveComplete
 	 */
 	public function testStatsFactoryOnPageSaveComplete(
-		$userAgent, $isUserAnon, $isEditorNamed, $useMinervaSkin, $expectedLabelValues
+		string $userAgent, string $userType, string $skinName, array $expectedStats
 	) {
-		$requestContext = RequestContext::getMain();
-		$requestContext->getRequest()->setHeader( 'User-agent', $userAgent );
-		if ( $useMinervaSkin ) {
-			$skin = $this->createMock( Skin::class );
-			$skin->method( 'getSkinName' )->willReturn( 'minerva' );
-			$requestContext->setSkin( $skin );
-		}
-		$timing = $requestContext->getTiming();
-		$timing->mark( 'requestStart' );
-		$timing->mark( 'requestShutdown' );
-		if ( $isUserAnon ) {
+		$context = RequestContext::getMain();
+		$context->getRequest()->setHeader( 'User-agent', $userAgent );
+		$skin = $this->createMock( Skin::class );
+		$skin->method( 'getSkinName' )->willReturn( $skinName );
+		$context->setSkin( $skin );
+		TestingAccessWrapper::newFromObject( $context->getTiming() )->entries = [
+			'requestStart' => [ 'entryType' => 'mark', 'startTime' => 1.900, 'duration' => 0, ],
+			'requestShutdown' => [ 'entryType' => 'mark', 'startTime' => 2.023, 'duration' => 0, ]
+		];
+		if ( $userType === 'anon' ) {
 			$this->disableAutoCreateTempUser();
 			$authority = $this->getServiceContainer()->getUserFactory()->newAnonymous();
-		} else {
+		} elseif ( $userType === 'named' ) {
 			$this->enableAutoCreateTempUser();
 			$authority = $this->getTestUser()->getAuthority();
-			if ( !$isEditorNamed ) {
-				$authority = $this->getServiceContainer()->getTempUserCreator()->create(
-					'~2024-1', new FauxRequest()
-				)->getUser();
-			}
+		} elseif ( $userType === 'temp' ) {
+			$this->enableAutoCreateTempUser();
+			$authority = $this->getServiceContainer()->getTempUserCreator()->create(
+				'~2024-1', new FauxRequest()
+			)->getUser();
 		}
+		$statsHelper = StatsFactory::newUnitTestingHelper();
+		$this->setService( 'StatsFactory', $statsHelper->getStatsFactory() );
+		$this->overrideConfigValues( [ 'DBname' => 'example', 'DBmwschema' => null, 'DBprefix' => '' ] );
+
 		$this->editPage( 'Test', 'Test', '', NS_MAIN, $authority );
-		$timer = $this->getServiceContainer()->getStatsFactory()->withComponent( 'WikimediaEvents' )
-			->getTiming( 'editResponseTime_seconds' );
-		$sample = $timer->getSamples()[0];
-		$labelValues = $sample->getLabelValues();
-		$wikiIdLabel = array_shift( $labelValues );
-		$this->assertSame( StatsUtils::normalizeString( WikiMap::getCurrentWikiId() ), $wikiIdLabel );
-		$this->assertArrayEquals( $expectedLabelValues, $labelValues );
+		$this->assertArrayContains(
+			$expectedStats,
+			$statsHelper->consumeAllFormatted()
+		);
 	}
 
 	public function provideStatsFactoryOnPageSaveComplete(): array {
 		return [
 			[
-				'Commons/Blah',
-				false,
-				true,
-				false,
-				[ '1', 'commons', 'other', 'normal', 'content' ]
+				'Commons/0.0 (https://mediawiki.org/wiki/Apps/Commons) Android/0',
+				'named',
+				'vector',
+				[
+					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:example,user:normal,is_mobile:1',
+					'mediawiki.WikimediaEvents_editResponseTime_seconds:123|ms|#page:content,user:normal,entry:other',
+				]
 			],
 			[
-				'WikipediaApp/iOS',
-				false,
-				true,
-				false,
-				[ '1', 'ios', 'other', 'normal', 'content' ]
+				'WikipediaApp/0.0 (iOS)',
+				'named',
+				'vector',
+				[
+					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:example,user:normal,is_mobile:1',
+					'mediawiki.WikimediaEvents_editResponseTime_seconds:123|ms|#page:content,user:normal,entry:other',
+				]
 			],
 			[
-				'WikipediaApp/iOS',
-				false,
-				false,
-				false,
-				[ '1', 'ios', 'other', 'temp', 'content' ]
+				'WikipediaApp/0.0 (iOS)',
+				'temp',
+				'vector',
+				[
+					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:example,user:temp,is_mobile:1',
+					'mediawiki.WikimediaEvents_editResponseTime_seconds:123|ms|#page:content,user:temp,entry:other',
+				]
 			],
 			[
-				'WikipediaApp/Android',
-				false,
-				false,
-				false,
-				[ '1', 'android', 'other', 'temp', 'content' ]
+				'WikipediaApp/0.0 (Android)',
+				'temp',
+				'vector',
+				[
+					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:example,user:temp,is_mobile:1',
+					'mediawiki.WikimediaEvents_editResponseTime_seconds:123|ms|#page:content,user:temp,entry:other',
+				]
 			],
-			[
-				'Unknown',
-				false,
-				false,
-				false,
-				[ '0', 'unknown', 'other', 'temp', 'content' ]
+			'Unknown platform' => [
+				'Firefox/0.0',
+				'temp',
+				'vector',
+				[
+					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:example,user:temp,is_mobile:0',
+					'mediawiki.WikimediaEvents_editResponseTime_seconds:123|ms|#page:content,user:temp,entry:other',
+				]
 			],
-			[
-				'VisualEditor on Minerva',
-				false,
-				false,
-				true,
-				[ '1', 'unknown', 'other', 'temp', 'content' ]
+			'VisualEditor temp account on mobile' => [
+				'Firefox/0.0',
+				'temp',
+				'minerva',
+				[
+					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:example,user:temp,is_mobile:1',
+					'mediawiki.WikimediaEvents_editResponseTime_seconds:123|ms|#page:content,user:temp,entry:other',
+				]
 			],
-			[
-				'VisualEditor on Vector',
-				true,
-				false,
-				true,
-				[ '1', 'unknown', 'other', 'anon', 'content' ]
+			'VisualEditor anon on desktop' => [
+				'Firefox/0.0',
+				'anon',
+				'vector',
+				[
+					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:example,user:anon,is_mobile:0',
+					'mediawiki.WikimediaEvents_editResponseTime_seconds:123|ms|#page:content,user:anon,entry:other',
+				]
 			],
 		];
 	}

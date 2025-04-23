@@ -235,34 +235,30 @@ class WikimediaEventsHooks implements
 			$nsType = 'meta';
 		}
 
-		$entry = $this->wikimediaEventsRequestDetailsLookup->getEntryPoint();
-
-		$platformDetails = $this->wikimediaEventsRequestDetailsLookup->getPlatformDetails();
-
 		$size = $content->getSize();
+		$entry = $this->wikimediaEventsRequestDetailsLookup->getEntryPoint();
+		$platformDetails = $this->wikimediaEventsRequestDetailsLookup->getPlatformDetails();
 
 		DeferredUpdates::addCallableUpdate(
 			static function () use ( $size, $nsType, $accType, $entry, $platformDetails ) {
-				$requestContext = RequestContext::getMain();
-				$reqCtxTiming = $requestContext->getTiming();
-
-				$measure = $reqCtxTiming->measure(
-					'editResponseTime', 'requestStart', 'requestShutdown' );
+				$context = RequestContext::getMain();
+				$timing = $context->getTiming();
+				$measure = $timing->measure( 'editResponseTime', 'requestStart', 'requestShutdown' );
 				if ( $measure === false ) {
 					return;
 				}
 
+				$stats = MediaWikiServices::getInstance()->getStatsFactory();
+
 				$timeMs = $measure['duration'] * 1000;
+				// T224686: Avoid div by zero
+				$msPerKb = $timeMs / ( max( $size, 1 ) / 1e3 );
 
-				$statsFactory = MediaWikiServices::getInstance()->getStatsFactory()
-					->withComponent( 'WikimediaEvents' );
-
-				$statsFactory->getTiming( 'editResponseTime_seconds' )
-					->setLabel( 'wiki', WikiMap::getCurrentWikiId() )
+				// Backend Save Timing
+				// T391677: Avoid adding more labels here
+				$stats->getTiming( 'WikimediaEvents_editResponseTime_seconds' )
 					->setLabel( 'page', $nsType )
 					->setLabel( 'user', $accType )
-					->setLabel( 'is_mobile', $platformDetails['isMobile'] )
-					->setLabel( 'platform', $platformDetails['platform'] )
 					->setLabel( 'entry', $entry )
 					->copyToStatsdAt( [
 						"timing.editResponseTime",
@@ -270,21 +266,22 @@ class WikimediaEventsHooks implements
 						"timing.editResponseTime.user.$accType",
 						"timing.editResponseTime.entry.$entry",
 					] )->observe( $timeMs );
-
-				// T224686
-				$msPerKb = $timeMs / ( max( $size, 1 ) / 1e3 );
-				$statsFactory->getTiming( 'editResponseTimePerKB_seconds' )
-					->setLabel( 'wiki', WikiMap::getCurrentWikiId() )
+				$stats->getTiming( 'WikimediaEvents_editResponseTimePerKB_seconds' )
 					->setLabel( 'page', $nsType )
 					->setLabel( 'user', $accType )
-					->setLabel( 'platform', $platformDetails['platform'] )
-					->setLabel( 'is_mobile', $platformDetails['isMobile'] )
 					->setLabel( 'entry', $entry )
 					->copyToStatsdAt( [
 						"timing.editResponseTimePerKB.page.$nsType",
 						"timing.editResponseTimePerKB.user.$accType",
 						"timing.editResponseTimePerKB.entry.$entry",
 					] )->observe( $msPerKb );
+
+				$stats->getCounter( 'WikimediaEvents_edits_total' )
+					->setLabel( 'wiki', WikiMap::getCurrentWikiId() )
+					// T375496, T357763: Detailed edit analysis for Temp accounts rollout (Oct 2024)
+					->setLabel( 'user', $accType )
+					->setLabel( 'is_mobile', $platformDetails['isMobile'] )
+					->increment();
 			}
 		);
 	}
