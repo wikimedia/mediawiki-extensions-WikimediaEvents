@@ -2,12 +2,12 @@
 
 namespace WikimediaEvents\Tests;
 
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\MainConfigNames;
 use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\User\User;
 use MediaWiki\User\UserEditTracker;
-use RequestContext;
 use Wikimedia\TestingAccessWrapper;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
 use WikimediaEvents\PrefUpdateInstrumentation;

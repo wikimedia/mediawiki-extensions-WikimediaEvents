@@ -4,7 +4,6 @@
 
 namespace WikimediaEvents;
 
-use Article;
 use ISearchResultSet;
 use MediaWiki\Actions\ActionEntryPoint;
 use MediaWiki\Auth\AuthenticationResponse;
@@ -23,15 +22,19 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Output\Hook\BeforePageDisplayHook;
 use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
 use MediaWiki\Output\OutputPage;
+use MediaWiki\Page\Article;
 use MediaWiki\Page\Hook\ArticleViewHeaderHook;
+use MediaWiki\Page\WikiPage;
 use MediaWiki\Parser\ParserOutput;
 use MediaWiki\Permissions\PermissionManager;
+use MediaWiki\RecentChanges\RecentChange;
 use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Request\WebRequest;
 use MediaWiki\ResourceLoader as RL;
 use MediaWiki\ResourceLoader\Hook\ResourceLoaderRegisterModulesHook;
 use MediaWiki\ResourceLoader\ResourceLoader;
 use MediaWiki\Revision\RevisionRecord;
+use MediaWiki\Skin\Skin;
 use MediaWiki\Storage\EditResult;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
 use MediaWiki\Title\NamespaceInfo;
@@ -40,11 +43,8 @@ use MediaWiki\User\User;
 use MediaWiki\User\UserIdentity;
 use MediaWiki\WikiMap\WikiMap;
 use MobileContext;
-use RecentChange;
-use Skin;
 use WikimediaEvents\Hooks\HookRunner;
 use WikimediaEvents\Services\WikimediaEventsRequestDetailsLookup;
-use WikiPage;
 
 /**
  * Hooks used for Wikimedia-related logging

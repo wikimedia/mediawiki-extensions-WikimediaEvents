@@ -2,14 +2,14 @@
 
 namespace WikimediaEvents\PeriodicMetrics;
 
-use CentralIdLookup;
-use ExtensionRegistry;
 use GlobalPreferences\GlobalPreferencesServices;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Permissions\GroupPermissionsLookup;
+use MediaWiki\Registration\ExtensionRegistry;
+use MediaWiki\User\CentralId\CentralIdLookup;
+use MediaWiki\User\Options\UserOptionsLookup;
 use MediaWiki\User\UserGroupManager;
 use MediaWiki\User\UserIdentityLookup;
-use MediaWiki\User\UserOptionsLookup;
 use Wikimedia\Rdbms\IConnectionProvider;
 
 /**

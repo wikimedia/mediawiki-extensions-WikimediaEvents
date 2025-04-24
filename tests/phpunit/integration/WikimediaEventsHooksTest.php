@@ -4,8 +4,8 @@ namespace WikimediaEvents\Tests\Integration;
 
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Request\FauxRequest;
+use MediaWiki\Skin\Skin;
 use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
-use Skin;
 use Wikimedia\Stats\StatsFactory;
 use Wikimedia\TestingAccessWrapper;
 

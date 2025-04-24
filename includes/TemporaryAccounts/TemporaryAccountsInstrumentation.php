@@ -2,9 +2,9 @@
 
 namespace WikimediaEvents\TemporaryAccounts;
 
-use ManualLogEntry;
 use MediaWiki\Auth\Hook\AuthenticationAttemptThrottledHook;
 use MediaWiki\Hook\BlockIpCompleteHook;
+use MediaWiki\Logging\ManualLogEntry;
 use MediaWiki\Page\Hook\ArticleProtectCompleteHook;
 use MediaWiki\Page\Hook\PageDeleteCompleteHook;
 use MediaWiki\Page\ProperPageIdentity;

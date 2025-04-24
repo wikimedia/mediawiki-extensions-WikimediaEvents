@@ -2,8 +2,8 @@
 
 namespace WikimediaEvents;
 
-use ErrorPageError;
 use MediaWiki\Context\RequestContext;
+use MediaWiki\Exception\ErrorPageError;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Message\Message;

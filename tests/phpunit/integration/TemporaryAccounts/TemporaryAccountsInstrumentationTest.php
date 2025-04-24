@@ -7,6 +7,7 @@ use MediaWiki\CommentStore\CommentStoreComment;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\MainConfigNames;
+use MediaWiki\Page\WikiPage;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\Revision\SlotRecord;
 use MediaWiki\Storage\EditResult;
@@ -14,7 +15,6 @@ use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
 use MediaWiki\User\User;
 use MediaWikiIntegrationTestCase;
 use WikimediaEvents\TemporaryAccounts\TemporaryAccountsInstrumentation;
-use WikiPage;
 
 /**
  * @group Database

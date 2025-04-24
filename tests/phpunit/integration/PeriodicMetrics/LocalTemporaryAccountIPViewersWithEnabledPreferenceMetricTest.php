@@ -4,8 +4,8 @@ namespace WikimediaEvents\Tests\Integration\PeriodicMetrics;
 
 use GlobalPreferences\Storage;
 use MediaWiki\MainConfigNames;
+use MediaWiki\User\Options\UserOptionsManager;
 use MediaWiki\User\User;
-use MediaWiki\User\UserOptionsManager;
 use MediaWikiIntegrationTestCase;
 use WikimediaEvents\PeriodicMetrics\LocalTemporaryAccountIPViewersWithEnabledPreferenceMetric;
 use WikimediaEvents\PeriodicMetrics\WikimediaEventsMetricsFactory;

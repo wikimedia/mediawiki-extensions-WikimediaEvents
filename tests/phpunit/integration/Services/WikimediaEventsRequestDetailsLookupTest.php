@@ -3,9 +3,9 @@
 namespace WikimediaEvents\Tests\Integration\Services;
 
 use MediaWiki\Context\RequestContext;
+use MediaWiki\Skin\Skin;
 use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
 use MediaWikiIntegrationTestCase;
-use Skin;
 use Wikimedia\TestingAccessWrapper;
 use WikimediaEvents\Services\WikimediaEventsRequestDetailsLookup;
 
