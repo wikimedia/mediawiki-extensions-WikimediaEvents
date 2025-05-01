@@ -28,7 +28,7 @@ class WikimediaEventsCountryCodeLookupTest extends MediaWikiUnitTestCase {
 		);
 	}
 
-	public function provideGetCountryCodeFromCookieTestCases(): array {
+	public static function provideGetCountryCodeFromCookieTestCases(): array {
 		return [
 			'Country code is present in expected format' => [
 				'DE',
@@ -69,7 +69,7 @@ class WikimediaEventsCountryCodeLookupTest extends MediaWikiUnitTestCase {
 		);
 	}
 
-	public function provideGetCountryCodeTestCases(): array {
+	public static function provideGetCountryCodeTestCases(): array {
 		return [
 			'Country code comes from GeoIP2 Reader class' => [
 				'DE',

@@ -55,7 +55,7 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function provideStatsFactoryOnPageSaveComplete(): array {
+	public static function provideStatsFactoryOnPageSaveComplete(): array {
 		return [
 			[
 				'Commons/0.0 (https://mediawiki.org/wiki/Apps/Commons) Android/0',
