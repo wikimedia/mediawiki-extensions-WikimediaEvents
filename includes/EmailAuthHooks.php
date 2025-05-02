@@ -72,12 +72,13 @@ class EmailAuthHooks {
 	 * @param User $user
 	 * @param bool &$verificationRequired
 	 * @param string &$formMessage
-	 * @param string &$subjectMessage
-	 * @param string &$bodyMessage
+	 * @param string &$subject
+	 * @param string &$body
+	 * @param string &$bodyHtml
 	 * @return bool
 	 */
 	public function onEmailAuthRequireToken(
-		$user, &$verificationRequired, &$formMessage, &$subjectMessage, &$bodyMessage
+		$user, &$verificationRequired, &$formMessage, &$subject, &$body, &$bodyHtml
 	) {
 		$request = $user->getRequest();
 		// For testing purposes:
