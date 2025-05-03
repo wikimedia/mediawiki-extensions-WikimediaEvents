@@ -95,8 +95,9 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			$this->user,
 			$verificationRequired,
 			$formMessage,
-			$subjectMessage,
-			$bodyMessage
+			$subject,
+			$body,
+			$bodyHtml
 		);
 
 		$this->assertTrue( $res );
@@ -147,8 +148,9 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			$this->user,
 			$verificationRequired,
 			$formMessage,
-			$subjectMessage,
-			$bodyMessage
+			$subject,
+			$body,
+			$bodyHtml
 		);
 
 		$this->assertTrue( $res );
@@ -301,8 +303,9 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			$this->user,
 			$verificationRequired,
 			$formMessage,
-			$subjectMessage,
-			$bodyMessage
+			$subject,
+			$body,
+			$bodyHtml
 		);
 
 		$this->assertTrue( $res );
