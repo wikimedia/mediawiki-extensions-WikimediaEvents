@@ -4,6 +4,7 @@ namespace WikimediaEvents\Tests\Unit;
 use LoginNotify\LoginNotify;
 use MediaWiki\Config\HashConfig;
 use MediaWiki\Config\MutableConfig;
+use MediaWiki\Exception\MWException;
 use MediaWiki\Extension\IPReputation\IPoidResponse;
 use MediaWiki\Extension\IPReputation\Services\IPReputationIPoidDataLookup;
 use MediaWiki\Extension\OATHAuth\OATHUser;
@@ -12,8 +13,12 @@ use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\Request\WebRequest;
 use MediaWiki\User\User;
+use MediaWiki\User\UserEditTracker;
 use MediaWikiIntegrationTestCase;
+use PHPUnit\Framework\Constraint\Callback;
 use Psr\Log\LoggerInterface;
+use Wikimedia\NormalizedException\NormalizedException;
+use Wikimedia\Timestamp\ConvertibleTimestamp;
 use WikimediaEvents\EmailAuthHooks;
 
 /**
@@ -23,6 +28,7 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 	private ExtensionRegistry $extensionRegistry;
 	private MutableConfig $config;
 	private OATHUserRepository $userRepository;
+	private UserEditTracker $userEditTracker;
 	private IPReputationIPoidDataLookup $ipReputationDataLookup;
 	private LoginNotify $loginNotify;
 	private LoggerInterface $logger;
@@ -42,6 +48,7 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 		$this->config = new HashConfig( [
 			'WikimediaEventsEmailAuthEnforce' => true,
 		] );
+		$this->userEditTracker = $this->createMock( UserEditTracker::class );
 		$this->userRepository = $this->createMock( OATHUserRepository::class );
 		$this->ipReputationDataLookup = $this->createMock( IPReputationIPoidDataLookup::class );
 		$this->loginNotify = $this->createMock( LoginNotify::class );
@@ -52,9 +59,11 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 		$this->hooks = new EmailAuthHooks(
 			$this->extensionRegistry,
 			$this->config,
+			$this->userEditTracker,
 			$this->userRepository,
 			$this->ipReputationDataLookup,
 			$this->loginNotify,
+			null,
 			$this->logger
 		);
 	}
@@ -130,6 +139,9 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 	 * @param bool $isBotUser If the user is a bot.
 	 * @param bool $shouldEnforceVerification The value of $wgWikimediaEventsEmailAuthEnforce
 	 * @param string $knownLoginNotify The status of the user's IP according to LoginNotify
+	 * @param ?bool $activeOnLocalWikiInLast90Days Null for no data, true/false for recent / old time
+	 * @throws MWException
+	 * @throws NormalizedException
 	 */
 	public function testShouldRequireVerificationForNon2FAUsersOnUnknownIPsKnownToIpoid(
 		bool $hasEnabledTwoFactorAuth,
@@ -137,7 +149,8 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 		bool $isKnownToIpoid,
 		bool $isBotUser,
 		bool $shouldEnforceVerification,
-		string $knownLoginNotify
+		string $knownLoginNotify,
+		?bool $activeOnLocalWikiInLast90Days
 	): void {
 		$knownLoginNotify = [
 			'LoginNotify::USER_KNOWN' => LoginNotify::USER_KNOWN,
@@ -180,6 +193,12 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			->with( $this->user, $request )
 			->willReturn( $knownLoginNotify );
 
+		if ( $activeOnLocalWikiInLast90Days !== null ) {
+			$lastEdit = ( new ConvertibleTimestamp() )->sub( $activeOnLocalWikiInLast90Days ? 'P10D' : 'P100D' );
+			$this->userEditTracker->method( 'getLatestEditTimestamp' )
+				->willReturn( $lastEdit->getTimestamp( TS_MW ) );
+		}
+
 		$shouldRequireVerification = !$isBotUser && !$hasEnabledTwoFactorAuth &&
 			$isKnownToIpoid &&
 			$knownLoginNotify !== LoginNotify::USER_KNOWN;
@@ -193,6 +212,8 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			'knownLoginNotify' => $knownLoginNotify,
 			'knownIPoid' => $isKnownToIpoid,
 			'hasTwoFactorAuth' => $hasEnabledTwoFactorAuth,
+			'privilegedGroups' => [],
+			'activeOnLocalWikiInLast90Days' => (bool)$activeOnLocalWikiInLast90Days,
 			'forceEmailAuth' => false,
 		];
 
@@ -244,14 +265,18 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 
 	public static function provideVerificationCases(): iterable {
 		$testCases = [
-			[ false, false, false, false, false, 'LoginNotify::USER_NOT_KNOWN' ],
-			[ true, false, false, false, false, 'LoginNotify::USER_NOT_KNOWN' ],
-			[ false, true, false, false, false, 'LoginNotify::USER_NOT_KNOWN' ],
-			[ false, false, true, false, false, 'LoginNotify::USER_NOT_KNOWN' ],
-			[ false, false, false, true, false, 'LoginNotify::USER_NOT_KNOWN' ],
-			[ false, false, false, false, true, 'LoginNotify::USER_NOT_KNOWN' ],
-			[ false, false, false, false, false, 'LoginNotify::USER_KNOWN' ],
-			[ false, false, false, false, false, 'LoginNotify::USER_NO_INFO' ],
+			// hasEnabledTwoFactorAuth, isEmailConfirmed, isKnownToIpoid, isBotUser,
+			// shouldEnforceVerification, knownLoginNotify, activeOnLocalWikiInLast90Days
+			[ false, false, false, false, false, 'LoginNotify::USER_NOT_KNOWN', null ],
+			[ true, false, false, false, false, 'LoginNotify::USER_NOT_KNOWN', null ],
+			[ false, true, false, false, false, 'LoginNotify::USER_NOT_KNOWN', null ],
+			[ false, false, true, false, false, 'LoginNotify::USER_NOT_KNOWN', null ],
+			[ false, false, false, true, false, 'LoginNotify::USER_NOT_KNOWN', null ],
+			[ false, false, false, false, true, 'LoginNotify::USER_NOT_KNOWN', null ],
+			[ false, false, false, false, false, 'LoginNotify::USER_KNOWN', null ],
+			[ false, false, false, false, false, 'LoginNotify::USER_NO_INFO', null ],
+			[ false, false, false, false, false, 'LoginNotify::USER_NOT_KNOWN', false ],
+			[ false, false, false, false, false, 'LoginNotify::USER_NOT_KNOWN', true ],
 		];
 
 		foreach ( $testCases as $params ) {
@@ -261,20 +286,100 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 				$isKnownToIpoid,
 				$isBotUser,
 				$shouldEnforceVerification,
-				$knownLoginNotify
+				$knownLoginNotify,
+				$activeOnLocalWikiInLast90Days
 			] = $params;
 
 			$description = sprintf(
-				'2FA %s, %s, %s, %s, $wgWikimediaEventsEmailAuthEnforce: %s, LoginNotify status: %s',
+				'2FA %s, %s, %s, %s, $wgWikimediaEventsEmailAuthEnforce: %s, LoginNotify status: %s, %s',
 				$hasEnabledTwoFactorAuth ? 'enabled' : 'disabled',
 				$isEmailConfirmed ? 'email confirmed' : 'email not confirmed',
 				$isKnownToIpoid ? 'known to ipoid' : 'not known to ipoid',
 				$isBotUser ? 'bot user' : 'not bot user',
 				$shouldEnforceVerification ? 'true' : 'false',
-				$knownLoginNotify
+				$knownLoginNotify,
+				$activeOnLocalWikiInLast90Days ? 'active' :
+					( $activeOnLocalWikiInLast90Days === null ? 'last activity unknown' : 'not active' )
 			);
 
 			yield $description => $params;
 		}
+	}
+
+	public function testGetPrivilegedGroupsCallback() {
+		$extensionRegistry = $this->createMock( ExtensionRegistry::class );
+		$config = new HashConfig( [
+			'WikimediaEventsEmailAuthEnforce' => true,
+		] );
+		$userEditTracker = $this->createMock( UserEditTracker::class );
+		$userRepository = $this->createMock( OATHUserRepository::class );
+		$ipReputationDataLookup = $this->createMock( IPReputationIPoidDataLookup::class );
+		$loginNotify = $this->createMock( LoginNotify::class );
+		$user = $this->createMock( User::class );
+		$request = $this->createMock( WebRequest::class );
+		$request->method( 'getCookie' )->willReturn( '1' );
+		$user->method( 'getRequest' )->willReturn( $request );
+
+		$extensionRegistry->method( 'isLoaded' )
+			->willReturnMap( [
+				[ 'IPReputation', '*', false ],
+				[ 'OATHAuth', '*', false ],
+				[ 'LoginNotify', '*', false ],
+			] );
+
+		$logger = $this->createMock( LoggerInterface::class );
+		$logger->expects( $this->once() )->method( 'info' )->with(
+			'Email verification skipped for {user} via test cookie',
+			new Callback( static function ( $value ) {
+				return $value['privilegedGroups'] === [];
+			} )
+		 );
+		$hooks = new EmailAuthHooks(
+			$extensionRegistry,
+			$config,
+			$userEditTracker,
+			$userRepository,
+			$ipReputationDataLookup,
+			$loginNotify,
+			null,
+			$logger
+		);
+		$verificationRequired = false;
+		$hooks->onEmailAuthRequireToken(
+			$user,
+			$verificationRequired,
+			$formMessage,
+			$subject,
+			$body,
+			$bodyHtml
+		);
+
+		$getPrivilegedGroupsCallback = static fn () => [ 'foo', 'bar' ];
+		$logger = $this->createMock( LoggerInterface::class );
+		$logger->expects( $this->once() )->method( 'info' )->with(
+			'Email verification skipped for {user} via test cookie',
+			new Callback( static function ( $value ) {
+				return $value['privilegedGroups'] === [ 'foo' => 1, 'bar' => 1 ];
+			} )
+		);
+		$hooks = new EmailAuthHooks(
+			$extensionRegistry,
+			$config,
+			$userEditTracker,
+			$userRepository,
+			$ipReputationDataLookup,
+			$loginNotify,
+			$getPrivilegedGroupsCallback,
+			$logger
+		);
+		$verificationRequired = false;
+		$hooks->onEmailAuthRequireToken(
+			$user,
+			$verificationRequired,
+			$formMessage,
+			$subject,
+			$body,
+			$bodyHtml
+		);
 	}
 }
