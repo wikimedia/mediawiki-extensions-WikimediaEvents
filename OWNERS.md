@@ -70,6 +70,30 @@ Details at <https://phabricator.wikimedia.org/T332024>.
 
 Details at <https://phabricator.wikimedia.org/T220016>.
 
+
+## Search recommendations A/B test
+
+* Since: January 2025
+* Suggested Removal: March 2025
+* Folders: ext.wikimediaEvents/searchRecommendations
+* Contact: Web Team
+
+A schema for evaluating the search recommendations
+experiment A/B test (T378094)
+
+Details at <https://phabricator.wikimedia.org/T383611>.
+
+## Article Summaries mobile pilot
+
+* Since: April 2025
+* Suggested Removal: July 2025
+* Folders: ext.wikimediaEvents/articleSummaries
+* Contact: Web team
+
+Instrumentation for evaluating the article summaries pilot
+
+Details at <https://phabricator.wikimedia.org/T387406>
+
 ## CommonJS for Web
 
 * Since: May 2023

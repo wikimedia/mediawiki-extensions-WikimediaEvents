@@ -12,7 +12,9 @@ if ( skin === 'vector-2022' || skin === 'vector' ) {
 	require( './universalLanguageSelector.js' );
 	require( './webUIScroll.js' );
 }
-
+if ( skin === 'minerva' ) {
+	require( './articleSummaries/index.js' );
+}
 require( './editAttemptStep.js' );
 require( './networkProbe.js' );
 
