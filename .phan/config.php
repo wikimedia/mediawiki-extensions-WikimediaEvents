@@ -6,6 +6,7 @@ $cfg['directory_list'] = array_merge(
 	$cfg['directory_list'],
 	[
 		'stubs',
+		'../../extensions/cldr',
 		'../../extensions/EmailAuth',
 		'../../extensions/EventBus',
 		'../../extensions/EventLogging',
@@ -28,6 +29,7 @@ $cfg['exclude_analysis_directory_list'] = array_merge(
 	$cfg['exclude_analysis_directory_list'],
 	[
 		'stubs',
+		'../../extensions/cldr',
 		'../../extensions/EmailAuth',
 		'../../extensions/EventBus',
 		'../../extensions/EventLogging',

@@ -4,6 +4,8 @@ namespace WikimediaEvents;
 
 use LoginNotify\LoginNotify;
 use MediaWiki\Config\Config;
+use MediaWiki\Context\RequestContext;
+use MediaWiki\Extension\CLDR\CountryNames;
 use MediaWiki\Extension\IPReputation\Services\IPReputationIPoidDataLookup;
 use MediaWiki\Extension\OATHAuth\OATHAuthServices;
 use MediaWiki\Extension\OATHAuth\OATHUserRepository;
@@ -24,6 +26,7 @@ class EmailAuthHooks {
 	private ?LoginNotify $loginNotify;
 	/** @var callable|null */
 	private $getPrivilegedGroupsCallback;
+	private ?WikimediaEventsCountryCodeLookup $countryCodeLookup;
 	private LoggerInterface $logger;
 
 	public function __construct(
@@ -34,6 +37,7 @@ class EmailAuthHooks {
 		?IPReputationIPoidDataLookup $ipReputationDataLookup,
 		?LoginNotify $loginNotify,
 		?callable $getPrivilegedGroupsCallback,
+		?WikimediaEventsCountryCodeLookup $countryCodeLookup,
 		LoggerInterface $logger
 	) {
 		$this->extensionRegistry = $extensionRegistry;
@@ -43,6 +47,7 @@ class EmailAuthHooks {
 		$this->ipReputationDataLookup = $ipReputationDataLookup;
 		$this->loginNotify = $loginNotify;
 		$this->getPrivilegedGroupsCallback = $getPrivilegedGroupsCallback;
+		$this->countryCodeLookup = $countryCodeLookup;
 		$this->logger = $logger;
 	}
 
@@ -67,6 +72,13 @@ class EmailAuthHooks {
 			$loginNotify = $services->get( 'LoginNotify.LoginNotify' );
 		}
 
+		$countryCodeLookup = null;
+		if ( $extensionRegistry->isLoaded( 'WikimediaEvents' )
+			 && $extensionRegistry->isLoaded( 'CLDR' )
+		) {
+			$countryCodeLookup = $services->get( 'WikimediaEventsCountryCodeLookup' );
+		}
+
 		return new self(
 			$services->getExtensionRegistry(),
 			$services->getMainConfig(),
@@ -76,6 +88,7 @@ class EmailAuthHooks {
 			$loginNotify,
 			// defined in wmf-config/CommonSettings.php in the operations/mediawiki-config repo
 			function_exists( 'wmfGetPrivilegedGroups' ) ? 'wmfGetPrivilegedGroups' : null,
+			$countryCodeLookup,
 			LoggerFactory::getInstance( 'EmailAuth' )
 		);
 	}
@@ -105,6 +118,7 @@ class EmailAuthHooks {
 		$knownToIPoid = false;
 		$hasTwoFactorAuth = false;
 		$privilegedGroups = [];
+		$countryCode = $countryName = '';
 
 		$activeOnLocalWikiInLast90Days = false;
 		$latestEditTimestamp = $this->userEditTracker->getLatestEditTimestamp( $user );
@@ -127,6 +141,16 @@ class EmailAuthHooks {
 		if ( is_callable( $this->getPrivilegedGroupsCallback ) ) {
 			$privilegedGroups = ( $this->getPrivilegedGroupsCallback )( $user );
 		}
+		if ( $this->extensionRegistry->isLoaded( 'CLDR' ) ) {
+			$countryCode = WikimediaEventsCountryCodeLookup::getFromCookie( $request );
+			if ( !$countryCode ) {
+				$countryCode = $this->countryCodeLookup->getFromGeoIP( $request );
+			}
+			if ( $countryCode ) {
+				$countryNames = CountryNames::getNames( RequestContext::getMain()->getLanguage()->toBcp47Code() );
+				$countryName = $countryNames[$countryCode] ?? '';
+			}
+		}
 
 		$logData = [
 			'user' => $userName,
@@ -140,6 +164,8 @@ class EmailAuthHooks {
 			'forceEmailAuth' => $forceEmailAuth,
 			'privilegedGroups' => array_fill_keys( $privilegedGroups, 1 ),
 			'activeOnLocalWikiInLast90Days' => $activeOnLocalWikiInLast90Days,
+			'countryCode' => $countryCode,
+			'countryName' => $countryName
 		];
 
 		if ( $forceEmailAuth ) {
