@@ -238,7 +238,8 @@
 				{
 					"name": "data.json",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleData"
-				}
+				},
+				"xLab/pageVisit.js"
 			],
 			"dependencies": [
 				"web2017-polyfills",
@@ -247,7 +248,8 @@
 				"mediawiki.cookie",
 				"mediawiki.experiments",
 				"mediawiki.storage",
-				"mediawiki.visibleTimeout"
+				"mediawiki.visibleTimeout",
+				"ext.xLab"
 			]
 		},
 		"ext.wikimediaEvents.wikibase": {
