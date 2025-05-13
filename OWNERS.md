@@ -174,6 +174,12 @@ More details at <https://phabricator.wikimedia.org/T311388>
 Previously maintained in VisualEditor and other extensions since 2014.
 Moved here in <https://phabricator.wikimedia.org/T332438>.
 
+## Experiment Platform Synthetic A/A Instrumentation
+
+* Since: May 2025
+* Files: xLab/pageVisit.js
+* Contact: Experiment Platform
+
 # Code ownership for other code in WikimediaEvents
 
 ## Temporary account instrumentation
