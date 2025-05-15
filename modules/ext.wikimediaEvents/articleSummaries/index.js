@@ -66,6 +66,38 @@ function setupInstrumentation( injectedLogInteraction ) {
 		} );
 	} );
 
+	// CTA is shown
+	mw.hook( 'ext.articleSummaries.cta.shown' ).add( () => {
+		log( 'show', {
+			action_subtype: 'show_summary_onboarding',
+			action_source: 'summary_onboarding'
+		} );
+	} );
+
+	// the CTA 'Learn more' link is clicked
+	mw.hook( 'ext.articleSummaries.cta.learnMoreButton' ).add( () => {
+		log( 'click', {
+			action_subtype: 'learn_more',
+			action_source: 'summary_onboarding'
+		} );
+	} );
+
+	// the CTA 'No' button is clicked
+	mw.hook( 'ext.articleSummaries.cta.noButton' ).add( () => {
+		log( 'click', {
+			action_subtype: 'no',
+			action_source: 'summary_onboarding'
+		} );
+	} );
+
+	// the CTA 'Yes' button is clicked
+	mw.hook( 'ext.articleSummaries.cta.yesButton' ).add( () => {
+		log( 'click', {
+			action_subtype: 'yes',
+			action_source: 'summary_onboarding'
+		} );
+	} );
+
 	instrumentationEnabled = true;
 }
 

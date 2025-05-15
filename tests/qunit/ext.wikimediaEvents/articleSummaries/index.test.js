@@ -83,8 +83,56 @@ QUnit.test( 'setupInstrumentation', function ( assert ) {
 		}
 	) );
 
+	mw.hook( 'ext.articleSummaries.cta.shown' ).fire();
+	assert.strictEqual( stub.callCount, 6 );
+	assert.true( stub.calledWithExactly(
+		'show',
+		{
+			// eslint-disable-next-line camelcase
+			action_subtype: 'show_summary_onboarding',
+			// eslint-disable-next-line camelcase
+			action_source: 'summary_onboarding'
+		}
+	) );
+
+	mw.hook( 'ext.articleSummaries.cta.learnMoreButton' ).fire();
+	assert.strictEqual( stub.callCount, 7 );
+	assert.true( stub.calledWithExactly(
+		'click',
+		{
+			// eslint-disable-next-line camelcase
+			action_subtype: 'learn_more',
+			// eslint-disable-next-line camelcase
+			action_source: 'summary_onboarding'
+		}
+	) );
+
+	mw.hook( 'ext.articleSummaries.cta.noButton' ).fire();
+	assert.strictEqual( stub.callCount, 8 );
+	assert.true( stub.calledWithExactly(
+		'click',
+		{
+			// eslint-disable-next-line camelcase
+			action_subtype: 'no',
+			// eslint-disable-next-line camelcase
+			action_source: 'summary_onboarding'
+		}
+	) );
+
+	mw.hook( 'ext.articleSummaries.cta.yesButton' ).fire();
+	assert.strictEqual( stub.callCount, 9 );
+	assert.true( stub.calledWithExactly(
+		'click',
+		{
+			// eslint-disable-next-line camelcase
+			action_subtype: 'yes',
+			// eslint-disable-next-line camelcase
+			action_source: 'summary_onboarding'
+		}
+	) );
+
 	// instrumentation has already been enabled so init event should not fire again
 	articleSummaries.test.setupInstrumentation( stub );
-	assert.strictEqual( stub.callCount, 5 );
+	assert.strictEqual( stub.callCount, 9 );
 
 } );
