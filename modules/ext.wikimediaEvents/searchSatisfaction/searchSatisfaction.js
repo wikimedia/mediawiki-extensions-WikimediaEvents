@@ -60,7 +60,7 @@ if ( uri === null ) {
 function extractResultPosition( uri, wprovPrefix ) {
 	const wprov = uri.searchParams.get( 'wprov' );
 	return parseInt( wprov &&
-		wprov.slice( 0, wprovPrefix.length ) === wprovPrefix &&
+		wprov.startsWith( wprovPrefix ) &&
 		wprov.slice( wprovPrefix.length ), 10 );
 }
 
@@ -90,7 +90,7 @@ function randomToken() {
 const search = initFromWprov( 'srpw1_' );
 const wprov = uri.searchParams.get( 'wprov' );
 search.didYouMean = wprov &&
-	wprov.slice( 0, search.wprovPrefix.length ) === search.wprovPrefix &&
+	wprov.startsWith( search.wprovPrefix ) &&
 	didYouMeanList.includes( wprov.slice( search.wprovPrefix.length ) ) &&
 	wprov.slice( search.wprovPrefix.length );
 

@@ -51,15 +51,13 @@ function log( action ) {
 function hookAction( data ) {
 	// The user is scrolling down so initiate a timer to set the variable flag which determines
 	// whether the scroll action should be logged (see T292586 and T303297).
-	if ( data.context.indexOf( 'scrolled-below-' ) === 0 ) {
+	if ( data.context.startsWith( 'scrolled-below-' ) ) {
 		waitBeforeScrollUp = true;
 		timer = setTimeout( () => {
 			waitBeforeScrollUp = false;
 		}, timeToWaitBeforeScrollUp );
 	}
-	if ( ( data.context.indexOf( 'scrolled-above-' ) === 0 ) &&
-		!waitBeforeScrollUp
-	) {
+	if ( !waitBeforeScrollUp && data.context.startsWith( 'scrolled-above-' ) ) {
 		log( data.action );
 		clearTimeout( timer );
 	}

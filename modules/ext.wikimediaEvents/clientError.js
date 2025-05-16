@@ -182,17 +182,17 @@ function shouldIgnoreFileUrl( fileUrl ) {
 		// These are not logged but may in future be diverted
 		// to another channel (see T259383 for more information).
 		// eslint-disable-next-line no-script-url
-		fileUrl.indexOf( 'javascript:' ) === 0 ||
+		fileUrl.startsWith( 'javascript:' ) ||
 		// Common pattern seen in the wild. Short for "inject JS".
 		fileUrl.includes( '/inj_js/' ) ||
-		fileUrl.indexOf( 'blob:' ) === 0 ||
-		fileUrl.indexOf( 'jar:' ) === 0 ||
+		fileUrl.startsWith( 'blob:' ) ||
+		fileUrl.startsWith( 'jar:' ) ||
 		// from Windows file system.
-		fileUrl.indexOf( 'C:\\' ) === 0 ||
-		fileUrl.indexOf( 'chrome://' ) === 0 ||
-		fileUrl.indexOf( 'chrome-extension://' ) === 0 ||
-		fileUrl.indexOf( 'safari-extension://' ) === 0 ||
-		fileUrl.indexOf( 'moz-extension://' ) === 0;
+		fileUrl.startsWith( 'C:\\' ) ||
+		fileUrl.startsWith( 'chrome://' ) ||
+		fileUrl.startsWith( 'chrome-extension://' ) ||
+		fileUrl.startsWith( 'safari-extension://' ) ||
+		fileUrl.startsWith( 'moz-extension://' );
 }
 
 /**
