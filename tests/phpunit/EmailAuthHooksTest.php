@@ -11,15 +11,15 @@ use MediaWiki\Extension\OATHAuth\OATHUser;
 use MediaWiki\Extension\OATHAuth\OATHUserRepository;
 use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Request\FauxRequest;
-use MediaWiki\Request\WebRequest;
 use MediaWiki\User\User;
 use MediaWiki\User\UserEditTracker;
 use MediaWikiIntegrationTestCase;
-use PHPUnit\Framework\Constraint\Callback;
 use Psr\Log\LoggerInterface;
 use Wikimedia\NormalizedException\NormalizedException;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
 use WikimediaEvents\EmailAuthHooks;
+use WikimediaEvents\Tests\ArrayHasSubset;
+use WikimediaEvents\WikimediaEventsCountryCodeLookup;
 
 /**
  * @covers \WikimediaEvents\EmailAuthHooks
@@ -31,19 +31,25 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 	private UserEditTracker $userEditTracker;
 	private IPReputationIPoidDataLookup $ipReputationDataLookup;
 	private LoginNotify $loginNotify;
+	private WikimediaEventsCountryCodeLookup $countryCodeLookup;
 	private LoggerInterface $logger;
 
+	private FauxRequest $request;
 	private User $user;
-
 	private EmailAuthHooks $hooks;
 
 	protected function setUp(): void {
-		parent::setUp();
-
 		$this->markTestSkippedIfExtensionNotLoaded( 'IPReputation' );
 		$this->markTestSkippedIfExtensionNotLoaded( 'OATHAuth' );
 		$this->markTestSkippedIfExtensionNotLoaded( 'LoginNotify' );
+		$this->markTestSkippedIfExtensionNotLoaded( 'CLDR' );
 
+		parent::setUp();
+
+		$this->setMocks();
+	}
+
+	protected function setMocks( ?callable $getPrivilegedGroupsCallback = null ): void {
 		$this->extensionRegistry = $this->createMock( ExtensionRegistry::class );
 		$this->config = new HashConfig( [
 			'WikimediaEventsEmailAuthEnforce' => true,
@@ -52,9 +58,12 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 		$this->userRepository = $this->createMock( OATHUserRepository::class );
 		$this->ipReputationDataLookup = $this->createMock( IPReputationIPoidDataLookup::class );
 		$this->loginNotify = $this->createMock( LoginNotify::class );
+		$this->countryCodeLookup = $this->createMock( WikimediaEventsCountryCodeLookup::class );
 		$this->logger = $this->createMock( LoggerInterface::class );
 
+		$this->request = new FauxRequest();
 		$this->user = $this->createMock( User::class );
+		$this->user->method( 'getRequest' )->willReturn( $this->request );
 
 		$this->hooks = new EmailAuthHooks(
 			$this->extensionRegistry,
@@ -63,7 +72,8 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			$this->userRepository,
 			$this->ipReputationDataLookup,
 			$this->loginNotify,
-			null,
+			$getPrivilegedGroupsCallback,
+			$this->countryCodeLookup,
 			$this->logger
 		);
 	}
@@ -74,10 +84,8 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 				[ 'IPReputation', '*', false ],
 				[ 'OATHAuth', '*', false ],
 				[ 'LoginNotify', '*', false ],
+				[ 'CLDR', '*', false ],
 			] );
-
-		$this->user->method( 'getRequest' )
-			->willReturn( $this->createMock( WebRequest::class ) );
 
 		$this->userRepository->expects( $this->never() )
 			->method( $this->anything() );
@@ -108,13 +116,10 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 				[ 'IPReputation', '*', false ],
 				[ 'OATHAuth', '*', false ],
 				[ 'LoginNotify', '*', false ],
+				[ 'CLDR', '*', false ],
 			] );
 
-		$request = new FauxRequest();
-		$request->setCookie( 'forceEmailAuth', '1', '' );
-
-		$this->user->method( 'getRequest' )
-			->willReturn( $request );
+		$this->request->setCookie( 'forceEmailAuth', '1', '' );
 
 		$verificationRequired = false;
 		$res = $this->hooks->onEmailAuthRequireToken(
@@ -163,16 +168,14 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 				[ 'IPReputation', '*', true ],
 				[ 'OATHAuth', '*', true ],
 				[ 'LoginNotify', '*', true ],
+				[ 'CLDR', '*', true ],
 			] );
 
 		$this->config->set( 'WikimediaEventsEmailAuthEnforce', $shouldEnforceVerification );
 
-		$request = new FauxRequest();
-		$request->setIP( '127.0.0.1' );
-		$request->setHeader( 'User-Agent', 'Mozilla/5.0' );
+		$this->request->setIP( '100.101.102.103' );
+		$this->request->setHeader( 'User-Agent', 'Mozilla/5.0' );
 
-		$this->user->method( 'getRequest' )
-			->willReturn( $request );
 		$this->user->method( 'isEmailConfirmed' )
 			->willReturn( $isEmailConfirmed );
 		$this->user->method( 'isBot' )->willReturn( $isBotUser );
@@ -186,11 +189,11 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			->willReturn( $oathUser );
 
 		$this->ipReputationDataLookup->method( 'getIPoidDataForIp' )
-			->with( $request->getIP(), EmailAuthHooks::class . '::onEmailAuthRequireToken' )
+			->with( '100.101.102.103', EmailAuthHooks::class . '::onEmailAuthRequireToken' )
 			->willReturn( $isKnownToIpoid ? $this->createMock( IPoidResponse::class ) : null );
 
 		$this->loginNotify->method( 'isKnownSystemFast' )
-			->with( $this->user, $request )
+			->with( $this->user, $this->request )
 			->willReturn( $knownLoginNotify );
 
 		if ( $activeOnLocalWikiInLast90Days !== null ) {
@@ -206,15 +209,17 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 		$logData = [
 			'user' => $this->user->getName(),
 			'ua' => 'Mozilla/5.0',
-			'ip' => $request->getIP(),
+			'ip' => '100.101.102.103',
 			'emailVerified' => $isEmailConfirmed,
 			'isBot' => $isBotUser,
-			'knownLoginNotify' => $knownLoginNotify,
 			'knownIPoid' => $isKnownToIpoid,
+			'knownLoginNotify' => $knownLoginNotify,
 			'hasTwoFactorAuth' => $hasEnabledTwoFactorAuth,
+			'forceEmailAuth' => false,
 			'privilegedGroups' => [],
 			'activeOnLocalWikiInLast90Days' => (bool)$activeOnLocalWikiInLast90Days,
-			'forceEmailAuth' => false,
+			'countryCode' => '',
+			'countryName' => '',
 		];
 
 		$logExpectation = $this->logger->expects( $this->once() )->method( 'info' );
@@ -307,46 +312,23 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function testGetPrivilegedGroupsCallback() {
-		$extensionRegistry = $this->createMock( ExtensionRegistry::class );
-		$config = new HashConfig( [
-			'WikimediaEventsEmailAuthEnforce' => true,
-		] );
-		$userEditTracker = $this->createMock( UserEditTracker::class );
-		$userRepository = $this->createMock( OATHUserRepository::class );
-		$ipReputationDataLookup = $this->createMock( IPReputationIPoidDataLookup::class );
-		$loginNotify = $this->createMock( LoginNotify::class );
-		$user = $this->createMock( User::class );
-		$request = $this->createMock( WebRequest::class );
-		$request->method( 'getCookie' )->willReturn( '1' );
-		$user->method( 'getRequest' )->willReturn( $request );
-
-		$extensionRegistry->method( 'isLoaded' )
+		$this->extensionRegistry->method( 'isLoaded' )
 			->willReturnMap( [
 				[ 'IPReputation', '*', false ],
 				[ 'OATHAuth', '*', false ],
 				[ 'LoginNotify', '*', false ],
+				[ 'CLDR', '*', false ],
 			] );
-
-		$logger = $this->createMock( LoggerInterface::class );
-		$logger->expects( $this->once() )->method( 'info' )->with(
+		$this->request->setCookie( 'forceEmailAuth', '1', '' );
+		$this->logger->expects( $this->once() )->method( 'info' )->with(
 			'Email verification skipped for {user} via test cookie',
-			new Callback( static function ( $value ) {
-				return $value['privilegedGroups'] === [];
-			} )
+			new ArrayHasSubset( [
+				'privilegedGroups' => [],
+			] )
 		 );
-		$hooks = new EmailAuthHooks(
-			$extensionRegistry,
-			$config,
-			$userEditTracker,
-			$userRepository,
-			$ipReputationDataLookup,
-			$loginNotify,
-			null,
-			$logger
-		);
 		$verificationRequired = false;
-		$hooks->onEmailAuthRequireToken(
-			$user,
+		$this->hooks->onEmailAuthRequireToken(
+			$this->user,
 			$verificationRequired,
 			$formMessage,
 			$subject,
@@ -354,27 +336,82 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			$bodyHtml
 		);
 
-		$getPrivilegedGroupsCallback = static fn () => [ 'foo', 'bar' ];
-		$logger = $this->createMock( LoggerInterface::class );
-		$logger->expects( $this->once() )->method( 'info' )->with(
+		$this->setMocks( static fn () => [ 'foo', 'bar' ] );
+
+		$this->extensionRegistry->method( 'isLoaded' )
+			->willReturnMap( [
+				[ 'IPReputation', '*', false ],
+				[ 'OATHAuth', '*', false ],
+				[ 'LoginNotify', '*', false ],
+				[ 'CLDR', '*', false ],
+			] );
+		$this->request->setCookie( 'forceEmailAuth', '1', '' );
+		$this->logger->expects( $this->once() )->method( 'info' )->with(
 			'Email verification skipped for {user} via test cookie',
-			new Callback( static function ( $value ) {
-				return $value['privilegedGroups'] === [ 'foo' => 1, 'bar' => 1 ];
-			} )
-		);
-		$hooks = new EmailAuthHooks(
-			$extensionRegistry,
-			$config,
-			$userEditTracker,
-			$userRepository,
-			$ipReputationDataLookup,
-			$loginNotify,
-			$getPrivilegedGroupsCallback,
-			$logger
+			new ArrayHasSubset( [
+				'privilegedGroups' => [ 'foo' => 1, 'bar' => 1 ],
+			] )
 		);
 		$verificationRequired = false;
-		$hooks->onEmailAuthRequireToken(
-			$user,
+		$this->hooks->onEmailAuthRequireToken(
+			$this->user,
+			$verificationRequired,
+			$formMessage,
+			$subject,
+			$body,
+			$bodyHtml
+		);
+	}
+
+	public function testCountry() {
+		$this->extensionRegistry->method( 'isLoaded' )
+			->willReturnMap( [
+				[ 'IPReputation', '*', false ],
+				[ 'OATHAuth', '*', false ],
+				[ 'LoginNotify', '*', false ],
+				[ 'CLDR', '*', true ],
+			] );
+		$this->request->setCookie( 'forceEmailAuth', '1', '' );
+		$this->request->setCookie( 'GeoIP', 'HU:100:Budapest:40.0:40.0:v4', '' );
+		$this->countryCodeLookup->expects( $this->never() )->method( 'getFromGeoIP' );
+		$this->logger->expects( $this->once() )->method( 'info' )->with(
+			'Email verification skipped for {user} via test cookie',
+			new ArrayHasSubset( [
+				'countryCode' => 'HU',
+				'countryName' => 'Hungary',
+			] )
+		);
+		$verificationRequired = false;
+		$this->hooks->onEmailAuthRequireToken(
+			$this->user,
+			$verificationRequired,
+			$formMessage,
+			$subject,
+			$body,
+			$bodyHtml
+		);
+
+		$this->setMocks();
+		$this->extensionRegistry->method( 'isLoaded' )
+			->willReturnMap( [
+				[ 'IPReputation', '*', false ],
+				[ 'OATHAuth', '*', false ],
+				[ 'LoginNotify', '*', false ],
+				[ 'CLDR', '*', true ],
+			] );
+		$this->request->setCookie( 'forceEmailAuth', '1', '' );
+		$this->request->setIP( '100.101.102.103' );
+		$this->countryCodeLookup->expects( $this->once() )->method( 'getFromGeoIP' )->willReturn( 'HU' );
+		$this->logger->expects( $this->once() )->method( 'info' )->with(
+			'Email verification skipped for {user} via test cookie',
+			new ArrayHasSubset( [
+				'countryCode' => 'HU',
+				'countryName' => 'Hungary',
+			] )
+		);
+		$verificationRequired = false;
+		$this->hooks->onEmailAuthRequireToken(
+			$this->user,
 			$verificationRequired,
 			$formMessage,
 			$subject,
