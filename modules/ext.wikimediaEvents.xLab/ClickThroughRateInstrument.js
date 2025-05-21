@@ -1,5 +1,5 @@
 const STREAM_NAME = 'product_metrics.web_base';
-const SCHEMA_ID = '/analytics/product_metrics/web/base/1.3.0';
+const SCHEMA_ID = '/analytics/product_metrics/web/base/1.4.2';
 
 // State
 // =====
