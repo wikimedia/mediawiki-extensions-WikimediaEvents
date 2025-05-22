@@ -185,15 +185,11 @@ class EmailAuthHooks {
 			$logMessage = 'Email verification skipped for {user} with known IP or device';
 			$eventType = 'emailauth-verification-skipped-known-loginnotify';
 			$verificationRequired = false;
-		} elseif ( !$knownToIPoid ) {
-			$logMessage = 'Email verification skipped for {user} with no bad IP reputation';
-			$eventType = 'emailauth-verification-skipped-nobadip';
-			$verificationRequired = false;
 		} else {
 			// If we are in "enforce" mode, then actually require the email verification here.
 			$verificationRequired = $this->config->get( 'WikimediaEventsEmailAuthEnforce' );
 			$logMessage = 'Email verification required for {user} without 2FA, unknown IP and device, '
-				. 'bad IP reputation';
+				. ( $knownToIPoid ? 'bad' : 'good' ) . ' IP reputation';
 			$eventType = 'emailauth-verification-required';
 		}
 
