@@ -107,7 +107,7 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 		);
 
 		$this->assertTrue( $res );
-		$this->assertFalse( $verificationRequired );
+		$this->assertTrue( $verificationRequired );
 	}
 
 	public function testShouldAllowForcingVerificationViaCookie(): void {
@@ -203,7 +203,6 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 		}
 
 		$shouldRequireVerification = !$isBotUser && !$hasEnabledTwoFactorAuth &&
-			$isKnownToIpoid &&
 			$knownLoginNotify !== LoginNotify::USER_KNOWN;
 
 		$logData = [
@@ -241,8 +240,8 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			);
 		} elseif ( !$isKnownToIpoid ) {
 			$logExpectation->with(
-				'Email verification skipped for {user} with no bad IP reputation',
-				$logData + [ 'eventType' => 'emailauth-verification-skipped-nobadip' ]
+				'Email verification required for {user} without 2FA, unknown IP and device, good IP reputation',
+				$logData + [ 'eventType' => 'emailauth-verification-required' ]
 			);
 		} else {
 			$logExpectation->with(
