@@ -17,7 +17,7 @@ class ArrayHasSubsetTest extends TestCase {
 		$this->assertSame( $expectedResult, $constraint->evaluate( $target, '', true ) );
 	}
 
-	public function provideMatch() {
+	public static function provideMatch() {
 		return [
 			[ [], [], true ],
 			[ [], [ 1 ], true ],
