@@ -13,8 +13,8 @@ const SCHEMA_ID = '/analytics/product_metrics/web/base/1.4.2';
  * @property {Instrument} instrument
  */
 
-/** @type {Map<HTMLElement,StateEntry>} */
-const state = new WeakMap();
+/** @type {Map<string,StateEntry>} */
+const state = new Map();
 
 /**
  * @param {Object} stateEntry
@@ -28,7 +28,7 @@ function submitInteraction( stateEntry, action ) {
 	} = stateEntry;
 
 	instrument.submitInteraction( action, {
-		action_source: 'ClickThroughRateInstrument',
+		instrument_name: 'ClickThroughRateInstrument',
 		funnel_entry_token: funnelEntryToken,
 		element_friendly_name: friendlyName
 	} );
@@ -41,9 +41,11 @@ function submitInteraction( stateEntry, action ) {
 const intersectionObserver = new IntersectionObserver(
 	( entries, observer ) => {
 		entries.forEach( ( { target } ) => {
-			if ( state.has( target ) ) {
-				submitInteraction( state.get( target ), 'impression' );
-			}
+			state.forEach( ( stateEntry ) => {
+				if ( stateEntry.element === target ) {
+					submitInteraction( stateEntry, 'impression' );
+				}
+			} );
 
 			observer.unobserve( target );
 		} );
@@ -54,10 +56,25 @@ const intersectionObserver = new IntersectionObserver(
 );
 
 document.addEventListener( 'click', ( { target } ) => {
-	if ( state.has( target ) ) {
-		const entry = state.get( target );
-		submitInteraction( entry, 'click' );
-	}
+
+	// O(n * m) where:
+	//
+	// * n - the number of elements tracked by the instrument
+	// * m - is the maximum depth of the DOM inside the elements tracked by the instrument
+	//
+	// n will be trivially small for the foreseeable future.
+	//
+	// Generally, m depends on how the instrument is used, which Experiment Platform will need to
+	// track.
+
+	state.forEach( ( stateEntry ) => {
+
+		// Note well that e.contains( e ) return true. This handles the simple case where the event
+		// target is an element that is being tracked by the instrument.
+		if ( stateEntry.element.contains( target ) ) {
+			submitInteraction( stateEntry, 'click' );
+		}
+	} );
 } );
 
 // API
@@ -103,7 +120,7 @@ document.addEventListener( 'click', ( { target } ) => {
  * | Field                          | Type      | Value(s)                       |
  * | ------------------------------ | --------- | ------------------------------ |
  * | action                         | string    | `"impression"`                 |
- * | action_source                  | string    | `"ClickThroughRateInstrument"` |
+ * | instrument_name                | string    | `"ClickThroughRateInstrument"` |
  * | funnel_entry_token             | Token     |                                |
  * | funnel_event_sequence_position | usmallint | `1`                            |
  * | element_friendly_name          | string    |                                |
@@ -116,7 +133,7 @@ document.addEventListener( 'click', ( { target } ) => {
  * | Field                          | Type      | Value(s)                       |
  * | ------------------------------ | --------- | ------------------------------ |
  * | action                         | string    | `"click"`                      |
- * | action_source                  | string    | `"ClickThroughRateInstrument"` |
+ * | instrument_name                | string    | `"ClickThroughRateInstrument"` |
  * | funnel_entry_token             | Token     |                                |
  * | funnel_event_sequence_position | usmallint | `2`, `3`, `4`, etc.            |
  * | element_friendly_name          | string    |                                |
@@ -157,8 +174,8 @@ const ClickThroughRateInstrument = {
 
 		let result;
 
-		if ( state.has( e ) ) {
-			result = state.get( e );
+		if ( state.has( selector ) ) {
+			result = state.get( selector );
 		} else {
 			result = {
 				selector,
@@ -168,7 +185,7 @@ const ClickThroughRateInstrument = {
 				instrument: i
 			};
 
-			state.set( e, result );
+			state.set( selector, result );
 
 			intersectionObserver.observe( e );
 		}
@@ -179,9 +196,12 @@ const ClickThroughRateInstrument = {
 		return Object.assign( {}, result );
 	},
 
-	stop( { element } ) {
+	/**
+	 * @param {StateEntry} stateEntry
+	 */
+	stop( { element, selector } ) {
 		intersectionObserver.unobserve( element );
-		state.delete( element );
+		state.delete( selector );
 	}
 };
 
