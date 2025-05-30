@@ -8,10 +8,12 @@
 
 const EXPERIMENT_NAME = 'sds2-4-11-synth-aa-test';
 
-mw.xLab.getExperiment( EXPERIMENT_NAME )
-	.send(
-		'page-visited',
-		{
-			instrument_name: 'PageVisit'
-		}
-	);
+mw.loader.using( 'ext.xLab' ).then( () => {
+	mw.xLab.getExperiment( EXPERIMENT_NAME )
+		.send(
+			'page-visited',
+			{
+				instrument_name: 'PageVisit'
+			}
+		);
+} );
