@@ -248,8 +248,7 @@
 				"mediawiki.cookie",
 				"mediawiki.experiments",
 				"mediawiki.storage",
-				"mediawiki.visibleTimeout",
-				"ext.xLab"
+				"mediawiki.visibleTimeout"
 			]
 		},
 		"ext.wikimediaEvents.wikibase": {
