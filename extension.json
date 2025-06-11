@@ -255,9 +255,11 @@
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleData"
 				},
 				"xLab/pageVisit.js",
-				"xLab/loggedOutRetentionVisit.js"
+				"xLab/loggedOutRetentionVisit.js",
+				"xLab/donateAB.js"
 			],
 			"dependencies": [
+				"ext.wikimediaEvents.xLab",
 				"web2017-polyfills",
 				"ext.eventLogging",
 				"mediawiki.user",

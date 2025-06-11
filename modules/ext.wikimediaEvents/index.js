@@ -15,6 +15,11 @@ if ( skin === 'vector-2022' || skin === 'vector' ) {
 if ( skin === 'minerva' ) {
 	require( './articleSummaries/index.js' );
 }
+// For now this is vector '22 only.
+if ( skin === 'vector-2022' ) {
+	require( './xLab/donateAB.js' );
+}
+
 require( './editAttemptStep.js' );
 require( './networkProbe.js' );
 require( './xLab/pageVisit.js' );
