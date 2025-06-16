@@ -3,7 +3,7 @@
 namespace WikimediaEvents\Tests\Unit;
 
 use GeoIp2\Database\Reader;
-use GeoIp2\Model\Country;
+use GeoIp2\Model\Country as ModelCountry;
 use MediaWiki\Request\FauxRequest;
 use MediaWikiUnitTestCase;
 use WikimediaEvents\WikimediaEventsCountryCodeLookup;
@@ -48,15 +48,19 @@ class WikimediaEventsCountryCodeLookupTest extends MediaWikiUnitTestCase {
 	) {
 		$readerMock = $this->createMock( Reader::class );
 
-		$countryRecordMock = $this->createMock( \GeoIp2\Record\Country::class );
-		$countryRecordMock->method( '__get' )->with( 'isoCode' )->willReturn( $readerCountryCode );
-		$countryModelMock = $this->createMock( Country::class );
-		$countryModelMock->method( '__get' )->with( 'country' )->willReturn(
-			$countryRecordMock
-		);
+		$countryModelMock = $this->getMockBuilder( ModelCountry::class )
+			->setConstructorArgs( [ [
+				'country' => [ 'iso_code' => $readerCountryCode ],
+			] ] )
+			->disableOriginalClone()
+			->disableArgumentCloning()
+			->disallowMockingUnknownTypes()
+			->getMock();
+
 		$readerMock->method( 'country' )->with( $ip )->willReturn(
 			$countryModelMock
 		);
+
 		$wikimediaEventsCountryCodeLookup = new WikimediaEventsCountryCodeLookup(
 			$readerMock
 		);
