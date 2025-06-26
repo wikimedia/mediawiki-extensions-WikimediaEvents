@@ -6,7 +6,8 @@
 			"Kly",
 			"LNDDYL",
 			"Liuxinyu970226",
-			"Sunny00217"
+			"Sunny00217",
+			"Stang"
 		]
 	},
 	"wikimediaevents-desc": "EventLogging 的維基媒體特定事件記錄",
@@ -19,5 +20,5 @@
 	"wikimediaevents-special-wikimediadebug-submit-renew": "更新 cookie $1",
 	"wikimediaevents-special-wikimediadebug-submit-clear": "清除 cookie",
 	"wikimediaevents-special-wikimediadebug-header-active": "[https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] cookie 功能目前在 <code>$1</code> 上為'''啟用'''。\n\n到期時間為 $2。\n\n要將其從此裝置上清除，點一下按鈕可。請注意，這只會清除該網域上的 cookie - 如果您是要在其他網域上啟動，則必須透過這些網域上的特殊頁面來各自清除（或是使用瀏覽器的 cookie 清除功能）。",
-	"wikimediaevents-special-wikimediadebug-header-inactive": "點擊按鈕來啟動 <code>$1</code> 上的 [https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug\n] cookie 功能。\n\n啟動後，您的裝置對此 wiki 的網站請求會向開發人員'''發送包含個人資訊的偵錯日誌'''。請只在開發人員有特別要求您時，才啟動這個功能。請留意，開啟此功能會導致瀏覽體驗變差。\n\n如果您是在測試跨網域功能，請記住透過其他網域上的特殊頁面來啟動 cookie。"
+	"wikimediaevents-special-wikimediadebug-header-inactive": "點擊按鈕來啟動 <code>$1</code> 上的 [https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] cookie 功能。\n\n啟動後，您的裝置對此 wiki 的網站請求會向開發人員'''發送包含個人資訊的偵錯日誌'''。請只在開發人員有特別要求您時，才啟動這個功能。請留意，開啟此功能會導致瀏覽體驗變差。\n\n如果您是在測試跨網域功能，請記住透過其他網域上的特殊頁面來啟動 cookie。"
 }
