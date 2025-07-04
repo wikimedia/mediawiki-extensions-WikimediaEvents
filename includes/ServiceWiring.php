@@ -27,6 +27,7 @@ use MaxMind\Db\Reader\InvalidDatabaseException;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use WikimediaEvents\AccountCreationLogger;
+use WikimediaEvents\CreateAccount\CreateAccountInstrumentationClient;
 use WikimediaEvents\PeriodicMetrics\WikimediaEventsMetricsFactory;
 use WikimediaEvents\Services\WikimediaEventsRequestDetailsLookup;
 use WikimediaEvents\WikimediaEventsCountryCodeLookup;
@@ -50,6 +51,12 @@ return [
 	'AccountCreationLogger' => static function ( MediaWikiServices $services ): AccountCreationLogger {
 		return new AccountCreationLogger( $services->getUserIdentityUtils(), $services->getSpecialPageFactory() );
 	},
+	'WikimediaEventsCreateAccountInstrumentationClient' =>
+		static function ( MediaWikiServices $services ): CreateAccountInstrumentationClient {
+			return new CreateAccountInstrumentationClient(
+				$services->get( 'EventLogging.MetricsClientFactory' )
+			);
+		},
 	'WikimediaEventsRequestDetailsLookup' => static function (): WikimediaEventsRequestDetailsLookup {
 		return new WikimediaEventsRequestDetailsLookup();
 	},

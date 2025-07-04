@@ -190,6 +190,14 @@ Moved here in <https://phabricator.wikimedia.org/T332438>.
 
 More details at <https://phabricator.wikimedia.org/T357763>
 
+## Special:CreateAccount instrumentation
+
+* Since: July 2025
+* Folders: ext.wikimediaEvents.createAccount
+* Contact: Growth Team
+
+More details at <https://phabricator.wikimedia.org/T394744>
+
 ## Experiment Platform Standardized Instruments
 
 * Since: January 2025

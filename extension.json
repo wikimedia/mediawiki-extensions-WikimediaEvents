@@ -49,6 +49,12 @@
 				"EventBus.EventFactory"
 			]
 		},
+		"CreateAccountInstrumentationHandler": {
+			"class": "WikimediaEvents\\CreateAccount\\CreateAccountInstrumentationHandler",
+			"services": [
+				"ExtensionRegistry"
+			]
+		},
 		"EditPageHooks": {
 			"class": "WikimediaEvents\\EditPage\\EditPageHooks",
 			"services": [
@@ -98,6 +104,7 @@
 	},
 	"Hooks": {
 		"ArticleProtectComplete": "TemporaryAccountsInstrumentation",
+		"AuthChangeFormFields": "CreateAccountInstrumentationHandler",
 		"AuthenticationAttemptThrottled": "TemporaryAccountsInstrumentation",
 		"BeforeInitialize": "main",
 		"BeforePageDisplay": "main",
@@ -121,6 +128,7 @@
 		"SpecialSearchResults": "main",
 		"RecentChange_save": "main",
 		"ResourceLoaderRegisterModules": "main",
+		"SpecialPageBeforeExecute": "CreateAccountInstrumentationHandler",
 		"MakeGlobalVariablesScript": "main",
 		"PageDeleteComplete": "TemporaryAccountsInstrumentation",
 		"PermissionStatusAudit": "BlockMetricsHooks",
@@ -251,6 +259,18 @@
 				"mediawiki.visibleTimeout"
 			]
 		},
+		"ext.wikimediaEvents.createAccount": {
+			"localBasePath": "modules/ext.wikimediaEvents.createAccount",
+			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.createAccount",
+			"packageFiles": [
+				"init.js",
+				"instrumentation.js",
+				"useInstrument.js"
+			],
+			"dependencies": [
+				"ext.eventLogging"
+			]
+		},
 		"ext.wikimediaEvents.wikibase": {
 			"localBasePath": "modules/ext.wikimediaEvents.wikibase",
 			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.wikibase",
@@ -309,10 +329,12 @@
 			"searchSatisfaction/searchSatisfaction.test.js",
 			"searchSatisfaction/searchSli.test.js",
 			"articleSummaries/index.test.js",
-			"articleSummaries/summariesInteractions.test.js"
+			"articleSummaries/summariesInteractions.test.js",
+			"createAccount/instrumentation.test.js"
 		],
 		"dependencies": [
-			"ext.wikimediaEvents"
+			"ext.wikimediaEvents",
+			"ext.wikimediaEvents.createAccount"
 		]
 	},
 	"config": {
@@ -415,6 +437,13 @@
 					"AccountCreationLogger"
 				],
 				"sort": 0
+			},
+			"CreateAccountInstrumentationPreAuthenticationProvider": {
+				"class": "WikimediaEvents\\CreateAccount\\CreateAccountInstrumentationPreAuthenticationProvider",
+				"services": [
+					"WikimediaEventsCreateAccountInstrumentationClient"
+				],
+				"sort": 1
 			}
 		}
 	},
