@@ -455,8 +455,11 @@ function createSerpEvent() {
 
 	// This method is called from jQuery.ready which runs on DOMContentLoaded. Use domInteractive since that
 	// is immediately before DOMContentLoaded per spec.
-	if ( window.performance && window.performance.timing ) {
-		params.msToDisplayResults = window.performance.timing.domInteractive - window.performance.timing.navigationStart;
+	if ( window.performance && window.performance.getEntriesByType ) {
+		const entry = performance.getEntriesByType( 'navigation' )[ 0 ];
+		if ( entry && entry.domInteractive > 0 ) {
+			params.msToDisplayResults = entry.domInteractive;
+		}
 	}
 	if ( search.didYouMean ) {
 		params.inputLocation = didYouMeanMap[ search.didYouMean ];
