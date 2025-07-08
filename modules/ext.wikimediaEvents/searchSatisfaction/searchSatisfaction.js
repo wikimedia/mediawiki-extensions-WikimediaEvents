@@ -608,6 +608,15 @@ function setupSearchTest( session ) {
 function setupAutocompleteTest( session ) {
 	let lastSearchId;
 	let autocompleteStart = null;
+
+	mw.hook( 'typeaheadSearch.appendUrlParams' ).add( ( append ) => {
+		const subTest = session.get( 'subTest' );
+		// a valid subTest looks like <test>:<bucket>
+		if ( subTest && subTest.includes( ':' ) ) {
+			append( 'cirrusUserTesting', subTest );
+		}
+	} );
+
 	const logEvent = genLogEventFn( 'autocomplete', session, {} );
 	const track = function ( topic, data ) {
 		let $wprov, params;
