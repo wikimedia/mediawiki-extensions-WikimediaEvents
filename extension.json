@@ -254,7 +254,8 @@
 					"name": "data.json",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleData"
 				},
-				"xLab/pageVisit.js"
+				"xLab/pageVisit.js",
+				"xLab/loggedOutRetentionVisit.js"
 			],
 			"dependencies": [
 				"web2017-polyfills",
