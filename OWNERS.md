@@ -180,6 +180,12 @@ Moved here in <https://phabricator.wikimedia.org/T332438>.
 * Files: xLab/pageVisit.js
 * Contact: Experiment Platform
 
+## Web Growth Logged Out Retention A/A Instrumentation
+
+* Since: July 2025
+* Files: xLab/loggedOutRetentionVisit.js
+* Contact: Web Growth
+
 # Code ownership for other code in WikimediaEvents
 
 ## Temporary account instrumentation

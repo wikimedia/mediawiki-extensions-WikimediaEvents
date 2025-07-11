@@ -18,6 +18,7 @@ if ( skin === 'minerva' ) {
 require( './editAttemptStep.js' );
 require( './networkProbe.js' );
 require( './xLab/pageVisit.js' );
+require( './xLab/loggedOutRetentionVisit.js' );
 
 if ( !window.QUnit ) {
 	require( './searchSatisfaction/index.js' )();
