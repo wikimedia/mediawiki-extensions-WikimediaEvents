@@ -59,7 +59,7 @@ class WikimediaEventsCountryCodeLookup {
 				// Note, the method above can throw an exception even if instantiating
 				// the reader with the database does not. See ::getRecord in Reader
 				LoggerFactory::getInstance( 'WikimediaEvents' )->error( $e->getMessage() );
-			} catch ( AddressNotFoundException $e ) {
+			} catch ( AddressNotFoundException ) {
 				// Ignore cases where the IP isn't found.
 			}
 		}
