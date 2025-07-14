@@ -292,7 +292,24 @@ class Probenet {
 			probe_data.pulse_number = pulse_number;
 		}
 
+		const host = this.extractHostFromServerTiming( probe_result );
+		if ( host ) {
+			probe_data.host = host;
+		}
+
 		return probe_data;
+	}
+
+	// Extract host from server timing
+	extractHostFromServerTiming( probe_result ) {
+		if ( probe_result.serverTiming && Array.isArray( probe_result.serverTiming ) ) {
+			const hostTiming = probe_result.serverTiming.find( ( entry ) => entry.name === 'host' );
+			if ( hostTiming && hostTiming.description ) {
+				return hostTiming.description;
+			}
+		}
+
+		return null;
 	}
 
 	// Function to generate report after all probes are completed
