@@ -322,6 +322,20 @@
 			"dependencies": [
 				"ext.eventLogging"
 			]
+		},
+		"ext.wikimediaEvents.xLabGroupbyExperiment": {
+			"localBasePath": "modules/ext.wikimediaEvents.xLabGroupbyExperiment",
+			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.xLabGroupbyExperiment",
+			"packageFiles": [
+				"index.js",
+				"onGroupbyPrefChangeExperiment.js",
+				"onGroupbyToggleChangeExperiment.js",
+				"onGroupbyCTRExperiment.js",
+				"onGroupbyPageVisitExperiment.js"
+			],
+			"dependencies": [
+				"ext.wikimediaEvents.xLab"
+			]
 		}
 	},
 	"ResourceFileModulePaths": {

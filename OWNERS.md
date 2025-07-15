@@ -224,3 +224,12 @@ More details at <https://phabricator.wikimedia.org/T394744>
 A collection of standardized instruments, including:
 
 1. Click Through Rate (CTR)
+
+
+## GroupByToggle experiment on RecentChanges, Watchlist, and RelatedChanges
+
+* Since: July 2025
+* Modules: ext.wikimediaEvents.xLabGroupbyExperiment
+* Contact: Moderator Tools
+
+An experiment that will run on RecentChanges, RelatedChanges, and Watchlist and introduces a new feature (group by toggle).
