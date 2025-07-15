@@ -23,6 +23,14 @@ function setupInstrumentation() {
 	const $form = $( '#userlogin2' );
 	const $inputs = $form.find( 'input' );
 
+	// Record clicks on the hCaptcha privacy policy link.
+	$form.find( 'a[href="https://www.hcaptcha.com/privacy"]' ).on( 'click', () => {
+		submitInteraction( 'click', {
+			source: 'form',
+			context: 'hcaptcha-privacy-policy'
+		} );
+	} );
+
 	$inputs.on( 'focus', function () {
 		if ( !interactionStart ) {
 			// Mark the first time the user interacts with the form
