@@ -31,6 +31,14 @@ function setupInstrumentation() {
 		} );
 	} );
 
+	// Record clicks on the hCaptcha terms of use link.
+	$form.find( 'a[href="https://www.hcaptcha.com/terms"]' ).on( 'click', () => {
+		submitInteraction( 'click', {
+			source: 'form',
+			context: 'hcaptcha-terms-of-use'
+		} );
+	} );
+
 	$inputs.on( 'focus', function () {
 		if ( !interactionStart ) {
 			// Mark the first time the user interacts with the form

@@ -14,7 +14,8 @@ QUnit.module( 'ext.wikimediaEvents.createAccount.instrumentation', QUnit.newMwEn
 
 		this.$form = $( '<form id="userlogin2">' )
 			.append( '<input name="wpName" />' )
-			.append( '<a href="https://www.hcaptcha.com/privacy"></a>' );
+			.append( '<a href="https://www.hcaptcha.com/privacy"></a>' )
+			.append( '<a href="https://www.hcaptcha.com/terms"></a>' );
 
 		$( '#qunit-fixture' ).append( this.$form );
 	},
@@ -88,6 +89,18 @@ QUnit.test( 'should submit interaction event when privacy policy link is clicked
 	assert.deepEqual(
 		this.submitInteraction.firstCall.args,
 		[ 'click', { source: 'form', context: 'hcaptcha-privacy-policy' } ]
+	);
+} );
+
+QUnit.test( 'should submit interaction event when terms of use link is clicked', function ( assert ) {
+	setupInstrumentation();
+
+	this.$form.find( 'a[href="https://www.hcaptcha.com/terms"]' ).trigger( 'click' );
+
+	assert.true( this.submitInteraction.calledOnce );
+	assert.deepEqual(
+		this.submitInteraction.firstCall.args,
+		[ 'click', { source: 'form', context: 'hcaptcha-terms-of-use' } ]
 	);
 } );
 
