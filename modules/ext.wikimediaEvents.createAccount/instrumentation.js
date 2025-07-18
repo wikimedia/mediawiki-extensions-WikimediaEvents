@@ -115,6 +115,14 @@ function setupInstrumentation() {
 			} );
 		}
 	} );
+
+	// Emit interaction events for performance measurements, e.g. hCaptcha load and execute timing.
+	mw.trackSubscribe( 'specialCreateAccount.performanceTiming', ( _, measurementName, durationSeconds ) => {
+		submitInteraction( measurementName, {
+			source: 'form',
+			context: durationSeconds
+		} );
+	} );
 }
 
 module.exports = setupInstrumentation;

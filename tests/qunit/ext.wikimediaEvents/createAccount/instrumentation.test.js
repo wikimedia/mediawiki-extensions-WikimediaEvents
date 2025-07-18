@@ -104,12 +104,13 @@ QUnit.test( 'should submit interaction event when terms of use link is clicked',
 	);
 } );
 
-QUnit.test( 'should submit interaction event for frontend validation errors', function ( assert ) {
+QUnit.test( 'should submit interaction event for frontend validation errors and performance measurements', function ( assert ) {
 	setupInstrumentation();
 
 	mw.track( 'specialCreateAccount.validationErrors', [ 'some_error', 'one-other-error' ] );
+	mw.track( 'specialCreateAccount.performanceTiming', 'hcaptcha-execute', 1.718 );
 
-	assert.true( this.submitInteraction.calledTwice );
+	assert.true( this.submitInteraction.calledThrice );
 	assert.deepEqual(
 		this.submitInteraction.firstCall.args,
 		[ 'view', {
@@ -124,6 +125,13 @@ QUnit.test( 'should submit interaction event for frontend validation errors', fu
 			source: 'form',
 			subType: 'validation_error',
 			context: 'one_other_error'
+		} ]
+	);
+	assert.deepEqual(
+		this.submitInteraction.thirdCall.args,
+		[ 'hcaptcha-execute', {
+			source: 'form',
+			context: 1.718
 		} ]
 	);
 } );
