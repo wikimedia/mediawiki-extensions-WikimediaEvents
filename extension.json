@@ -52,7 +52,11 @@
 		"CreateAccountInstrumentationHandler": {
 			"class": "WikimediaEvents\\CreateAccount\\CreateAccountInstrumentationHandler",
 			"services": [
-				"ExtensionRegistry"
+				"ExtensionRegistry",
+				"UserRegistrationLookup",
+				"WikimediaEventsCreateAccountInstrumentationClient",
+				"UrlUtils",
+				"MainConfig"
 			]
 		},
 		"EditPageHooks": {
@@ -107,7 +111,10 @@
 		"AuthChangeFormFields": "CreateAccountInstrumentationHandler",
 		"AuthenticationAttemptThrottled": "TemporaryAccountsInstrumentation",
 		"BeforeInitialize": "main",
-		"BeforePageDisplay": "main",
+		"BeforePageDisplay": [
+			"main",
+			"CreateAccountInstrumentationHandler"
+		],
 		"BlockIpComplete": "TemporaryAccountsInstrumentation",
 		"FlaggedRevsStabilitySettingsChanged": "FlaggedRevsTemporaryAccountsInstrumentation",
 		"GlobalBlockingGlobalBlockAudit": "GlobalBlockingTemporaryAccountsInstrumentation",
@@ -420,6 +427,10 @@
 		},
 		"WikimediaEventsEmailAuthEnforce": {
 			"description": "Whether to enforce email auth verification. Default is false, so log-only mode.",
+			"value": false
+		},
+		"WikimediaEventsCreateAccountInstrumentation": {
+			"description": "Whether to submit server-side instrumentation events for post-account creation pageviews. Default is false.",
 			"value": false
 		}
 	},

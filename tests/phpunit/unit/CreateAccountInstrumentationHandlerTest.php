@@ -1,10 +1,14 @@
 <?php
 namespace WikimediaEvents\Tests\Unit;
 
+use MediaWiki\Config\HashConfig;
 use MediaWiki\Output\OutputPage;
 use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\SpecialPage\SpecialPage;
+use MediaWiki\User\Registration\UserRegistrationLookup;
+use MediaWiki\Utils\UrlUtils;
 use MediaWikiUnitTestCase;
+use WikimediaEvents\CreateAccount\CreateAccountInstrumentationClient;
 use WikimediaEvents\CreateAccount\CreateAccountInstrumentationHandler;
 
 /**
@@ -18,7 +22,13 @@ class CreateAccountInstrumentationHandlerTest extends MediaWikiUnitTestCase {
 		parent::setUp();
 
 		$this->extensionRegistry = $this->createMock( ExtensionRegistry::class );
-		$this->handler = new CreateAccountInstrumentationHandler( $this->extensionRegistry );
+		$this->handler = new CreateAccountInstrumentationHandler(
+			$this->extensionRegistry,
+			$this->createNoOpMock( UserRegistrationLookup::class ),
+			$this->createNoOpMock( CreateAccountInstrumentationClient::class ),
+			$this->createNoOpMock( UrlUtils::class ),
+			new HashConfig()
+		);
 	}
 
 	/**
