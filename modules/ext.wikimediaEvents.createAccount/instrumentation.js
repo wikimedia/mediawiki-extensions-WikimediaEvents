@@ -96,6 +96,11 @@ function setupInstrumentation() {
 	// Record the overall time taken to fill out and submit the form.
 	$form.on( 'submit', () => {
 		if ( interactionStart ) {
+			submitInteraction( 'click', {
+				source: 'form',
+				subType: 'presubmit',
+				context: $form.find( 'input[name=wpName]' ).val().trim()
+			} );
 			const elapsed = Date.now() - interactionStart;
 			submitInteraction( 'click', {
 				source: 'form',

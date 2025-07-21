@@ -66,6 +66,7 @@ QUnit.test( 'should instrument interaction start and time spent on individual fi
 QUnit.test( 'should submit interaction event on submit', function ( assert ) {
 	setupInstrumentation();
 
+	this.$form.find( 'input[name=wpName]' ).val( 'Foo ' );
 	this.$form.find( 'input[name=wpName]' ).trigger( 'focus' );
 	// Simulate the user having spent some time on the form.
 	this.clock.tick( 2812 );
@@ -73,9 +74,13 @@ QUnit.test( 'should submit interaction event on submit', function ( assert ) {
 	this.$form.on( 'submit', ( event ) => event.preventDefault() );
 	this.$form.trigger( 'submit' );
 
-	assert.true( this.submitInteraction.calledThrice );
+	assert.deepEqual( this.submitInteraction.callCount, 4 );
 	assert.deepEqual(
 		this.submitInteraction.thirdCall.args,
+		[ 'click', { source: 'form', subType: 'presubmit', context: 'Foo' } ]
+	);
+	assert.deepEqual(
+		this.submitInteraction.lastCall.args,
 		[ 'click', { source: 'form', subType: 'submit', context: 2.812 } ]
 	);
 } );
