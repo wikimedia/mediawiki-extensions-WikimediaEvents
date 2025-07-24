@@ -197,6 +197,12 @@ Moved here in <https://phabricator.wikimedia.org/T332438>.
 * Files: xLab/loggedOutRetentionVisit.js
 * Contact: Web Growth
 
+## MinT for Wiki Readers Synthetic A/A test
+
+* Since: Aug 2025
+* Files: xLab/mintReaderPageVisit.js
+* Contact: Language and Product Localization
+
 # Code ownership for other code in WikimediaEvents
 
 ## Temporary account instrumentation

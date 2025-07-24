@@ -24,6 +24,7 @@ require( './editAttemptStep.js' );
 require( './networkProbe.js' );
 require( './xLab/pageVisit.js' );
 require( './xLab/loggedOutRetentionVisit.js' );
+require( './xLab/mintReaderPageVisit.js' );
 
 if ( !window.QUnit ) {
 	require( './searchSatisfaction/index.js' )();

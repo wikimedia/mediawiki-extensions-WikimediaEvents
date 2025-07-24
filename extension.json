@@ -256,7 +256,8 @@
 				},
 				"xLab/pageVisit.js",
 				"xLab/loggedOutRetentionVisit.js",
-				"xLab/donateAB.js"
+				"xLab/donateAB.js",
+				"xLab/mintReaderPageVisit.js"
 			],
 			"dependencies": [
 				"ext.wikimediaEvents.xLab",
