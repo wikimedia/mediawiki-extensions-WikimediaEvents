@@ -1,8 +1,9 @@
 /**
- * Instrument for the FY25–26 WE3.6.1 retention A/A test
+ * Instrument for the FY25-25 WE3.6.1 Retention End-to-End AA Test
+ *
  * Logs one “page_load” event per page view.
  */
-const EXPERIMENT_NAME = 'we-3-6-1-retention-aa-test1';
+const EXPERIMENT_NAME = 'we-3-6-1-retention-aa-test2';
 const INSTRUMENT_NAME = 'LoggedOutRetentionVisit';
 
 mw.loader.using( 'ext.xLab' ).then( () => {
