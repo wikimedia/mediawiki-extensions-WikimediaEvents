@@ -376,6 +376,7 @@ function shouldLog( descriptor ) {
  * @property {string} namespace
  * @property {string} debug
  * @property {string} banner_shown
+ * @property {Object} [experiment_assignments]
  */
 /**
  * Log the error to the "mediawiki.client.error" stream on the specified EventGate instance.
@@ -404,6 +405,7 @@ function log( intakeURL, descriptor, component ) {
 	 */
 	// @ts-ignore https://github.com/wikimedia/typescript-types/issues/46
 	const centralNotice = /** @type {CentralNotice} */ ( mw.centralNotice );
+
 	// Extra data that can be specified as-needed. Note that the values must always be strings.
 	/** @type ErrorContext */
 	const errorContext = {
@@ -431,6 +433,29 @@ function log( intakeURL, descriptor, component ) {
 	gadgets = mw.loader.getModuleNames().filter( ( module ) => module.match( /^ext\.gadget\./ ) && mw.loader.getState( module ) !== 'registered' ).map( ( /** @type string */ module ) => module.replace( /^ext\.gadget\./, '' ) ).join( ',' );
 	if ( gadgets ) {
 		errorContext.gadgets = gadgets;
+	}
+
+	/**
+	 * @typedef {Object} XLab
+	 * @property {Function?} getAssignments
+	 */
+	// @ts-ignore
+	const xLab = /** @type {XLab} */ ( mw.xLab );
+	const experimentAssignments = ( xLab && xLab.getAssignments && xLab.getAssignments() ) || {};
+	const experimentNames = Object.keys( experimentAssignments );
+
+	// If the current user is enrolled in one or more experiments, then add the enrollment
+	// information to the error context.
+	//
+	// The enrollment information is encoded in the same way as the X-Experiment-Enrollments header
+	// sent by Varnish, i.e.
+	//
+	//     experiment1Name=groupName;experiment2Name=groupName;experiment3Name=groupName...
+	if ( experimentNames.length ) {
+		errorContext.experiment_assignments = experimentNames.map(
+			( experimentName ) => `${ experimentName }=${ experimentAssignments[ experimentName ] }`
+		)
+			.join( ';' );
 	}
 
 	const customErrorContext = descriptor.customErrorContext ? descriptor.customErrorContext : {};

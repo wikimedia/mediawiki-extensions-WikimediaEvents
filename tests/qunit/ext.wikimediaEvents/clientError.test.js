@@ -126,3 +126,40 @@ QUnit.test( 'log', function ( assert ) {
 		}
 	} );
 } );
+
+QUnit.test( 'log - error_context includes experiment enrollment information', function ( assert ) {
+	const originalXLab = mw.xLab;
+
+	mw.xLab = {
+		getAssignments: function () {
+			return {
+				'sds2-4-11-synth-aa-test': 'control-2',
+				'sds2-4-11-synth-aa-test-2': 'control'
+			};
+		}
+	};
+
+	const sendBeacon = this.sandbox.spy( navigator, 'sendBeacon' );
+
+	clientError.log( 'http://example.com/', {
+		errorClass: 'Error',
+		errorMessage: 'bar',
+		fileUrl: 'http://localhost:8080/wiki/Bar',
+		stackTrace: 'foo',
+		errorObject: new Error( 'bar' )
+	} );
+
+	const data = JSON.parse( sendBeacon.firstCall.args[ 1 ] );
+
+	assert.strictEqual(
+		data.error_context.experiment_assignments,
+		'sds2-4-11-synth-aa-test=control-2;sds2-4-11-synth-aa-test-2=control'
+	);
+
+	// Restore mw.xLab if necessary
+	if ( originalXLab ) {
+		mw.xLab = originalXLab;
+	} else {
+		delete mw.xLab;
+	}
+} );
