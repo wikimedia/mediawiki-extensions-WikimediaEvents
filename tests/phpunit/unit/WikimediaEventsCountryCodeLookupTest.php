@@ -4,7 +4,7 @@ namespace WikimediaEvents\Tests\Unit;
 
 use GeoIp2\Database\Reader;
 use GeoIp2\Model\Country;
-use MediaWiki\Request\WebRequest;
+use MediaWiki\Request\FauxRequest;
 use MediaWikiUnitTestCase;
 use WikimediaEvents\WikimediaEventsCountryCodeLookup;
 
@@ -19,9 +19,8 @@ class WikimediaEventsCountryCodeLookupTest extends MediaWikiUnitTestCase {
 	public function testGetCountryCodeFromCookie(
 		$expectedCountryCode, ?string $geoIpCookie
 	) {
-		$webRequest = $this->createMock( WebRequest::class );
-		$webRequest->method( 'getCookie' )
-			->with( 'GeoIP' )->willReturn( $geoIpCookie );
+		$webRequest = new FauxRequest();
+		$webRequest->setCookie( 'GeoIP', $geoIpCookie, '' );
 		$this->assertEquals(
 			$expectedCountryCode,
 			WikimediaEventsCountryCodeLookup::getFromCookie( $webRequest )
@@ -61,8 +60,8 @@ class WikimediaEventsCountryCodeLookupTest extends MediaWikiUnitTestCase {
 		$wikimediaEventsCountryCodeLookup = new WikimediaEventsCountryCodeLookup(
 			$readerMock
 		);
-		$webRequest = $this->createMock( WebRequest::class );
-		$webRequest->method( 'getIp' )->willReturn( $ip );
+		$webRequest = new FauxRequest();
+		$webRequest->setIP( $ip );
 		$this->assertEquals(
 			$expectedCountryCode,
 			$wikimediaEventsCountryCodeLookup->getFromGeoIP( $webRequest )
