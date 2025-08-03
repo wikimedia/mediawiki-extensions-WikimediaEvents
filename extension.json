@@ -158,7 +158,8 @@
 		"PageDeleteComplete": "TemporaryAccountsInstrumentation",
 		"PermissionStatusAudit": "BlockMetricsHooks",
 		"EditPage::showReadOnlyForm:initial": "EditPageHooks",
-		"AuthManagerLoginAuthenticateAudit": "main"
+		"AuthManagerLoginAuthenticateAudit": "main",
+		"GetSessionJwtData": "main"
 	},
 	"APIModules": {
 		"wikimediaeventsblockededit": {
