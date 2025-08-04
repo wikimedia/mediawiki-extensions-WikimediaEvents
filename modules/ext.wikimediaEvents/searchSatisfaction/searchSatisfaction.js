@@ -458,7 +458,8 @@ function createSerpEvent() {
 	if ( window.performance && window.performance.getEntriesByType ) {
 		const entry = performance.getEntriesByType( 'navigation' )[ 0 ];
 		if ( entry && entry.domInteractive > 0 ) {
-			params.msToDisplayResults = entry.domInteractive;
+			// Schema requires integer
+			params.msToDisplayResults = Math.floor( entry.domInteractive );
 		}
 	}
 	if ( search.didYouMean ) {
