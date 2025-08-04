@@ -75,7 +75,7 @@ document.addEventListener( 'click', ( { target } ) => {
 			submitInteraction( stateEntry, 'click' );
 		}
 	} );
-} );
+}, true );
 
 // API
 // ===
