@@ -5,6 +5,11 @@
  * History
  * =======
  *
+ * 2025-08-07:
+ *
+ * * This instrument was repurposed for the "synth-aa-test-mw-js" experiment. See
+ *   https://phabricator.wikimedia.org/T397140 for more context.
+ *
  * 2025-06-27:
  *
  * * This instrument was repurposed for the "sds2-4-11-synth-aa-test-2" experiment. See
@@ -17,7 +22,7 @@
  *   https://phabricator.wikimedia.org/T392313 for more context.
  */
 
-const EXPERIMENT_NAME = 'sds2-4-11-synth-aa-test-2';
+const EXPERIMENT_NAME = 'synth-aa-test-mw-js';
 
 mw.loader.using( 'ext.xLab' ).then( () => {
 	mw.xLab.getExperiment( EXPERIMENT_NAME )
