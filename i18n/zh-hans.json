@@ -20,5 +20,5 @@
 	"wikimediaevents-special-wikimediadebug-submit-set": "激活调试Cookie$1",
 	"wikimediaevents-special-wikimediadebug-submit-renew": "更新$1的cookie",
 	"wikimediaevents-special-wikimediadebug-submit-clear": "清除Cookie",
-	"wikimediaevents-special-wikimediadebug-header-inactive": "点击按钮以在 <code>$1</code> 上激活[https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] Cookie。\n\n激活后，您的设备对本维基的网页请求将向开发人员'''发送包含个人信息的调试日志'''。请仅在开发人员要求时激活本功能。请注意，这可能会导致浏览速度变慢。\n\n如果您正在测试跨域功能，请务必在其他相关域名的特殊页面上激活这一Cookie。"
+	"wikimediaevents-special-wikimediadebug-header-inactive": "点击按钮以在 <code>$1</code> 上激活[https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] Cookie。\n\n激活后，您的设备对本维基的网页请求将向维基媒体基金会服务器'''发送包含个人信息的调试日志'''。请仅在开发人员要求时激活本功能。请注意，这可能会导致浏览速度变慢。\n\n如果您的测试涉及多个域名，请务必在其他相关域名的特殊页面上同样激活这一Cookie。"
 }
