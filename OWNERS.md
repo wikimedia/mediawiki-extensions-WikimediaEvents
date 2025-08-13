@@ -188,7 +188,7 @@ Moved here in <https://phabricator.wikimedia.org/T332438>.
 ## Experiment Platform Synthetic A/A Instrumentation
 
 * Since: May 2025
-* Files: xLab/pageVisit.js
+* Files: xLab/pageVisit.js, XLab/PageVisitInstrument.php
 * Contact: Experiment Platform
 
 ## Web Growth Logged Out Retention A/A Instrumentation
@@ -230,7 +230,6 @@ More details at <https://phabricator.wikimedia.org/T394744>
 A collection of standardized instruments, including:
 
 1. Click Through Rate (CTR)
-
 
 ## GroupByToggle experiment on RecentChanges, Watchlist, and RelatedChanges
 

@@ -104,6 +104,12 @@
 				"UserFactory",
 				"StatsFactory"
 			]
+		},
+		"PageVisitInstrument": {
+			"class": "WikimediaEvents\\XLab\\PageVisitInstrument",
+			"optional_services": [
+				"MetricsPlatform.XLab.ExperimentManager"
+			]
 		}
 	},
 	"Hooks": {
@@ -113,7 +119,8 @@
 		"BeforeInitialize": "main",
 		"BeforePageDisplay": [
 			"main",
-			"CreateAccountInstrumentationHandler"
+			"CreateAccountInstrumentationHandler",
+			"PageVisitInstrument"
 		],
 		"BlockIpComplete": "TemporaryAccountsInstrumentation",
 		"FlaggedRevsStabilitySettingsChanged": "FlaggedRevsTemporaryAccountsInstrumentation",
