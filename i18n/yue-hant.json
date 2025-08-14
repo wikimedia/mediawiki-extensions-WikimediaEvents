@@ -9,5 +9,5 @@
 	"tag-cross-wiki-upload": "跨 wiki 上載",
 	"tag-cross-wiki-upload-description": "由其他wiki嘅文字同可見編輯器上載嘅檔案",
 	"wikimediaevents-special-wikimediadebug-submit-clear": "清cookie",
-	"wikimediaevents-special-wikimediadebug-header-inactive": "撳一下個掣就可以喺<code>$1</code>上面啟動[https://wikitech.wikimedia.org/wiki/WikimediaDebug 維基媒體調試]\n\n當啟動咗之後，你部裝置對呢個維基嘅網絡請求會將包含個人資料嘅調試記錄發送去維基媒體基金會嘅伺服器。唔該淨係有喺開發人員要求你嘅情況下先啟動呢個功能。請注意，噉樣會令到瀏覽體驗變慢。\n\n如果你嘅測試涉及多個網域名稱，記得亦都要透過其他網域嘅專門版嚟啟動Cookie。"
+	"wikimediaevents-special-wikimediadebug-header-inactive": "撳一下個掣就可以喺<code>$1</code>上面啟動[https://wikitech.wikimedia.org/wiki/WikimediaDebug 維基媒體調試]\n\n當啟動咗之後，你部裝置對呢個維基嘅網絡請求會將包含個人資料嘅調試記錄發送去維基媒體基金會嘅伺服器。唔該淨係有喺開發人員要求你嘅情況下先啟動呢個功能。請注意，噉樣會令到瀏覽體驗變慢。\n\n如果你嘅測試涉及多個網域名，記得亦都要透過其他網域嘅專門版嚟啟動Cookie。"
 }
