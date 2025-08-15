@@ -1,4 +1,7 @@
 const specialPage = mw.config.get( 'wgCanonicalSpecialPageName' );
+if ( mw.config.get( 'skin' ) === 'minerva' ) {
+	return;
+}
 if ( specialPage === 'Watchlist' || specialPage === 'Recentchanges' || specialPage === 'Recentchangeslinked' ) {
 	module.exports = {
 		onGroupByToggleChangeExperiment: require( './onGroupbyToggleChangeExperiment.js' ),
