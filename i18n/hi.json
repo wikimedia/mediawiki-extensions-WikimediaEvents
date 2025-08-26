@@ -1,8 +1,19 @@
 {
 	"@metadata": {
 		"authors": [
-			"Sfic"
+			"Sfic",
+			"Saurmandal"
 		]
 	},
-	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|अंतर-विकि अपलोड]]"
+	"wikimediaevents-desc": "EventLogging की मदद से विकिमीडिया-विशिष्ट घटनाएँ लॉग करता है",
+	"apihelp-wikimediaeventsblockededit-summary": "सम्पादन के अवरोधित प्रयासों के बारे में जानकारी लॉग करता है",
+	"apihelp-wikimediaeventsblockededit-param-page": "पृष्ठ जिस पर सम्पादन का प्रयास किया गया था",
+	"apihelp-wikimediaeventsblockededit-param-interface": "सम्पादन करने के लिए उपयुक्त इंटरफ़ेस",
+	"apihelp-wikimediaeventsblockededit-param-platform": "सम्पादन करने के लिए उपयुक्त मंच",
+	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|अंतर-विकि अपलोड]]",
+	"tag-cross-wiki-upload-description": "दूसरे विकियों के विकिटेक्स्ट एडिटर और यथादृश्य सम्पादिका के अंदर से अपलोड की गई फ़ाइलें",
+	"wikimediaevents-special-wikimediadebug-notenabled": "यह विशेष पृष्ठ सक्षम नहीं है।",
+	"wikimediaevents-special-wikimediadebug-submit-set": "$1 के लिए डीबग कुकी सक्षम करें",
+	"wikimediaevents-special-wikimediadebug-submit-renew": "$1 के लिए कुकी नवीकृत करें",
+	"wikimediaevents-special-wikimediadebug-submit-clear": "कुकी साफ करें"
 }
