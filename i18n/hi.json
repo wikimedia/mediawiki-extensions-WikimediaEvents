@@ -1,7 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Sfic"
+			"Sfic",
+			"Saurmandal"
 		]
-	}
+	},
+	"wikimediaevents-desc": "EventLogging की मदद से विकिमीडिया-विशिष्ट घटनाएँ लॉग करता है"
 }
