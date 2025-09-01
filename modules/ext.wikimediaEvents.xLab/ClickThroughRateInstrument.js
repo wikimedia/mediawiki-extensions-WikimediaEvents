@@ -11,10 +11,12 @@ const SCHEMA_ID = '/analytics/product_metrics/web/base/1.4.2';
  * @property {Element} element
  * @property {string} funnelEntryToken
  * @property {Instrument} instrument
+ * @property {boolean} trackSingleClick
  */
 
-/** @type {Map<string,StateEntry>} */
-const state = new Map();
+/** @type {Array<StateEntry>} */
+const state = [];
+const findBySelector = ( selector ) => ( stateEntry ) => stateEntry.selector === selector;
 
 /**
  * @param {Object} stateEntry
@@ -54,28 +56,6 @@ const intersectionObserver = new IntersectionObserver(
 		threshold: 1
 	}
 );
-
-document.addEventListener( 'click', ( { target } ) => {
-
-	// O(n * m) where:
-	//
-	// * n - the number of elements tracked by the instrument
-	// * m - is the maximum depth of the DOM inside the elements tracked by the instrument
-	//
-	// n will be trivially small for the foreseeable future.
-	//
-	// Generally, m depends on how the instrument is used, which Experiment Platform will need to
-	// track.
-
-	state.forEach( ( stateEntry ) => {
-
-		// Note well that e.contains( e ) return true. This handles the simple case where the event
-		// target is an element that is being tracked by the instrument.
-		if ( stateEntry.element.contains( target ) ) {
-			submitInteraction( stateEntry, 'click' );
-		}
-	} );
-}, true );
 
 // API
 // ===
@@ -160,32 +140,60 @@ const ClickThroughRateInstrument = {
 	 * @param {string} selector
 	 * @param {string} friendlyName
 	 * @param {Instrument} [instrument]
+	 * @param {Object} [options]
+	 * @param {boolean} [options.trackSingleClick=false] whether to stop processing
+	 * instruments on click events after an event target is contained by the instrumented element by
+	 * selector. The click event will be attributed to the selector element if it contains the event
+	 * target. Useful to prevent submitting duplicate click interactions on parent elements of a
+	 * child when both are instrumented. In such case it's necessary to start the instrument of each
+	 * element from the innermost to the outermost in the document.
 	 * @return {StateEntry|null}
 	 */
-	start( selector, friendlyName, instrument ) {
+	start( selector, friendlyName, instrument, { trackSingleClick = false } = {} ) {
 		const e = document.querySelector( selector );
 
 		if ( !e ) {
-			mw.log.warn( 'ClickThroughRateInstrument: selector does not exist - ' + selector );
+			mw.log.warn( 'ClickThroughRateInstrument: selector ' + selector + ' does not exist' );
 			return null;
 		}
 
 		const i = instrument || mw.eventLog.newInstrument( STREAM_NAME, SCHEMA_ID );
 
 		let result;
-
-		if ( state.has( selector ) ) {
-			result = state.get( selector );
+		if ( state.some( findBySelector( selector ) ) ) {
+			result = state.find( findBySelector( selector ) );
 		} else {
 			result = {
 				selector,
 				friendlyName,
+				trackSingleClick,
 				element: e,
 				funnelEntryToken: mw.user.generateRandomSessionId(),
 				instrument: i
 			};
 
-			state.set( selector, result );
+			// Warn about the presence of nested instrumented elements which can lead to unexpected
+			// attribution of click events
+			state.forEach( ( stateEntry ) => {
+				const areRelated = result.element.contains( stateEntry.element ) ||
+					stateEntry.element.contains( result.element );
+				const singleClickTrackingEnabled = stateEntry.element.trackSingleClick ||
+					result.trackSingleClick;
+				if ( areRelated && !singleClickTrackingEnabled ) {
+					mw.log.warn(
+						'ClickThroughRateInstrument: selector ' + selector + ' is already contained by ' +
+						'another instrument, or contains an existing instrument. To prevent submitting duplicate ' +
+						'click interactions use options.trackSingleClick = true'
+					);
+				}
+			} );
+
+			// Prepend elements with trackSingleClick so they are processed early
+			if ( result.trackSingleClick ) {
+				state.unshift( result );
+			} else {
+				state.push( result );
+			}
 
 			intersectionObserver.observe( e );
 		}
@@ -201,8 +209,32 @@ const ClickThroughRateInstrument = {
 	 */
 	stop( { element, selector } ) {
 		intersectionObserver.unobserve( element );
-		state.delete( selector );
+		state.splice( state.findIndex( findBySelector( selector ) ), 1 );
 	}
 };
+
+document.addEventListener( 'click', ( event ) => {
+
+	// O(n * m) where:
+	//
+	// * n - the number of elements tracked by the instrument
+	// * m - is the maximum depth of the DOM inside the elements tracked by the instrument
+	//
+	// n will be trivially small for the foreseeable future.
+	//
+	// Generally, m depends on how the instrument is used, which Experiment Platform will need to
+	// track.
+
+	for ( const stateEntry of state ) {
+		// Note well that e.contains( e ) return true. This handles the simple case where the event
+		// target is an element that is being tracked by the instrument.
+		if ( stateEntry.element.contains( event.target ) ) {
+			submitInteraction( stateEntry, 'click' );
+			if ( stateEntry.trackSingleClick ) {
+				break;
+			}
+		}
+	}
+}, true );
 
 module.exports = ClickThroughRateInstrument;
