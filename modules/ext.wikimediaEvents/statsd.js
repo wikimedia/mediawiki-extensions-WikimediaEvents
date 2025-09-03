@@ -121,8 +121,11 @@ function statsAdd( line ) {
 }
 
 // Log to console and Logstash. Avoid throwing which would break the mw.trackSubscribe loop.
-function error( err ) {
+function error( err, invalidValue = null ) {
 	mw.log.error( err );
+	if ( invalidValue !== null ) {
+		err.error_context = { invalidValue };
+	}
 	mw.errorLogger.logError( err );
 }
 
@@ -173,12 +176,12 @@ mw.trackSubscribe( 'stats.', ( topic, value, labels = {} ) => {
 			value = 1;
 		}
 		if ( isNaN( value ) || Math.round( value ) !== value || value < 1 ) {
-			return error( new TypeError( `Invalid counter value for ${ name }` ) );
+			return error( new TypeError( `Invalid counter value for ${ name }` ), value );
 		}
 		line = formatDogstatsd( name, value + '|c', labels );
 	} else if ( /^mediawiki_[A-Za-z0-9_]+_seconds/.test( name ) ) {
 		if ( isNaN( value ) || typeof value !== 'number' || value < 0 ) {
-			return error( new TypeError( `Invalid timing value for ${ name }` ) );
+			return error( new TypeError( `Invalid timing value for ${ name }` ), value );
 		}
 		line = formatDogstatsd( name, Math.round( value ) + '|ms', labels );
 	} else {
