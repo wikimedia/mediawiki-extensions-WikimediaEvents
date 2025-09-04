@@ -119,7 +119,7 @@ function handleInitEvent( event ) {
 // so that events may be logged server-side.
 // https://api.jquery.com/jquery.ajaxprefilter/
 $.ajaxPrefilter( ( options ) => {
-	if ( options.trackEditAttemptStepSessionId && session.editing_session_id ) {
+	if ( options.trackEditAttemptStepSessionId && session && session.editing_session_id ) {
 		if ( options.data instanceof window.FormData ) {
 			options.data.append( 'editingStatsId', session.editing_session_id );
 		} else if ( typeof options.data === 'string' ) {
