@@ -10,8 +10,10 @@ use MediaWiki\Preferences\Hook\PreferencesFormPreSaveHook;
 use MediaWiki\User\User;
 use MWCryptHash;
 
-// T261842: The Web team is interested in all skin changes involving Vector
-// legacy and Vector latest.
+/**
+ * T261842: The Web team is interested in all skin changes involving Vector
+ * legacy and Vector latest.
+ */
 class VectorPrefDiffInstrumentation implements PreferencesFormPreSaveHook {
 	/**
 	 * EventLogging schema to use.

@@ -8,9 +8,6 @@ use WikimediaEvents\BlockUtils;
 
 /**
  * Hooks related to T310390.
- *
- * we didn't choose hook names, so:
- * @phpcs:disable MediaWiki.NamingConventions.LowerCamelFunctionsName.FunctionName
  */
 class EditPageHooks implements EditPage__showReadOnlyForm_initialHook {
 
