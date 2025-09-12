@@ -111,7 +111,6 @@ class WikimediaEventsHooks implements
 	 */
 	public function onBeforePageDisplay( $out, $skin ): void {
 		$out->addModules( 'ext.wikimediaEvents' );
-		$this->maybeAddGroupByToggleExperiment( $out );
 		if ( ExtensionRegistry::getInstance()->isLoaded( 'WikibaseRepository' ) ) {
 			// If we are in Wikibase Repo, load Wikibase module
 			$out->addModules( 'ext.wikimediaEvents.wikibase' );
@@ -598,19 +597,6 @@ class WikimediaEventsHooks implements
 		) {
 			$request->setVal( 'campaign', $campaign );
 			wfDebugLog( 'WMDE', "$campaign - 2 - Inject campaign value on CreateAccount" );
-		}
-	}
-
-	/**
-	 * @param OutputPage $out
-	 * @return void
-	 */
-	private function maybeAddGroupByToggleExperiment( OutputPage $out ): void {
-		if ( $out->getTitle()->isSpecial( "Recentchanges" )
-			|| $out->getTitle()->isSpecial( "Watchlist" )
-			|| $out->getTitle()->isSpecial( "Recentchangeslinked" )
-			|| $out->getTitle()->isSpecial( "Preferences" ) ) {
-			$out->addModules( 'ext.wikimediaEvents.xLabGroupbyExperiment' );
 		}
 	}
 }
