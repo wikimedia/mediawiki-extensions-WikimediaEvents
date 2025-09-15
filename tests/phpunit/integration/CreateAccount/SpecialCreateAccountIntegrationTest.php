@@ -42,7 +42,7 @@ class SpecialCreateAccountIntegrationTest extends SpecialPageTestBase {
 		$name = CreateAccountInstrumentationAuthenticationRequest::NAME;
 
 		$this->assertStringContainsString(
-			"<noscript><input type=\"hidden\" value=\"1\" name=\"$name\"></noscript>",
+			"<noscript><input name=\"$name\" type=\"hidden\" value=\"1\"></noscript>",
 			$html
 		);
 	}

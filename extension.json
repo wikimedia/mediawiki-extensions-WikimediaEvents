@@ -78,7 +78,8 @@
 				"MainWANObjectCache",
 				"UserFactory",
 				"UserGroupManager",
-				"EventLogging.EventSubmitter"
+				"EventLogging.EventSubmitter",
+				"CentralIdLookup"
 			]
 		},
 		"TemporaryAccountsInstrumentation": {

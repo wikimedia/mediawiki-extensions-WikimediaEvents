@@ -12,6 +12,7 @@ use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Language\FormatterFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
+use MediaWiki\User\CentralId\CentralIdLookup;
 use MediaWiki\User\User;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserGroupManager;
@@ -44,6 +45,7 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 	private UserFactory $userFactory;
 	private UserGroupManager $userGroupManager;
 	private EventSubmitter $eventSubmitter;
+	private CentralIdLookup $centralIdLookup;
 	/**
 	 * Callable that returns the entry point for this event as defined in MW_ENTRY_POINT.
 	 * Useful for testing.
@@ -59,6 +61,7 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 		UserFactory $userFactory,
 		UserGroupManager $userGroupManager,
 		EventSubmitter $eventSubmitter,
+		CentralIdLookup $centralIdLookup,
 		?callable $entryPointProvider = null
 	) {
 		$this->config = $config;
@@ -69,6 +72,7 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 		$this->userFactory = $userFactory;
 		$this->userGroupManager = $userGroupManager;
 		$this->eventSubmitter = $eventSubmitter;
+		$this->centralIdLookup = $centralIdLookup;
 		$this->entryPointProvider = $entryPointProvider ?? static fn (): string => MW_ENTRY_POINT;
 	}
 
@@ -266,7 +270,9 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 			return;
 		}
 		$event = $this->convertIPoidDataToEventLoggingFormat( $data );
-		$userEntitySerializer = new UserEntitySerializer( $this->userFactory, $this->userGroupManager );
+		$userEntitySerializer = new UserEntitySerializer(
+			$this->userFactory, $this->userGroupManager, $this->centralIdLookup
+		);
 		$event += [
 			'$schema' => self::SCHEMA,
 			'wiki_id' => WikiMap::getCurrentWikiId(),
