@@ -74,7 +74,11 @@ class EmailAuthHooks {
 
 		$countryCodeLookup = null;
 		if ( $extensionRegistry->isLoaded( 'WikimediaEvents' )
-			 && $extensionRegistry->isLoaded( 'CLDR' )
+			&& (
+				$extensionRegistry->isLoaded( 'cldr' )
+				||
+				$extensionRegistry->isLoaded( 'CLDR' )
+			)
 		) {
 			$countryCodeLookup = $services->get( 'WikimediaEventsCountryCodeLookup' );
 		}
@@ -141,7 +145,11 @@ class EmailAuthHooks {
 		if ( is_callable( $this->getPrivilegedGroupsCallback ) ) {
 			$privilegedGroups = ( $this->getPrivilegedGroupsCallback )( $user );
 		}
-		if ( $this->extensionRegistry->isLoaded( 'CLDR' ) ) {
+		if (
+			$this->extensionRegistry->isLoaded( 'cldr' )
+			||
+			$this->extensionRegistry->isLoaded( 'CLDR' )
+		) {
 			$countryCode = WikimediaEventsCountryCodeLookup::getFromCookie( $request );
 			if ( !$countryCode ) {
 				$countryCode = $this->countryCodeLookup->getFromGeoIP( $request );

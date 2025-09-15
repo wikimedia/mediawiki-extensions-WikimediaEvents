@@ -42,7 +42,13 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 		$this->markTestSkippedIfExtensionNotLoaded( 'IPReputation' );
 		$this->markTestSkippedIfExtensionNotLoaded( 'OATHAuth' );
 		$this->markTestSkippedIfExtensionNotLoaded( 'LoginNotify' );
-		$this->markTestSkippedIfExtensionNotLoaded( 'CLDR' );
+
+		if ( !(
+			ExtensionRegistry::getInstance()->isLoaded( 'cldr' )
+			|| ExtensionRegistry::getInstance()->isLoaded( 'CLDR' )
+		) ) {
+			self::markTestSkipped( 'cldr extension is required for this test' );
+		}
 
 		parent::setUp();
 
