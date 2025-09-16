@@ -41,7 +41,8 @@ if ( isMinTForWikireadersExperimentEnabled() && isOnMobileArticlePage() ) {
 			experiment.setStream( STREAM_ID );
 
 			experiment.send( 'page_visited', {
-				instrument_name: 'PageVisit'
+				instrument_name: 'PageVisit',
+				translation: {}
 			} );
 		} );
 	} );
