@@ -12,9 +12,7 @@ if ( skin === 'vector-2022' || skin === 'vector' ) {
 	require( './universalLanguageSelector.js' );
 	require( './webUIScroll.js' );
 }
-if ( skin === 'minerva' ) {
-	require( './articleSummaries/index.js' );
-}
+
 // For now this is vector '22 only.
 if ( skin === 'vector-2022' ) {
 	// ReadingsLists experiments T397532

@@ -329,7 +329,6 @@ class WikimediaEventsHooks implements
 			case 'minerva':
 				switch ( $param ) {
 					case 'clickTracking/webUIClick':
-					case 'articleSummaries/summariesInteractions':
 						return new RL\FilePath( $param . '.js' );
 					default:
 						return '';

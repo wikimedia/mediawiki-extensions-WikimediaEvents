@@ -212,12 +212,6 @@
 				"blockedEdit.js",
 				"networkProbe.js",
 				"clickTracking/utils.js",
-				"articleSummaries/index.js",
-				{
-					"name": "articleSummaries/summariesInteractions.js",
-					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
-					"callbackParam": "articleSummaries/summariesInteractions"
-				},
 				"searchSatisfaction/index.js",
 				{
 					"name": "searchSatisfaction/searchSatisfaction.js",
@@ -347,8 +341,6 @@
 			"sessionLength/mixin.test.js",
 			"searchSatisfaction/searchSatisfaction.test.js",
 			"searchSatisfaction/searchSli.test.js",
-			"articleSummaries/index.test.js",
-			"articleSummaries/summariesInteractions.test.js",
 			"createAccount/instrumentation.test.js"
 		],
 		"dependencies": [
