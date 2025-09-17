@@ -94,17 +94,6 @@ Instrumentation for evaluating the article summaries pilot
 
 Details at <https://phabricator.wikimedia.org/T387406>
 
-## Donate A/B test
-
-* Since: July 2025
-* Suggested Removal: Aug 2025
-* Folders: ext.wikimediaEvents/xLab/donateAB.js
-* Contact: Reader Experience team
-
-Instrumentation for evaluating the enhanced "Donate" link.
-
-Details at <https://phabricator.wikimedia.org/T396682>
-
 ## ReadingList A/B test
 
 * Since: October 2025
@@ -115,7 +104,6 @@ Details at <https://phabricator.wikimedia.org/T396682>
 Instrumentation for evaluating the impact of Reading List feature.
 
 Details at <https://phabricator.wikimedia.org/T3975>
-
 ## CommonJS for Web
 
 * Since: May 2023

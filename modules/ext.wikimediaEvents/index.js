@@ -17,7 +17,6 @@ if ( skin === 'minerva' ) {
 }
 // For now this is vector '22 only.
 if ( skin === 'vector-2022' ) {
-	require( './xLab/donateAB.js' );
 	// ReadingsLists experiments T397532
 	// TODO: Uncomment this when the experiment is ready
 	// require( './xLab/readingListAB.js' );
