@@ -34,7 +34,7 @@ use Wikimedia\Timestamp\ConvertibleTimestamp;
 class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 
 	private const STREAM = 'mediawiki.ip_reputation.score';
-	private const SCHEMA = '/analytics/mediawiki/ip_reputation/score/1.3.0';
+	private const SCHEMA = '/analytics/mediawiki/ip_reputation/score/1.4.0';
 
 	private FormatterFactory $formatterFactory;
 	private HttpRequestFactory $httpRequestFactory;
