@@ -90,10 +90,6 @@ class PrefUpdateInstrumentation implements SaveUserOptionsHook {
 		'discussiontools-autotopicsub' => self::VALUE_WELLKNOWN_SHORT,
 		'discussiontools-visualenhancements' => self::VALUE_WELLKNOWN_SHORT,
 
-		// AHT
-		'echo-notifications-blacklist' => self::VALUE_NEWLINE_COUNT,
-		'email-blacklist' => self::VALUE_NEWLINE_COUNT,
-
 		// Growth team
 		'growthexperiments-help-panel-tog-help-panel' => self::VALUE_WELLKNOWN_SHORT,
 		'growthexperiments-homepage-enable' => self::VALUE_WELLKNOWN_SHORT,
@@ -119,6 +115,13 @@ class PrefUpdateInstrumentation implements SaveUserOptionsHook {
 
 		// Community Tech
 		'editrecovery' => self::VALUE_WELLKNOWN_SHORT,
+
+		// Product Safety and Integrity
+		'checkuser-temporary-account-enable-auto-reveal' => self::VALUE_WELLKNOWN_SHORT,
+		'checkuser-temporary-account-enable' => self::VALUE_WELLKNOWN_SHORT,
+		'checkuser-userinfocard-enable' => self::VALUE_WELLKNOWN_SHORT,
+		'echo-notifications-blacklist' => self::VALUE_NEWLINE_COUNT,
+		'email-blacklist' => self::VALUE_NEWLINE_COUNT,
 	];
 
 	/**
