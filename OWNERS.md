@@ -225,3 +225,11 @@ More details at <https://phabricator.wikimedia.org/T394744>
 A collection of standardized instruments, including:
 
 1. Click Through Rate (CTR)
+
+## Baseline clickthrough rate on watchlist
+
+* Since: September 2025
+* Modules: ext.wikimediaEvents.WatchlistBaseline
+* Contact: Community Tech
+
+Click Through (baseline) Rate for links on the Watchlist

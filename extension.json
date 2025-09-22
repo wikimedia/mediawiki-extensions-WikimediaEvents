@@ -324,6 +324,17 @@
 			"dependencies": [
 				"ext.eventLogging"
 			]
+		},
+		"ext.wikimediaEvents.WatchlistBaseline": {
+			"localBasePath": "modules/ext.wikimediaEvents.WatchlistBaseline",
+			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.WatchlistBaseline",
+			"packageFiles": [
+				"index.js",
+				"onWatchlistBaselineClick.js"
+			],
+			"dependencies": [
+				"ext.wikimediaEvents.xLab"
+			]
 		}
 	},
 	"ResourceFileModulePaths": {
