@@ -180,6 +180,12 @@ Moved here in <https://phabricator.wikimedia.org/T332438>.
 * Files: xLab/pageVisit.js, XLab/PageVisitInstrument.php
 * Contact: Experiment Platform
 
+## Data Platform Engineering Bot Detection Instruments
+
+* Since: May 2025
+* Files: xLab/pageVisitBotDetection.js
+* Contact: Data Platform Engineering
+
 ## Web Growth Logged Out Retention A/A Instrumentation
 
 * Since: July 2025
