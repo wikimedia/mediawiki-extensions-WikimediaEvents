@@ -23,6 +23,7 @@ if ( skin === 'vector-2022' ) {
 require( './editAttemptStep.js' );
 require( './networkProbe.js' );
 require( './xLab/pageVisit.js' );
+require( './xLab/pageVisitBotDetection.js' );
 require( './xLab/loggedOutRetentionVisit.js' );
 require( './xLab/mintReaderPageVisit.js' );
 
