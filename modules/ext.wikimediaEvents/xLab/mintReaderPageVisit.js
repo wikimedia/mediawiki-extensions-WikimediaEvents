@@ -22,16 +22,7 @@ function isOnMobileArticlePage() {
 		mw.config.get( 'wgMFMode' );
 }
 
-// Enabled wikis can be followed here
-// this is for the experiment and not enable for them to visit MinT for Wiki Readers.
-// https://phabricator.wikimedia.org/T388402
-function isMinTForWikireadersExperimentEnabled() {
-	const code = mw.config.get( 'wgContentLanguage' );
-	const targetLanguages = [ 'ko', 'th', 'el', 'is', 'si', 'km', 'azb', 'ig', 'min', 'bcl', 'am', 'ff', 'fon' ];
-	return targetLanguages.includes( code );
-}
-
-if ( isMinTForWikireadersExperimentEnabled() && isOnMobileArticlePage() ) {
+if ( isOnMobileArticlePage() ) {
 	// Hook ensures page content is fully loaded
 	mw.hook( 'wikipage.content' ).add( () => {
 		mw.loader.using( 'ext.xLab' ).then( () => {
