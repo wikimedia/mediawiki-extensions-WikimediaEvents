@@ -9,7 +9,7 @@
 	"apihelp-wikimediaeventsblockededit-param-page": "En side et redigeringsforsøk ble gjort på",
 	"apihelp-wikimediaeventsblockededit-param-interface": "Grensesnittet som ble brukt for å redigere",
 	"apihelp-wikimediaeventsblockededit-param-platform": "Plattformen som ble brukt til å redigere",
-	"tag-cross-wiki-upload": "Krysswikiopplasting",
+	"tag-cross-wiki-upload": "Opplasting på tvers av wikier",
 	"tag-cross-wiki-upload-description": "Filer som lastes opp fra wikiteksteditoren og den visuelle editoren på andre wikier",
 	"wikimediaevents-special-wikimediadebug-notenabled": "Denne spesialsiden er ikke aktivert.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "Aktiver feilsøkingsinformasjonskapsel i $1",
