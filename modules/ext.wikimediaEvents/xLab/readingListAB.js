@@ -61,6 +61,35 @@ function trackPageVisit() {
 		}
 	} );
 }
+
+/**
+ * Track clicks on reading list link in notifications
+ */
+function trackNotificationClicks() {
+	loadExperiment().then( ( exp ) => {
+		if ( exp && exp.isAssignedGroup( 'treatment' ) ) {
+			document.addEventListener( 'click', ( event ) => {
+				const $link = $( event.target ).closest( 'a' );
+
+				// Check if it's a reading list link inside a notification
+				if (
+					$link.length &&
+					$link.attr( 'href' ) &&
+					$link.attr( 'href' ).includes( 'Special:ReadingLists' ) &&
+					$link.closest( '.mw-notification' ).length
+				) {
+
+					exp.send( 'click', {
+						action_subtype: 'view_reading_list',
+						action_source: 'article_saved_popup'
+					} );
+				}
+			}, true ); // Use capture phase (true) so this runs before stopPropagation
+			// within mw.notification.notify is called
+		}
+	} );
+}
+
 /**
  * @param {number} size
  * @param {string} subtype
@@ -83,3 +112,4 @@ mw.hook( 'readingLists.bookmark.edit' ).add( ( isSaved, entryId, listPageCount, 
 } );
 
 trackPageVisit();
+trackNotificationClicks();
