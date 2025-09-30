@@ -5,6 +5,8 @@ use MediaWiki\Auth\AbstractPreAuthenticationProvider;
 use MediaWiki\Auth\AuthenticationRequest;
 use MediaWiki\Auth\AuthManager;
 use MediaWiki\Context\RequestContext;
+use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
+use MediaWiki\Extension\ConfirmEdit\Hooks;
 use StatusValue;
 
 /**
@@ -40,6 +42,15 @@ class CreateAccountInstrumentationPreAuthenticationProvider extends AbstractPreA
 				RequestContext::getMain(),
 				'submit',
 				[ 'action_context' => $user->getName() ]
+			);
+			// Log the CAPTCHA class name for the A/B test (T405239)
+			// We do this here and not in BeforePageDisplay, because Special:CreateAccount
+			// gets a lot of page views that have no form interactions.
+			$captcha = Hooks::getInstance( CaptchaTriggers::CREATE_ACCOUNT );
+			$this->client->submitInteraction(
+				RequestContext::getMain(),
+				'captcha_class_serverside',
+				[ 'action_context' => $captcha->getName() ]
 			);
 		}
 
