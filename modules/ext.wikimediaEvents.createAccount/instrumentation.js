@@ -64,6 +64,12 @@ function setupInstrumentation() {
 					return_to: query.get( 'returnto' ) || ''
 				} )
 			} );
+
+			// Record the CAPTCHA type that the user is interacting with
+			submitInteraction( 'captcha_class_clientside', {
+				source: 'form',
+				context: mw.config.get( 'wgWikimediaEventsCaptchaClassType' )
+			} );
 		}
 
 		// Record the time spent on each field, defined as the time between the user selecting and unfocusing the field.

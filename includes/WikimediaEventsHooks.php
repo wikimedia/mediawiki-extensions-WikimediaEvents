@@ -12,6 +12,8 @@ use MediaWiki\Config\Config;
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Deferred\DeferredUpdates;
+use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
+use MediaWiki\Extension\ConfirmEdit\Hooks;
 use MediaWiki\Hook\BeforeInitializeHook;
 use MediaWiki\Hook\RecentChange_saveHook;
 use MediaWiki\Hook\SpecialSearchGoResultHook;
@@ -114,6 +116,11 @@ class WikimediaEventsHooks implements
 		if ( ExtensionRegistry::getInstance()->isLoaded( 'WikibaseRepository' ) ) {
 			// If we are in Wikibase Repo, load Wikibase module
 			$out->addModules( 'ext.wikimediaEvents.wikibase' );
+		}
+		if ( $out->getTitle()->isSpecial( 'CreateAccount' ) ) {
+			// Export the CAPTCHA type for A/B test (T405239)
+			$captcha = Hooks::getInstance( CaptchaTriggers::CREATE_ACCOUNT );
+			$out->addJsConfigVars( 'wgWikimediaEventsCaptchaClassType', $captcha->getName() );
 		}
 		$this->accountCreationLogger->logPageImpression(
 			$out->getTitle(),
