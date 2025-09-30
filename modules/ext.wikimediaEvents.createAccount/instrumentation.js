@@ -10,6 +10,7 @@ function setupInstrumentation() {
 		wpName: 'user_name',
 		wpPassword: 'password',
 		retype: 'confirm_password',
+		captchaWord: 'captcha',
 		email: 'email',
 		realname: 'real_name',
 		reason: 'reason'
