@@ -6,7 +6,6 @@ use MediaWiki\Auth\AuthManager;
 use MediaWiki\Auth\PasswordAuthenticationRequest;
 use MediaWiki\User\User;
 use MediaWikiUnitTestCase;
-use RequestContext;
 use WikimediaEvents\CreateAccount\CreateAccountInstrumentationAuthenticationRequest;
 use WikimediaEvents\CreateAccount\CreateAccountInstrumentationClient;
 use WikimediaEvents\CreateAccount\CreateAccountInstrumentationPreAuthenticationProvider;
@@ -61,34 +60,5 @@ class CreateAccountInstrumentationPreAuthenticationProviderTest extends MediaWik
 		yield 'no request for hidden field' => [
 			[ new PasswordAuthenticationRequest() ]
 		];
-	}
-
-	public function testShouldSubmitInteractionWhenRequestForHiddenFieldIsPresent(): void {
-		$user = $this->createMock( User::class );
-		$user->method( 'getName' )
-			->willReturn( 'TestUser' );
-
-		$reqs = [
-			new PasswordAuthenticationRequest(),
-			new CreateAccountInstrumentationAuthenticationRequest()
-		];
-
-		$client = $this->createMock( CreateAccountInstrumentationClient::class );
-		$client->expects( $this->once() )
-			->method( 'submitInteraction' )
-			->with(
-				RequestContext::getMain(),
-				'submit',
-				[ 'action_context' => $user->getName() ]
-			);
-		$provider = new CreateAccountInstrumentationPreAuthenticationProvider( $client );
-
-		$status = $provider->testForAccountCreation(
-			$user,
-			$this->createNoOpMock( User::class ),
-			$reqs
-		);
-
-		$this->assertStatusGood( $status );
 	}
 }

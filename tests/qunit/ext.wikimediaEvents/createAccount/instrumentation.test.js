@@ -5,6 +5,9 @@ const instrument = require( 'ext.wikimediaEvents.createAccount/useInstrument.js'
 
 QUnit.module( 'ext.wikimediaEvents.createAccount.instrumentation', QUnit.newMwEnvironment( {
 	beforeEach() {
+		mw.config.set( {
+			wgWikimediaEventsCaptchaClassType: 'hCaptcha'
+		} );
 		this.submitInteraction = this.sandbox.spy();
 
 		this.useInstrument = this.sandbox.stub( instrument, 'useInstrument' );
@@ -48,7 +51,7 @@ QUnit.test( 'should instrument interaction start and time spent on individual fi
 	this.clock.tick( 1318 );
 	this.$form.find( 'input[name=wpName]' ).trigger( 'blur' );
 
-	assert.true( this.submitInteraction.calledThrice );
+	assert.deepEqual( this.submitInteraction.callCount, 4 );
 	assert.deepEqual(
 		this.submitInteraction.firstCall.args,
 		[ 'view', { source: 'form', context: 2.643 } ]
@@ -59,6 +62,10 @@ QUnit.test( 'should instrument interaction start and time spent on individual fi
 	);
 	assert.deepEqual(
 		this.submitInteraction.thirdCall.args,
+		[ 'captcha_class_clientside', { source: 'form', context: 'hCaptcha' } ]
+	);
+	assert.deepEqual(
+		this.submitInteraction.lastCall.args,
 		[ 'blur', { source: 'form', elementId: 'user_name', context: 1.318 } ]
 	);
 } );
@@ -74,9 +81,13 @@ QUnit.test( 'should submit interaction event on submit', function ( assert ) {
 	this.$form.on( 'submit', ( event ) => event.preventDefault() );
 	this.$form.trigger( 'submit' );
 
-	assert.deepEqual( this.submitInteraction.callCount, 4 );
+	assert.deepEqual( this.submitInteraction.callCount, 5 );
 	assert.deepEqual(
 		this.submitInteraction.thirdCall.args,
+		[ 'captcha_class_clientside', { source: 'form', context: 'hCaptcha' } ]
+	);
+	assert.deepEqual(
+		this.submitInteraction.getCall( 3 ).args,
 		[ 'click', { source: 'form', subType: 'presubmit', context: 'Foo' } ]
 	);
 	assert.deepEqual(
