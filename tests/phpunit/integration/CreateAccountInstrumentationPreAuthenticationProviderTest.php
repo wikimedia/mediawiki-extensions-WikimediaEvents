@@ -3,8 +3,10 @@ namespace WikimediaEvents\Tests\Integration;
 
 use MediaWiki\Auth\AuthenticationRequest;
 use MediaWiki\Auth\PasswordAuthenticationRequest;
+use MediaWiki\Config\HashConfig;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
 use MediaWiki\Extension\ConfirmEdit\Hooks;
+use MediaWiki\Tests\Unit\Auth\AuthenticationProviderTestTrait;
 use MediaWiki\User\User;
 use MediaWikiIntegrationTestCase;
 use RequestContext;
@@ -14,8 +16,11 @@ use WikimediaEvents\CreateAccount\CreateAccountInstrumentationPreAuthenticationP
 
 /**
  * @covers \WikimediaEvents\CreateAccount\CreateAccountInstrumentationPreAuthenticationProvider
+ * @group Database
  */
 class CreateAccountInstrumentationPreAuthenticationProviderTest extends MediaWikiIntegrationTestCase {
+
+	use AuthenticationProviderTestTrait;
 
 	public function testShouldSubmitInteractionWhenRequestForHiddenFieldIsPresent(): void {
 		$user = $this->createMock( User::class );
@@ -43,6 +48,7 @@ class CreateAccountInstrumentationPreAuthenticationProviderTest extends MediaWik
 				$callIndex++;
 			} );
 		$provider = new CreateAccountInstrumentationPreAuthenticationProvider( $client );
+		$this->initProvider( $provider, new HashConfig() );
 
 		$status = $provider->testForAccountCreation(
 			$user,
@@ -68,11 +74,37 @@ class CreateAccountInstrumentationPreAuthenticationProviderTest extends MediaWik
 				[ 'action_context' => $captcha->getName() ]
 			);
 		$provider = new CreateAccountInstrumentationPreAuthenticationProvider( $client );
+		$this->initProvider( $provider, new HashConfig() );
+		$user = $this->getTestUser()->getUser();
 
 		$status = $provider->testForAccountCreation(
-			$this->createNoOpMock( User::class ),
-			$this->createNoOpMock( User::class ),
+			$user,
+			$user,
 			$reqs
+		);
+
+		$this->assertStatusGood( $status );
+	}
+
+	public function testShouldNotLogCaptchaClassServersideEventForUsersWithSkipCaptcha() {
+		$captcha = Hooks::getInstance( CaptchaTriggers::CREATE_ACCOUNT );
+		$client = $this->createMock( CreateAccountInstrumentationClient::class );
+		$client->expects( $this->never() )
+			->method( 'submitInteraction' )
+			->with(
+				RequestContext::getMain(),
+				'captcha_class_serverside',
+				[ 'action_context' => $captcha->getName() ]
+			);
+		$provider = new CreateAccountInstrumentationPreAuthenticationProvider( $client );
+		$this->initProvider( $provider, new HashConfig() );
+		// sysop group will have 'skipcaptcha' in default ConfirmEdit config
+		$user = $this->getTestUser( [ 'sysop' ] )->getUser();
+
+		$status = $provider->testForAccountCreation(
+			$user,
+			$user,
+			[ new PasswordAuthenticationRequest() ]
 		);
 
 		$this->assertStatusGood( $status );
