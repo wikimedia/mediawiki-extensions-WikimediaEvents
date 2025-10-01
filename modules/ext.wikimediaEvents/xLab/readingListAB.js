@@ -1,10 +1,15 @@
 const EXPERIMENT_NAME = 'we-3-3-4-reading-list-test1';
+const STREAM_NAME = 'product_metrics.web_base_reading_list';
 const ACTION_SAVE = 'save_article_to_reading_list';
 const ACTION_REMOVE = 'remove_article_from_reading_list';
 
 /** @type {Promise<Experiment>} */
 const experimentPromise = mw.loader.using( 'ext.xLab' )
-	.then( () => mw.xLab.getExperiment( EXPERIMENT_NAME ) )
+	.then( () => {
+		const experiment = mw.xLab.getExperiment( EXPERIMENT_NAME );
+		experiment.setStream( STREAM_NAME );
+		return experiment;
+	} )
 	.catch( ( error ) => {
 		mw.log( 'Error loading ext.xLab module:', error );
 	} );
@@ -21,7 +26,6 @@ function trackPageVisit() {
 			const currentUrl = new URL( document.location.href );
 			actionSource = referrerUrl.hostname === currentUrl.hostname ? 'internal_referer' : 'external_referer';
 		}
-
 		exp.send( 'page_load', {
 			action_source: actionSource,
 			action_context: document.location.pathname
