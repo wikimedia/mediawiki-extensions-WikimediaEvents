@@ -256,9 +256,7 @@
 					"name": "data.json",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleData"
 				},
-				"xLab/pageVisit.js",
 				"xLab/pageVisitBotDetection.js",
-				"xLab/loggedOutRetentionVisit.js",
 				"xLab/mintReaderPageVisit.js",
 				"xLab/readingListAB.js"
 			],
