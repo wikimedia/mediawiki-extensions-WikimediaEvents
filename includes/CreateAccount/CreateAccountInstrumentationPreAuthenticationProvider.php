@@ -49,11 +49,13 @@ class CreateAccountInstrumentationPreAuthenticationProvider extends AbstractPreA
 		// We do this here and not in BeforePageDisplay, because Special:CreateAccount
 		// gets a lot of page views that have no form interactions.
 		$captcha = Hooks::getInstance( CaptchaTriggers::CREATE_ACCOUNT );
-		$this->client->submitInteraction(
-			RequestContext::getMain(),
-			'captcha_class_serverside',
-			[ 'action_context' => $captcha->getName() ]
-		);
+		if ( !$captcha->canSkipCaptcha( $user ) ) {
+			$this->client->submitInteraction(
+				RequestContext::getMain(),
+				'captcha_class_serverside',
+				[ 'action_context' => $captcha->getName() ]
+			);
+		}
 
 		return StatusValue::newGood();
 	}
