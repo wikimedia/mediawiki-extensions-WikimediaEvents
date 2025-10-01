@@ -1,6 +1,7 @@
 <?php
 namespace WikimediaEvents\Tests\Integration;
 
+use MediaWiki\Auth\AuthenticationRequest;
 use MediaWiki\Auth\PasswordAuthenticationRequest;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
 use MediaWiki\Extension\ConfirmEdit\Hooks;
@@ -50,5 +51,37 @@ class CreateAccountInstrumentationPreAuthenticationProviderTest extends MediaWik
 		);
 
 		$this->assertStatusGood( $status );
+	}
+
+	/**
+	 * @dataProvider provideInvalidReqs
+	 * @param AuthenticationRequest[] $reqs
+	 */
+	public function testShouldNotLogSubmitEventWhenRequestForHiddenFieldAbsent( array $reqs ): void {
+		$captcha = Hooks::getInstance( CaptchaTriggers::CREATE_ACCOUNT );
+		$client = $this->createMock( CreateAccountInstrumentationClient::class );
+		$client->expects( $this->once() )
+			->method( 'submitInteraction' )
+			->with(
+				RequestContext::getMain(),
+				'captcha_class_serverside',
+				[ 'action_context' => $captcha->getName() ]
+			);
+		$provider = new CreateAccountInstrumentationPreAuthenticationProvider( $client );
+
+		$status = $provider->testForAccountCreation(
+			$this->createNoOpMock( User::class ),
+			$this->createNoOpMock( User::class ),
+			$reqs
+		);
+
+		$this->assertStatusGood( $status );
+	}
+
+	public static function provideInvalidReqs(): iterable {
+		yield 'no reqs' => [ [] ];
+		yield 'no request for hidden field' => [
+			[ new PasswordAuthenticationRequest() ]
+		];
 	}
 }
