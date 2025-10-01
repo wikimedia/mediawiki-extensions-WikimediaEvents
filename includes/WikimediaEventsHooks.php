@@ -120,7 +120,9 @@ class WikimediaEventsHooks implements
 		if ( $out->getTitle()->isSpecial( 'CreateAccount' ) ) {
 			// Export the CAPTCHA type for A/B test (T405239)
 			$captcha = Hooks::getInstance( CaptchaTriggers::CREATE_ACCOUNT );
-			$out->addJsConfigVars( 'wgWikimediaEventsCaptchaClassType', $captcha->getName() );
+			if ( !$captcha->canSkipCaptcha( $out->getUser() ) ) {
+				$out->addJsConfigVars( 'wgWikimediaEventsCaptchaClassType', $captcha->getName() );
+			}
 		}
 		$this->accountCreationLogger->logPageImpression(
 			$out->getTitle(),
