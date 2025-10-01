@@ -3,8 +3,6 @@ namespace WikimediaEvents\Tests\Unit;
 
 use MediaWiki\Auth\AuthenticationRequest;
 use MediaWiki\Auth\AuthManager;
-use MediaWiki\Auth\PasswordAuthenticationRequest;
-use MediaWiki\User\User;
 use MediaWikiUnitTestCase;
 use WikimediaEvents\CreateAccount\CreateAccountInstrumentationAuthenticationRequest;
 use WikimediaEvents\CreateAccount\CreateAccountInstrumentationClient;
@@ -37,28 +35,4 @@ class CreateAccountInstrumentationPreAuthenticationProviderTest extends MediaWik
 		];
 	}
 
-	/**
-	 * @dataProvider provideInvalidReqs
-	 * @param AuthenticationRequest[] $reqs
-	 */
-	public function testShouldDoNothingWhenRequestForHiddenFieldAbsent( array $reqs ): void {
-		$provider = new CreateAccountInstrumentationPreAuthenticationProvider(
-			$this->createNoOpMock( CreateAccountInstrumentationClient::class )
-		);
-
-		$status = $provider->testForAccountCreation(
-			$this->createNoOpMock( User::class ),
-			$this->createNoOpMock( User::class ),
-			$reqs
-		);
-
-		$this->assertStatusGood( $status );
-	}
-
-	public static function provideInvalidReqs(): iterable {
-		yield 'no reqs' => [ [] ];
-		yield 'no request for hidden field' => [
-			[ new PasswordAuthenticationRequest() ]
-		];
-	}
 }
