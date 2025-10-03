@@ -5,6 +5,7 @@ namespace WikimediaEvents;
 use LoginNotify\LoginNotify;
 use MediaWiki\Config\Config;
 use MediaWiki\Context\RequestContext;
+use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Extension\CLDR\CountryNames;
 use MediaWiki\Extension\IPReputation\Services\IPReputationIPoidDataLookup;
 use MediaWiki\Extension\OATHAuth\OATHAuthServices;
@@ -135,9 +136,6 @@ class EmailAuthHooks {
 		if ( $this->extensionRegistry->isLoaded( 'LoginNotify' ) ) {
 			$knownLoginNotify = $this->loginNotify->isKnownSystemFast( $user, $request );
 		}
-		if ( $this->extensionRegistry->isLoaded( 'IPReputation' ) ) {
-			$knownToIPoid = (bool)$this->ipReputationDataLookup->getIPoidDataForIp( $ip, __METHOD__ );
-		}
 		if ( $this->extensionRegistry->isLoaded( 'OATHAuth' ) ) {
 			$oathUser = $this->oathUserRepository->findByUser( $user );
 			$hasTwoFactorAuth = $oathUser->isTwoFactorAuthEnabled();
@@ -166,7 +164,6 @@ class EmailAuthHooks {
 			'ip' => $ip,
 			'emailVerified' => $isEmailConfirmed,
 			'isBot' => $isBot,
-			'knownIPoid' => $knownToIPoid,
 			'knownLoginNotify' => $knownLoginNotify,
 			'hasTwoFactorAuth' => $hasTwoFactorAuth,
 			'forceEmailAuth' => $forceEmailAuth,
@@ -196,12 +193,40 @@ class EmailAuthHooks {
 		} else {
 			// If we are in "enforce" mode, then actually require the email verification here.
 			$verificationRequired = $this->config->get( 'WikimediaEventsEmailAuthEnforce' );
-			$logMessage = 'Email verification required for {user} without 2FA, unknown IP and device, '
-				. ( $knownToIPoid ? 'bad' : 'good' ) . ' IP reputation';
+			$logMessage = 'Email verification required for {user} without 2FA, unknown IP and device';
 			$eventType = 'emailauth-verification-required';
 		}
 
-		$this->logger->info( $logMessage, $logData + [ 'eventType' => $eventType ] );
+		// Log in a deferred update so we can add some slow checks to the log data (IPReputation)
+		$ipReputationDataLookup = $this->ipReputationDataLookup;
+		$extensionRegistry = $this->extensionRegistry;
+		$logger = $this->logger;
+		$caller = __METHOD__;
+		DeferredUpdates::addCallableUpdate(
+			static function () use (
+				$logData,
+				$logMessage,
+				$eventType,
+				$ip,
+				$extensionRegistry,
+				$ipReputationDataLookup,
+				$logger,
+				$caller
+			) {
+				if ( $extensionRegistry->isLoaded( 'IPReputation' ) && $ipReputationDataLookup ) {
+					$knownToIPoid = (bool)$ipReputationDataLookup->getIPoidDataForIp( $ip, $caller );
+					$logData['knownIPoid'] = $knownToIPoid;
+
+					// IPReputation modifies this event's log message
+					if ( $eventType === 'emailauth-verification-required' ) {
+						$logMessage = $logMessage . ', ' . ( $knownToIPoid ? 'bad' : 'good' ) . ' IP reputation';
+					}
+				}
+
+				$logger->info( $logMessage, $logData + [ 'eventType' => $eventType ] );
+			}
+		);
+
 		return true;
 	}
 }

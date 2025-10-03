@@ -4,6 +4,7 @@ namespace WikimediaEvents\Tests\Unit;
 use LoginNotify\LoginNotify;
 use MediaWiki\Config\HashConfig;
 use MediaWiki\Config\MutableConfig;
+use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Exception\MWException;
 use MediaWiki\Extension\IPReputation\IPoidResponse;
 use MediaWiki\Extension\IPReputation\Services\IPReputationIPoidDataLookup;
@@ -111,6 +112,7 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			$body,
 			$bodyHtml
 		);
+		DeferredUpdates::doUpdates();
 
 		$this->assertTrue( $res );
 		$this->assertTrue( $verificationRequired );
@@ -136,6 +138,7 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			$body,
 			$bodyHtml
 		);
+		DeferredUpdates::doUpdates();
 
 		$this->assertTrue( $res );
 		$this->assertTrue( $verificationRequired );
@@ -265,6 +268,7 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			$body,
 			$bodyHtml
 		);
+		DeferredUpdates::doUpdates();
 
 		$this->assertTrue( $res );
 		$this->assertSame(
@@ -340,6 +344,7 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			$body,
 			$bodyHtml
 		);
+		DeferredUpdates::doUpdates();
 
 		$this->setMocks( static fn () => [ 'foo', 'bar' ] );
 
@@ -366,6 +371,7 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			$body,
 			$bodyHtml
 		);
+		DeferredUpdates::doUpdates();
 	}
 
 	public function testCountry() {
@@ -395,6 +401,7 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			$body,
 			$bodyHtml
 		);
+		DeferredUpdates::doUpdates();
 
 		$this->setMocks();
 		$this->extensionRegistry->method( 'isLoaded' )
@@ -423,5 +430,6 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			$body,
 			$bodyHtml
 		);
+		DeferredUpdates::doUpdates();
 	}
 }
