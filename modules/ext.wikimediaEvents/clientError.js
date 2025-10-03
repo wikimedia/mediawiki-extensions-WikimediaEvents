@@ -373,6 +373,7 @@ function shouldLog( descriptor ) {
  * @property {string} skin
  * @property {string} action
  * @property {string} is_logged_in
+ * @property {string} is_mobile_frontend_enabled whether MobileFrontend ran on the page.
  * @property {string} namespace
  * @property {string} debug
  * @property {string} banner_shown
@@ -414,6 +415,10 @@ function log( intakeURL, descriptor, component ) {
 		version: mw.config.get( 'wgVersion', '' ),
 		skin: mw.config.get( 'skin', '' ),
 		action: mw.config.get( 'wgAction', '' ),
+		// https://phabricator.wikimedia.org/T400852
+		is_mobile_frontend_enabled: String(
+			!( mw.config.get( 'wgMFMode' ) === undefined )
+		),
 		is_logged_in: String( !mw.user.isAnon() ),
 		namespace: mw.config.get( 'wgCanonicalNamespace', '' ),
 		debug: String( !!mw.config.get( 'debug', 0 ) ),
