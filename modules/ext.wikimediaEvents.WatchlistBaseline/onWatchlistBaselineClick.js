@@ -8,6 +8,8 @@ if ( specialPageName === 'Watchlist' ) {
 		const lines = document.querySelectorAll( '.mw-changeslist-line-inner' );
 
 		if ( lines.length >= MIN_WATCHLIST_ITEMS ) {
+			// Log that the user visited the watchlist page
+			instrument.submitInteraction( 'page-visited' );
 			lines.forEach( ( line ) => {
 				const lineElements = {};
 
