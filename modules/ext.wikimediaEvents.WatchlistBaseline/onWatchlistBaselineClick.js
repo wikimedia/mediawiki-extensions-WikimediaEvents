@@ -9,7 +9,9 @@ if ( specialPageName === 'Watchlist' ) {
 
 		if ( lines.length >= MIN_WATCHLIST_ITEMS ) {
 			// Log that the user visited the watchlist page
-			instrument.submitInteraction( 'page-visited' );
+			instrument.submitInteraction( 'page-visited', {
+				action_source: 'Watchlist'
+			} );
 			lines.forEach( ( line ) => {
 				const lineElements = {};
 
