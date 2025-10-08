@@ -32,12 +32,14 @@ function trackPageVisit() {
 		} );
 
 		// Track clicks on reading list bookmark icon
-		$( document ).find( '.mw-ui-icon-bookmarkList' ).on( 'click', () => {
-			exp.send( 'click', {
-				action_subtype: 'view_reading_list',
-				action_source: 'top_right'
+		if ( exp && exp.isAssignedGroup( 'treatment' ) ) {
+			$( document ).find( '.mw-ui-icon-bookmarkList' ).on( 'click', () => {
+				exp.send( 'click', {
+					action_subtype: 'view_reading_list',
+					action_source: 'top_right'
+				} );
 			} );
-		} );
+		}
 	} );
 }
 
@@ -70,6 +72,33 @@ function trackNotificationClicks() {
 }
 
 /**
+ * Track clicks to saved articles from the reading list special page
+ */
+function trackReadingListLinkClicks() {
+	experimentPromise.then( ( exp ) => {
+		if ( exp && exp.isAssignedGroup( 'treatment' ) ) {
+			document.addEventListener( 'click', ( event ) => {
+				const $link = $( event.target ).closest( 'a' );
+				const $grid = $link.closest( '.reading-lists-grid' );
+
+				if (
+					$link.length &&
+					$grid.length
+				) {
+					const articleCount = $grid.find( 'a' ).length;
+
+					exp.send( 'click', {
+						action_subtype: 'view_article',
+						action_source: 'reading_list',
+						action_context: JSON.stringify( { article_count: articleCount } )
+					} );
+				}
+			} );
+		}
+	} );
+}
+
+/**
  * @param {number} size
  * @param {string} subtype
  * @param {string} source
@@ -88,5 +117,9 @@ mw.hook( 'readingLists.bookmark.edit' ).add( ( isSaved, entryId, listPageCount, 
 	recordExperimentEvent( listPageCount, isSaved ? ACTION_SAVE : ACTION_REMOVE, source );
 } );
 
+// Only run on the reading lists special page
+if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'ReadingLists' ) {
+	trackReadingListLinkClicks();
+}
 trackPageVisit();
 trackNotificationClicks();
