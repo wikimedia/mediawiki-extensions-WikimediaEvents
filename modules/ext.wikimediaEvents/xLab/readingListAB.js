@@ -1,5 +1,5 @@
 const EXPERIMENT_NAME = 'we-3-3-4-reading-list-test1';
-const STREAM_NAME = 'product_metrics.web_base_reading_list';
+const STREAM_NAME = 'mediawiki.product_metrics.reading_list';
 const ACTION_SAVE = 'save_article_to_reading_list';
 const ACTION_REMOVE = 'remove_article_from_reading_list';
 
