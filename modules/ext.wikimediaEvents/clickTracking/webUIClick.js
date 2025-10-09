@@ -166,11 +166,11 @@ $( () => {
 		logEvent( 'init', 'ns=' + mw.config.get( 'wgNamespaceNumber' ) );
 
 		const clickTracker = util.onClickTrack( logEvent );
-		$( document )
+		document
 			// Track clicks to elements with `data-event-name`
 			// and children of elements that have the attribute
 			// i.e. user menu dropdown button, sticky header buttons, table of contents links
-			.on( 'click', clickTracker );
+			.addEventListener( 'click', clickTracker, true );
 
 		// For UIs that call ev.stopPropagation allow them to opt in explicitly to clickTracking
 		mw.hook( 'ext.wikimediaEvents.webUIClick.event' ).add( clickTracker );
