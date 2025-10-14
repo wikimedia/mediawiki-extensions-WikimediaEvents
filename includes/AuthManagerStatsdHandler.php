@@ -109,24 +109,13 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 			return false;
 		}
 
-		// some key parts can be null and will be removed by array_filter
-		$keyParts = [ 'authmanager', $event, $type, $entrypoint ];
-		// captcha stream is used to check for captcha effectiveness and there is no need to
-		// differentiate between account types
-		if ( $accountType !== null && $record['channel'] === 'authevents' ) {
-			$keyParts[] = $accountType;
-		}
 		if ( $successful === true ) {
-			$keyParts[] = 'success';
 			$counterName = 'authmanager_success_total';
 		} elseif ( $successful === false ) {
 			$counterName = 'authmanager_error_total';
-			$keyParts[] = 'failure';
-			$keyParts[] = $error;
 		} else {
 			$counterName = 'authmanager_event_total';
 		}
-		$statsdKey = implode( '.', array_filter( $keyParts ) );
 
 		// use of this class is set up in operations/mediawiki-config so no nice dependency injection
 		// NOTE: stat labels cannot be conditional, all stats with same `$counterName` need to have
@@ -147,8 +136,7 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 			$counter->setLabel( 'reason', $error ?: 'n/a' );
 		}
 
-		$counter->copyToStatsdAt( $statsdKey )
-			->increment();
+		$counter->increment();
 
 		// pass to next handler
 		return false;

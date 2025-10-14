@@ -19,7 +19,6 @@ class AuthManagerStatsdHandlerTest extends MediaWikiIntegrationTestCase {
 
 		$counter = $this->createMock( CounterMetric::class );
 		$counter->method( 'setLabel' )->willReturnSelf();
-		$counter->method( 'copyToStatsdAt' )->willReturnSelf();
 
 		$stats = $this->createMock( StatsFactory::class );
 		$this->setService( 'StatsFactory', $stats );
