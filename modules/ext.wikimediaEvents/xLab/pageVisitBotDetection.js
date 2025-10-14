@@ -6,13 +6,14 @@
  *
  * NOTE: this aligned with the server-side definition 99.6% of the time when run on
  *   data from 2025-09-26 T15.
- *
  */
 
 const INSTRUMENT_NAME = 'simple-bot-detection';
+const SCHEMA_ID = '/analytics/product_metrics/web/base_with_ip/1.4.3';
 
 mw.loader.using( 'ext.xLab' ).then( () => {
 	const instrument = mw.xLab.getInstrument( INSTRUMENT_NAME );
+	instrument.setSchemaID( SCHEMA_ID );
 
 	const isPageview = isPageviewClientSide( {
 		pageExists: !!mw.config.get( 'wgRelevantArticleId' ),
