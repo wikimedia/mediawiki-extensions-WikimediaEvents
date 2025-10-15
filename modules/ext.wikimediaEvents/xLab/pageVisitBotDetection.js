@@ -8,7 +8,7 @@
  *   data from 2025-09-26 T15.
  */
 
-const INSTRUMENT_NAME = 'simple-bot-detection';
+const INSTRUMENT_NAME = 'bot-detection';
 const SCHEMA_ID = '/analytics/product_metrics/web/base_with_ip/1.4.3';
 
 mw.loader.using( 'ext.xLab' ).then( () => {
@@ -28,7 +28,7 @@ mw.loader.using( 'ext.xLab' ).then( () => {
 	} );
 
 	const interactionData = {
-		action_context: isPageview ? 'pageview' : null
+		action_context: isPageview ? 'pageview' : 'other'
 	};
 
 	// if this fires, we know js is running and ad-block didn't stop it
