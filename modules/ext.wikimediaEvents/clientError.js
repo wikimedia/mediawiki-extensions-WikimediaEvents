@@ -417,7 +417,7 @@ function log( intakeURL, descriptor, component ) {
 		action: mw.config.get( 'wgAction', '' ),
 		// https://phabricator.wikimedia.org/T400852
 		is_mobile_frontend_enabled: String(
-			!( mw.config.get( 'wgMFMode' ) === undefined )
+			!( mw.config.get( 'wgMFMode' ) === null )
 		),
 		is_logged_in: String( !mw.user.isAnon() ),
 		namespace: mw.config.get( 'wgCanonicalNamespace', '' ),
