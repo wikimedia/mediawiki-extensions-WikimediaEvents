@@ -20,6 +20,13 @@ if ( skin === 'vector-2022' ) {
 	// require( './xLab/readingListAB.js' );
 }
 
+// Reader Growth's ImageBrowsing `page-visited` event.
+// Targets Minerva users only.
+// See documentation in the required file.
+if ( skin === 'minerva' ) {
+	require( './xLab/imageBrowsingPageVisit.js' );
+}
+
 require( './editAttemptStep.js' );
 require( './networkProbe.js' );
 require( './xLab/pageVisitBotDetection.js' );

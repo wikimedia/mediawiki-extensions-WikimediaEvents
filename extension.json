@@ -258,7 +258,8 @@
 				},
 				"xLab/pageVisitBotDetection.js",
 				"xLab/mintReaderPageVisit.js",
-				"xLab/readingListAB.js"
+				"xLab/readingListAB.js",
+				"xLab/imageBrowsingPageVisit.js"
 			],
 			"dependencies": [
 				"ext.wikimediaEvents.xLab",

@@ -198,6 +198,14 @@ Moved here in <https://phabricator.wikimedia.org/T332438>.
 * Files: xLab/mintReaderPageVisit.js
 * Contact: Language and Product Localization
 
+## Reader Growth ImageBrowsing `page-visited` instrumentation
+
+* Since: October 2025
+* Files: xLab/imageBrowsingPageVisit.js
+* Contact: Reader Growth
+
+More details at <https://phabricator.wikimedia.org/T398495>
+
 # Code ownership for other code in WikimediaEvents
 
 ## Temporary account instrumentation
