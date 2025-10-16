@@ -8,6 +8,17 @@ QUnit.module( 'ext.wikimediaEvents.createAccount.instrumentation', QUnit.newMwEn
 		mw.config.set( {
 			wgWikimediaEventsCaptchaClassType: 'hCaptcha'
 		} );
+		// We need to stub mw.track and mw.trackSubscribe to avoid issues with
+		// data pollution in between test runs, as there is no straightforward
+		// way to clear the mw.track event queue.
+		const handlers = {};
+		this.sandbox.stub( mw, 'track' ).callsFake( ( topic, ...args ) => {
+			( handlers[ topic ] || [] ).forEach( ( handler ) => handler( topic, ...args ) );
+		} );
+		this.sandbox.stub( mw, 'trackSubscribe' ).callsFake( ( topic, handler ) => {
+			handlers[ topic ] = handlers[ topic ] || [];
+			handlers[ topic ].push( handler );
+		} );
 		this.submitInteraction = this.sandbox.spy();
 
 		this.useInstrument = this.sandbox.stub( instrument, 'useInstrument' );
@@ -21,6 +32,7 @@ QUnit.module( 'ext.wikimediaEvents.createAccount.instrumentation', QUnit.newMwEn
 			.append( '<a href="https://www.hcaptcha.com/terms"></a>' );
 
 		$( '#qunit-fixture' ).append( this.$form );
+		setupInstrumentation();
 	},
 
 	afterEach() {
@@ -30,8 +42,6 @@ QUnit.module( 'ext.wikimediaEvents.createAccount.instrumentation', QUnit.newMwEn
 } ) );
 
 QUnit.test( 'should submit interaction event for field changes', function ( assert ) {
-	setupInstrumentation();
-
 	this.$form.find( 'input[name=wpName]' ).trigger( 'change' );
 
 	assert.true( this.submitInteraction.calledOnce );
@@ -42,8 +52,6 @@ QUnit.test( 'should submit interaction event for field changes', function ( asse
 } );
 
 QUnit.test( 'should instrument interaction start and time spent on individual fields', function ( assert ) {
-	setupInstrumentation();
-
 	// Simulate the user waiting some time before interacting with the form.
 	this.clock.tick( 2643 );
 	this.$form.find( 'input[name=wpName]' ).trigger( 'focus' );
@@ -71,8 +79,6 @@ QUnit.test( 'should instrument interaction start and time spent on individual fi
 } );
 
 QUnit.test( 'should submit interaction event on submit', function ( assert ) {
-	setupInstrumentation();
-
 	this.$form.find( 'input[name=wpName]' ).val( 'Foo ' );
 	this.$form.find( 'input[name=wpName]' ).trigger( 'focus' );
 	// Simulate the user having spent some time on the form.
@@ -97,7 +103,6 @@ QUnit.test( 'should submit interaction event on submit', function ( assert ) {
 } );
 
 QUnit.test( 'should submit interaction event when privacy policy link is clicked', function ( assert ) {
-	setupInstrumentation();
 
 	this.$form.find( 'a[href="https://www.hcaptcha.com/privacy"]' ).trigger( 'click' );
 
@@ -109,8 +114,6 @@ QUnit.test( 'should submit interaction event when privacy policy link is clicked
 } );
 
 QUnit.test( 'should submit interaction event when terms of use link is clicked', function ( assert ) {
-	setupInstrumentation();
-
 	this.$form.find( 'a[href="https://www.hcaptcha.com/terms"]' ).trigger( 'click' );
 
 	assert.true( this.submitInteraction.calledOnce );
@@ -121,8 +124,6 @@ QUnit.test( 'should submit interaction event when terms of use link is clicked',
 } );
 
 QUnit.test( 'should submit interaction event for frontend validation errors and performance measurements', function ( assert ) {
-	setupInstrumentation();
-
 	mw.track( 'specialCreateAccount.validationErrors', [ 'some_error', 'one-other-error' ] );
 	mw.track( 'specialCreateAccount.performanceTiming', 'hcaptcha-execute', 1.718 );
 
@@ -149,5 +150,28 @@ QUnit.test( 'should submit interaction event for frontend validation errors and 
 			source: 'form',
 			context: 1.718
 		} ]
+	);
+} );
+
+QUnit.test( 'should submit interaction event for hcaptcha.render() callbacks', function ( assert ) {
+	mw.track( 'confirmEdit.hCaptchaRenderCallback', 'open', 'createaccount' );
+	assert.true( this.submitInteraction.calledOnce, '"open" interface should be tracked' );
+	mw.track( 'confirmEdit.hCaptchaRenderCallback', 'open', 'edit' );
+	assert.true( this.submitInteraction.calledOnce, '"edit" interface should not be tracked' );
+	mw.track( 'confirmEdit.hCaptchaRenderCallback', 'expired', 'createaccount' );
+	assert.true( this.submitInteraction.calledTwice, 'Two events should be created' );
+	assert.deepEqual(
+		this.submitInteraction.firstCall.args,
+		[ 'hcaptcha_render', {
+			context: 'open'
+		} ],
+		'The event context should be "open"'
+	);
+	assert.deepEqual(
+		this.submitInteraction.secondCall.args,
+		[ 'hcaptcha_render', {
+			context: 'expired'
+		} ],
+		'The event context should be "expired"'
 	);
 } );

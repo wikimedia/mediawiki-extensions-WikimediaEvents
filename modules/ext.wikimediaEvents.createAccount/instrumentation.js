@@ -135,6 +135,22 @@ function setupInstrumentation() {
 			context: durationSeconds
 		} );
 	} );
+
+	// Emit an event when various callbacks fire from hcaptcha.render()
+	mw.trackSubscribe( 'confirmEdit.hCaptchaRenderCallback', ( _, event, interfaceName ) => {
+		if ( interfaceName !== 'createaccount' ) {
+			return;
+		}
+		submitInteraction( 'hcaptcha_render', {
+			// Possible values:
+			// - open
+			// - close
+			// - chalexpired
+			// - expired
+			// - error
+			context: event
+		} );
+	} );
 }
 
 module.exports = setupInstrumentation;
