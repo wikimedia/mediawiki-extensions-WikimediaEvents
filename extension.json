@@ -82,6 +82,12 @@
 				"CentralIdLookup"
 			]
 		},
+		"CaptchaScoreHooks": {
+			"class": "WikimediaEvents\\EditPage\\CaptchaScoreHooks",
+			"services": [
+				"EventLogging.MetricsClientFactory"
+			]
+		},
 		"TemporaryAccountsInstrumentation": {
 			"class": "WikimediaEvents\\TemporaryAccounts\\TemporaryAccountsInstrumentation",
 			"services": [
@@ -129,6 +135,7 @@
 		"PageSaveComplete": [
 			"main",
 			"IPReputationHooks",
+			"CaptchaScoreHooks",
 			"TemporaryAccountsInstrumentation"
 		],
 		"EmailAuthRequireToken": "EmailAuthHooks",
