@@ -16,8 +16,10 @@ if ( skin === 'vector-2022' || skin === 'vector' ) {
 // For now this is vector '22 only.
 if ( skin === 'vector-2022' ) {
 	// ReadingsLists experiments T397532
-	// TODO: Uncomment this when the experiment is ready
-	// require( './xLab/readingListAB.js' );
+	// Check if user has hidden preference for reading lists
+	if ( mw.user.isNamed() && ( mw.user.options.get( 'readinglists-web-ui-enabled' ) === '1' ) ) {
+		require( './xLab/readingListAB.js' );
+	}
 }
 
 // Reader Growth's ImageBrowsing `page-visited` event.
