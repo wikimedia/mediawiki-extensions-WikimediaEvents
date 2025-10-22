@@ -1,3 +1,5 @@
+// The experiment name is also used in the ReadingLists extension in the HookHandler class.
+// If the experiment name changes, we must update it in both places.
 const EXPERIMENT_NAME = 'we-3-3-4-reading-list-test1';
 const STREAM_NAME = 'mediawiki.product_metrics.reading_list';
 const ACTION_SAVE = 'save_article_to_reading_list';
