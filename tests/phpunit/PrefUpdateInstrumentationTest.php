@@ -3,6 +3,7 @@
 namespace WikimediaEvents\Tests;
 
 use MediaWiki\Context\RequestContext;
+use MediaWiki\DAO\WikiAwareEntity;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\MainConfigNames;
 use MediaWiki\SpecialPage\SpecialPage;
@@ -172,6 +173,7 @@ class PrefUpdateInstrumentationTest extends \MediaWikiIntegrationTestCase {
 	public function testCreatePrefUpdateEvent( $name, $value, $expect ) {
 		$user = $this->createMock( User::class );
 		$user->method( 'getId' )->willReturn( 4 );
+		$user->method( 'getWikiId' )->willReturn( WikiAwareEntity::LOCAL );
 		$userEditTracker = $this->createMock( UserEditTracker::class );
 		$userEditTracker->method( 'getUserEditCount' )
 			->willReturn( 42 );
