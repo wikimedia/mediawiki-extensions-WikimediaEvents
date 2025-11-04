@@ -1,6 +1,8 @@
 // The experiment name is also used in the ReadingLists extension in the HookHandler class.
-// If the experiment name changes, we must update it in both places.
-const EXPERIMENT_NAME = 'we-3-3-4-reading-list-test1';
+// We must keep the experiment names the same in both extensions.
+const EXPERIMENT_NAME = mw.config.get( 'wgDBname' ) === 'enwiki' ?
+	'we-3-3-4-reading-list-test1-en' :
+	'we-3-3-4-reading-list-test1';
 const STREAM_NAME = 'mediawiki.product_metrics.reading_list';
 const ACTION_SAVE = 'save_article_to_reading_list';
 const ACTION_REMOVE = 'remove_article_from_reading_list';
