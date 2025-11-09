@@ -166,11 +166,11 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 		string $knownLoginNotify,
 		?bool $activeOnLocalWikiInLast90Days
 	): void {
-		$knownLoginNotify = [
+		$knownLoginNotify = match ( $knownLoginNotify ) {
 			'LoginNotify::USER_KNOWN' => LoginNotify::USER_KNOWN,
 			'LoginNotify::USER_NOT_KNOWN' => LoginNotify::USER_NOT_KNOWN,
 			'LoginNotify::USER_NO_INFO' => LoginNotify::USER_NO_INFO,
-		][ $knownLoginNotify ];
+		};
 
 		$this->extensionRegistry->method( 'isLoaded' )
 			->willReturnMap( [
