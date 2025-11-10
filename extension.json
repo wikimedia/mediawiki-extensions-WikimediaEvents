@@ -287,7 +287,8 @@
 				"xLab/stickyHeadersSessionLength.js",
 				"specialCreateAccount/init.js",
 				"specialCreateAccount/instrumentation.js",
-				"specialCreateAccount/useInstrument.js"
+				"specialCreateAccount/useInstrument.js",
+				"xLab/impactTest.js"
 			],
 			"dependencies": [
 				"ext.wikimediaEvents.xLab",

@@ -217,6 +217,14 @@ Round 2 ticket: <https://phabricator.wikimedia.org/T409190>
 
 More details at <https://phabricator.wikimedia.org/T411357>
 
+## Impact test
+
+* Since: November 2025
+* Files: xLab/impactTest.js
+* Contact: Experiment Platform
+
+More details at <https://phabricator.wikimedia.org/T407570>
+
 # Code ownership for other code in WikimediaEvents
 
 ## Temporary account instrumentation
