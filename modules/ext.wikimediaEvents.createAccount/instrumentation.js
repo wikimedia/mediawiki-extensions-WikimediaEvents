@@ -16,6 +16,14 @@ function setupInstrumentation() {
 		reason: 'reason'
 	};
 
+	const errorPageMessageKey = mw.config.get( 'wgErrorPageMessageKey' );
+	if ( errorPageMessageKey ) {
+		submitInteraction( 'form_error', {
+			source: 'form',
+			context: errorPageMessageKey
+		} );
+	}
+
 	const formReady = Date.now();
 
 	let interactionStart = null;
