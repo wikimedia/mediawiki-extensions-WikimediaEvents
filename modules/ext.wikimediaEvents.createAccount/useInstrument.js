@@ -40,9 +40,14 @@ const useInstrument = () => {
 	}
 
 	return ( action, data = {} ) => {
-		// Generate a new funnel entry token if none was set.
+		// Generate a new funnel entry token if none was set, or found in mw.storage.session
 		if ( !funnelEntryToken ) {
-			funnelEntryToken = mw.user.generateRandomSessionId();
+			// Add the user ID to the token, in case the user visits Special:CreateAccount
+			// after creating this account.
+			const funnelEntryTokenSessionStorageKey = 'SpecialCreateAccountFunnelToken-' + mw.user.getId();
+			funnelEntryToken = mw.storage.session.get( funnelEntryTokenSessionStorageKey ) ||
+				mw.user.generateRandomSessionId();
+			mw.storage.session.set( funnelEntryTokenSessionStorageKey, funnelEntryToken );
 		}
 
 		const interactionData = {
