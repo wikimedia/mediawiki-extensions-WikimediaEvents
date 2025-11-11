@@ -85,7 +85,10 @@
 		"CaptchaScoreHooks": {
 			"class": "WikimediaEvents\\EditPage\\CaptchaScoreHooks",
 			"services": [
-				"EventLogging.MetricsClientFactory"
+				"EventLogging.EventSubmitter",
+				"UserFactory",
+				"UserGroupManager",
+				"CentralIdLookup"
 			]
 		},
 		"TemporaryAccountsInstrumentation": {
