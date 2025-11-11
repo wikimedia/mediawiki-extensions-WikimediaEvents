@@ -6,14 +6,12 @@ use MediaWiki\Auth\AuthManager;
 use MediaWiki\Output\Hook\BeforePageDisplayHook;
 use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\SpecialPage\Hook\AuthChangeFormFieldsHook;
-use MediaWiki\SpecialPage\Hook\SpecialPageBeforeExecuteHook;
 use MediaWiki\User\Registration\UserRegistrationLookup;
 use MediaWiki\Utils\UrlUtils;
 use MediaWiki\WikiMap\WikiMap;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
 
 class CreateAccountInstrumentationHandler implements
-	SpecialPageBeforeExecuteHook,
 	AuthChangeFormFieldsHook,
 	BeforePageDisplayHook
 {
@@ -29,17 +27,6 @@ class CreateAccountInstrumentationHandler implements
 		private readonly UrlUtils $urlUtils,
 		private readonly Config $config
 	) {
-	}
-
-	/**
-	 * Add instrumentation module to Special:CreateAccount (T394744).
-	 * @inheritDoc
-	 */
-	public function onSpecialPageBeforeExecute( $special, $subPage ): void {
-		if ( $special->getName() === 'CreateAccount' &&
-			$this->extensionRegistry->isLoaded( 'EventLogging' ) ) {
-			$special->getOutput()->addModules( 'ext.wikimediaEvents.createAccount' );
-		}
 	}
 
 	/**

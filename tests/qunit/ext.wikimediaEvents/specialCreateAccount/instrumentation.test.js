@@ -1,9 +1,9 @@
 'use strict';
 
-const setupInstrumentation = require( 'ext.wikimediaEvents.createAccount/instrumentation.js' );
-const instrument = require( 'ext.wikimediaEvents.createAccount/useInstrument.js' );
+const setupInstrumentation = require( 'ext.wikimediaEvents/specialCreateAccount/instrumentation.js' );
+const instrument = require( 'ext.wikimediaEvents/specialCreateAccount/useInstrument.js' );
 
-QUnit.module( 'ext.wikimediaEvents.createAccount.instrumentation', QUnit.newMwEnvironment( {
+QUnit.module( 'ext.wikimediaEvents.specialCreateAccount.instrumentation', QUnit.newMwEnvironment( {
 	beforeEach() {
 		mw.config.set( {
 			wgWikimediaEventsCaptchaClassType: 'hCaptcha'

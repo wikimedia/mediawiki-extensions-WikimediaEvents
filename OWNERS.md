@@ -219,7 +219,7 @@ More details at <https://phabricator.wikimedia.org/T357763>
 ## Special:CreateAccount instrumentation
 
 * Since: July 2025
-* Folders: ext.wikimediaEvents.createAccount
+* Folders: ext.wikimediaEvents/specialCreateAccount
 * Contact: Growth Team
 
 More details at <https://phabricator.wikimedia.org/T394744>

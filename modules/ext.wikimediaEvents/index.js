@@ -34,6 +34,7 @@ require( './hCaptcha.js' )();
 require( './networkProbe.js' );
 require( './xLab/pageVisitBotDetection.js' );
 require( './xLab/mintReaderPageVisit.js' );
+require( './specialCreateAccount/init.js' );
 
 if ( !window.QUnit ) {
 	require( './searchSatisfaction/index.js' )();

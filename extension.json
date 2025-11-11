@@ -153,7 +153,6 @@
 		"SpecialSearchResults": "main",
 		"RecentChange_save": "main",
 		"ResourceLoaderRegisterModules": "main",
-		"SpecialPageBeforeExecute": "CreateAccountInstrumentationHandler",
 		"MakeGlobalVariablesScript": "main",
 		"PageDeleteComplete": "TemporaryAccountsInstrumentation",
 		"PermissionStatusAudit": "BlockMetricsHooks",
@@ -269,7 +268,10 @@
 				"xLab/pageVisitBotDetection.js",
 				"xLab/mintReaderPageVisit.js",
 				"xLab/readingListAB.js",
-				"xLab/imageBrowsingPageVisit.js"
+				"xLab/imageBrowsingPageVisit.js",
+				"specialCreateAccount/init.js",
+				"specialCreateAccount/instrumentation.js",
+				"specialCreateAccount/useInstrument.js"
 			],
 			"dependencies": [
 				"ext.wikimediaEvents.xLab",
@@ -280,18 +282,6 @@
 				"mediawiki.experiments",
 				"mediawiki.storage",
 				"mediawiki.visibleTimeout"
-			]
-		},
-		"ext.wikimediaEvents.createAccount": {
-			"localBasePath": "modules/ext.wikimediaEvents.createAccount",
-			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.createAccount",
-			"packageFiles": [
-				"init.js",
-				"instrumentation.js",
-				"useInstrument.js"
-			],
-			"dependencies": [
-				"ext.eventLogging"
 			]
 		},
 		"ext.wikimediaEvents.wikibase": {
@@ -363,11 +353,10 @@
 			"sessionLength/mixin.test.js",
 			"searchSatisfaction/searchSatisfaction.test.js",
 			"searchSatisfaction/searchSli.test.js",
-			"createAccount/instrumentation.test.js"
+			"specialCreateAccount/instrumentation.test.js"
 		],
 		"dependencies": [
-			"ext.wikimediaEvents",
-			"ext.wikimediaEvents.createAccount"
+			"ext.wikimediaEvents"
 		]
 	},
 	"config": {
