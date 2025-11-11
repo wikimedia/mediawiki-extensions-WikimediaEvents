@@ -2,21 +2,31 @@
 
 namespace WikimediaEvents\EditPage;
 
-use MediaWiki\Context\IContextSource;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
 use MediaWiki\Extension\ConfirmEdit\hCaptcha\HCaptcha;
 use MediaWiki\Extension\ConfirmEdit\Hooks;
-use MediaWiki\Extension\EventLogging\MetricsPlatform\MetricsClientFactory;
+use MediaWiki\Extension\EventBus\Serializers\MediaWiki\UserEntitySerializer;
+use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
+use MediaWiki\User\CentralId\CentralIdLookup;
+use MediaWiki\User\UserFactory;
+use MediaWiki\User\UserGroupManager;
+use MediaWiki\WikiMap\WikiMap;
 
 /**
  * Hooks for logging hCaptcha risk scores during edit operations
  */
 class CaptchaScoreHooks implements PageSaveCompleteHook {
 
+	protected const STREAM = 'mediawiki.hcaptcha.risk_score';
+	protected const SCHEMA = '/analytics/mediawiki/hcaptcha/risk_score/1.0.0';
+
 	public function __construct(
-		private readonly MetricsClientFactory $metricsClientFactory
+		private readonly EventSubmitter $eventSubmitter,
+		private readonly UserFactory $userFactory,
+		private readonly UserGroupManager $userGroupManager,
+		private readonly CentralIdLookup $centralIdLookup,
 	) {
 	}
 
@@ -24,46 +34,39 @@ class CaptchaScoreHooks implements PageSaveCompleteHook {
 	public function onPageSaveComplete( $wikiPage, $user, $summary, $flags, $revisionRecord, $editResult ): void {
 		$simpleCaptcha = Hooks::getInstance( CaptchaTriggers::EDIT );
 		if ( !$simpleCaptcha instanceof HCaptcha ||
-			!$simpleCaptcha->triggersCaptcha( 'edit', $wikiPage->getTitle() ) ) {
+			!$simpleCaptcha->triggersCaptcha( 'edit', $wikiPage->getTitle() ) ||
+			$simpleCaptcha->canSkipCaptcha( $this->userFactory->newFromUserIdentity( $user ) ) ) {
 			return;
 		}
 
 		$context = RequestContext::getMain();
 		$request = $context->getRequest();
+		$userEntitySerializer = new UserEntitySerializer(
+			$this->userFactory, $this->userGroupManager, $this->centralIdLookup
+		);
 
-		$interactionData = [
+		$score = $simpleCaptcha->retrieveSessionScore( 'hCaptcha-score', $user->getName() );
+		$riskScore = $score === null || $score === false ? -1.0 : floatval( $score );
+
+		$event = [
+			'$schema' => self::SCHEMA,
+			'action' => CaptchaTriggers::EDIT,
+			'wiki_id' => WikiMap::getCurrentWikiId(),
 			'identifier' => $revisionRecord->getId(),
 			'identifier_type' => 'revision',
-			'risk_score' => floatval(
-				$simpleCaptcha->retrieveSessionScore( 'hCaptcha-score', $user->getName() ) ?? -1
-			),
+			'performer' => $userEntitySerializer->toArray( $user ),
+			'http' => [
+				'method' => $request->getMethod(),
+			],
+			'risk_score' => $riskScore,
 			'mw_entry_point' => MW_ENTRY_POINT,
 		];
 
 		$editingSessionId = $request->getRawVal( 'editingStatsId' );
 		if ( $editingSessionId ) {
-			$interactionData['editing_session_id'] = $editingSessionId;
+			$event['editing_session_id'] = $editingSessionId;
 		}
-
-		$this->submitInteraction( $context, $interactionData );
-	}
-
-	/**
-	 * Emit an interaction event for hCaptcha risk scores to the Metrics Platform instrument.
-	 * @param IContextSource $context
-	 * @param array $interactionData Interaction data for the event
-	 */
-	private function submitInteraction(
-		IContextSource $context,
-		array $interactionData
-	): void {
-		$client = $this->metricsClientFactory->newMetricsClient( $context );
-		$client->submitInteraction(
-			'mediawiki.hcaptcha.risk_score',
-			'/analytics/mediawiki/hcaptcha/risk_score/1.0.0',
-			'edit',
-			$interactionData
-		);
+		$this->eventSubmitter->submit( self::STREAM, $event );
 	}
 
 }
