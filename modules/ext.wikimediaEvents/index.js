@@ -30,6 +30,7 @@ if ( skin === 'minerva' ) {
 }
 
 require( './editAttemptStep.js' );
+require( './hCaptcha.js' )();
 require( './networkProbe.js' );
 require( './xLab/pageVisitBotDetection.js' );
 require( './xLab/mintReaderPageVisit.js' );
