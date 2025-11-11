@@ -243,6 +243,7 @@
 					"callbackParam": "universalLanguageSelector"
 				},
 				"editAttemptStep.js",
+				"hCaptcha.js",
 				{
 					"name": "config.json",
 					"config": [
@@ -358,6 +359,7 @@
 			"clickTracking.test.js",
 			"clientError.test.js",
 			"statsd.test.js",
+			"hCaptcha.test.js",
 			"sessionLength/mixin.test.js",
 			"searchSatisfaction/searchSatisfaction.test.js",
 			"searchSatisfaction/searchSli.test.js",

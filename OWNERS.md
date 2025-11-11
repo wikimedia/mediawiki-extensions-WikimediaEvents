@@ -224,6 +224,12 @@ More details at <https://phabricator.wikimedia.org/T357763>
 
 More details at <https://phabricator.wikimedia.org/T394744>
 
+## hCaptcha.js
+
+* Since: November 2025
+* Files: ext.wikimediaEvents/hCaptcha.js
+* Contact: Product Safety and Integrity
+
 ## Experiment Platform Standardized Instruments
 
 * Since: January 2025
