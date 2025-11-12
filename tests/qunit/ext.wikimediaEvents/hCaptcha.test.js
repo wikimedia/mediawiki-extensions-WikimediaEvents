@@ -31,13 +31,18 @@ QUnit.test( 'should track editing interfaces for hcaptcha.render() callbacks', f
 	const handlers = this.trackSubscribeHandlers[ 'confirmEdit.hCaptchaRenderCallback' ] || [];
 
 	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'open', 'edit' ) );
-	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'close', 'visualeditor' ) );
 	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'expired', 'edit' ) );
+	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'open', 'visualeditor' ) );
+	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'close', 'visualeditor' ) );
 
-	assert.deepEqual( this.track.callCount, 4, 'edit interfaces should cause mw.track events' );
+	assert.deepEqual( this.track.callCount, 6, 'edit interfaces should cause mw.track events' );
 	assert.deepEqual(
 		this.track.firstCall.args,
-		[ 'editAttemptStep', { action: 'saveFailure', message: 'hcaptcha', type: 'captchaExtension' } ]
+		[
+			'editAttemptStep',
+			// eslint-disable-next-line camelcase
+			{ action: 'saveFailure', message: 'hcaptcha', type: 'captchaExtension', editor_interface: 'wikitext' }
+		]
 	);
 	assert.deepEqual(
 		this.track.secondCall.args,
@@ -45,10 +50,22 @@ QUnit.test( 'should track editing interfaces for hcaptcha.render() callbacks', f
 	);
 	assert.deepEqual(
 		this.track.thirdCall.args,
-		[ 'visualEditorFeatureUse', { action: 'close', feature: 'hcaptcha' } ]
+		[ 'visualEditorFeatureUse', { action: 'expired', feature: 'hcaptcha' } ]
 	);
 	assert.deepEqual(
-		this.track.lastCall.args,
-		[ 'visualEditorFeatureUse', { action: 'expired', feature: 'hcaptcha' } ]
+		this.track.getCall( 3 ).args,
+		[
+			'editAttemptStep',
+			// eslint-disable-next-line camelcase
+			{ action: 'saveFailure', message: 'hcaptcha', type: 'captchaExtension', editor_interface: 'visualeditor' }
+		]
+	);
+	assert.deepEqual(
+		this.track.getCall( 4 ).args,
+		[ 'visualEditorFeatureUse', { action: 'open', feature: 'hcaptcha' } ]
+	);
+	assert.deepEqual(
+		this.track.getCall( 5 ).args,
+		[ 'visualEditorFeatureUse', { action: 'close', feature: 'hcaptcha' } ]
 	);
 } );

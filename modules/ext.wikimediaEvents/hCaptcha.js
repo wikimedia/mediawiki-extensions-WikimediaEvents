@@ -6,14 +6,19 @@ function setupInstrumentation() {
 	mw.trackSubscribe( 'confirmEdit.hCaptchaRenderCallback', ( _, event, interfaceName ) => {
 		// ./specialCreateAccount/instrumentation.js already handles this
 		// when the interface is account creation, so only need to handle editing interfaces here
-		const editingInterfaces = [ 'edit', 'visualeditor' ];
 
-		if ( editingInterfaces.includes( interfaceName ) ) {
+		// This dictionary maps the interfaceName values that are for editing interfaces
+		// to the string that should be used as editor_interface in the 'editAttemptStep'
+		// mw.track call. visualEditorFeatureUse handles editor_interface for us.
+		const editingInterfaces = { edit: 'wikitext', visualeditor: 'visualeditor' };
+
+		if ( Object.keys( editingInterfaces ).includes( interfaceName ) ) {
 			if ( event === 'open' ) {
 				mw.track( 'editAttemptStep', {
 					action: 'saveFailure',
 					message: 'hcaptcha',
-					type: 'captchaExtension'
+					type: 'captchaExtension',
+					editor_interface: editingInterfaces[ interfaceName ]
 				} );
 			}
 
