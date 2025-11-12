@@ -145,7 +145,8 @@ function setupInstrumentation() {
 	} );
 
 	// Emit an event when various callbacks fire from hcaptcha.render()
-	mw.trackSubscribe( 'confirmEdit.hCaptchaRenderCallback', ( _, event, interfaceName ) => {
+	mw.trackSubscribe( 'confirmEdit.hCaptchaRenderCallback', ( _, event, interfaceName, error ) => {
+		// Note events coming from the editor are handled by hCaptcha.js
 		if ( interfaceName !== 'createaccount' ) {
 			return;
 		}
@@ -158,6 +159,20 @@ function setupInstrumentation() {
 			// - error
 			context: event
 		} );
+
+		if ( error ) {
+			// If there was an error, record it as an additional interaction event.
+			// Errors are tracked as additional events because the events for
+			// account creation don't have a specific field for including error
+			// information, so it can't be included as part of the event for the
+			// hcaptcha_render action itself.
+			submitInteraction( 'hcaptcha_error', {
+				// "error" is an hCaptcha error code (for example,
+				// "rate-limited"). The full list of values can be found at
+				// https://docs.hcaptcha.com/configuration/#error-codes
+				context: error
+			} );
+		}
 	} );
 }
 

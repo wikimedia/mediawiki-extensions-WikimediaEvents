@@ -175,3 +175,38 @@ QUnit.test( 'should submit interaction event for hcaptcha.render() callbacks', f
 		'The event context should be "expired"'
 	);
 } );
+
+QUnit.test( 'should submit interaction events for errors passed to hcaptcha.render() callbacks', function ( assert ) {
+	// Every call having an error should track two events
+	// (one for "hcaptcha_render" and one for "hcaptcha_error")
+	let expectedCount = 0;
+
+	expectedCount += 2;
+	mw.track( 'confirmEdit.hCaptchaRenderCallback', 'open', 'createaccount', 'error1' );
+	assert.strictEqual(
+		this.submitInteraction.callCount,
+		expectedCount,
+		'"open" with an error should track two events'
+	);
+	assert.deepEqual(
+		this.submitInteraction.firstCall.args,
+		[ 'hcaptcha_render', {
+			context: 'open'
+		} ],
+		'The event context should be "open"'
+	);
+	assert.deepEqual(
+		this.submitInteraction.secondCall.args,
+		[ 'hcaptcha_error', {
+			context: 'error1'
+		} ],
+		'The event context should contain the error'
+	);
+
+	mw.track( 'confirmEdit.hCaptchaRenderCallback', 'open', 'edit', 'error2' );
+	assert.strictEqual(
+		this.submitInteraction.callCount,
+		expectedCount,
+		'"edit" interface should not be tracked'
+	);
+} );

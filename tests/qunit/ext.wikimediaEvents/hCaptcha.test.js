@@ -69,3 +69,32 @@ QUnit.test( 'should track editing interfaces for hcaptcha.render() callbacks', f
 		[ 'visualEditorFeatureUse', { action: 'close', feature: 'hcaptcha' } ]
 	);
 } );
+
+QUnit.test( 'should track errors from editing interfaces for hcaptcha.render() callbacks', function ( assert ) {
+	const handlers = this.trackSubscribeHandlers[ 'confirmEdit.hCaptchaRenderCallback' ] || [];
+
+	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'error', 'edit', 'edit-error' ) );
+	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'error', 'visualeditor', 'visualeditor-error' ) );
+	// an unknown interface should not trigger an error tracking call
+	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'error', 'somethingelse', 'somethingelse-error' ) );
+
+	// each error carrying an error payload triggers an additional track() call
+	assert.deepEqual( this.track.callCount, 4, 'edit interfaces should cause mw.track events' );
+	assert.deepEqual(
+		this.track.getCall( 0 ).args,
+		[ 'visualEditorFeatureUse', { feature: 'hcaptcha', action: 'error' } ]
+	);
+	assert.deepEqual(
+		this.track.getCall( 1 ).args,
+		[ 'visualEditorFeatureUse', { feature: 'hcaptcha_error', action: 'edit-error' } ],
+		'an additional track call is made carrying the error code as the action'
+	);
+	assert.deepEqual(
+		this.track.getCall( 2 ).args,
+		[ 'visualEditorFeatureUse', { feature: 'hcaptcha', action: 'error' } ]
+	);
+	assert.deepEqual(
+		this.track.getCall( 3 ).args,
+		[ 'visualEditorFeatureUse', { feature: 'hcaptcha_error', action: 'visualeditor-error' } ]
+	);
+} );

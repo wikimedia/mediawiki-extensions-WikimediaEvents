@@ -8,7 +8,7 @@ function setupInstrumentation() {
 	const editingInterfaces = { edit: 'wikitext', visualeditor: 'visualeditor' };
 
 	// Emit an event when various callbacks fire from hcaptcha.render()
-	mw.trackSubscribe( 'confirmEdit.hCaptchaRenderCallback', ( _, event, interfaceName ) => {
+	mw.trackSubscribe( 'confirmEdit.hCaptchaRenderCallback', ( _, event, interfaceName, error ) => {
 		// ./specialCreateAccount/instrumentation.js already handles this
 		// when the interface is account creation, so only need to handle editing interfaces here
 		if ( Object.keys( editingInterfaces ).includes( interfaceName ) ) {
@@ -31,6 +31,20 @@ function setupInstrumentation() {
 				// - error
 				action: event
 			} );
+
+			if ( error ) {
+				// If there was an error, record it as an additional event.
+				// Errors are tracked as additional events because visualEditorFeatureUse
+				// does not have a specific field for including error information, so
+				// it can't be included as part of the first visualEditorFeatureUse event.
+				mw.track( 'visualEditorFeatureUse', {
+					feature: 'hcaptcha_error',
+					// "error" is an hCaptcha error code (for example,
+					// "rate-limited"). The full list of values can be found at
+					// https://docs.hcaptcha.com/configuration/#error-codes
+					action: error
+				} );
+			}
 		}
 	} );
 
