@@ -1,6 +1,8 @@
 /**
  * Frontend instrumentation for hCaptcha
  */
+const editingSessionService = require( './editingSessionService.js' );
+
 function setupInstrumentation() {
 	// This dictionary maps the interfaceName values that are for editing interfaces
 	// to the string that should be used as editor_interface in the 'editAttemptStep'
@@ -18,6 +20,19 @@ function setupInstrumentation() {
 					message: 'hcaptcha',
 					type: 'captchaExtension',
 					editor_interface: editingInterfaces[ interfaceName ]
+				} );
+
+				// Record diff when hCaptcha challenge is presented (T406865)
+				const textArea = document.querySelector( 'textarea[name="wpTextbox1"]' );
+
+				// Get editing session ID with fallback priority (same as editAttemptStep.js)
+				( new mw.Api() ).post( {
+					formatversion: 2,
+					action: 'wikimediaeventshcaptchaeditattempt',
+					proposed_content: textArea ? textArea.value : null,
+					title: mw.config.get( 'wgPageName' ),
+					revision_id: mw.config.get( 'wgRevisionId' ),
+					editing_session_id: editingSessionService.getEditingSessionId()
 				} );
 			}
 
