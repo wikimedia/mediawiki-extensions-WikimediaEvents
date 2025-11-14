@@ -22,6 +22,11 @@ class CreateAccountInstrumentationPreAuthenticationProviderTest extends MediaWik
 
 	use AuthenticationProviderTestTrait;
 
+	protected function setUp(): void {
+		parent::setUp();
+		$this->markTestSkippedIfExtensionNotLoaded( 'ConfirmEdit' );
+	}
+
 	public function testShouldSubmitInteractionWhenRequestForHiddenFieldIsPresent(): void {
 		$user = $this->createMock( User::class );
 		$user->method( 'getName' )
