@@ -8,7 +8,7 @@
 	"devDependencies": {
 		"@types/jquery": "3.5.29",
 		"@wikimedia/types-wikimedia": "0.4.2",
-		"eslint-config-wikimedia": "0.31.0",
+		"eslint-config-wikimedia": "0.32.1",
 		"grunt": "1.6.1",
 		"grunt-banana-checker": "0.13.0",
 		"grunt-eslint": "24.3.0",
