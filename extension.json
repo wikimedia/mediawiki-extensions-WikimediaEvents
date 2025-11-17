@@ -270,6 +270,7 @@
 				"xLab/mintReaderPageVisit.js",
 				"xLab/readingListAB.js",
 				"xLab/imageBrowsingPageVisit.js",
+				"xLab/loggedOutPageVisit.js",
 				"specialCreateAccount/init.js",
 				"specialCreateAccount/instrumentation.js",
 				"specialCreateAccount/useInstrument.js"

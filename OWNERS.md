@@ -186,12 +186,6 @@ Moved here in <https://phabricator.wikimedia.org/T332438>.
 * Files: xLab/pageVisitBotDetection.js
 * Contact: Data Platform Engineering
 
-## Web Growth Logged Out Retention A/A Instrumentation
-
-* Since: July 2025
-* Files: xLab/loggedOutRetentionVisit.js
-* Contact: Web Growth
-
 ## MinT for Wiki Readers Synthetic A/A test
 
 * Since: Aug 2025
@@ -205,6 +199,15 @@ Moved here in <https://phabricator.wikimedia.org/T332438>.
 * Contact: Reader Growth
 
 More details at <https://phabricator.wikimedia.org/T398495>
+
+## Reader Growth logged-out readers `page-visited` instrumentation
+
+* Since: November 2025
+* Files: xLab/loggedOutPageVisit.js
+* Contact: Reader Growth
+
+Initial ticket: <https://phabricator.wikimedia.org/T399227>
+Round 2 ticket: <https://phabricator.wikimedia.org/T409190>
 
 # Code ownership for other code in WikimediaEvents
 
