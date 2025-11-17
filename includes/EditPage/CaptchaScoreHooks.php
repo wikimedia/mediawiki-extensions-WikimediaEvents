@@ -2,6 +2,7 @@
 
 namespace WikimediaEvents\EditPage;
 
+use ExtensionRegistry;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
 use MediaWiki\Extension\ConfirmEdit\hCaptcha\HCaptcha;
@@ -27,11 +28,16 @@ class CaptchaScoreHooks implements PageSaveCompleteHook {
 		private readonly UserFactory $userFactory,
 		private readonly UserGroupManager $userGroupManager,
 		private readonly CentralIdLookup $centralIdLookup,
+		private readonly ExtensionRegistry $extensionRegistry,
 	) {
 	}
 
 	/** @inheritDoc */
 	public function onPageSaveComplete( $wikiPage, $user, $summary, $flags, $revisionRecord, $editResult ): void {
+		if ( !$this->extensionRegistry->isLoaded( 'ConfirmEdit' ) ) {
+			return;
+		}
+
 		$simpleCaptcha = Hooks::getInstance( CaptchaTriggers::EDIT );
 		if ( !$simpleCaptcha instanceof HCaptcha ||
 			!$simpleCaptcha->triggersCaptcha( 'edit', $wikiPage->getTitle() ) ||

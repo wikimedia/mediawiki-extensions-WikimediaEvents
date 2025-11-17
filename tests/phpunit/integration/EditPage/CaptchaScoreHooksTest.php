@@ -2,6 +2,7 @@
 
 namespace WikimediaEvents\Tests\Integration\EditPage;
 
+use ExtensionRegistry;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
 use MediaWiki\Extension\ConfirmEdit\hCaptcha\HCaptcha;
@@ -17,6 +18,7 @@ use MediaWiki\User\CentralId\CentralIdLookup;
 use MediaWiki\User\User;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserGroupManager;
+use MediaWiki\User\UserIdentityValue;
 use MediaWiki\WikiMap\WikiMap;
 use MediaWikiIntegrationTestCase;
 use WikimediaEvents\EditPage\CaptchaScoreHooks;
@@ -26,6 +28,35 @@ use WikimediaEvents\EditPage\CaptchaScoreHooks;
  * @group Database
  */
 class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
+
+	public function testWhenConfirmEditNotLoaded() {
+		$mockExtensionRegistry = $this->createMock( ExtensionRegistry::class );
+		$mockExtensionRegistry->method( 'isLoaded' )
+			->with( 'ConfirmEdit' )
+			->willReturn( false );
+
+		$eventSubmitterMock = $this->createMock( EventSubmitter::class );
+		$eventSubmitterMock->expects( $this->never() )->method( 'submit' );
+
+		$captchaScoreHooks = new CaptchaScoreHooks(
+			$eventSubmitterMock,
+			$this->getServiceContainer()->getUserFactory(),
+			$this->getServiceContainer()->getUserGroupManager(),
+			$this->getServiceContainer()->getCentralIdLookup(),
+			$mockExtensionRegistry
+		);
+
+		// Should return immediately if ConfirmEdit is not loaded, so we can pass anything here that is deemed valid
+		// by PHP.
+		$captchaScoreHooks->onPageSaveComplete(
+			$this->createMock( WikiPage::class ),
+			UserIdentityValue::newAnonymous( '1.2.3.4' ),
+			'',
+			'',
+			$this->createMock( RevisionRecord::class ),
+			$this->createMock( EditResult::class )
+		);
+	}
 
 	public static function provideShouldNotSubmitEvent(): array {
 		return [
@@ -42,6 +73,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 	 * @dataProvider provideShouldNotSubmitEvent
 	 */
 	public function testPageSaveCompleteShouldNotSubmitEvent( array $captchaTriggers ) {
+		$this->markTestSkippedIfExtensionNotLoaded( 'ConfirmEdit' );
+
 		$this->overrideConfigValue( 'CaptchaTriggers', $captchaTriggers );
 		$services = $this->getServiceContainer();
 		$eventSubmitterMock = $this->createMock( EventSubmitter::class );
@@ -53,7 +86,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			$eventSubmitterMock,
 			$services->getUserFactory(),
 			$services->getUserGroupManager(),
-			$services->getCentralIdLookup()
+			$services->getCentralIdLookup(),
+			$services->getExtensionRegistry()
 		);
 
 		$wikiPageMock = $this->createMock( WikiPage::class );
@@ -73,6 +107,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function testPageSaveCompleteShouldNotSubmitEventForUserWithSkipCaptcha() {
+		$this->markTestSkippedIfExtensionNotLoaded( 'ConfirmEdit' );
+
 		$this->overrideConfigValue(
 			'CaptchaTriggers',
 			[ 'edit' => [ 'trigger' => true, 'class' => 'HCaptcha' ] ]
@@ -90,7 +126,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			$eventSubmitterMock,
 			$services->getUserFactory(),
 			$services->getUserGroupManager(),
-			$services->getCentralIdLookup()
+			$services->getCentralIdLookup(),
+			$services->getExtensionRegistry()
 		);
 
 		$wikiPageMock = $this->createMock( WikiPage::class );
@@ -145,6 +182,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		int $revisionId,
 		bool $hasEditingSessionId
 	) {
+		$this->markTestSkippedIfExtensionNotLoaded( 'ConfirmEdit' );
+
 		$this->overrideConfigValue(
 			'CaptchaTriggers',
 			[ 'edit' => [
@@ -205,7 +244,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			$eventSubmitterMock,
 			$userFactoryMock,
 			$userGroupManagerMock,
-			$centralIdLookupMock
+			$centralIdLookupMock,
+			$services->getExtensionRegistry()
 		);
 		$wikiPageMock = $this->createMock( WikiPage::class );
 		$titleMock = $this->createMock( Title::class );
