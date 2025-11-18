@@ -43,6 +43,25 @@ function setupInstrumentation() {
 			} );
 		}
 	} );
+
+	// T410354 A/B test of hCaptcha: log an event when the "loaded" action for editAttemptStep
+	// fires, to record which experiment group a given editing session belongs to
+	mw.trackSubscribe( 'editAttemptStep', ( _, data ) => {
+		if ( ![ 'zhwiki', 'jawiki' ].includes( mw.config.get( 'wgDBname' ) ) ) {
+			return;
+		}
+		// We only want this to fire on the action=loaded event from editAttemptStep
+		if ( !data || data.action !== 'loaded' ) {
+			return;
+		}
+		mw.loader.using( [ 'ext.xLab' ] ).then( () => {
+			const experiment = mw.xLab.getExperiment( 'fy25-26-we-4-2-hcaptcha-editing' );
+			mw.track( 'visualEditorFeatureUse', {
+				feature: 'T410354_hcaptcha_edit_ab_test',
+				action: experiment.isAssignedGroup( 'control', 'control-2' ) ? 'FancyCaptcha' : 'hCaptcha'
+			} );
+		} );
+	} );
 }
 
 module.exports = setupInstrumentation;
