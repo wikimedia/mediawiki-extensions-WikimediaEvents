@@ -38,8 +38,7 @@ function trackPageVisit( exp ) {
 		actionSource = referrerUrl.hostname === currentUrl.hostname ? 'internal_referer' : 'external_referer';
 	}
 	exp.send( 'page_load', {
-		action_source: actionSource,
-		action_context: document.location.pathname
+		action_source: actionSource
 	} );
 }
 
