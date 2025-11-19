@@ -37,6 +37,13 @@ require( './xLab/mintReaderPageVisit.js' );
 require( './specialCreateAccount/init.js' );
 require( './xLab/loggedOutPageVisit.js' );
 
+// Expose the session length instrument for re-use across the MediaWiki ecosystem.
+const { SessionLengthInstrumentMixin } = require( './sessionLength/mixin.js' );
+/**
+ * @namespace mw.wikimediaEvents
+ */
+mw.wikimediaEvents = { SessionLengthInstrumentMixin };
+
 if ( !window.QUnit ) {
 	require( './searchSatisfaction/index.js' )();
 }

@@ -25,6 +25,7 @@ const KEY_LAST_TIME = 'mp-sessionTickLastTickTime';
 const KEY_COUNT = 'mp-sessionTickTickCount';
 
 // Stores active sessions with their streamName and schemaID.
+// xLab users may pass in an Instrument/Experiment object.
 const state = new Map();
 
 // Checks if browser supports passive event listeners.
@@ -70,16 +71,29 @@ function sessionTick( incr ) {
 
 	const count = ( Number( mw.storage.session.get( KEY_COUNT ) ) || 0 );
 
-	state.forEach( ( { schemaID, data }, streamName ) => {
-		mw.eventLog.submitInteraction(
-			streamName,
-			schemaID,
-			'tick',
-			Object.assign( {
-				action_source: 'SessionLengthInstrumentMixin',
+	state.forEach( ( { schemaID, data, instrument }, streamName ) => {
+		// If an experiment/instrument is passed,
+		// an `instrument_name` property should be included in the passed data.
+		if ( instrument ) {
+			data = Object.assign( {
 				action_context: count.toString()
-			}, data )
-		);
+			}, data );
+			// xLab Experiment objects are API-compatible with
+			// Instrument objects' `submitInteraction` method; either can
+			// be used here.
+			instrument.submitInteraction( 'tick', data );
+		} else {
+			data = Object.assign( {
+				action_context: count.toString(),
+				instrument_name: 'SessionLengthMixin'
+			}, data );
+			mw.eventLog.submitInteraction(
+				streamName,
+				schemaID,
+				'tick',
+				data
+			);
+		}
 	} );
 
 	mw.storage.session.set( KEY_COUNT, count + incr );
@@ -160,15 +174,47 @@ function regulator() {
 // API
 // ===
 
+/**
+ * @memberof mw.wikimediaEvents
+ */
 const SessionLengthInstrumentMixin = {
 	state,
-	start( streamName, schemaID, data = {} ) {
-		state.set( streamName, { schemaID, data } );
+	/**
+	 * start( streamName, schemaID, ?data ) - global submitInteraction()
+	 * start( instrument, ?data ) - calls instrument.submitInteraction()
+	 * start( experiment, ?data ) - calls experiment.submitInteraction()
+	 *
+	 * @param {string|Instrument|mw.xLab.Experiment} [dest] string, Instrument or Experiment
+	 * @param {string|Object} [schemaOrData] string or data object
+	 * @param {Object?} [data]
+	 */
+	start( dest, schemaOrData = {}, data = {} ) {
+		if ( typeof dest === 'string' ) {
+			const streamName = dest;
+			const schemaID = schemaOrData;
+			state.set( streamName, { schemaID, data } );
+		} else if ( typeof dest === 'object' ) {
+			data = schemaOrData;
+			if ( dest.submitInteraction ) {
+				const instrument = dest;
+				state.set( instrument, { instrument, data } );
+			} else {
+				throw new Error(
+					'invalid Instrument or Experiment: it should have a submitInteraction() method'
+				);
+			}
+		} else {
+			throw new Error( 'invalid streamName, Instrument, or Experiment' );
+		}
+
 		// Start algorithm
 		regulator();
 	},
-	stop( streamName ) {
-		state.delete( streamName );
+	/**
+	 * @param {string|Instrument|mw.xLab.Experiment} [dest] string, Instrument, or Experiment
+	 */
+	stop( dest ) {
+		state.delete( dest );
 	}
 };
 
@@ -176,4 +222,4 @@ const SessionLengthInstrumentMixin = {
 mw.storage.remove( KEY_COUNT );
 mw.storage.remove( KEY_LAST_TIME );
 
-module.exports = SessionLengthInstrumentMixin;
+module.exports = { SessionLengthInstrumentMixin };
