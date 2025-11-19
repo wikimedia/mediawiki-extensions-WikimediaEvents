@@ -130,7 +130,8 @@ class WikimediaEventsHooks implements
 		}
 		$this->accountCreationLogger->logPageImpression(
 			$out->getTitle(),
-			$out->getRequest()->getSession()->getUser()
+			$out->getRequest()->getSession()->getUser(),
+			$out->getRequest()
 		);
 	}
 

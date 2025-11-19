@@ -9,6 +9,7 @@ use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Page\PageReference;
 use MediaWiki\Registration\ExtensionRegistry;
+use MediaWiki\Request\WebRequest;
 use MediaWiki\SpecialPage\SpecialPageFactory;
 use MediaWiki\User\UserIdentity;
 use MediaWiki\User\UserIdentityUtils;
@@ -139,7 +140,16 @@ class AccountCreationLogger {
 	 * @param PageReference $pageReference
 	 * @param UserIdentity $performer The user viewing the page.
 	 */
-	public function logPageImpression( PageReference $pageReference, UserIdentity $performer ): void {
+	public function logPageImpression(
+		PageReference $pageReference,
+		UserIdentity $performer,
+		WebRequest $request
+	): void {
+		if ( $request->wasPosted() && $request->getCheck( 'authAction' ) ) {
+			// This is not a first impression but a subsequent step; don't log
+			return;
+		}
+
 		$stream = $this->determineStreamForPage( $pageReference );
 
 		if ( !$stream ) {
