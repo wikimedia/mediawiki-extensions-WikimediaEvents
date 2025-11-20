@@ -154,12 +154,14 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				[ 'editingStatsId' => 123 ],
 				1,
 				true,
+				false,
 			],
 			'Without editing_session_id' => [
 				'Bar',
 				0.5,
 				[],
 				2,
+				false,
 				false,
 			],
 			'With null risk score (defaults to -1)' => [
@@ -168,6 +170,15 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				[],
 				3,
 				false,
+				false,
+			],
+			'Null edit' => [
+				'Qux',
+				0.2,
+				[],
+				4,
+				false,
+				true,
 			],
 		];
 	}
@@ -180,7 +191,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		?float $riskScore,
 		array $requestParams,
 		int $revisionId,
-		bool $hasEditingSessionId
+		bool $hasEditingSessionId,
+		bool $isNullEdit
 	) {
 		$this->markTestSkippedIfExtensionNotLoaded( 'ConfirmEdit' );
 
@@ -219,8 +231,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$expectedPerformer = $userEntitySerializer->toArray( $user );
 
 		$expectedEvent = [
-			'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.0.0',
-			'action' => CaptchaTriggers::EDIT,
+			'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.1.0',
+			'action' => $isNullEdit ? 'null_edit' : CaptchaTriggers::EDIT,
 			'wiki_id' => WikiMap::getCurrentWikiId(),
 			'identifier' => $revisionId,
 			'identifier_type' => 'revision',
@@ -252,13 +264,15 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$wikiPageMock->method( 'getTitle' )->willReturn( $titleMock );
 		$revisionRecordMock = $this->createMock( RevisionRecord::class );
 		$revisionRecordMock->method( 'getId' )->willReturn( $revisionId );
+		$editResultMock = $this->createMock( EditResult::class );
+		$editResultMock->method( 'isNullEdit' )->willReturn( $isNullEdit );
 		$captchaScoreHooks->onPageSaveComplete(
 			$wikiPageMock,
 			$user,
 			'',
 			'',
 			$revisionRecordMock,
-			$this->createMock( EditResult::class )
+			$editResultMock
 		);
 	}
 
