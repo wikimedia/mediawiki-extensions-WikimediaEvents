@@ -19,37 +19,21 @@ use Psr\Log\LoggerInterface;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
 
 class EmailAuthHooks {
-	private ExtensionRegistry $extensionRegistry;
-	private Config $config;
-	private UserEditTracker $userEditTracker;
-	private ?OATHUserRepository $oathUserRepository;
-	private ?IPReputationIPoidDataLookup $ipReputationDataLookup;
-	private ?LoginNotify $loginNotify;
 	/** @var callable|null */
 	private $getPrivilegedGroupsCallback;
-	private ?WikimediaEventsCountryCodeLookup $countryCodeLookup;
-	private LoggerInterface $logger;
 
 	public function __construct(
-		ExtensionRegistry $extensionRegistry,
-		Config $config,
-		UserEditTracker $userEditTracker,
-		?OATHUserRepository $oathUserRepository,
-		?IPReputationIPoidDataLookup $ipReputationDataLookup,
-		?LoginNotify $loginNotify,
+		private ExtensionRegistry $extensionRegistry,
+		private Config $config,
+		private UserEditTracker $userEditTracker,
+		private ?OATHUserRepository $oathUserRepository,
+		private ?IPReputationIPoidDataLookup $ipReputationDataLookup,
+		private ?LoginNotify $loginNotify,
 		?callable $getPrivilegedGroupsCallback,
-		?WikimediaEventsCountryCodeLookup $countryCodeLookup,
-		LoggerInterface $logger
+		private ?WikimediaEventsCountryCodeLookup $countryCodeLookup,
+		private LoggerInterface $logger
 	) {
-		$this->extensionRegistry = $extensionRegistry;
-		$this->config = $config;
-		$this->userEditTracker = $userEditTracker;
-		$this->oathUserRepository = $oathUserRepository;
-		$this->ipReputationDataLookup = $ipReputationDataLookup;
-		$this->loginNotify = $loginNotify;
 		$this->getPrivilegedGroupsCallback = $getPrivilegedGroupsCallback;
-		$this->countryCodeLookup = $countryCodeLookup;
-		$this->logger = $logger;
 	}
 
 	public static function factory(): self {

@@ -5,12 +5,12 @@ use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\SpecialPage\SpecialPageFactory;
 use MediaWiki\User\UserIdentity;
 use MediaWiki\User\UserIdentityUtils;
-use WikimediaEvents\AccountCreationLogger;
+use WikimediaEvents\AccountCreation\AccountCreationLogger;
 
 class AccountCreationLoggerTest extends MediaWikiUnitTestCase {
 
 	/**
-	 * @covers \WikimediaEvents\AccountCreationLogger::logLoginEvent
+	 * @covers \WikimediaEvents\AccountCreation\AccountCreationLogger::logLoginEvent
 	 */
 	public function testLogLoginEvent() {
 		$mockUserIdentityUtils = $this->createMock( UserIdentityUtils::class );
@@ -41,7 +41,7 @@ class AccountCreationLoggerTest extends MediaWikiUnitTestCase {
 	}
 
 	/**
-	 * @covers \WikimediaEvents\AccountCreationLogger::logAccountCreationEvent
+	 * @covers \WikimediaEvents\AccountCreation\AccountCreationLogger::logAccountCreationEvent
 	 */
 	public function testLogAccountCreationEventSuccess() {
 		$mockUserIdentityUtils = $this->createMock( UserIdentityUtils::class );

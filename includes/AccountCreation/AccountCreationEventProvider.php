@@ -1,5 +1,5 @@
 <?php
-namespace WikimediaEvents;
+namespace WikimediaEvents\AccountCreation;
 
 use MediaWiki\Auth\AbstractPreAuthenticationProvider;
 use MediaWiki\Auth\AuthenticationResponse;

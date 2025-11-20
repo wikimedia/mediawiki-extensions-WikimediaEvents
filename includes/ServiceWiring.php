@@ -26,7 +26,7 @@ use GeoIp2\Database\Reader;
 use MaxMind\Db\Reader\InvalidDatabaseException;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
-use WikimediaEvents\AccountCreationLogger;
+use WikimediaEvents\AccountCreation\AccountCreationLogger;
 use WikimediaEvents\CreateAccount\CreateAccountInstrumentationClient;
 use WikimediaEvents\PeriodicMetrics\WikimediaEventsMetricsFactory;
 use WikimediaEvents\Services\WikimediaEventsRequestDetailsLookup;

@@ -1,6 +1,6 @@
 <?php
 
-namespace WikimediaEvents;
+namespace WikimediaEvents\AccountCreation;
 
 use MediaWiki\Auth\AuthenticationResponse;
 use MediaWiki\Context\RequestContext;

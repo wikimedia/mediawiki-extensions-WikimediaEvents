@@ -29,7 +29,6 @@
 		"main": {
 			"class": "WikimediaEvents\\WikimediaEventsHooks",
 			"services": [
-				"AccountCreationLogger",
 				"MainConfig",
 				"NamespaceInfo",
 				"PermissionManager",
@@ -57,6 +56,12 @@
 				"WikimediaEventsCreateAccountInstrumentationClient",
 				"UrlUtils",
 				"MainConfig"
+			]
+		},
+		"AccountCreation": {
+			"class": "WikimediaEvents\\AccountCreation\\AccountCreationHandler",
+			"services": [
+				"AccountCreationLogger"
 			]
 		},
 		"EditPageHooks": {
@@ -130,6 +135,7 @@
 		"BeforeInitialize": "main",
 		"BeforePageDisplay": [
 			"main",
+			"AccountCreation",
 			"CreateAccountInstrumentationHandler",
 			"PageVisitInstrument"
 		],
@@ -158,7 +164,7 @@
 		"PageDeleteComplete": "TemporaryAccountsInstrumentation",
 		"PermissionStatusAudit": "BlockMetricsHooks",
 		"EditPage::showReadOnlyForm:initial": "EditPageHooks",
-		"AuthManagerLoginAuthenticateAudit": "main",
+		"AuthManagerLoginAuthenticateAudit": "AccountCreation",
 		"GetSessionJwtData": "main"
 	},
 	"APIModules": {
@@ -482,7 +488,7 @@
 	"AuthManagerAutoConfig": {
 		"preauth": {
 			"AccountCreationEventProvider": {
-				"class": "WikimediaEvents\\AccountCreationEventProvider",
+				"class": "WikimediaEvents\\AccountCreation\\AccountCreationEventProvider",
 				"services": [
 					"AccountCreationLogger"
 				],

@@ -4,8 +4,6 @@ namespace WikimediaEvents;
 
 use ISearchResultSet;
 use MediaWiki\Actions\ActionEntryPoint;
-use MediaWiki\Auth\AuthenticationResponse;
-use MediaWiki\Auth\Hook\AuthManagerLoginAuthenticateAuditHook;
 use MediaWiki\ChangeTags\Hook\ChangeTagsListActiveHook;
 use MediaWiki\ChangeTags\Hook\ListDefinedTagsHook;
 use MediaWiki\Config\Config;
@@ -67,46 +65,23 @@ class WikimediaEventsHooks implements
 	RecentChange_saveHook,
 	ResourceLoaderRegisterModulesHook,
 	MakeGlobalVariablesScriptHook,
-	AuthManagerLoginAuthenticateAuditHook,
 	GetSessionJwtDataHook
 {
-	private AccountCreationLogger $accountCreationLogger;
 	private Config $config;
 	private NamespaceInfo $namespaceInfo;
 	private PermissionManager $permissionManager;
 	private WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup;
 
 	public function __construct(
-		AccountCreationLogger $accountCreationLogger,
 		Config $config,
 		NamespaceInfo $namespaceInfo,
 		PermissionManager $permissionManager,
 		WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup
 	) {
-		$this->accountCreationLogger = $accountCreationLogger;
 		$this->config = $config;
 		$this->namespaceInfo = $namespaceInfo;
 		$this->permissionManager = $permissionManager;
 		$this->wikimediaEventsRequestDetailsLookup = $wikimediaEventsRequestDetailsLookup;
-	}
-
-	/**
-	 * Handles the AuthManagerLoginAuthenticateAudit hook.
-	 *
-	 * Invoked after the authentication process of a user login attempt.
-	 * Logs the event type (success/failure), the performer of the login attempt,
-	 * and the authentication response object.
-	 *
-	 * @param AuthenticationResponse $response The response from the authentication process,
-	 *                                         indicating whether the login attempt passed or failed.
-	 * @param User|null $user The User object for the attempted login.
-	 * @param string $username The username used in the login attempt.
-	 * @param array $extraData Additional data associated with the login attempt. Includes
-	 *                         a 'performer' key representing the User object attempting the login.
-	 */
-	public function onAuthManagerLoginAuthenticateAudit( $response, $user, $username, $extraData ) {
-		$eventType = $response->status === AuthenticationResponse::PASS ? 'success' : 'failure';
-		$this->accountCreationLogger->logLoginEvent( $eventType, $extraData[ 'performer' ]->getUser(), $response );
 	}
 
 	/**
@@ -128,11 +103,6 @@ class WikimediaEventsHooks implements
 				$out->addJsConfigVars( 'wgWikimediaEventsCaptchaClassType', $captcha->getName() );
 			}
 		}
-		$this->accountCreationLogger->logPageImpression(
-			$out->getTitle(),
-			$out->getRequest()->getSession()->getUser(),
-			$out->getRequest()
-		);
 	}
 
 	/**
