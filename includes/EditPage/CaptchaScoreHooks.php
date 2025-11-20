@@ -21,7 +21,7 @@ use MediaWiki\WikiMap\WikiMap;
 class CaptchaScoreHooks implements PageSaveCompleteHook {
 
 	protected const STREAM = 'mediawiki.hcaptcha.risk_score';
-	protected const SCHEMA = '/analytics/mediawiki/hcaptcha/risk_score/1.0.0';
+	protected const SCHEMA = '/analytics/mediawiki/hcaptcha/risk_score/1.1.0';
 
 	public function __construct(
 		private readonly EventSubmitter $eventSubmitter,
@@ -56,7 +56,7 @@ class CaptchaScoreHooks implements PageSaveCompleteHook {
 
 		$event = [
 			'$schema' => self::SCHEMA,
-			'action' => CaptchaTriggers::EDIT,
+			'action' => $editResult->isNullEdit() ? 'null_edit' : CaptchaTriggers::EDIT,
 			'wiki_id' => WikiMap::getCurrentWikiId(),
 			'identifier' => $revisionRecord->getId(),
 			'identifier_type' => 'revision',
