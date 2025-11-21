@@ -61,7 +61,9 @@
 		"AccountCreation": {
 			"class": "WikimediaEvents\\AccountCreation\\AccountCreationHandler",
 			"services": [
-				"AccountCreationLogger"
+				"AccountCreationLogger",
+				"ExtensionRegistry",
+				"AuthManager"
 			]
 		},
 		"EditPageHooks": {
@@ -130,7 +132,10 @@
 	},
 	"Hooks": {
 		"ArticleProtectComplete": "TemporaryAccountsInstrumentation",
-		"AuthChangeFormFields": "CreateAccountInstrumentationHandler",
+		"AuthChangeFormFields": [
+			"AccountCreation",
+			"CreateAccountInstrumentationHandler"
+		],
 		"AuthenticationAttemptThrottled": "TemporaryAccountsInstrumentation",
 		"BeforeInitialize": "main",
 		"BeforePageDisplay": [

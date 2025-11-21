@@ -17,7 +17,7 @@ use MediaWiki\WikiMap\WikiMap;
 
 class AccountCreationLogger {
 
-	private const SCHEMA_VERSIONED = '/analytics/mediawiki/accountcreation/account_conversion/1.1.0';
+	private const SCHEMA_VERSIONED = '/analytics/mediawiki/accountcreation/account_conversion/1.2.0';
 	private const STREAM_REGISTER = 'mediawiki.accountcreation.account_conversion';
 	private const STREAM_LOGIN = 'mediawiki.accountcreation.login';
 	private SpecialPageFactory $specialPageFactory;
@@ -45,11 +45,13 @@ class AccountCreationLogger {
 	 * @param string $stream The stream event.
 	 * @param string $eventType The event type ('success' or 'failure').
 	 * @param UserIdentity $performer The user involved in the event.
-	 * @param AuthenticationResponse $response The authentication response.
+	 * @param ?AuthenticationResponse $response The authentication response.
+	 * @param array $additionalData Data to add to the event
 	 */
 	public function logAuthEvent(
-		string $stream, string $eventType, UserIdentity $performer, AuthenticationResponse $response ): void {
-		$additionalData = [];
+		string $stream, string $eventType, UserIdentity $performer, ?AuthenticationResponse $response,
+		array $additionalData = []
+	): void {
 		$title = RequestContext::getMain()->getTitle();
 		if ( $title !== null ) {
 			$additionalData += [
@@ -57,7 +59,7 @@ class AccountCreationLogger {
 				'page_namespace' => $title->getNamespace(),
 			];
 		}
-		if ( $response->status === AuthenticationResponse::FAIL ) {
+		if ( $response && $response->status === AuthenticationResponse::FAIL ) {
 			$additionalData['error_message_key'] = $response->message->getKey();
 		}
 		$this->doLogEvent( $stream, $eventType, $performer, $additionalData );
@@ -70,6 +72,7 @@ class AccountCreationLogger {
 	 * @param string $stream The stream event.
 	 * @param string $eventType The type of event (e.g., 'impression', 'success', 'failure').
 	 * @param UserIdentity $user The user associated with the event.
+	 * @param array $additionalData Data to add to the event
 	 */
 	private function doLogEvent(
 		string $stream,
@@ -114,11 +117,14 @@ class AccountCreationLogger {
 	 * Logs login event with a specified event type.
 	 * @param string $eventType The type of the login event (e.g., 'success', 'failure').
 	 * @param UserIdentity $performer The user who is performing the login action.
-	 * @param AuthenticationResponse $response The response received from the authentication process
+	 * @param ?AuthenticationResponse $response The response received from the authentication process
+	 * @param array $additionalData Data to add to the event
 	 */
 	public function logLoginEvent(
-		string $eventType, UserIdentity $performer, AuthenticationResponse $response ): void {
-		$this->logAuthEvent( self::STREAM_LOGIN, $eventType, $performer, $response );
+		string $eventType, UserIdentity $performer, ?AuthenticationResponse $response,
+		array $additionalData = []
+	): void {
+		$this->logAuthEvent( self::STREAM_LOGIN, $eventType, $performer, $response, $additionalData );
 	}
 
 	/**
