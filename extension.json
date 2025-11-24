@@ -255,6 +255,7 @@
 					"callbackParam": "universalLanguageSelector"
 				},
 				"editAttemptStep.js",
+				"mobileSectionSwitch.js",
 				"hCaptcha.js",
 				{
 					"name": "config.json",
