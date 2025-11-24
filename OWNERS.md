@@ -266,3 +266,9 @@ A collection of standardized instruments, including:
 * Contact: Community Tech
 
 Click Through (baseline) Rate for links on the Watchlist
+
+## Mobile section switching
+
+* Since: December 2025
+* Files: ext.wikimediaEvents/mobileSectionSwitch.js
+* Contact: Editing

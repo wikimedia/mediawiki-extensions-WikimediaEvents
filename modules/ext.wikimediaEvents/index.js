@@ -32,6 +32,7 @@ if ( skin === 'minerva' ) {
 }
 
 require( './editAttemptStep.js' );
+require( './mobileSectionSwitch.js' );
 require( './hCaptcha.js' )();
 require( './networkProbe.js' );
 require( './xLab/pageVisitBotDetection.js' );
