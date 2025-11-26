@@ -16,6 +16,11 @@
 			"EventBus": "*"
 		}
 	},
+	"suggests": {
+		"extensions": {
+			"IPReputation": "*"
+		}
+	},
 	"AutoloadNamespaces": {
 		"WikimediaEvents\\": "includes/"
 	},
@@ -80,13 +85,13 @@
 			"class": "WikimediaEvents\\IPReputationHooks",
 			"services": [
 				"MainConfig",
-				"FormatterFactory",
-				"HttpRequestFactory",
-				"MainWANObjectCache",
 				"UserFactory",
 				"UserGroupManager",
 				"EventLogging.EventSubmitter",
 				"CentralIdLookup"
+			],
+			"optional_services": [
+				"IPReputationIPoidDataLookup"
 			]
 		},
 		"CaptchaScoreHooks": {
@@ -452,14 +457,6 @@
 		"WMEGeoIP2Path": {
 			"value": "/usr/share/GeoIP/GeoIP2-Country.mmdb",
 			"description": "The path to the GeoIP2 country database file. For Wikimedia production, suggested value is '/usr/share/GeoIP/GeoIP2-Country.mmdb'. Null means that we make no attempt to use GeoIP2 to look up country codes for an IP address."
-		},
-		"WikimediaEventsIPoidUrl": {
-			"value": null,
-			"description": "URL to access IPoid service"
-		},
-		"WikimediaEventsIPoidRequestTimeoutSeconds": {
-			"description": "Number of seconds to use for timeout and connectTimeout options to HTTP request factory when calling IPoid",
-			"value": 2
 		},
 		"WikimediaEventsIPReputationAccountAgeThreshold": {
 			"description": "Number (in days) to use as a cut off for recording IP reputation data on edits. User accounts older than this number of days will not be included in logging of IP reputation data on edit.",

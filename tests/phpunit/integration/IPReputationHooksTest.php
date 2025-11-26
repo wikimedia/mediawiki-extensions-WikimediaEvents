@@ -46,13 +46,11 @@ class IPReputationHooksTest extends MediaWikiIntegrationTestCase {
 		$ipReputationHooks = TestingAccessWrapper::newFromObject(
 			new IPReputationHooks(
 				$services->getMainConfig(),
-				$services->getFormatterFactory(),
-				$services->getHttpRequestFactory(),
-				$services->getMainWANObjectCache(),
 				$services->getUserFactory(),
 				$services->getUserGroupManager(),
 				$services->getService( 'EventLogging.EventSubmitter' ),
 				$services->getCentralIdLookup(),
+				$services->getService( 'IPReputationIPoidDataLookup' ),
 				static fn () => 'index'
 			)
 		);
