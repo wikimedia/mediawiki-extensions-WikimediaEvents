@@ -137,6 +137,7 @@
 		],
 		"AuthenticationAttemptThrottled": "TemporaryAccountsInstrumentation",
 		"BeforeInitialize": "main",
+		"EditPage::attemptSave:after": "CaptchaScoreHooks",
 		"BeforePageDisplay": [
 			"main",
 			"AccountCreation",

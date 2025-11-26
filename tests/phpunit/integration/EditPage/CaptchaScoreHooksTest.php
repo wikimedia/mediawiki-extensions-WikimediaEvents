@@ -3,7 +3,10 @@
 namespace WikimediaEvents\Tests\Integration\EditPage;
 
 use ExtensionRegistry;
+use MediaWiki\Api\ApiMessage;
 use MediaWiki\Context\RequestContext;
+use MediaWiki\EditPage\EditPage;
+use MediaWiki\Extension\ConfirmEdit\AbuseFilter\CaptchaConsequence;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
 use MediaWiki\Extension\ConfirmEdit\hCaptcha\HCaptcha;
 use MediaWiki\Extension\ConfirmEdit\Hooks;
@@ -12,12 +15,11 @@ use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Page\WikiPage;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\Revision\RevisionRecord;
+use MediaWiki\Status\Status;
 use MediaWiki\Storage\EditResult;
 use MediaWiki\Title\Title;
-use MediaWiki\User\CentralId\CentralIdLookup;
 use MediaWiki\User\User;
 use MediaWiki\User\UserFactory;
-use MediaWiki\User\UserGroupManager;
 use MediaWiki\User\UserIdentityValue;
 use MediaWiki\WikiMap\WikiMap;
 use MediaWikiIntegrationTestCase;
@@ -117,6 +119,11 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$eventSubmitterMock = $this->createMock( EventSubmitter::class );
 		$eventSubmitterMock->expects( $this->never() )->method( 'submit' );
 
+		// Ensure the user has the required rights to skip captchas
+		$this->overrideConfigValue(
+			'GroupPermissions',
+			[ 'sysop' => [ 'skipcaptcha' => true ] ]
+		);
 		$user = $this->getTestUser( [ 'sysop' ] )->getUser();
 		/** @var HCaptcha $simpleCaptcha */
 		$simpleCaptcha = Hooks::getInstance( CaptchaTriggers::EDIT );
@@ -216,22 +223,15 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$request = new FauxRequest( $requestParams, true );
 		RequestContext::getMain()->setRequest( $request );
 
-		$userFactoryMock = $this->createMock( UserFactory::class );
-		$userFactoryMock->method( 'newFromUserIdentity' )->willReturn( $user );
-		$userGroupManagerMock = $this->createMock( UserGroupManager::class );
-		$userGroupManagerMock->method( 'getUserGroups' )->willReturn( [] );
-		$centralIdLookupMock = $this->createMock( CentralIdLookup::class );
-		$centralIdLookupMock->method( 'centralIdFromLocalUser' )->willReturn( 0 );
-
 		$userEntitySerializer = new UserEntitySerializer(
-			$userFactoryMock,
-			$userGroupManagerMock,
-			$centralIdLookupMock
+			$services->getUserFactory(),
+			$services->getUserGroupManager(),
+			$services->getCentralIdLookup()
 		);
 		$expectedPerformer = $userEntitySerializer->toArray( $user );
 
 		$expectedEvent = [
-			'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.1.0',
+			'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.2.0',
 			'action' => $isNullEdit ? 'null_edit' : CaptchaTriggers::EDIT,
 			'wiki_id' => WikiMap::getCurrentWikiId(),
 			'identifier' => $revisionId,
@@ -254,9 +254,9 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			);
 		$captchaScoreHooks = new CaptchaScoreHooks(
 			$eventSubmitterMock,
-			$userFactoryMock,
-			$userGroupManagerMock,
-			$centralIdLookupMock,
+			$services->getUserFactory(),
+			$services->getUserGroupManager(),
+			$services->getCentralIdLookup(),
 			$services->getExtensionRegistry()
 		);
 		$wikiPageMock = $this->createMock( WikiPage::class );
@@ -276,4 +276,240 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
+	/**
+	 * @dataProvider provideAttemptSaveAfterEvents
+	 */
+	public function testOnEditPageAttemptSaveAfterEvents( array $params ): void {
+		$this->markTestSkippedIfExtensionNotLoaded( 'ConfirmEdit' );
+		// ConfirmEdit's CaptchaConsequence extends from Consequence, which is
+		// provided by AbuseFilter: if the latter is not present, trying to use
+		// the class constants from CaptchaConsequence here results in an error.
+		$this->markTestSkippedIfExtensionNotLoaded( 'Abuse Filter' );
+
+		[
+			'status' => $status,
+			'expectedRevisionId' => $expectedRevisionId,
+			'expectedLogType' => $expectedLogType,
+			'captchaTriggers' => $captchaTriggers,
+			'abuseFilterApiMessageDetails' => $abuseFilterApiMessageDetails,
+			'shouldSubmit' => $shouldSubmit,
+			'abuseFilterIdSessionData' => $abuseFilterIdSessionData,
+		] = $params;
+
+		$this->overrideConfigValue( 'CaptchaTriggers', $captchaTriggers );
+
+		$services = $this->getServiceContainer();
+		$user = $this->getTestUser()->getUser();
+
+		$userFactoryMock = $this->createMock( UserFactory::class );
+		$userFactoryMock->method( 'newFromUserIdentity' )->willReturn( $user );
+
+		$captchaInstance = Hooks::getInstance( CaptchaTriggers::EDIT );
+		if ( $captchaInstance instanceof HCaptcha ) {
+			$captchaInstance->storeSessionScore(
+				'hCaptcha-score',
+				0.37,
+				$user->getName()
+			);
+		}
+
+		$request = new FauxRequest(
+			[
+				'editingStatsId' => 'session-42',
+				'parentRevId' => $expectedRevisionId
+			],
+			true
+		);
+
+		RequestContext::getMain()->setRequest( $request );
+
+		if ( $abuseFilterIdSessionData > 0 ) {
+			$request->getSession()->set(
+				CaptchaConsequence::FILTER_ID_SESSION_KEY,
+				$abuseFilterIdSessionData
+			);
+		} else {
+			$request->getSession()->remove(
+				CaptchaConsequence::FILTER_ID_SESSION_KEY
+			);
+		}
+
+		$eventSubmitterMock = $this->createMock( EventSubmitter::class );
+
+		if ( $shouldSubmit ) {
+			$userEntitySerializer = new UserEntitySerializer(
+				$userFactoryMock,
+				$services->getUserGroupManager(),
+				$services->getCentralIdLookup()
+			);
+			$expectedEvent = [
+				'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.2.0',
+				'action' => 'failed_edit',
+				'wiki_id' => WikiMap::getCurrentWikiId(),
+				'identifier' => $expectedRevisionId,
+				'identifier_type' => 'latest_revision',
+				'performer' => $userEntitySerializer->toArray( $user ),
+				'http' => [
+					'method' => 'POST',
+				],
+				'risk_score' => 0.37,
+				'mw_entry_point' => MW_ENTRY_POINT,
+				'editing_session_id' => 'session-42',
+				'log_type' => $expectedLogType,
+			];
+			$expectedEvent = array_merge( $expectedEvent, $abuseFilterApiMessageDetails ?? [] );
+
+			$eventSubmitterMock->expects( $this->once() )
+				->method( 'submit' )
+				->with( 'mediawiki.hcaptcha.risk_score', $expectedEvent );
+		} else {
+			$eventSubmitterMock->expects( $this->never() )->method( 'submit' );
+		}
+
+		$captchaScoreHooks = new CaptchaScoreHooks(
+			$eventSubmitterMock,
+			$services->getUserFactory(),
+			$services->getUserGroupManager(),
+			$services->getCentralIdLookup(),
+			$services->getExtensionRegistry()
+		);
+
+		$contextMock = $this->createMock( RequestContext::class );
+		$contextMock->method( 'getUser' )->willReturn( $user );
+
+		$editPageMock = $this->createMock( EditPage::class );
+		$editPageMock->method( 'getContext' )->willReturn( $contextMock );
+		$titleMock = $this->createMock( Title::class );
+		$titleMock->method( 'getPrefixedText' )->willReturn( 'Talk:Failure' );
+		$editPageMock->method( 'getTitle' )->willReturn( $titleMock );
+		$revisionMock = $this->createMock( RevisionRecord::class );
+		$revisionMock->method( 'getId' )->willReturn( 101 );
+		$editPageMock->method( 'getExpectedParentRevision' )->willReturn( $revisionMock );
+
+		$captchaScoreHooks->onEditPage__attemptSave_after(
+			$editPageMock,
+			$status,
+			[]
+		);
+	}
+
+	public static function provideAttemptSaveAfterEvents(): array {
+		$hCaptchaTrigger = [
+			'trigger' => true,
+			'class' => 'HCaptcha'
+		];
+
+		return [
+			'With a different type of captcha' => [ [
+				'status' => Status::newFatal( new ApiMessage(
+					'abusefilter-disallowed',
+					'abusefilter-disallowed',
+					[ 'abusefilter' => [ 'id' => 123 ] ]
+				) ),
+				'expectedRevisionId' => 0,
+				'expectedLogType' => '',
+				'captchaTriggers' => [
+					'edit' => array_merge(
+						$hCaptchaTrigger,
+						[ 'class' => 'FancyCaptcha' ]
+					),
+				],
+				'abuseFilterApiMessageDetails' => [],
+				'shouldSubmit' => false,
+				'abuseFilterIdSessionData' => null,
+			] ],
+			'hCaptcha trigger disabled' => [ [
+				'status' => Status::newFatal( new ApiMessage(
+					'abusefilter-disallowed',
+					'abusefilter-disallowed',
+					[ 'abusefilter' => [ 'id' => 123 ] ]
+				) ),
+				'expectedRevisionId' => 0,
+				'expectedLogType' => '',
+				'captchaTriggers' => [
+					'edit' => array_merge(
+						$hCaptchaTrigger,
+						[ 'trigger' => false ]
+					),
+				],
+				'abuseFilterApiMessageDetails' => [],
+				'shouldSubmit' => false,
+				'abuseFilterIdSessionData' => null,
+			] ],
+			'abuse filter in the status object' => [ [
+				'status' => Status::newFatal( new ApiMessage(
+					'abusefilter-disallowed',
+					'abusefilter-disallowed',
+					[ 'abusefilter' => [ 'id' => 123 ] ]
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'abuseFilterApiMessageDetails' => [
+					'log_type' => 'abuse_filter',
+					'abuse_filter_id' => 123
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => null,
+			] ],
+			'hCaptcha failure with abuse filter filterId in the session' => [ [
+				'status' => Status::newFatal( new ApiMessage(
+					'hcaptcha-force-show-captcha-edit',
+					'hcaptcha-force-show-captcha-edit',
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'abuseFilterApiMessageDetails' => [
+					'log_type' => 'abuse_filter',
+					'abuse_filter_id' => 123
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => 123,
+			] ],
+			'captcha failure' => [ [
+				'status' => Status::newFatal( new ApiMessage(
+					'captcha',
+					'captcha'
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'abuseFilterApiMessageDetails' => [],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => null,
+			] ],
+			'spam blacklist failure' => [ [
+				'status' => Status::newFatal( new ApiMessage(
+					'spamblacklist',
+					'spamblacklist'
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'abuseFilterApiMessageDetails' => [],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => null,
+			] ],
+			'no errors' => [ [
+				'status' => Status::newGood(),
+				'expectedRevisionId' => 0,
+				'expectedLogType' => 'other',
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'abuseFilterApiMessageDetails' => [],
+				'shouldSubmit' => false,
+				'abuseFilterIdSessionData' => null,
+			] ],
+		];
+	}
 }
