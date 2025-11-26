@@ -134,7 +134,7 @@ $( () => {
 			return;
 		}
 
-		const $bookmarkButton = $( document ).find( '.mw-ui-icon-bookmarkList' );
+		const $bookmarkButton = $( document ).find( '.mw-ui-icon-bookmarkList, .menu__item--readinglists' );
 
 		trackPageVisit( exp );
 
