@@ -26,7 +26,7 @@ mw.loader.using( [
 	// No need to manually stop it.
 	SessionLengthInstrumentMixin.start(
 		experiment,
-		// eslint-disable-next-line camelcase
+
 		{ instrument_name: INSTRUMENT_NAME }
 	);
 } ).catch( ( error ) => {
