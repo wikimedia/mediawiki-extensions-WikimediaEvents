@@ -168,7 +168,7 @@ More details at <https://phabricator.wikimedia.org/T311388>
 ## EditAttemptStep and VisualEditorFeatureUse event logging
 
 * Since: March 2023
-* Files: editAttemptStep.js
+* Files: editAttemptStep.js, editingSessionService.js
 * Contact: Editing
 
 Previously maintained in VisualEditor and other extensions since 2014.
