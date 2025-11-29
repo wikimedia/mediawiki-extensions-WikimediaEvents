@@ -13,6 +13,12 @@ QUnit.module( 'ext.wikimediaEvents/hCaptcha', QUnit.newMwEnvironment( {
 			this.trackSubscribeHandlers[ topic ].push( handler );
 		} );
 
+		// Stub getEditingSessionId
+		this.sandbox.stub(
+			require( 'ext.wikimediaEvents/editingSessionService.js' ),
+			'getEditingSessionId'
+		).returns( 'test-session-id-123' );
+
 		require( 'ext.wikimediaEvents/hCaptcha.js' )();
 	}
 } ) );

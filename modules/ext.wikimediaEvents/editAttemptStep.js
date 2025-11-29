@@ -6,6 +6,7 @@
 const config = require( './config.json' );
 
 const webCommon = require( './webCommon.js' );
+const editingSessionService = require( './editingSessionService.js' );
 // Many EditAttemptStep event properties are in snake_case for historical reasons
 
 // Stores data common to all events in an editing session
@@ -33,12 +34,7 @@ function handleFirstEvent( event ) {
 		// Will be reset upon every session init after the first.
 		// Initial value may be set in mw.config or in URL by GrowthExperiments (T238249),
 		// or in a hidden input field by WikiEditor.
-		editing_session_id:
-			mw.config.get( 'wgWMESchemaEditAttemptStepSessionId' ) ||
-			new URL( location.href ).searchParams.get( 'editingStatsId' ) ||
-			// eslint-disable-next-line no-jquery/no-global-selector
-			$( '#editingStatsId' ).val() ||
-			mw.user.generateRandomSessionId(),
+		editing_session_id: editingSessionService.getEditingSessionId(),
 
 		// Editor mode ('visualeditor', 'wikitext-2017', 'wikitext'),
 		// should be defined in an init event

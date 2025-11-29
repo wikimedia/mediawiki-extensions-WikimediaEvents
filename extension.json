@@ -213,6 +213,7 @@
 				"deprecate.js",
 				"clientError.js",
 				"sessionTick.js",
+				"editingSessionService.js",
 				"sessionLength/mixin.js",
 				"webCommon.js",
 				"webAccessibilitySettings.js",
