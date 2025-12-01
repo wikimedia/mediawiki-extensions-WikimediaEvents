@@ -283,6 +283,7 @@
 				"xLab/readingListAB.js",
 				"xLab/imageBrowsingPageVisit.js",
 				"xLab/loggedOutPageVisit.js",
+				"xLab/stickyHeadersSessionLength.js",
 				"specialCreateAccount/init.js",
 				"specialCreateAccount/instrumentation.js",
 				"specialCreateAccount/useInstrument.js"

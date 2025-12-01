@@ -36,6 +36,7 @@ require( './xLab/pageVisitBotDetection.js' );
 require( './xLab/mintReaderPageVisit.js' );
 require( './specialCreateAccount/init.js' );
 require( './xLab/loggedOutPageVisit.js' );
+require( './xLab/stickyHeadersSessionLength.js' );
 
 // Expose the session length instrument for re-use across the MediaWiki ecosystem.
 const { SessionLengthInstrumentMixin } = require( './sessionLength/mixin.js' );
