@@ -116,11 +116,12 @@ class WikimediaEventsHooks implements
 	public function onBeforePageDisplay( $out, $skin ): void {
 		$out->addModules( 'ext.wikimediaEvents' );
 		$this->maybeAddWatchlistTracking( $out );
-		if ( ExtensionRegistry::getInstance()->isLoaded( 'WikibaseRepository' ) ) {
+		$extensionRegistry = ExtensionRegistry::getInstance();
+		if ( $extensionRegistry->isLoaded( 'WikibaseRepository' ) ) {
 			// If we are in Wikibase Repo, load Wikibase module
 			$out->addModules( 'ext.wikimediaEvents.wikibase' );
 		}
-		if ( $out->getTitle()->isSpecial( 'CreateAccount' ) ) {
+		if ( $out->getTitle()->isSpecial( 'CreateAccount' ) && $extensionRegistry->isLoaded( 'ConfirmEdit' ) ) {
 			// Export the CAPTCHA type for A/B test (T405239)
 			$captcha = Hooks::getInstance( CaptchaTriggers::CREATE_ACCOUNT );
 			if ( !$captcha->canSkipCaptcha( $out->getUser() ) ) {

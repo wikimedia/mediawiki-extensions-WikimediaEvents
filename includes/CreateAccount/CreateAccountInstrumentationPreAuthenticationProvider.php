@@ -1,6 +1,7 @@
 <?php
 namespace WikimediaEvents\CreateAccount;
 
+use ExtensionRegistry;
 use MediaWiki\Auth\AbstractPreAuthenticationProvider;
 use MediaWiki\Auth\AuthenticationRequest;
 use MediaWiki\Auth\AuthManager;
@@ -48,13 +49,15 @@ class CreateAccountInstrumentationPreAuthenticationProvider extends AbstractPreA
 		// Log the CAPTCHA class name for the A/B test (T405239)
 		// We do this here and not in BeforePageDisplay, because Special:CreateAccount
 		// gets a lot of page views that have no form interactions.
-		$captcha = Hooks::getInstance( CaptchaTriggers::CREATE_ACCOUNT );
-		if ( !$captcha->canSkipCaptcha( $user ) ) {
-			$this->client->submitInteraction(
-				RequestContext::getMain(),
-				'captcha_class_serverside',
-				[ 'action_context' => $captcha->getName() ]
-			);
+		if ( ExtensionRegistry::getInstance()->isLoaded( 'ConfirmEdit' ) ) {
+			$captcha = Hooks::getInstance( CaptchaTriggers::CREATE_ACCOUNT );
+			if ( !$captcha->canSkipCaptcha( $user ) ) {
+				$this->client->submitInteraction(
+					RequestContext::getMain(),
+					'captcha_class_serverside',
+					[ 'action_context' => $captcha->getName() ]
+				);
+			}
 		}
 
 		return StatusValue::newGood();
