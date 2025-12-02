@@ -5,6 +5,7 @@
 		]
 	},
 	"wikimediaevents-desc": "Kirjaa Wikimedia-erityisiä tapahtumia lokiin EventLogging-laajennuksella",
+	"apihelp-wikimediaeventshcaptchaeditattempt-param-title": "Sivun otsikko",
 	"tag-cross-wiki-upload": "Wikienvälinen tallennus",
 	"tag-cross-wiki-upload-description": "Tiedostot, jotka tallennettiin wikiteksti- ja visuaalisessa muokkaimessa toisessa wikistä.",
 	"wikimediaevents-special-wikimediadebug-desc": "WikimediaDebug",
