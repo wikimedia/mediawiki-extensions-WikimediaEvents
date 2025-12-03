@@ -123,6 +123,8 @@ class ApiWikimediaEventsHCaptchaEditAttempt extends ApiBase {
 	 * @throws ComplexityException
 	 */
 	private function generateUnifiedDiff( string $oldText, string $newText ): string {
+		$oldText = TextContent::normalizeLineEndings( $oldText );
+		$newText = TextContent::normalizeLineEndings( $newText );
 		// Split texts into line arrays (same as AbuseFilter)
 		$text1 = $oldText === '' ? [] : explode( "\n", $oldText );
 		$text2 = $newText === '' ? [] : explode( "\n", $newText );
