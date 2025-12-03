@@ -8,6 +8,7 @@ use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Tests\Api\ApiTestCase;
 use MediaWiki\User\User;
 use MediaWiki\WikiMap\WikiMap;
+use TextContent;
 use Wikimedia\TestingAccessWrapper;
 
 /**
@@ -23,11 +24,11 @@ class ApiWikimediaEventsHCaptchaEditTest extends ApiTestCase {
 	public function testApiEndpointLogsDiff( array $providerParams ) {
 		[
 			'editingSessionId' => $editingSessionId,
-			'revisionId'       => $revisionId,
-			'shouldPageExist'  => $shouldPageExist,
+			'revisionId' => $revisionId,
+			'shouldPageExist' => $shouldPageExist,
 			'shouldSubmitEvent' => $shouldSubmitEvent,
-			'oldText'          => $oldText,
-			'newText'          => $newText,
+			'oldText' => $oldText,
+			'newText' => $newText,
 		] = $providerParams;
 
 		$title = $this->getNonexistingTestPage()->getTitle();
@@ -165,6 +166,21 @@ class ApiWikimediaEventsHCaptchaEditTest extends ApiTestCase {
 					$capturedDiff,
 					'Diff should contain additions'
 				);
+				$normalizedOld = TextContent::normalizeLineEndings( $oldText );
+				$normalizedNew = TextContent::normalizeLineEndings( $newText );
+				if ( str_contains( $normalizedNew, $normalizedOld ) ) {
+					// Verify that no line starts with '-' (except file header '---')
+					// Standard unified diff lines start with space, +, or -.
+					// Explode by newline and look for lines starting with '-' that aren't the header.
+					$diffLines = explode( "\n", $capturedDiff );
+					foreach ( $diffLines as $diffLine ) {
+						if ( str_starts_with( $diffLine, '-' ) && !str_starts_with( $diffLine, '---' ) ) {
+							$this->fail(
+								"Diff contained unexpected deletion: '$diffLine'. \n"
+							);
+						}
+					}
+				}
 			} else {
 				// For new pages, diff shows empty old content -> new content
 				$diffLines = explode( "\n", $capturedDiff );
@@ -178,7 +194,8 @@ class ApiWikimediaEventsHCaptchaEditTest extends ApiTestCase {
 			}
 
 			// Verify new content appears in diff
-			$newLines = explode( "\n", $newText );
+			$normalizedNewText = TextContent::normalizeLineEndings( $newText );
+			$newLines = explode( "\n", $normalizedNewText );
 			foreach ( $newLines as $line ) {
 				$this->assertStringContainsString( $line, $capturedDiff );
 			}
@@ -214,6 +231,14 @@ class ApiWikimediaEventsHCaptchaEditTest extends ApiTestCase {
 				'shouldSubmitEvent' => true,
 				'oldText' => '',
 				'newText' => $newText,
+			] ],
+			'Valid request with mixed line endings (CRLF) - should normalize and not cause total rewrite' => [ [
+				'editingSessionId' => 'test-session-windows-eol',
+				'revisionId' => 1,
+				'shouldPageExist' => true,
+				'shouldSubmitEvent' => true,
+				'oldText' => "Line 1\nLine 2",
+				'newText' => "Line 1\r\nLine 2\r\nLine 3",
 			] ],
 		];
 	}
