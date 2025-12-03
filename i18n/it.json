@@ -8,6 +8,7 @@
 		]
 	},
 	"wikimediaevents-desc": "Registra eventi specifici Wikimedia utilizzando EventLogging",
+	"apihelp-wikimediaeventshcaptchaeditattempt-param-title": "Titolo della pagina",
 	"tag-cross-wiki-upload": "Caricamento cross-wiki",
 	"tag-cross-wiki-upload-description": "File caricati dagli editor wikitesto e visuale su altri wiki",
 	"wikimediaevents-special-wikimediadebug-notenabled": "Questa pagina speciale non è abilitata."
