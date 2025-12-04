@@ -214,4 +214,40 @@ QUnit.module( 'ext.wikimediaEvents/statsd', ( hooks ) => {
 			`/beacon/stats?mediawiki_example_thing_total:42|c%7C%23a:A,b:${ LONG }`
 		], 'beacon 2' );
 	} );
+
+	QUnit.test( 'stats [histogram]', function ( assert ) {
+		mw.track( 'stats.mediawiki_foo_bar_distribution', 3, { kind: 'main', buckets: [ -1, 0.3, 1, 3, 10 ] } );
+		this.sandbox.clock.tick( 1 );
+
+		assert.verifySteps( [], 'errors' );
+		assert.strictEqual( stub.callCount, 1, 'beacons' );
+		assert.propEqual( stub.getCall( 0 ).args, [
+			[
+				'/beacon/stats?mediawiki_foo_bar_distribution_bucket:0|c%7C%23kind:main,le:-1',
+				'mediawiki_foo_bar_distribution_bucket:0|c%7C%23kind:main,le:0.3',
+				'mediawiki_foo_bar_distribution_bucket:0|c%7C%23kind:main,le:1',
+				'mediawiki_foo_bar_distribution_bucket:1|c%7C%23kind:main,le:3',
+				'mediawiki_foo_bar_distribution_bucket:1|c%7C%23kind:main,le:10',
+				'mediawiki_foo_bar_distribution_bucket:1|c%7C%23kind:main,le:+Inf',
+				'mediawiki_foo_bar_distribution_count:1|c%7C%23kind:main',
+				'mediawiki_foo_bar_distribution_sum:3|c%7C%23kind:main'
+			].join( '%0A' )
+		], 'beacon' );
+	} );
+
+	QUnit.test.each( 'stats [invalid histogram]', {
+		'le label': [ { le: 5 }, 'Reserved label "le" used for mediawiki_foo_bar_distribution. Buckets must be set as an array of numbers for the "buckets" label.' ],
+		'missing buckets': [ {}, 'Invalid "buckets" label for mediawiki_foo_bar_distribution: it MUST be an array of numbers.' ],
+		'invalid buckets': [ { buckets: 'bla' }, 'Invalid "buckets" label for mediawiki_foo_bar_distribution: it MUST be an array of numbers.' ],
+		'too many buckets': [ { buckets: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ] }, 'Too many buckets defined for mediawiki_foo_bar_distribution. Got: 11, Max: 10' ],
+		'invalid bucket value': [ { buckets: [ 1, '2', 3 ] }, 'Invalid bucket value for mediawiki_foo_bar_distribution' ],
+		'non-unique buckets': [ { buckets: [ 1, 10, 42, 100, 42, 10 ] }, 'Buckets must be unique and sorted for mediawiki_foo_bar_distribution' ],
+		'unsorted buckets': [ { buckets: [ 1, 10, 2 ] }, 'Buckets must be unique and sorted for mediawiki_foo_bar_distribution' ]
+	}, function ( assert, [ labels, expectedError ] ) {
+		mw.track( 'stats.mediawiki_foo_bar_distribution', 5, labels );
+		this.sandbox.clock.tick( 1 );
+
+		assert.verifySteps( [ expectedError ] );
+		assert.strictEqual( stub.callCount, 0, 'beacons' );
+	} );
 } );

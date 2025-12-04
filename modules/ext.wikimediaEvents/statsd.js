@@ -138,10 +138,11 @@ function formatDogstatsd( name, value, labels = {} ) {
 	// * Other producer: Wikimedia\Stats\Formatters\DogStatsdFormatter in MediaWiki core
 	// * Consumer: https://github.com/prometheus/statsd_exporter/blob/v0.28.0/pkg/mapper/escape.go#L21
 	// * Spec: https://docs.datadoghq.com/developers/dogstatsd/datagram_shell?tab=metrics
-	const rLegal = /^[A-Za-z0-9_]+$/;
+	const rLegalKey = /^[A-Za-z0-9_]+$/;
+	const rLegalValue = /^[A-Za-z0-9_.+-]+$/;
 	let labelStr = '';
 	for ( const labelKey in labels ) {
-		if ( !rLegal.test( labelKey ) ) {
+		if ( !rLegalKey.test( labelKey ) ) {
 			return error( new TypeError( `Invalid stat label "${ labelKey }"` ) );
 		}
 		let val = labels[ labelKey ];
@@ -159,7 +160,7 @@ function formatDogstatsd( name, value, labels = {} ) {
 		// accurate, and the issue can be discovered and quantified in Grafana.
 		// This substitution is similar to statsd_exporter's normalization, but stricter,
 		// to strongly discourage high-cardinality labels.
-		if ( !rLegal.test( val ) ) {
+		if ( !rLegalValue.test( val ) ) {
 			mw.log.warn( `Invalid label value for ${ name } ${ labelKey } "${ val }"` );
 			val = '_invalid_value';
 		}
@@ -168,6 +169,59 @@ function formatDogstatsd( name, value, labels = {} ) {
 	return `${ name }:${ value }${ labelStr }`;
 }
 
+function trackHistogram( name, value, labels ) {
+	if ( Number.isNaN( value ) || typeof value !== 'number' ) {
+		return error( new TypeError( `Invalid histogram value for ${ name }` ), value );
+	}
+
+	if ( labels.le ) {
+		return error( new Error( `Reserved label "le" used for ${ name }. Buckets must be set as an array of numbers for the "buckets" label.` ) );
+	}
+
+	const buckets = labels.buckets;
+	const labelsWithoutBuckets = Object.assign( {}, labels );
+	delete labelsWithoutBuckets.buckets;
+
+	if ( !Array.isArray( buckets ) ) {
+		return error( new TypeError( `Invalid "buckets" label for ${ name }: it MUST be an array of numbers.` ) );
+	}
+
+	// See \Wikimedia\Stats\Metrics\HistogramMetric::MAX_BUCKETS
+	const maxBuckets = 10;
+	const bucketCount = buckets.length;
+	if ( bucketCount > maxBuckets ) {
+		return error( new RangeError( `Too many buckets defined for ${ name }. Got: ${ bucketCount }, Max: ${ maxBuckets }` ) );
+	}
+
+	for ( const b of buckets ) {
+		if ( typeof b !== 'number' || Number.isNaN( b ) || !Number.isFinite( b ) ) {
+			return error( new TypeError( `Invalid bucket value for ${ name }` ), b );
+		}
+	}
+
+	const uniqueBuckets = [ ...new Set( buckets ) ].sort( ( a, b ) => a - b );
+	for ( let i = 0; i < buckets.length; i++ ) {
+		if ( uniqueBuckets[ i ] !== buckets[ i ] ) {
+			return error( new Error( `Buckets must be unique and sorted for ${ name }` ) );
+		}
+	}
+
+	const bucketName = `${ name }_bucket`;
+	for ( const bucket of buckets ) {
+		const valueToSend = value <= bucket ? 1 : 0;
+		const labelsWithBucket = Object.assign( {}, labelsWithoutBuckets, { le: bucket } );
+		statsAdd( formatDogstatsd( bucketName, valueToSend + '|c', labelsWithBucket ) );
+	}
+
+	const labelsWithInfBucket = Object.assign( {}, labelsWithoutBuckets, { le: '+Inf' } );
+	statsAdd( formatDogstatsd( bucketName, '1|c', labelsWithInfBucket ) );
+
+	const countName = `${ name }_count`;
+	statsAdd( formatDogstatsd( countName, 1 + '|c', labelsWithoutBuckets ) );
+
+	const sumName = `${ name }_sum`;
+	statsAdd( formatDogstatsd( sumName, value + '|c', labelsWithoutBuckets ) );
+}
 mw.trackSubscribe( 'stats.', ( topic, value, labels = {} ) => {
 	const name = topic.slice( 'stats.'.length );
 	let line;
@@ -179,11 +233,14 @@ mw.trackSubscribe( 'stats.', ( topic, value, labels = {} ) => {
 			return error( new TypeError( `Invalid counter value for ${ name }` ), value );
 		}
 		line = formatDogstatsd( name, value + '|c', labels );
-	} else if ( /^mediawiki_[A-Za-z0-9_]+_seconds/.test( name ) ) {
+	} else if ( /^mediawiki_[A-Za-z0-9_]+_seconds$/.test( name ) ) {
 		if ( isNaN( value ) || typeof value !== 'number' || value < 0 ) {
 			return error( new TypeError( `Invalid timing value for ${ name }` ), value );
 		}
 		line = formatDogstatsd( name, Math.round( value ) + '|ms', labels );
+	} else if ( /^mediawiki_[A-Za-z0-9_]+_distribution$/.test( name ) ) {
+		trackHistogram( name, value, labels );
+		return;
 	} else {
 		return error( new TypeError( `Invalid stat name ${ name }` ) );
 	}
