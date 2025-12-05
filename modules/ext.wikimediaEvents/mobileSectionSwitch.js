@@ -34,6 +34,9 @@ mw.hook( 've.newTarget' ).add( ( target ) => {
 			data.funnel_entry_token = editingSessionService.getEditingSessionId();
 			data.action_context = data.action_context || {};
 			data.action_context.interface = target.getDefaultMode() === 'source' ? 'wikitext-2017' : 'visualeditor';
+			// This needs to be a string, but we've left it as an object until
+			// now so it can be easily modified:
+			data.action_context = JSON.stringify( data.action_context );
 			exp.send( action, data );
 		};
 
