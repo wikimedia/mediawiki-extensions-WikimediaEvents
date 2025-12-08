@@ -49,10 +49,11 @@ function trackPageVisit( exp ) {
  * @param {Object} exp The experiment object
  */
 function trackBookmarkIconButtonClicks( $bookmarkButton, exp ) {
-	$bookmarkButton.on( 'click', () => {
+	$bookmarkButton.on( 'click', ( event ) => {
+		const isToolbarButton = event.target.closest( '#pt-readinglists-2' ) !== null;
 		exp.send( 'click', {
 			action_subtype: 'view_reading_list',
-			action_source: 'top_right'
+			action_source: isToolbarButton ? 'top_right' : 'user_menu'
 		} );
 	} );
 }
@@ -134,7 +135,7 @@ $( () => {
 			return;
 		}
 
-		const $bookmarkButton = $( document ).find( '.mw-ui-icon-bookmarkList, .menu__item--readinglists' );
+		const $bookmarkButton = $( document ).find( '.mw-ui-icon-bookmarkList, .menu__item--readinglists, #pt-readinglists a' );
 
 		trackPageVisit( exp );
 
