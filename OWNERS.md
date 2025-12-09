@@ -209,10 +209,10 @@ More details at <https://phabricator.wikimedia.org/T398495>
 Initial ticket: <https://phabricator.wikimedia.org/T399227>
 Round 2 ticket: <https://phabricator.wikimedia.org/T409190>
 
-## Reader Growth StickyHeaders session length instrumentation
+## Reader Growth StickyHeaders instrumentation
 
 * Since: December 2025
-* Files: xLab/stickyHeadersSessionLength.js
+* Files: xLab/stickyHeaders.js
 * Contact: Reader Growth
 
 More details at <https://phabricator.wikimedia.org/T411357>
