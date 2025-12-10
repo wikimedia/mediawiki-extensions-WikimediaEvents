@@ -491,8 +491,9 @@ class WikimediaEventsHooks implements
 
 		// Set page length for reading depth instrument T294777.
 		$length = $out->getTitle()->getLength();
-		$log = log10( $length );
-		$vars[ 'wgWMEPageLength' ] = round( $length, -intval( $log ) );
+		$vars[ 'wgWMEPageLength' ] = $length === 0 ?
+			0 :
+			round( $length, -intval( log10( $length ) ) );
 
 		// Set page length bucket for sticky headers instrument T409163.
 		$vars[ 'wgWMEPageLengthBucket' ] = match ( true ) {
