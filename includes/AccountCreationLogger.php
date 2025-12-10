@@ -162,7 +162,7 @@ class AccountCreationLogger {
 	 */
 	private function determineStreamForPage( PageReference $pageReference ): ?string {
 		[ $canonicalName, ] = $this->specialPageFactory->resolveAlias( $pageReference->getDBkey() );
-		return $this->pageStreamMap[$canonicalName] ?? null;
+		return $this->pageStreamMap[$canonicalName ?? ''] ?? null;
 	}
 
 }
