@@ -45,7 +45,7 @@ function trackPageVisit( experiment ) {
 		'page-visited',
 		{
 			instrument_name: 'PageVisit',
-			action_context: pageLengthBucket
+			action_context: pageLengthBucket.toString()
 		}
 	);
 }
@@ -76,7 +76,7 @@ function trackSectionHeaderClicks( experiment ) {
 				instrument_name: 'SectionHeaderClick',
 				action_subtype: options.isExpanded ? 'unfold' : 'fold',
 				action_source: isSticky ? 'sticky_section_header' : 'section_header',
-				action_context: pageLengthBucket
+				action_context: pageLengthBucket.toString()
 			}
 		);
 	};
