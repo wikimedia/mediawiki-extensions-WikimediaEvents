@@ -79,7 +79,6 @@ class PrefUpdateInstrumentation implements SaveUserOptionsHook {
 	private const PROPERTY_TRACKLIST = [
 		// Reading Web team
 		'skin' => self::VALUE_WELLKNOWN_SHORT,
-		'mfMode' => self::VALUE_WELLKNOWN_SHORT,
 		'mf_amc_optin' => self::VALUE_WELLKNOWN_SHORT,
 		'VectorSkinVersion' => self::VALUE_WELLKNOWN_SHORT,
 
