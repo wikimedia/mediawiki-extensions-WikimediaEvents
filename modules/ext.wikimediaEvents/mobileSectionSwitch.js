@@ -1,6 +1,6 @@
 const editingSessionService = require( './editingSessionService.js' );
 
-const EXPERIMENT_NAME = 'fy25-26-we-1-1-19-mobile-section-dead-end';
+const EXPERIMENT_NAME = 'fy25-26-we-1-1-19-mobile-section-dead-end-phase-2';
 const SCHEMA_NAME = '/analytics/product_metrics/web/base/1.5.0';
 const STREAM_NAME = 'mediawiki.product_metrics.contributors.experiments';
 
