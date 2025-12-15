@@ -14,15 +14,16 @@ const experimentPromise = mw.loader.using( 'ext.xLab' )
 	.catch( ( error ) => {
 		mw.log( 'Error loading ext.xLab module:', error );
 		return null;
-	} )
-	.then( ( experiment ) => {
-		if ( !( experiment && experiment.isAssignedGroup( 'control', 'treatment' ) ) ) {
-			return;
-		}
-		// The user is definitely enrolled in an existing experiment by this point
-		const config = mw.config.get( 'wgVisualEditorConfig' ) || {};
-		config.enableSectionEditingFullPageButtons = experiment.isAssignedGroup( 'treatment' );
 	} );
+
+experimentPromise.then( ( experiment ) => {
+	if ( !( experiment && experiment.isAssignedGroup( 'control', 'treatment' ) ) ) {
+		return;
+	}
+	// The user is definitely enrolled in an existing experiment by this point
+	const config = mw.config.get( 'wgVisualEditorConfig' ) || {};
+	config.enableSectionEditingFullPageButtons = experiment.isAssignedGroup( 'treatment' );
+} );
 
 mw.hook( 've.newTarget' ).add( ( target ) => {
 	if ( target.constructor.static.trackingName !== 'mobile' ) {
@@ -35,7 +36,7 @@ mw.hook( 've.newTarget' ).add( ( target ) => {
 		}
 
 		const send = ( action, data ) => {
-			data.funnel_entry_token = editingSessionService.getEditingSessionId();
+			data.funnel_entry_token = editingSessionService.getEditingSessionId( null, true );
 			data.action_context = data.action_context || {};
 			data.action_context.interface = target.getDefaultMode() === 'source' ? 'wikitext-2017' : 'visualeditor';
 			// This needs to be a string, but we've left it as an object until

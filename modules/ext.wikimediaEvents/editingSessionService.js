@@ -1,5 +1,7 @@
 'use strict';
 
+let lastSessionId;
+
 /**
  * Get editing session ID with fallback priority:
  * 1. mw.config.get('wgWMESchemaEditAttemptStepSessionId')
@@ -9,9 +11,11 @@
  * 5. Generate new random session ID
  *
  * @param {string|null} existingSessionId Existing session ID to use as fallback
+ * @param {boolean} useLastSessionId Return the last-generated session ID
+ *  rather than generating a new one
  * @return {string} Editing session ID
  */
-function getEditingSessionId( existingSessionId = null ) {
+function getEditingSessionId( existingSessionId = null, useLastSessionId = false ) {
 	const configId = mw.config.get( 'wgWMESchemaEditAttemptStepSessionId' );
 	if ( configId ) {
 		return configId;
@@ -32,7 +36,11 @@ function getEditingSessionId( existingSessionId = null ) {
 		return existingSessionId;
 	}
 
-	return mw.user.generateRandomSessionId();
+	if ( !useLastSessionId || !lastSessionId ) {
+		lastSessionId = mw.user.generateRandomSessionId();
+	}
+
+	return lastSessionId;
 }
 
 module.exports = { getEditingSessionId };
