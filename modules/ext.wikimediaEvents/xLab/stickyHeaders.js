@@ -122,7 +122,13 @@ mw.loader.using( [
 
 	trackSessionLength( experiment );
 	trackPageVisit( experiment );
-	trackSectionHeaderClicks( experiment );
+
+	// Don't set up the header tracking until we're ready to start
+	// the StickyHeaders setup, or we can accidentally record the
+	// expansions when slowly loading the source page.
+	mw.loader.using( 'mobile.init' ).then( () => {
+		trackSectionHeaderClicks( experiment );
+	} );
 } ).catch( ( error ) => {
 	// xLab and/or wikimediaEvents aren't installed,
 	// instrumentation can't work.
