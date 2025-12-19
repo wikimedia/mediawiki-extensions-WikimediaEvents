@@ -31,6 +31,9 @@ class UpdatePeriodicMetrics extends Maintenance {
 		parent::__construct();
 		$this->requireExtension( 'WikimediaEvents' );
 
+		// All the metrics collected here require the CheckUser extension
+		$this->requireExtension( 'CheckUser' );
+
 		$this->addDescription( 'Generates a snapshot of several metrics which can then be pulled by Prometheus.' );
 		$this->addOption( 'verbose', 'Output values of metrics calculated. Default is to not output.' );
 		$this->addOption(
