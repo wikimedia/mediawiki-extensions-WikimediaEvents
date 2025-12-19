@@ -62,6 +62,8 @@ mw.hook( 've.newTarget' ).add( ( target ) => {
 				action_subtype: target.section !== null ? 'section' : 'page',
 				action_context: { timing_ms: timings.ready - timings.init }
 			} );
+		} );
+		target.on( 'surfaceReady', () => {
 			target.surface.getModel().getDocument().once( 'transact', () => {
 				timings.firstChange = mw.now();
 				send( 'firstChange', {
