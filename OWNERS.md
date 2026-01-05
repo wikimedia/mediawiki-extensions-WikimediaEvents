@@ -256,3 +256,9 @@ Click Through (baseline) Rate for links on the Watchlist
 * Since: December 2025
 * Files: ext.wikimediaEvents/mobileSectionSwitch.js
 * Contact: Editing
+
+## Baseline health metrics on PersonalDashboard
+
+* Since: January 2026
+* Modules: ext.wikimediaEvents.personalDashboard
+* Contact: Moderator Tools
