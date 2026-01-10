@@ -65,7 +65,7 @@ class UpdatePeriodicMetrics extends Maintenance {
 		foreach ( $metrics as $metricName ) {
 			try {
 				$metric = $this->wikimediaEventsMetricsFactory->newMetric( $metricName );
-			} catch ( InvalidArgumentException $_ ) {
+			} catch ( InvalidArgumentException ) {
 				$this->error( 'ERROR: Metric "' . $metricName . '" failed to be constructed' );
 				$this->logger->error(
 					'Metric {metric_name} failed to be constructed.', [ 'metric_name' => $metricName ]
