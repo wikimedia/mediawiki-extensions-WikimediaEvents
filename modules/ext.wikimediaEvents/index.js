@@ -22,15 +22,6 @@ if ( skin === 'vector-2022' || skin === 'minerva' ) {
 	}
 }
 
-// Targets Minerva users only.
-// See documentation in the required files.
-if ( skin === 'minerva' ) {
-	// Reader Growth's ImageBrowsing `page-visited` event.
-	require( './xLab/imageBrowsingPageVisit.js' );
-	// Reader Growth's Sticky Headers.
-	require( './xLab/stickyHeaders.js' );
-}
-
 require( './editAttemptStep.js' );
 require( './mobileSectionSwitch.js' );
 require( './hCaptcha.js' )();
@@ -38,7 +29,6 @@ require( './networkProbe.js' );
 require( './xLab/pageVisitBotDetection.js' );
 require( './xLab/mintReaderPageVisit.js' );
 require( './specialCreateAccount/init.js' );
-require( './xLab/loggedOutPageVisit.js' );
 require( './xLab/impactTest.js' );
 
 // Expose the session length instrument for re-use across the MediaWiki ecosystem.

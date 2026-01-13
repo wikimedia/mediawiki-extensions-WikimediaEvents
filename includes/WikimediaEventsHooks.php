@@ -494,14 +494,6 @@ class WikimediaEventsHooks implements
 		$vars[ 'wgWMEPageLength' ] = $length === 0 ?
 			0 :
 			round( $length, -intval( log10( $length ) ) );
-
-		// Set page length bucket for sticky headers instrument T409163.
-		$vars[ 'wgWMEPageLengthBucket' ] = match ( true ) {
-			$length <= 1000 => 1,
-			$length <= 10000 => 2,
-			$length <= 100000 => 3,
-			default => 4,
-		};
 	}
 
 	/**
