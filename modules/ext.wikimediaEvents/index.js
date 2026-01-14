@@ -26,7 +26,7 @@ require( './editAttemptStep.js' );
 require( './mobileSectionSwitch.js' );
 require( './hCaptcha.js' )();
 require( './networkProbe.js' );
-require( './xLab/pageVisitBotDetection.js' );
+require( './testKitchen/pageVisitBotDetection.js' );
 require( './specialCreateAccount/init.js' );
 require( './xLab/impactTest.js' );
 

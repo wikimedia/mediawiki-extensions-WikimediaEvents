@@ -8,6 +8,10 @@
 		"maxSize": null
 	},
 	{
+		"resourceModule": "ext.wikimediaEvents.testKitchen",
+		"maxSize": null
+	},
+	{
 		"resourceModule": "ext.wikimediaEvents.wikibase",
 		"maxSize": null
 	}

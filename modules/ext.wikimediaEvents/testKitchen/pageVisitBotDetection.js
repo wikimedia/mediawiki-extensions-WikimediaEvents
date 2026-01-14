@@ -9,10 +9,10 @@
  */
 
 const INSTRUMENT_NAME = 'bot-detection';
-const SCHEMA_ID = '/analytics/product_metrics/web/base_with_ip/1.4.3';
+const SCHEMA_ID = '/analytics/product_metrics/web/base_with_ip/2.0.0';
 
-mw.loader.using( 'ext.xLab' ).then( () => {
-	const instrument = mw.xLab.getInstrument( INSTRUMENT_NAME );
+mw.loader.using( 'ext.testKitchen' ).then( () => {
+	const instrument = mw.testKitchen.getInstrument( INSTRUMENT_NAME );
 	instrument.setSchemaID( SCHEMA_ID );
 
 	const isPageview = isPageviewClientSide( {

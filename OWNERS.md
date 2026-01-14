@@ -174,16 +174,10 @@ More details at <https://phabricator.wikimedia.org/T311388>
 Previously maintained in VisualEditor and other extensions since 2014.
 Moved here in <https://phabricator.wikimedia.org/T332438>.
 
-## Experiment Platform Synthetic A/A Instrumentation
-
-* Since: May 2025
-* Files: xLab/pageVisit.js, XLab/PageVisitInstrument.php
-* Contact: Experiment Platform
-
 ## Data Platform Engineering Bot Detection Instruments
 
-* Since: May 2025
-* Files: xLab/pageVisitBotDetection.js
+* Since: January 2026
+* Files: testKitchen/pageVisitBotDetection.js
 * Contact: Data Platform Engineering
 
 ## Impact test
@@ -222,6 +216,18 @@ More details at <https://phabricator.wikimedia.org/T394744>
 
 * Since: January 2025
 * Modules: ext.wikimediaEvents.xLab
+* Contact: Experiment Platform
+
+A collection of standardized instruments, including:
+
+1. Click Through Rate (CTR)
+
+Above will be removed in favor of ext.wikimediaEvents.testKitchen
+
+## Experiment Platform Test Kitchen Standardized Instruments
+
+* Since: January 2026
+* Modules: ext.wikimediaEvents.testKitchen
 * Contact: Experiment Platform
 
 A collection of standardized instruments, including:
