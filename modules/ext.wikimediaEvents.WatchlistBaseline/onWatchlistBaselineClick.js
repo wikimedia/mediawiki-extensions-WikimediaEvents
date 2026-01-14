@@ -1,10 +1,15 @@
-const INSTRUMENT_NAME = 'WatchlistClickTracker';
+const INSTRUMENT_NAME = 'watchlist-click-tracker';
 const MIN_WATCHLIST_ITEMS = 1;
 
 const specialPageName = mw.config.get( 'wgCanonicalSpecialPageName' );
 if ( specialPageName === 'Watchlist' ) {
-	mw.loader.using( 'ext.xLab' ).then( () => {
-		const instrument = mw.eventLog.newInstrument( INSTRUMENT_NAME, 'mediawiki.product_metrics.WatchlistClickTracker', '/analytics/product_metrics/web/base/1.4.3' );
+	mw.loader.using( 'ext.testKitchen' ).then( () => {
+		const instrument = mw.testKitchen.getInstrument( INSTRUMENT_NAME );
+
+		// The Watchlist CTR to articleLink and Watchlist CTR to diffLink Superset charts expect
+		// the instrument name to be 'WatchlistClickTracker'.
+		instrument.setInstrumentName( 'WatchlistClickTracker' );
+
 		const lines = document.querySelectorAll( '.mw-changeslist-line-inner' );
 
 		if ( lines.length >= MIN_WATCHLIST_ITEMS ) {
