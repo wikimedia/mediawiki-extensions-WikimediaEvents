@@ -1,6 +1,3 @@
-const STREAM_NAME = 'product_metrics.web_base';
-const SCHEMA_ID = '/analytics/product_metrics/web/base/1.5.0';
-
 // State
 // =====
 
@@ -61,28 +58,23 @@ const intersectionObserver = new IntersectionObserver(
 // ===
 
 /**
- * An instrument that tracks clickthrough rate of DOM elements. See
- * https://meta.wikimedia.org/wiki/Research_and_Decision_Science/Data_glossary/Clickthrough_Rate for
- * the definition and specification of clickthrough rate.
+ * An instrument component that tracks clickthrough rate of DOM elements.
+ *
+ * See https://wikitech.wikimedia.org/wiki/Test_Kitchen/Measuring_clickthrough_rates for a detailed
+ * explanation of clickthrough rate and how to use this instrument component to measure a product
+ * health metric on an ongoing basis or as part of an experiment.
  *
  * ## Usage
  *
  * ```
- * const { ClickThroughRateInstrument } = require( 'ext.wikimediaEvents.metricsPlatform' );
+ * const { ClickThroughRateInstrument } = require( 'ext.wikimediaEvents.xLab' );
  *
- * const result = ClickThroughRateInstrument.start(
- *     '[data-pinnable-element-id="vector-main-menu"] .vector-pinnable-header-unpin-button',
- *     'pinnable-header.vector-main-menu.unpin'
- * );
- *
- * // ClickThroughRateInstrument also accepts an optional Instrument parameter:
- *
- * const thisInstrument = instrument || mw.eventLog.newInstrument( STREAM_NAME, SCHEMA_ID );
+ * const i = mw.xLab.getInstrument( 'my-awesome-instrument' );
  *
  * const result = ClickThroughRateInstrument.start(
  *     '[data-pinnable-element-id="vector-main-menu"] .vector-pinnable-header-unpin-button',
  *     'pinnable-header.vector-main-menu.unpin',
- *     thisInstrument
+ *     i
  * );
  *
  * // If you want to stop the instrument for any reason:
@@ -132,14 +124,13 @@ const intersectionObserver = new IntersectionObserver(
  *
  * @class ClickThroughRateInstrument
  * @singleton
- * @unstable
  */
 const ClickThroughRateInstrument = {
 
 	/**
 	 * @param {string} selector
 	 * @param {string} friendlyName
-	 * @param {Instrument} [instrument]
+	 * @param {Instrument} instrument
 	 * @param {Object} [options]
 	 * @param {boolean} [options.trackSingleClick=false] whether to stop processing
 	 * instruments on click events after an event target is contained by the instrumented element by
@@ -157,8 +148,6 @@ const ClickThroughRateInstrument = {
 			return null;
 		}
 
-		const i = instrument || mw.eventLog.newInstrument( STREAM_NAME, SCHEMA_ID );
-
 		let result;
 		if ( state.some( findBySelector( selector ) ) ) {
 			result = state.find( findBySelector( selector ) );
@@ -169,7 +158,7 @@ const ClickThroughRateInstrument = {
 				trackSingleClick,
 				element: e,
 				funnelEntryToken: mw.user.generateRandomSessionId(),
-				instrument: i
+				instrument
 			};
 
 			// Warn about the presence of nested instrumented elements which can lead to unexpected
