@@ -6,7 +6,7 @@ use MediaWiki\Config\HashConfig;
 use MediaWiki\Config\MutableConfig;
 use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Exception\MWException;
-use MediaWiki\Extension\IPReputation\IPoidResponse;
+use MediaWiki\Extension\IPReputation\IPoid\IPoidResponse;
 use MediaWiki\Extension\IPReputation\Services\IPReputationIPoidDataLookup;
 use MediaWiki\Extension\OATHAuth\OATHUser;
 use MediaWiki\Extension\OATHAuth\OATHUserRepository;
