@@ -14,6 +14,7 @@
 	"apihelp-wikimediaeventshcaptchaeditattempt-param-proposed_content": "Texto de contento proponite (max. 8KB)",
 	"apihelp-wikimediaeventshcaptchaeditattempt-param-editing_session_id": "ID del session de modification",
 	"apihelp-wikimediaeventshcaptchaeditattempt-param-revision_id": "ID de version del pagina modificate",
+	"apierror-wikimediaevents-skipcaptcha-not-applicable": "Le usatores con le permission ‘skipcaptcha’ non pote usar iste API",
 	"tag-cross-wiki-upload": "Incargamento inter wikis",
 	"tag-cross-wiki-upload-description": "Files incargate desde le editores visual e de wikitexto sur altere wikis",
 	"wikimediaevents-special-wikimediadebug-notenabled": "Iste pagina special non es activate.",
