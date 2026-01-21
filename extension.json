@@ -296,7 +296,6 @@
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleData"
 				},
 				"xLab/pageVisitBotDetection.js",
-				"xLab/mintReaderPageVisit.js",
 				"xLab/readingListAB.js",
 				"specialCreateAccount/init.js",
 				"specialCreateAccount/instrumentation.js",

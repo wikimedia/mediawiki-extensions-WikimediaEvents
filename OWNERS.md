@@ -186,12 +186,6 @@ Moved here in <https://phabricator.wikimedia.org/T332438>.
 * Files: xLab/pageVisitBotDetection.js
 * Contact: Data Platform Engineering
 
-## MinT for Wiki Readers Synthetic A/A test
-
-* Since: Aug 2025
-* Files: xLab/mintReaderPageVisit.js
-* Contact: Language and Product Localization
-
 ## Impact test
 
 * Since: November 2025
