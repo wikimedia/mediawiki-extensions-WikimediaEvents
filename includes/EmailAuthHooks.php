@@ -118,7 +118,7 @@ class EmailAuthHooks {
 		}
 
 		if ( $this->extensionRegistry->isLoaded( 'LoginNotify' ) ) {
-			$knownLoginNotify = $this->loginNotify->isKnownSystemFast( $user, $request );
+			$knownLoginNotify = $this->loginNotify->isKnownSystem( $user, $request );
 		}
 		if ( $this->extensionRegistry->isLoaded( 'OATHAuth' ) ) {
 			$oathUser = $this->oathUserRepository->findByUser( $user );

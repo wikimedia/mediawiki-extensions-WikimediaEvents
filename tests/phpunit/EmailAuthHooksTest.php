@@ -201,7 +201,7 @@ class EmailAuthHooksTest extends MediaWikiIntegrationTestCase {
 			->with( '100.101.102.103', EmailAuthHooks::class . '::onEmailAuthRequireToken' )
 			->willReturn( $isKnownToIpoid ? $this->createMock( IPoidResponse::class ) : null );
 
-		$this->loginNotify->method( 'isKnownSystemFast' )
+		$this->loginNotify->method( 'isKnownSystem' )
 			->with( $this->user, $this->request )
 			->willReturn( $knownLoginNotify );
 
