@@ -42,6 +42,8 @@ class IPReputationHooksTest extends MediaWikiIntegrationTestCase {
 	 * @dataProvider provideShouldLogEditEventForUser
 	 */
 	public function testShouldLogEditEventForUser( $userId, $userRegistration, $expected ) {
+		$this->markTestSkippedIfExtensionNotLoaded( 'IPReputation' );
+
 		$services = $this->getServiceContainer();
 		$ipReputationHooks = TestingAccessWrapper::newFromObject(
 			new IPReputationHooks(
