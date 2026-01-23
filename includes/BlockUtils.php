@@ -48,7 +48,7 @@ class BlockUtils {
 		}
 
 		$event = [
-			'$schema' => '/analytics/mediawiki/editattemptsblocked/1.0.0',
+			'$schema' => '/analytics/mediawiki/editattemptsblocked/1.1.0',
 			'block_id' => json_encode( $block->getIdentifier() ),
 			// @phan-suppress-next-line PhanTypeMismatchDimFetchNullable
 			'block_type' => Block::BLOCK_TYPES[ $block->getType() ] ?? 'other',
@@ -67,6 +67,16 @@ class BlockUtils {
 				'user_edit_count' => $user->getEditCount() ?: 0,
 			],
 		];
+		$securityLogContext = $request->getSecurityLogContext( $user );
+		if ( $securityLogContext['x-is-browser'] !== '' ) {
+			$event['x_is_browser'] = (int)$securityLogContext['x-is-browser'];
+		}
+		if ( $securityLogContext['x-trusted-request'] !== '' ) {
+			$event['x_trusted_request'] = $securityLogContext['x-trusted-request'];
+		}
+		if ( $securityLogContext['x-provenance'] !== '' ) {
+			$event['x_provenance'] = $securityLogContext['x-provenance'];
+		}
 		EventLogging::submit( 'mediawiki.editattempt_block', $event );
 	}
 
