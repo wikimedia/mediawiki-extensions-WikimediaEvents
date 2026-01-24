@@ -22,7 +22,8 @@
 		}
 	},
 	"AutoloadNamespaces": {
-		"WikimediaEvents\\": "includes/"
+		"WikimediaEvents\\": "includes/",
+		"WikimediaEvents\\Maintenance\\": "maintenance/"
 	},
 	"TestAutoloadNamespaces": {
 		"WikimediaEvents\\Tests\\": "tests/phpunit/"
@@ -489,9 +490,6 @@
 			"newbie": [ 8, 60 ],
 			"user": [ 8, 60 ]
 		}
-	},
-	"AutoloadClasses": {
-		"WikimediaEvents\\Maintenance\\UpdatePeriodicMetrics": "maintenance/UpdatePeriodicMetrics.php"
 	},
 	"ServiceWiringFiles": [
 		"includes/ServiceWiring.php"
