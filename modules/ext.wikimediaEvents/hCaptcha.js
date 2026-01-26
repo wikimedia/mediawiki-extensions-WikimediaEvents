@@ -25,13 +25,22 @@ function setupInstrumentation() {
 				// Record diff when hCaptcha challenge is presented (T406865)
 				const textArea = document.querySelector( 'textarea[name="wpTextbox1"]' );
 
+				// Try to get the ID of the revision the user is trying to edit.
+				// In case wgRevisionId is zero (which may happen when the edit
+				// page is reloaded to show an hCaptcha challenge), use
+				// wgCurRevisionId instead.
+				let revisionId = mw.config.get( 'wgRevisionId', 0 );
+				if ( revisionId === 0 ) {
+					revisionId = mw.config.get( 'wgCurRevisionId', 0 );
+				}
+
 				// Get editing session ID with fallback priority (same as editAttemptStep.js)
 				( new mw.Api() ).post( {
 					formatversion: 2,
 					action: 'wikimediaeventshcaptchaeditattempt',
 					proposed_content: textArea ? textArea.value : null,
 					title: mw.config.get( 'wgPageName' ),
-					revision_id: mw.config.get( 'wgRevisionId' ),
+					revision_id: revisionId,
 					editing_session_id: editingSessionService.getEditingSessionId()
 				} );
 			}

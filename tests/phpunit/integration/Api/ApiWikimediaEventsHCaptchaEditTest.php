@@ -2,6 +2,7 @@
 
 namespace WikimediaEvents\Tests\Integration\Api;
 
+use DOMDocument;
 use MediaWiki\Api\ApiUsageException;
 use MediaWiki\Extension\EventBus\Serializers\MediaWiki\UserEntitySerializer;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
@@ -182,11 +183,25 @@ class ApiWikimediaEventsHCaptchaEditTest extends ApiTestCase {
 					}
 				}
 			} else {
+				// $capturedDiff is an HTML diff, convert it into a plain diff
+				$replacements = [
+					' data-marker="+">' => '>+',
+					' data-marker="-">' => '>-',
+				];
+				$capturedDiff = strip_tags(
+					str_replace(
+						array_keys( $replacements ),
+						array_values( $replacements ),
+						$capturedDiff
+					)
+				);
+
 				// For new pages, diff shows empty old content -> new content
 				$diffLines = explode( "\n", $capturedDiff );
-				$addedLines = array_filter( $diffLines, static function ( $line ) {
-					return strpos( $line, '+' ) === 0;
-				} );
+				$addedLines = array_filter(
+					$diffLines,
+					static fn ( $line ) => str_starts_with( trim( $line ), '+' )
+				);
 				$this->assertNotEmpty(
 					$addedLines,
 					'Diff for new pages should show all lines as additions'
@@ -197,7 +212,14 @@ class ApiWikimediaEventsHCaptchaEditTest extends ApiTestCase {
 			$normalizedNewText = TextContent::normalizeLineEndings( $newText );
 			$newLines = explode( "\n", $normalizedNewText );
 			foreach ( $newLines as $line ) {
-				$this->assertStringContainsString( $line, $capturedDiff );
+				// The diff is an HTML table, and each line includes HTML tags
+				// between individual words to indicate partial changes (such as
+				// "<del...>Old </del>content line 1"): remove HTML tags from
+				// the diff before looking for the expected line.
+				$this->assertStringContainsString(
+					$line,
+					strip_tags( $capturedDiff )
+				);
 			}
 		}
 	}
@@ -213,7 +235,6 @@ class ApiWikimediaEventsHCaptchaEditTest extends ApiTestCase {
 				'shouldSubmitEvent' => true,
 				'oldText' => $oldText,
 				'newText' => $newText,
-
 			] ],
 			'Valid request with existing page and editing session ID - should submit event'
 				=> [ [
@@ -335,4 +356,124 @@ class ApiWikimediaEventsHCaptchaEditTest extends ApiTestCase {
 		];
 	}
 
+	/**
+	 * Verifies that the HTML diff in the events submitted for edit attempts
+	 * contains a table that is trimmed as expected when the diff content is too
+	 * large.
+	 *
+	 * That is, a row with an ellipsis character ("…") is added under its
+	 * own row at the end instead of the remaining diff contents, and the whole
+	 * diff size is below 8kB.
+	 */
+	public function testApiEndpointHTMLDiffIsTrimmed(): void {
+		$title = $this->getNonexistingTestPage()->getTitle();
+		$editingSessionId = 'test-session-001';
+		$revisionId = 1;
+
+		$oldText = '';
+		$newText = '';
+		for ( $i = 0; $i < 50; $i++ ) {
+			$oldText .= "Old content line {$i}\n}";
+			$newText .= "New content line {$i}\n}";
+		}
+
+		$this->editPage( $title, $oldText );
+
+		$eventSubmitter = $this->createMock( EventSubmitter::class );
+		$this->setService(
+			'EventLogging.EventSubmitter',
+			$eventSubmitter
+		);
+
+		$capturedEvent = null;
+		$eventSubmitter
+			->expects( $this->once() )
+			->method( 'submit' )
+			->with( 'mediawiki.hcaptcha.edit', $this->anything() )
+			->willReturnCallback(
+				static function ( $stream, $event ) use ( &$capturedEvent ) {
+					$capturedEvent = $event;
+				}
+			);
+
+		$result = $this->doApiRequest(
+			[
+				'action' => 'wikimediaeventshcaptchaeditattempt',
+				'title' => $title->getPrefixedText(),
+				'proposed_content' => $newText,
+				'editing_session_id' => $editingSessionId,
+				'revision_id' => $revisionId,
+			],
+			null,
+			false,
+			$this->getTestUser()->getUser()
+		);
+
+		$this->assertEquals( 'success', $result[0]['result'] );
+		$this->assertEquals(
+			'/analytics/mediawiki/hcaptcha/edit/1.0.0',
+			$capturedEvent['$schema'],
+			'Schema should match expected value'
+		);
+		$this->assertEquals(
+			WikiMap::getCurrentWikiId(),
+			$capturedEvent['wiki_id'],
+			'The wiki ID should match current wiki ID'
+		);
+		$this->assertEquals(
+			$editingSessionId,
+			$capturedEvent['editing_session_id'],
+			'The editing session ID should match expected value'
+		);
+		$this->assertEquals(
+			$revisionId,
+			$capturedEvent['revision_id'],
+			'The revision ID should match the expected value'
+		);
+		$this->assertArrayHasKey(
+			'proposed_content_diff',
+			$capturedEvent,
+			'The event contain the proposed_content_diff'
+		);
+
+		$capturedDiff = $capturedEvent['proposed_content_diff'];
+		$this->assertNotEmpty(
+			$capturedDiff,
+			'Diff should not be empty for edits to existing pages'
+		);
+		$this->assertIsString(
+			$capturedEvent['proposed_content_diff'],
+			'The proposed content diff should be a string'
+		);
+		$this->assertLessThan(
+			8192,
+			strlen( $capturedDiff ),
+			'The diff size should be less than 8kB'
+		);
+
+		$diffDocument = new DOMDocument();
+
+		// Suppress warnings from invalid HTML fragments
+		libxml_use_internal_errors( true );
+		$diffDocument->loadHTML(
+			// Wrap in a <body> tag so DOMDocument doesn't mangle it
+			"<html><body>{$capturedDiff}</body></html>",
+			LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+		);
+		libxml_clear_errors();
+
+		$rows = $diffDocument->getElementsByTagName( 'tr' );
+		$this->assertGreaterThan(
+			0,
+			$rows->length,
+			'The diff table should not be empty'
+		);
+
+		$lastRow = $rows->item( $rows->length - 1 );
+		$this->assertEquals(
+			html_entity_decode( '&hellip;' ),
+			$lastRow->nodeValue,
+			'The last row should contain an ellipsis for big diffs'
+		);
+	}
 }
