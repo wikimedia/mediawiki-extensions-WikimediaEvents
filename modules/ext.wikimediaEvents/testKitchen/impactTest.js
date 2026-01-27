@@ -8,8 +8,8 @@
 const EXPERIMENT_NAME = 'synth-aa-test-traffic-impact';
 const INSTRUMENT_NAME = 'PageVisit';
 
-mw.loader.using( 'ext.xLab' ).then( () => {
-	const experiment = mw.xLab.getExperiment( EXPERIMENT_NAME );
+mw.loader.using( 'ext.testKitchen' ).then( () => {
+	const experiment = mw.testKitchen.getExperiment( EXPERIMENT_NAME );
 
 	experiment.send(
 		'page-visited',

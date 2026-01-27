@@ -289,12 +289,12 @@
 					"name": "data.json",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleData"
 				},
+				"testKitchen/impactTest.js",
 				"testKitchen/pageVisitBotDetection.js",
 				"xLab/readingListAB.js",
 				"specialCreateAccount/init.js",
 				"specialCreateAccount/instrumentation.js",
-				"specialCreateAccount/useInstrument.js",
-				"xLab/impactTest.js"
+				"specialCreateAccount/useInstrument.js"
 			],
 			"dependencies": [
 				"ext.wikimediaEvents.testKitchen",

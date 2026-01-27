@@ -183,7 +183,7 @@ Moved here in <https://phabricator.wikimedia.org/T332438>.
 ## Impact test
 
 * Since: November 2025
-* Files: xLab/impactTest.js
+* Files: testKitchen/impactTest.js
 * Contact: Experiment Platform
 
 More details at <https://phabricator.wikimedia.org/T407570>
