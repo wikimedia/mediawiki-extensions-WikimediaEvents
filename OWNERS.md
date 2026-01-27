@@ -87,7 +87,7 @@ Details at <https://phabricator.wikimedia.org/T383611>.
 
 * Since: October 2025
 * Suggested Removal: November 2025
-* Folders: ext.wikimediaEvents/xLab/readingListAB.js
+* Folders: ext.wikimediaEvents/testKitchen/readingListAB.js
 * Contact: Reader Experience team
 
 Instrumentation for evaluating the impact of Reading List feature.

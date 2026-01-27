@@ -18,7 +18,7 @@ if ( skin === 'vector-2022' || skin === 'minerva' ) {
 	// ReadingsLists experiments T397532
 	// Check if user has hidden preference for reading lists
 	if ( mw.user.isNamed() && ( mw.user.options.get( 'readinglists-web-ui-enabled' ) === '1' ) ) {
-		require( './xLab/readingListAB.js' );
+		require( './testKitchen/readingListAB.js' );
 	}
 }
 
