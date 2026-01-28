@@ -10,11 +10,9 @@ use MediaWiki\Config\Config;
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Deferred\DeferredUpdates;
-use MediaWiki\Extension\CentralAuth\User\CentralAuthUser;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
 use MediaWiki\Extension\ConfirmEdit\Hooks;
 use MediaWiki\Hook\BeforeInitializeHook;
-use MediaWiki\Hook\GetSessionJwtDataHook;
 use MediaWiki\Hook\RecentChange_saveHook;
 use MediaWiki\Hook\SpecialSearchGoResultHook;
 use MediaWiki\Hook\SpecialSearchResultsHook;
@@ -64,8 +62,7 @@ class WikimediaEventsHooks implements
 	SpecialSearchResultsHook,
 	RecentChange_saveHook,
 	ResourceLoaderRegisterModulesHook,
-	MakeGlobalVariablesScriptHook,
-	GetSessionJwtDataHook
+	MakeGlobalVariablesScriptHook
 {
 	private Config $config;
 	private NamespaceInfo $namespaceInfo;
@@ -594,16 +591,4 @@ class WikimediaEventsHooks implements
 		}
 	}
 
-	/** @inheritDoc */
-	public function onGetSessionJwtData( ?UserIdentity $user, array &$jwtData ): void {
-		if ( $user
-			&& !( $jwtData['ownerOnly'] ?? false )
-			&& ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' )
-		) {
-			$centralUser = CentralAuthUser::getInstance( $user );
-			if ( in_array( 'global-bot', $centralUser->getGlobalGroups() ) ) {
-				$jwtData['rlc'] = 'global-bot';
-			}
-		}
-	}
 }
