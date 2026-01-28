@@ -291,6 +291,13 @@
 				},
 				"testKitchen/impactTest.js",
 				"testKitchen/pageVisitBotDetection.js",
+				"testKitchen/externalPathTest.js",
+				{
+					"name": "testKitchen/externalPathTestConfig.json",
+					"config": [
+						"EventLoggingServiceUri"
+					]
+				},
 				"xLab/readingListAB.js",
 				"specialCreateAccount/init.js",
 				"specialCreateAccount/instrumentation.js",

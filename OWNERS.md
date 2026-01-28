@@ -180,6 +180,15 @@ Moved here in <https://phabricator.wikimedia.org/T332438>.
 * Files: testKitchen/pageVisitBotDetection.js
 * Contact: Data Platform Engineering
 
+## Test Kitchen External Path Test
+
+* Since: January 2026
+* Files: testKitchen/externalPathTest.js
+* Contact: Experiment Platform
+
+A synthetic experiment to test the new external path that Test Kitchen will be
+sending events originating from instruments and logged-in experiments to.
+
 ## Impact test
 
 * Since: November 2025
