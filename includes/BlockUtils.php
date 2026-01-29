@@ -48,7 +48,7 @@ class BlockUtils {
 		}
 
 		$event = [
-			'$schema' => '/analytics/mediawiki/editattemptsblocked/1.1.0',
+			'$schema' => '/analytics/mediawiki/editattemptsblocked/1.2.0',
 			'block_id' => json_encode( $block->getIdentifier() ),
 			// @phan-suppress-next-line PhanTypeMismatchDimFetchNullable
 			'block_type' => Block::BLOCK_TYPES[ $block->getType() ] ?? 'other',
@@ -73,6 +73,36 @@ class BlockUtils {
 		}
 		if ( $securityLogContext['x-trusted-request'] !== '' ) {
 			$event['x_trusted_request'] = $securityLogContext['x-trusted-request'];
+		}
+		$xProvenance = $securityLogContext['x-provenance'] ?? [];
+		if ( $xProvenance ) {
+			if ( isset( $xProvenance['isp'] ) ) {
+				$event['x_provenance_isp'] = $xProvenance['isp'];
+			}
+			if ( isset( $xProvenance['proxy'] ) ) {
+				$event['x_provenance_proxy'] = $xProvenance['proxy'];
+			}
+			if ( isset( $xProvenance['cloud'] ) ) {
+				$event['x_provenance_cloud'] = $xProvenance['cloud'];
+			}
+		}
+		if ( $securityLogContext['x-ja3n'] !== '' ) {
+			$event['x_ja3n'] = $securityLogContext['x-ja3n'];
+		}
+		if ( $securityLogContext['x-ja4h'] !== '' ) {
+			$event['x_ja4h'] = $securityLogContext['x-ja4h'];
+		}
+		if ( isset( $securityLogContext['ip_reputation_tunnels'] ) ) {
+			$event['ip_reputation_tunnels'] = $securityLogContext['ip_reputation_tunnels'];
+		}
+		if ( isset( $securityLogContext['ip_reputation_risks'] ) ) {
+			$event['ip_reputation_risks'] = $securityLogContext['ip_reputation_risks'];
+		}
+		if ( isset( $securityLogContext['ip_reputation_proxies'] ) ) {
+			$event['ip_reputation_proxies'] = $securityLogContext['ip_reputation_proxies'];
+		}
+		if ( isset( $securityLogContext['ip_reputation_behaviors'] ) ) {
+			$event['ip_reputation_behaviors'] = $securityLogContext['ip_reputation_behaviors'];
 		}
 		EventLogging::submit( 'mediawiki.editattempt_block', $event );
 	}
