@@ -74,9 +74,6 @@ class BlockUtils {
 		if ( $securityLogContext['x-trusted-request'] !== '' ) {
 			$event['x_trusted_request'] = $securityLogContext['x-trusted-request'];
 		}
-		if ( $securityLogContext['x-provenance'] !== '' ) {
-			$event['x_provenance'] = $securityLogContext['x-provenance'];
-		}
 		EventLogging::submit( 'mediawiki.editattempt_block', $event );
 	}
 
