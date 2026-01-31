@@ -30,7 +30,7 @@ use MessageSpecifier;
 class CaptchaScoreHooks implements PageSaveCompleteHook, EditPage__attemptSave_afterHook {
 
 	private const STREAM = 'mediawiki.hcaptcha.risk_score';
-	private const SCHEMA = '/analytics/mediawiki/hcaptcha/risk_score/1.2.0';
+	private const SCHEMA = '/analytics/mediawiki/hcaptcha/risk_score/1.3.0';
 
 	public function __construct(
 		private readonly EventSubmitter $eventSubmitter,
@@ -137,6 +137,9 @@ class CaptchaScoreHooks implements PageSaveCompleteHook, EditPage__attemptSave_a
 			'mw_entry_point' => MW_ENTRY_POINT,
 			'wiki_id' => WikiMap::getCurrentWikiId(),
 		];
+		if ( $request->getHeader( 'x-is-browser' ) ) {
+			$event['x_is_browser'] = $request->getHeader( 'x-is-browser' );
+		}
 
 		if ( $logType !== null ) {
 			$event['log_type'] = $logType;

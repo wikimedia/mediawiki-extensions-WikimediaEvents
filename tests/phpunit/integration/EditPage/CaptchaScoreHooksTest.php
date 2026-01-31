@@ -231,7 +231,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$expectedPerformer = $userEntitySerializer->toArray( $user );
 
 		$expectedEvent = [
-			'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.2.0',
+			'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.3.0',
 			'action' => $isNullEdit ? 'null_edit' : CaptchaTriggers::EDIT,
 			'wiki_id' => WikiMap::getCurrentWikiId(),
 			'identifier' => $revisionId,
@@ -343,7 +343,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				$services->getCentralIdLookup()
 			);
 			$expectedEvent = [
-				'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.2.0',
+				'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.3.0',
 				'action' => 'failed_edit',
 				'wiki_id' => WikiMap::getCurrentWikiId(),
 				'identifier' => $expectedRevisionId,
