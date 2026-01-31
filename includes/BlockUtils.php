@@ -48,7 +48,7 @@ class BlockUtils {
 		}
 
 		$event = [
-			'$schema' => '/analytics/mediawiki/editattemptsblocked/1.2.0',
+			'$schema' => '/analytics/mediawiki/editattemptsblocked/1.3.0',
 			'block_id' => json_encode( $block->getIdentifier() ),
 			// @phan-suppress-next-line PhanTypeMismatchDimFetchNullable
 			'block_type' => Block::BLOCK_TYPES[ $block->getType() ] ?? 'other',
@@ -103,6 +103,9 @@ class BlockUtils {
 		}
 		if ( isset( $securityLogContext['ip_reputation_behaviors'] ) ) {
 			$event['ip_reputation_behaviors'] = $securityLogContext['ip_reputation_behaviors'];
+		}
+		if ( isset( $securityLogContext['ip_reputation_organization'] ) ) {
+			$event['ip_reputation_organization'] = $securityLogContext['ip_reputation_organization'];
 		}
 		EventLogging::submit( 'mediawiki.editattempt_block', $event );
 	}
