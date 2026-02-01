@@ -78,10 +78,6 @@
 				"PermissionManager"
 			]
 		},
-		"EmailAuthHooks": {
-			"class": "WikimediaEvents\\EmailAuthHooks",
-			"factory": "WikimediaEvents\\EmailAuthHooks::factory"
-		},
 		"IPReputationHooks": {
 			"class": "WikimediaEvents\\IPReputationHooks",
 			"services": [
@@ -153,7 +149,6 @@
 			"CaptchaScoreHooks",
 			"TemporaryAccountsInstrumentation"
 		],
-		"EmailAuthRequireToken": "EmailAuthHooks",
 		"LocalUserCreated": "IPReputationHooks",
 		"PreferencesFormPreSave": "VectorInstrumentation",
 		"SaveUserOptions": "PrefInstrumentation",
@@ -486,10 +481,6 @@
 		"WikimediaEventsIPReputationAccountAgeThreshold": {
 			"description": "Number (in days) to use as a cut off for recording IP reputation data on edits. User accounts older than this number of days will not be included in logging of IP reputation data on edit.",
 			"value": 90
-		},
-		"WikimediaEventsEmailAuthEnforce": {
-			"description": "Whether to enforce email auth verification. Default is false, so log-only mode.",
-			"value": false
 		},
 		"WikimediaEventsCreateAccountInstrumentation": {
 			"description": "Whether to submit server-side instrumentation events for post-account creation pageviews. Default is false.",
