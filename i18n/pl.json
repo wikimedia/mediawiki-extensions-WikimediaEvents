@@ -8,7 +8,13 @@
 			"Woytecr"
 		]
 	},
-	"wikimediaevents-desc": "Rejestruje operacje specyficzne dla Fundacji Wikimedii przy użyciu rozszerzenia EventLogging",
+	"wikimediaevents-desc": "Rejestruje zdarzenia specyficzne dla Fundacji Wikimedia przy użyciu rozszerzenia EventLogging",
+	"apihelp-wikimediaeventsblockededit-summary": "Zarejestruj informację o zablokowanych próbach edycji",
+	"apihelp-wikimediaeventsblockededit-param-page": "Strona, na której podjęto próbę edycji",
+	"apihelp-wikimediaeventsblockededit-param-interface": "Interfejs, który był używany do edycji",
+	"apihelp-wikimediaeventsblockededit-param-platform": "Platforma, która została użyta do edycji",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|Przesłanie z innej wiki]]",
-	"tag-cross-wiki-upload-description": "Pliki przesłane z poziomu edytora wikikodu lub wizualnego na innej wiki"
+	"tag-cross-wiki-upload-description": "Pliki przesłane z poziomu edytora wikikodu lub wizualnego na innej wiki",
+	"wikimediaevents-special-wikimediadebug-submit-clear": "Usuń ciasteczko",
+	"wikimediaevents-special-wikimediadebug-header-active": "Cookie [https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] jest obecnie '''włączone''' na <code>$1</code>.\n\nWygasa $2.\n\nKliknij przycisk, aby go usunąć z tego urządzenia. Pamiętaj, że spowoduje to usunięcie tego cookie tylko w tej domenie – jeśli aktywowałeś go w innych domenach, musisz go wyczyścić osobno za pośrednictwem specjalnej strony dla tych domen (lub skorzystać z funkcji czyszczenia plików cookie w swojej przeglądarce)."
 }
