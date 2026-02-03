@@ -7,11 +7,11 @@ const STREAM_NAME = 'mediawiki.product_metrics.reading_list';
 const ACTION_SAVE = 'save_article_to_reading_list';
 const ACTION_REMOVE = 'remove_article_from_reading_list';
 
-const experimentPromise = mw.loader.using( 'ext.xLab' )
+const experimentPromise = mw.loader.using( 'ext.testKitchen' )
 	.then( () => {
 		// need try/catch for jquery error when user is logged out and experiment.setStream fails
 		try {
-			const experiment = mw.xLab.getExperiment( EXPERIMENT_NAME );
+			const experiment = mw.testKitchen.getExperiment( EXPERIMENT_NAME );
 			experiment.setStream( STREAM_NAME );
 			return experiment;
 		} catch ( error ) {
@@ -20,7 +20,7 @@ const experimentPromise = mw.loader.using( 'ext.xLab' )
 		}
 	} )
 	.catch( ( error ) => {
-		mw.log( 'Error loading ext.xLab module:', error );
+		mw.log( 'Error loading ext.testKitchen module:', error );
 		return null;
 	} );
 
