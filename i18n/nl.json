@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Festina90",
+			"HanV",
 			"Krinkle",
 			"Mainframe98",
 			"McDutchie",
@@ -15,6 +16,12 @@
 	"apihelp-wikimediaeventsblockededit-param-page": "Een pagina waarop een bewerkingspoging is gedaan",
 	"apihelp-wikimediaeventsblockededit-param-interface": "De interface die werd gebruikt om te bewerken",
 	"apihelp-wikimediaeventsblockededit-param-platform": "Het platform dat werd gebruikt om te bewerken",
+	"apihelp-wikimediaeventshcaptchaeditattempt-summary": "Log de wijzigingen in de bewerking wanneer de hCaptcha-uitdaging wordt weergegeven, maar de bewerking onvolledig is",
+	"apihelp-wikimediaeventshcaptchaeditattempt-param-title": "Paginatitel",
+	"apihelp-wikimediaeventshcaptchaeditattempt-param-proposed_content": "Voorgestelde inhoudstekst (max. 8KB)",
+	"apihelp-wikimediaeventshcaptchaeditattempt-param-editing_session_id": "Sessie-ID bewerken",
+	"apihelp-wikimediaeventshcaptchaeditattempt-param-revision_id": "Versie-ID van de pagina die wordt bewerkt",
+	"apierror-wikimediaevents-skipcaptcha-not-applicable": "Gebruikers met het recht skipcaptcha kunnen deze API niet gebruiken",
 	"tag-cross-wiki-upload": "Upload vanaf een andere wiki",
 	"tag-cross-wiki-upload-description": "Bestanden geüpload vanuit de visuele tekstverwerker in andere wiki's",
 	"wikimediaevents-special-wikimediadebug-notenabled": "Deze speciale pagina is niet ingeschakeld.",
