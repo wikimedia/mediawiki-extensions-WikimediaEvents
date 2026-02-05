@@ -1,0 +1,36 @@
+/**
+ * A simple experiment-specific instrument that sends a "page-visited" event if the current user is
+ * enrolled in the "sds2-4-11-synth-aa-test-2" experiment.
+ *
+ * History
+ * =======
+ *
+ * 2026-02-05:
+ * This instrument was resurrected and repurposed for the "synth-aaa-test-mw-js" experiment. This
+ * experiment validates the ability to run A/A/A experiments.
+ *
+ * 2025-08-07:
+ * This instrument was repurposed for the "synth-aa-test-mw-js" experiment. See
+ * https://phabricator.wikimedia.org/T397140 for more context.
+ *
+ * 2025-06-27:
+ * This instrument was repurposed for the "sds2-4-11-synth-aa-test-2" experiment. See
+ * https://phabricator.wikimedia.org/T397138 for more context.
+ *
+ * Previously:
+ * This instrument was used for the "sds2-4-11-synth-aa-test-2" experiment. See
+ * https://phabricator.wikimedia.org/T393918 and its parent task
+ * https://phabricator.wikimedia.org/T392313 for more context.
+ */
+
+const EXPERIMENT_NAME = 'synth-aaa-test-mw-js';
+
+mw.loader.using( 'ext.testKitchen' ).then( () => {
+	mw.testKitchen.getExperiment( EXPERIMENT_NAME )
+		.send(
+			'page-visited',
+			{
+				instrument_name: 'PageVisit'
+			}
+		);
+} );

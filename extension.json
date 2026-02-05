@@ -300,6 +300,7 @@
 					]
 				},
 				"testKitchen/readingListAB.js",
+				"testKitchen/pageVisit.js",
 				"specialCreateAccount/init.js",
 				"specialCreateAccount/instrumentation.js",
 				"specialCreateAccount/useInstrument.js"
