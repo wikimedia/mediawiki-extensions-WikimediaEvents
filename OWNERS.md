@@ -197,6 +197,14 @@ sending events originating from instruments and logged-in experiments to.
 
 More details at <https://phabricator.wikimedia.org/T407570>
 
+## Test Kitchen A/A/A Test
+
+* Since: February 2026
+* Files: testKitchen/pageVisit.js
+* Contact: Experiment Platform
+
+A synthetic experiment to test to validate that A/A/A experiments can be run.
+
 # Code ownership for other code in WikimediaEvents
 
 ## Temporary account instrumentation
