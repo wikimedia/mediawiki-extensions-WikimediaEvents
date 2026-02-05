@@ -11,6 +11,9 @@ const SCHEMA_ID = '/analytics/product_metrics/web/base_with_ip/2.0.0';
 
 mw.loader.using( 'ext.testKitchen' ).then( () => {
 	const instrument = mw.testKitchen.getInstrument( INSTRUMENT_NAME );
+	if ( !instrument.isStreamInSample() ) {
+		return;
+	}
 	instrument.setSchemaID( SCHEMA_ID );
 
 	let botScore = 0;
