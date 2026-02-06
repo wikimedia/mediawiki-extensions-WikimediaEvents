@@ -270,3 +270,10 @@ Click Through (baseline) Rate for links on the Watchlist
 * Since: January 2026
 * Modules: ext.wikimediaEvents.personalDashboard
 * Contact: Moderator Tools
+
+
+## Logged out warning experiment
+
+* Since: February 2026
+* Files: ext.wikimediaEvents/loggedOutWarning.js
+* Contact: Growth

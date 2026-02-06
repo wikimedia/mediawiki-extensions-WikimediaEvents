@@ -26,6 +26,7 @@ require( './editAttemptStep.js' );
 require( './mobileSectionSwitch.js' );
 require( './hCaptcha.js' )();
 require( './networkProbe.js' );
+require( './loggedOutWarning.js' )();
 require( './testKitchen/pageVisitBotDetection.js' );
 require( './testKitchen/externalPathTest.js' );
 require( './specialCreateAccount/init.js' );

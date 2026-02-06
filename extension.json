@@ -262,6 +262,7 @@
 				"editAttemptStep.js",
 				"mobileSectionSwitch.js",
 				"hCaptcha.js",
+				"loggedOutWarning.js",
 				{
 					"name": "config.json",
 					"config": [
