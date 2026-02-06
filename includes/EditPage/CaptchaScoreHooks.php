@@ -217,7 +217,10 @@ class CaptchaScoreHooks implements PageSaveCompleteHook, EditPage__attemptSave_a
 		if ( $message instanceof ApiMessage ) {
 			if ( str_starts_with( $errorMessageKey, 'abusefilter-' ) ) {
 				$apiData = $message->getApiData();
-				return $apiData['abusefilter']['id'] ?? null;
+
+				return $this->castAbuseFilterId(
+					$apiData['abusefilter']['id'] ?? null
+				);
 			}
 		}
 
@@ -229,12 +232,32 @@ class CaptchaScoreHooks implements PageSaveCompleteHook, EditPage__attemptSave_a
 			// When that happens, $message does not carry information about the
 			// filter that triggered the captcha consequence, so we try to read
 			// it from the user session instead.
-			return $this->getSession()->get(
-				CaptchaConsequence::FILTER_ID_SESSION_KEY
+			return $this->castAbuseFilterId(
+				$this->getSession()->get(
+					CaptchaConsequence::FILTER_ID_SESSION_KEY
+				)
 			);
 		}
 
 		return null;
+	}
+
+	/**
+	 * Validates if an AbuseFilter ID is valid, returning its value as an
+	 * integer if it is, or null if it is not. This is needed because the schema
+	 * defines abuse_filter_id as an optional integer.
+	 *
+	 * @param mixed $value Raw value for the AbuseFilter ID
+	 * @return int|null Filter ID, null if $value does not represent a valid ID.
+	 */
+	private function castAbuseFilterId( mixed $value ): ?int {
+		if ( !is_numeric( $value ) ) {
+			return null;
+		}
+
+		// Cast the value to an integer and ensure it is positive (T416622).
+		$intVal = (int)$value;
+		return ( $intVal > 0 ? $intVal : null );
 	}
 
 	/**

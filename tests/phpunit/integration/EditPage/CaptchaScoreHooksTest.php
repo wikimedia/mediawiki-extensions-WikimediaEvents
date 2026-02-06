@@ -290,8 +290,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			'status' => $status,
 			'expectedRevisionId' => $expectedRevisionId,
 			'expectedLogType' => $expectedLogType,
+			'expectedAFApiMessageDetails' => $expectedAFApiMessageDetails,
 			'captchaTriggers' => $captchaTriggers,
-			'abuseFilterApiMessageDetails' => $abuseFilterApiMessageDetails,
 			'shouldSubmit' => $shouldSubmit,
 			'abuseFilterIdSessionData' => $abuseFilterIdSessionData,
 		] = $params;
@@ -357,7 +357,10 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				'editing_session_id' => 'session-42',
 				'log_type' => $expectedLogType,
 			];
-			$expectedEvent = array_merge( $expectedEvent, $abuseFilterApiMessageDetails ?? [] );
+			$expectedEvent = array_merge(
+				$expectedEvent,
+				$expectedAFApiMessageDetails ?? []
+			);
 
 			$eventSubmitterMock->expects( $this->once() )
 				->method( 'submit' )
@@ -400,6 +403,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		];
 
 		return [
+			// Scenarios where hCaptcha is not triggered
+			//
 			'With a different type of captcha' => [ [
 				'status' => Status::newFatal( new ApiMessage(
 					'abusefilter-disallowed',
@@ -408,13 +413,13 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				) ),
 				'expectedRevisionId' => 0,
 				'expectedLogType' => '',
+				'expectedAFApiMessageDetails' => [],
 				'captchaTriggers' => [
 					'edit' => array_merge(
 						$hCaptchaTrigger,
 						[ 'class' => 'FancyCaptcha' ]
 					),
 				],
-				'abuseFilterApiMessageDetails' => [],
 				'shouldSubmit' => false,
 				'abuseFilterIdSessionData' => null,
 			] ],
@@ -426,17 +431,20 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				) ),
 				'expectedRevisionId' => 0,
 				'expectedLogType' => '',
+				'expectedAFApiMessageDetails' => [],
 				'captchaTriggers' => [
 					'edit' => array_merge(
 						$hCaptchaTrigger,
 						[ 'trigger' => false ]
 					),
 				],
-				'abuseFilterApiMessageDetails' => [],
 				'shouldSubmit' => false,
 				'abuseFilterIdSessionData' => null,
 			] ],
-			'abuse filter in the status object' => [ [
+
+			// Scenarios passing the Abuse Filter ID in the status object
+			//
+			'hCaptcha failure, valid Abuse Filter ID in the status object (integer)' => [ [
 				'status' => Status::newFatal( new ApiMessage(
 					'abusefilter-disallowed',
 					'abusefilter-disallowed',
@@ -444,33 +452,265 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				) ),
 				'expectedRevisionId' => 101,
 				'expectedLogType' => 'other',
-				'captchaTriggers' => [
-					'edit' => $hCaptchaTrigger
-				],
-				'abuseFilterApiMessageDetails' => [
+				'expectedAFApiMessageDetails' => [
 					'log_type' => 'abuse_filter',
 					'abuse_filter_id' => 123
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
 				],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => null,
 			] ],
-			'hCaptcha failure with abuse filter filterId in the session' => [ [
+			'hCaptcha failure, valid Abuse Filter ID in the status object (numeric string)' => [ [
+				'status' => Status::newFatal( new ApiMessage(
+					'abusefilter-disallowed',
+					'abusefilter-disallowed',
+					[ 'abusefilter' => [ 'id' => '123' ] ]
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [
+					'log_type' => 'abuse_filter',
+					'abuse_filter_id' => 123
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => null,
+			] ],
+			'hCaptcha failure, invalid Abuse Filter ID in the status object (non-numeric string)' => [ [
+				'status' => Status::newFatal( new ApiMessage(
+					'abusefilter-disallowed',
+					'abusefilter-disallowed',
+					[ 'abusefilter' => [ 'id' => 'foobar' ] ]
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [
+					// Log type is other due to the inability
+					// to determine the filter ID
+					'log_type' => 'other',
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => null,
+			] ],
+			'hCaptcha failure, invalid Abuse Filter ID in the status object (negative string)' => [ [
+				// Negative values are forbidden by the schema
+				'status' => Status::newFatal( new ApiMessage(
+					'abusefilter-disallowed',
+					'abusefilter-disallowed',
+					[ 'abusefilter' => [ 'id' => '-1' ] ]
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [
+					// Log type is other due to the inability
+					// to determine the filter ID
+					'log_type' => 'other',
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => null,
+			] ],
+			'hCaptcha failure, invalid Abuse Filter ID in the status object (negative integer)' => [ [
+				// Negative values are forbidden by the schema
+				'status' => Status::newFatal( new ApiMessage(
+					'abusefilter-disallowed',
+					'abusefilter-disallowed',
+					[ 'abusefilter' => [ 'id' => -1 ] ]
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [
+					// Log type is other due to the inability
+					// to determine the filter ID
+					'log_type' => 'other',
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => null,
+			] ],
+			'hCaptcha failure, invalid Abuse Filter ID in the status object (zero, integer)' => [ [
+				// Zero is forbidden by the schema
+				'status' => Status::newFatal( new ApiMessage(
+					'abusefilter-disallowed',
+					'abusefilter-disallowed',
+					[ 'abusefilter' => [ 'id' => 0 ] ]
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [
+					// Log type is other due to the inability
+					// to determine the filter ID
+					'log_type' => 'other',
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => null,
+			] ],
+			'hCaptcha failure, invalid Abuse Filter ID in the status object (zero, string)' => [ [
+				// Zero is forbidden by the schema
+				'status' => Status::newFatal( new ApiMessage(
+					'abusefilter-disallowed',
+					'abusefilter-disallowed',
+					[ 'abusefilter' => [ 'id' => '0' ] ]
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [
+					// Log type is other due to the inability
+					// to determine the filter ID
+					'log_type' => 'other',
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => null,
+			] ],
+
+			// Scenarios passing the Abuse Filter ID through the user session
+			//
+			'hCaptcha failure, valid AbuseFilter ID in the session object (integer)' => [ [
 				'status' => Status::newFatal( new ApiMessage(
 					'hcaptcha-force-show-captcha-edit',
 					'hcaptcha-force-show-captcha-edit',
 				) ),
 				'expectedRevisionId' => 101,
 				'expectedLogType' => 'other',
-				'captchaTriggers' => [
-					'edit' => $hCaptchaTrigger
-				],
-				'abuseFilterApiMessageDetails' => [
+				'expectedAFApiMessageDetails' => [
 					'log_type' => 'abuse_filter',
 					'abuse_filter_id' => 123
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
 				],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => 123,
 			] ],
+			'hCaptcha failure, valid AbuseFilter ID in the session object (string)' => [ [
+				'status' => Status::newFatal( new ApiMessage(
+					'hcaptcha-force-show-captcha-edit',
+					'hcaptcha-force-show-captcha-edit',
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [
+					'log_type' => 'abuse_filter',
+					'abuse_filter_id' => 123
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => '123',
+			] ],
+			'hCaptcha failure, invalid Abuse Filter ID in the session object (non-numeric string)' => [ [
+				'status' => Status::newFatal( new ApiMessage(
+					'abusefilter-disallowed',
+					'abusefilter-disallowed',
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [
+					// Log type is other due to the inability
+					// to determine the filter ID
+					'log_type' => 'other',
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => 'foobar',
+			] ],
+			'hCaptcha failure, invalid Abuse Filter ID in the session object (negative string)' => [ [
+				'status' => Status::newFatal( new ApiMessage(
+					'abusefilter-disallowed',
+					'abusefilter-disallowed',
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [
+					// Log type is other due to the inability
+					// to determine the filter ID
+					'log_type' => 'other',
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => '-1',
+			] ],
+			'hCaptcha failure, invalid Abuse Filter ID in the session object (negative integer)' => [ [
+				'status' => Status::newFatal( new ApiMessage(
+					'abusefilter-disallowed',
+					'abusefilter-disallowed',
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [
+					// Log type is other due to the inability
+					// to determine the filter ID
+					'log_type' => 'other',
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => -1,
+			] ],
+			'hCaptcha failure, invalid Abuse Filter ID in the session object (zero, integer)' => [ [
+				// Zero is forbidden by the schema
+				'status' => Status::newFatal( new ApiMessage(
+					'abusefilter-disallowed',
+					'abusefilter-disallowed',
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [
+					// Log type is other due to the inability
+					// to determine the filter ID
+					'log_type' => 'other',
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => 0,
+			] ],
+			'hCaptcha failure, invalid Abuse Filter ID in the session object (zero, string)' => [ [
+				// Zero is forbidden by the schema
+				'status' => Status::newFatal( new ApiMessage(
+					'abusefilter-disallowed',
+					'abusefilter-disallowed',
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [
+					// Log type is other due to the inability
+					// to determine the filter ID
+					'log_type' => 'other',
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => '0',
+			] ],
+
+			// Scenarios for error statuses
+			//
 			'captcha failure' => [ [
 				'status' => Status::newFatal( new ApiMessage(
 					'captcha',
@@ -478,10 +718,10 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				) ),
 				'expectedRevisionId' => 101,
 				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [],
 				'captchaTriggers' => [
 					'edit' => $hCaptchaTrigger
 				],
-				'abuseFilterApiMessageDetails' => [],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => null,
 			] ],
@@ -492,13 +732,16 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				) ),
 				'expectedRevisionId' => 101,
 				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [],
 				'captchaTriggers' => [
 					'edit' => $hCaptchaTrigger
 				],
-				'abuseFilterApiMessageDetails' => [],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => null,
 			] ],
+
+			// Scenario where the edit goes through (no error submitted)
+			//
 			'no errors' => [ [
 				'status' => Status::newGood(),
 				'expectedRevisionId' => 0,
@@ -506,7 +749,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				'captchaTriggers' => [
 					'edit' => $hCaptchaTrigger
 				],
-				'abuseFilterApiMessageDetails' => [],
+				'expectedAFApiMessageDetails' => [],
 				'shouldSubmit' => false,
 				'abuseFilterIdSessionData' => null,
 			] ],
