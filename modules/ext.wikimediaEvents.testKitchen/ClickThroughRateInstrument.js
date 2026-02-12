@@ -67,9 +67,9 @@ const intersectionObserver = new IntersectionObserver(
  * ## Usage
  *
  * ```
- * const { ClickThroughRateInstrument } = require( 'ext.wikimediaEvents.xLab' );
+ * const { ClickThroughRateInstrument } = require( 'ext.wikimediaEvents.testKitchen' );
  *
- * const i = mw.xLab.getInstrument( 'my-awesome-instrument' );
+ * const i = mw.testKitchen.getInstrument( 'my-awesome-instrument' );
  *
  * const result = ClickThroughRateInstrument.start(
  *     '[data-pinnable-element-id="vector-main-menu"] .vector-pinnable-header-unpin-button',

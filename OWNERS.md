@@ -229,18 +229,6 @@ More details at <https://phabricator.wikimedia.org/T394744>
 * Files: ext.wikimediaEvents/hCaptcha.js
 * Contact: Product Safety and Integrity
 
-## Experiment Platform Standardized Instruments
-
-* Since: January 2025
-* Modules: ext.wikimediaEvents.xLab
-* Contact: Experiment Platform
-
-A collection of standardized instruments, including:
-
-1. Click Through Rate (CTR)
-
-Above will be removed in favor of ext.wikimediaEvents.testKitchen
-
 ## Experiment Platform Test Kitchen Standardized Instruments
 
 * Since: January 2026

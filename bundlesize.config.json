@@ -4,10 +4,6 @@
 		"maxSize": null
 	},
 	{
-		"resourceModule": "ext.wikimediaEvents.xLab",
-		"maxSize": null
-	},
-	{
 		"resourceModule": "ext.wikimediaEvents.testKitchen",
 		"maxSize": null
 	},

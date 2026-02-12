@@ -302,7 +302,6 @@
 			],
 			"dependencies": [
 				"ext.wikimediaEvents.testKitchen",
-				"ext.wikimediaEvents.xLab",
 				"web2017-polyfills",
 				"ext.eventLogging",
 				"mediawiki.user",
@@ -362,18 +361,7 @@
 				"onWatchlistBaselineClick.js"
 			],
 			"dependencies": [
-				"ext.wikimediaEvents.xLab"
-			]
-		},
-		"ext.wikimediaEvents.xLab": {
-			"localBasePath": "modules/ext.wikimediaEvents.xLab",
-			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.xLab",
-			"packageFiles": [
-				"index.js",
-				"ClickThroughRateInstrument.js"
-			],
-			"dependencies": [
-				"ext.eventLogging"
+				"ext.wikimediaEvents.testKitchen"
 			]
 		},
 		"ext.wikimediaEvents.personalDashboard": {
