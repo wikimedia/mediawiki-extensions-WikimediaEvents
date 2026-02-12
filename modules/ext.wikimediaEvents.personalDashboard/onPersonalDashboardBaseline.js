@@ -1,4 +1,4 @@
-const { ClickThroughRateInstrument } = require( 'ext.wikimediaEvents.xLab' );
+const { ClickThroughRateInstrument } = require( 'ext.wikimediaEvents.testKitchen' );
 const specialPageName = mw.config.get( 'wgCanonicalSpecialPageName' );
 
 function instrumentPolicyLinks( instrument ) {
