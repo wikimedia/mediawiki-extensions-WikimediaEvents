@@ -4,7 +4,7 @@
  * SessionLengthInstrumentMixin: Tracks session length.
  *
  * Starts and stops ticks based on user activity, with a reset after inactivity.
- * Integrates with `mw.eventLog` and `mw.xLab` for analytics.
+ * Integrates with `mw.eventLog` and `mw.testKitchen` for analytics.
  *
  * Use `start( streamName, schemaID )` or `start( experiment )` to begin tracking,
  * Optional parameters:
@@ -33,7 +33,7 @@ const KEY_LAST_TIME = 'mp-sessionTickLastTickTime';
 const KEY_COUNT = 'mp-sessionTickTickCount';
 
 // Stores active sessions with their streamName and schemaID.
-// xLab users may pass in an Instrument/Experiment object.
+// Test Kitchen users may pass in an Instrument/Experiment object.
 const state = new Map();
 
 // Checks if browser supports passive event listeners.
@@ -86,7 +86,7 @@ function sessionTick( incr, tickLimit ) {
 			data = Object.assign( {
 				action_context: count.toString()
 			}, data );
-			// xLab Experiment objects are API-compatible with
+			// Test Kitchen Experiment objects are API-compatible with
 			// Instrument objects' `submitInteraction` method; either can
 			// be used here.
 			instrument.submitInteraction( 'tick', data );

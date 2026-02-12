@@ -68,7 +68,7 @@ QUnit.test( 'Stop sessionLength Tracking', ( assert ) => {
 } );
 
 QUnit.test( 'Start sessionLength with Experiment instance and data', ( assert ) => {
-	// Stub the `mw.xLab.Experiment` class. Only `submitInteraction` is required.
+	// Stub the `mw.testKitchen.Experiment` class. Only `submitInteraction` is required.
 	function ExperimentStub() {
 		this.submitInteraction = function () {};
 	}
