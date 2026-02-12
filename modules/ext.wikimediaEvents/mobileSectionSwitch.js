@@ -4,15 +4,15 @@ const EXPERIMENT_NAME = 'fy25-26-we-1-1-19-mobile-section-dead-end-phase-2';
 const SCHEMA_NAME = '/analytics/product_metrics/web/base/1.5.0';
 const STREAM_NAME = 'mediawiki.product_metrics.contributors.experiments';
 
-const experimentPromise = mw.loader.using( 'ext.xLab' )
+const experimentPromise = mw.loader.using( 'ext.testKitchen' )
 	.then( () => {
-		const experiment = mw.xLab.getExperiment( EXPERIMENT_NAME );
+		const experiment = mw.testKitchen.getExperiment( EXPERIMENT_NAME );
 		experiment.setSchema( SCHEMA_NAME );
 		experiment.setStream( STREAM_NAME );
 		return experiment;
 	} )
 	.catch( ( error ) => {
-		mw.log( 'Error loading ext.xLab module:', error );
+		mw.log( 'Error loading ext.testKitchen module:', error );
 		return null;
 	} );
 
