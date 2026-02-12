@@ -441,12 +441,12 @@ function log( intakeURL, descriptor, component ) {
 	}
 
 	/**
-	 * @typedef {Object} XLab
+	 * @typedef {Object} TestKitchen
 	 * @property {Function?} getAssignments
 	 */
 	// @ts-ignore
-	const xLab = /** @type {XLab} */ ( mw.xLab );
-	const experimentAssignments = ( xLab && xLab.getAssignments && xLab.getAssignments() ) || {};
+	const testKitchen = /** @type {TestKitchen} */ ( mw.testKitchen );
+	const experimentAssignments = ( testKitchen && testKitchen.getAssignments && testKitchen.getAssignments() ) || {};
 	const experimentNames = Object.keys( experimentAssignments );
 
 	// If the current user is enrolled in one or more experiments, then add the enrollment

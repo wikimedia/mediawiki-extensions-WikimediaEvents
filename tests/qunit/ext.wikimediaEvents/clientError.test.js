@@ -128,9 +128,9 @@ QUnit.test( 'log', function ( assert ) {
 } );
 
 QUnit.test( 'log - error_context includes experiment enrollment information', function ( assert ) {
-	const originalXLab = mw.xLab;
+	const originalTestKitchen = mw.testKitchen;
 
-	mw.xLab = {
+	mw.testKitchen = {
 		getAssignments: function () {
 			return {
 				'sds2-4-11-synth-aa-test': 'control-2',
@@ -156,10 +156,10 @@ QUnit.test( 'log - error_context includes experiment enrollment information', fu
 		'sds2-4-11-synth-aa-test=control-2;sds2-4-11-synth-aa-test-2=control'
 	);
 
-	// Restore mw.xLab if necessary
-	if ( originalXLab ) {
-		mw.xLab = originalXLab;
+	// Restore mw.testKitchen if necessary
+	if ( originalTestKitchen ) {
+		mw.testKitchen = originalTestKitchen;
 	} else {
-		delete mw.xLab;
+		delete mw.testKitchen;
 	}
 } );
