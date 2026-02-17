@@ -6,7 +6,10 @@ use MediaWiki\Context\RequestContext;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\Skin\Skin;
 use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
+use MediaWiki\WikiMap\WikiMap;
 use Wikimedia\Stats\StatsFactory;
+use Wikimedia\Stats\StatsUtils;
+use Wikimedia\Stats\UnitTestingHelper;
 use Wikimedia\TestingAccessWrapper;
 
 /**
@@ -46,13 +49,32 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 		}
 		$statsHelper = StatsFactory::newUnitTestingHelper();
 		$this->setService( 'StatsFactory', $statsHelper->getStatsFactory() );
-		$this->overrideConfigValues( [ 'DBname' => 'example', 'DBmwschema' => null, 'DBprefix' => '' ] );
 
 		$this->editPage( 'Test', 'Test', '', NS_MAIN, $authority );
-		$this->assertArrayContains(
-			$expectedStats,
-			$statsHelper->consumeAllFormatted()
+		$this->assertStatsEmitted( $statsHelper, $expectedStats );
+	}
+
+	/**
+	 * Asserts that the expected stats were emitted.
+	 *
+	 * Processes the expected stats, replacing the {{wiki}} placeholder with the current wiki ID. This must be done
+	 * during the test as the wiki ID is modified during {@link \MediaWikiIntegrationTestCase::setupAllTestDBs()}, which
+	 * executes after the {@link WikimediaEventsHooksTest::provideStatsFactoryOnPageSaveComplete()} data provider is
+	 * executed.
+	 *
+	 * @param UnitTestingHelper $unitTestingHelper
+	 * @param array $expectedStats
+	 */
+	private function assertStatsEmitted( UnitTestingHelper $unitTestingHelper, array $expectedStats ): void {
+		$wiki = StatsUtils::normalizeString( WikiMap::getCurrentWikiId() );
+		$expectedStats = array_map(
+			static function ( $stat ) use ( $wiki ) {
+				return str_replace( '{{wiki}}', $wiki, $stat );
+			},
+			$expectedStats
 		);
+
+		$this->assertArrayContains( $expectedStats, $unitTestingHelper->consumeAllFormatted() );
 	}
 
 	public static function provideStatsFactoryOnPageSaveComplete(): array {
@@ -62,7 +84,7 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 				'named',
 				'vector',
 				[
-					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:example,user:normal,is_mobile:1',
+					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:{{wiki}},user:normal,is_mobile:1',
 					'mediawiki.WikimediaEvents_editResponseTime_seconds:123|ms|#page:content,user:normal,entry:other',
 				]
 			],
@@ -71,7 +93,7 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 				'named',
 				'vector',
 				[
-					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:example,user:normal,is_mobile:1',
+					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:{{wiki}},user:normal,is_mobile:1',
 					'mediawiki.WikimediaEvents_editResponseTime_seconds:123|ms|#page:content,user:normal,entry:other',
 				]
 			],
@@ -80,7 +102,7 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 				'temp',
 				'vector',
 				[
-					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:example,user:temp,is_mobile:1',
+					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:{{wiki}},user:temp,is_mobile:1',
 					'mediawiki.WikimediaEvents_editResponseTime_seconds:123|ms|#page:content,user:temp,entry:other',
 				]
 			],
@@ -89,7 +111,7 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 				'temp',
 				'vector',
 				[
-					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:example,user:temp,is_mobile:1',
+					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:{{wiki}},user:temp,is_mobile:1',
 					'mediawiki.WikimediaEvents_editResponseTime_seconds:123|ms|#page:content,user:temp,entry:other',
 				]
 			],
@@ -98,7 +120,7 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 				'temp',
 				'vector',
 				[
-					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:example,user:temp,is_mobile:0',
+					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:{{wiki}},user:temp,is_mobile:0',
 					'mediawiki.WikimediaEvents_editResponseTime_seconds:123|ms|#page:content,user:temp,entry:other',
 				]
 			],
@@ -107,7 +129,7 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 				'temp',
 				'minerva',
 				[
-					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:example,user:temp,is_mobile:1',
+					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:{{wiki}},user:temp,is_mobile:1',
 					'mediawiki.WikimediaEvents_editResponseTime_seconds:123|ms|#page:content,user:temp,entry:other',
 				]
 			],
@@ -116,7 +138,7 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 				'anon',
 				'vector',
 				[
-					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:example,user:anon,is_mobile:0',
+					'mediawiki.WikimediaEvents_edits_total:1|c|#wiki:{{wiki}},user:anon,is_mobile:0',
 					'mediawiki.WikimediaEvents_editResponseTime_seconds:123|ms|#page:content,user:anon,entry:other',
 				]
 			],
