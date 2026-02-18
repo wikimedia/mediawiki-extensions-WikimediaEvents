@@ -290,9 +290,7 @@
 				"testKitchen/externalPathTest.js",
 				{
 					"name": "testKitchen/externalPathTestConfig.json",
-					"config": [
-						"EventLoggingServiceUri"
-					]
+					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleDataExternalPath"
 				},
 				"testKitchen/readingListAB.js",
 				"testKitchen/pageVisit.js",

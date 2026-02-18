@@ -284,6 +284,24 @@ class WikimediaEventsHooks implements
 	}
 
 	/**
+	 * Callback for ext.wikimediaEvents virtual data.json file for the externalPathTest.
+	 *
+	 * @param RL\Context $context
+	 * @param Config $config
+	 * @return array
+	 */
+	public static function getModuleDataExternalPath( RL\Context $context, Config $config ) {
+		$data = [];
+
+		$data['EventLoggingServiceUri'] = $config->get( 'EventLoggingServiceUri' );
+		if ( $config->has( 'TestKitchenInstrumentEventIntakeServiceUrl' ) ) {
+			$data['TestKitchenInstrumentEventIntakeServiceUrl'] =
+				$config->get( 'TestKitchenInstrumentEventIntakeServiceUrl' );
+		}
+		return $data;
+	}
+
+	/**
 	 * Callback for dynamic source files, for conditional loading based on the current skin.
 	 *
 	 * @param RL\Context $context
