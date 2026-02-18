@@ -41,6 +41,12 @@ function setupLoggedOutWarningInstrumentation() {
 				ClickThroughRateInstrument.start( '.actions > a.login', 'Log in', exp );
 				ClickThroughRateInstrument.start( '.actions > a.anonymous', 'Anon editing', exp );
 				ClickThroughRateInstrument.start( '.anon-msg > * > a, .anon-msg > a', 'Temp account info', exp );
+				ClickThroughRateInstrument.start(
+					'.ve-ui-toolbar-group-back > .oo-ui-toolGroup-tools > * > a',
+					'Close button',
+					exp
+				);
+
 			} );
 		} );
 	} );
