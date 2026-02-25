@@ -6,15 +6,11 @@ if ( specialPageName === 'Watchlist' ) {
 	mw.loader.using( 'ext.testKitchen' ).then( () => {
 		const instrument = mw.testKitchen.getInstrument( INSTRUMENT_NAME );
 
-		// The Watchlist CTR to articleLink and Watchlist CTR to diffLink Superset charts expect
-		// the instrument name to be 'WatchlistClickTracker'.
-		instrument.setInstrumentName( 'WatchlistClickTracker' );
-
 		const lines = document.querySelectorAll( '.mw-changeslist-line-inner' );
 
 		if ( lines.length >= MIN_WATCHLIST_ITEMS ) {
 			// Log that the user visited the watchlist page
-			instrument.submitInteraction( 'page-visited', {
+			instrument.send( 'page-visited', {
 				action_source: 'Watchlist'
 			} );
 			lines.forEach( ( line ) => {
@@ -47,11 +43,11 @@ if ( specialPageName === 'Watchlist' ) {
 					if ( link ) {
 						link.addEventListener( 'click', () => {
 							// Submit the event
-							instrument.submitClick(
+							instrument.send(
+								'click',
 								{
 									action_source: 'Watchlist',
-									action_context: key,
-									instrument_name: INSTRUMENT_NAME
+									action_context: key
 								}
 							);
 						} );
