@@ -294,6 +294,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			'captchaTriggers' => $captchaTriggers,
 			'shouldSubmit' => $shouldSubmit,
 			'abuseFilterIdSessionData' => $abuseFilterIdSessionData,
+			'isBrowser' => $isBrowser,
 		] = $params;
 
 		$this->overrideConfigValue( 'CaptchaTriggers', $captchaTriggers );
@@ -320,6 +321,10 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			],
 			true
 		);
+
+		if ( $isBrowser !== null ) {
+			$request->setHeader( 'x-is-browser', $isBrowser );
+		}
 
 		RequestContext::getMain()->setRequest( $request );
 
@@ -422,6 +427,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				],
 				'shouldSubmit' => false,
 				'abuseFilterIdSessionData' => null,
+				'isBrowser' => null,
 			] ],
 			'hCaptcha trigger disabled' => [ [
 				'status' => Status::newFatal( new ApiMessage(
@@ -440,6 +446,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				],
 				'shouldSubmit' => false,
 				'abuseFilterIdSessionData' => null,
+				'isBrowser' => null,
 			] ],
 
 			// Scenarios passing the Abuse Filter ID in the status object
@@ -461,6 +468,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => null,
+				'isBrowser' => null,
 			] ],
 			'hCaptcha failure, valid Abuse Filter ID in the status object (numeric string)' => [ [
 				'status' => Status::newFatal( new ApiMessage(
@@ -479,6 +487,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => null,
+				'isBrowser' => null,
 			] ],
 			'hCaptcha failure, invalid Abuse Filter ID in the status object (non-numeric string)' => [ [
 				'status' => Status::newFatal( new ApiMessage(
@@ -498,6 +507,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => null,
+				'isBrowser' => null,
 			] ],
 			'hCaptcha failure, invalid Abuse Filter ID in the status object (negative string)' => [ [
 				// Negative values are forbidden by the schema
@@ -518,6 +528,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => null,
+				'isBrowser' => null,
 			] ],
 			'hCaptcha failure, invalid Abuse Filter ID in the status object (negative integer)' => [ [
 				// Negative values are forbidden by the schema
@@ -538,6 +549,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => null,
+				'isBrowser' => null,
 			] ],
 			'hCaptcha failure, invalid Abuse Filter ID in the status object (zero, integer)' => [ [
 				// Zero is forbidden by the schema
@@ -558,6 +570,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => null,
+				'isBrowser' => null,
 			] ],
 			'hCaptcha failure, invalid Abuse Filter ID in the status object (zero, string)' => [ [
 				// Zero is forbidden by the schema
@@ -578,6 +591,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => null,
+				'isBrowser' => null,
 			] ],
 
 			// Scenarios passing the Abuse Filter ID through the user session
@@ -598,6 +612,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => 123,
+				'isBrowser' => null,
 			] ],
 			'hCaptcha failure, valid AbuseFilter ID in the session object (string)' => [ [
 				'status' => Status::newFatal( new ApiMessage(
@@ -615,6 +630,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => '123',
+				'isBrowser' => null,
 			] ],
 			'hCaptcha failure, invalid Abuse Filter ID in the session object (non-numeric string)' => [ [
 				'status' => Status::newFatal( new ApiMessage(
@@ -633,6 +649,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => 'foobar',
+				'isBrowser' => null,
 			] ],
 			'hCaptcha failure, invalid Abuse Filter ID in the session object (negative string)' => [ [
 				'status' => Status::newFatal( new ApiMessage(
@@ -651,6 +668,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => '-1',
+				'isBrowser' => null,
 			] ],
 			'hCaptcha failure, invalid Abuse Filter ID in the session object (negative integer)' => [ [
 				'status' => Status::newFatal( new ApiMessage(
@@ -669,6 +687,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => -1,
+				'isBrowser' => null,
 			] ],
 			'hCaptcha failure, invalid Abuse Filter ID in the session object (zero, integer)' => [ [
 				// Zero is forbidden by the schema
@@ -688,6 +707,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => 0,
+				'isBrowser' => null,
 			] ],
 			'hCaptcha failure, invalid Abuse Filter ID in the session object (zero, string)' => [ [
 				// Zero is forbidden by the schema
@@ -707,6 +727,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => '0',
+				'isBrowser' => null,
 			] ],
 
 			// Scenarios for error statuses
@@ -724,6 +745,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => null,
+				'isBrowser' => null,
 			] ],
 			'spam blacklist failure' => [ [
 				'status' => Status::newFatal( new ApiMessage(
@@ -738,6 +760,124 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				],
 				'shouldSubmit' => true,
 				'abuseFilterIdSessionData' => null,
+				'isBrowser' => null,
+			] ],
+
+			// Scenarios providing x-is-browser
+			//
+			'hCaptcha failure, valid x-is-browser value (string, 1)' => [ [
+				'status' => Status::newFatal( new ApiMessage(
+					'hcaptcha-force-show-captcha-edit',
+					'hcaptcha-force-show-captcha-edit',
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [
+					'log_type' => 'abuse_filter',
+					'abuse_filter_id' => 123,
+					'x_is_browser' => 1,
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => '123',
+				'isBrowser' => '1',
+			] ],
+			'hCaptcha failure, valid x-is-browser value (string, 0)' => [ [
+				'status' => Status::newFatal( new ApiMessage(
+					'hcaptcha-force-show-captcha-edit',
+					'hcaptcha-force-show-captcha-edit',
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [
+					'log_type' => 'abuse_filter',
+					'abuse_filter_id' => 123,
+					'x_is_browser' => 0,
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => '123',
+				'isBrowser' => '0',
+			] ],
+			'hCaptcha failure, valid x-is-browser value (string, 123)' => [ [
+				'status' => Status::newFatal( new ApiMessage(
+					'hcaptcha-force-show-captcha-edit',
+					'hcaptcha-force-show-captcha-edit',
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [
+					'log_type' => 'abuse_filter',
+					'abuse_filter_id' => 123,
+					'x_is_browser' => 123,
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => '123',
+				'isBrowser' => '123',
+			] ],
+			'hCaptcha failure, valid x-is-browser value (integer, 0)' => [ [
+				'status' => Status::newFatal( new ApiMessage(
+					'hcaptcha-force-show-captcha-edit',
+					'hcaptcha-force-show-captcha-edit',
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [
+					'log_type' => 'abuse_filter',
+					'abuse_filter_id' => 123,
+					'x_is_browser' => 0,
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => '123',
+				'isBrowser' => 0,
+			] ],
+			'hCaptcha failure, valid x-is-browser value (integer, 1)' => [ [
+				'status' => Status::newFatal( new ApiMessage(
+					'hcaptcha-force-show-captcha-edit',
+					'hcaptcha-force-show-captcha-edit',
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [
+					'log_type' => 'abuse_filter',
+					'abuse_filter_id' => 123,
+					'x_is_browser' => 1,
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => '123',
+				'isBrowser' => 1,
+			] ],
+			'hCaptcha failure, valid x-is-browser value (integer, 123)' => [ [
+				'status' => Status::newFatal( new ApiMessage(
+					'hcaptcha-force-show-captcha-edit',
+					'hcaptcha-force-show-captcha-edit',
+				) ),
+				'expectedRevisionId' => 101,
+				'expectedLogType' => 'other',
+				'expectedAFApiMessageDetails' => [
+					'log_type' => 'abuse_filter',
+					'abuse_filter_id' => 123,
+					'x_is_browser' => 123,
+				],
+				'captchaTriggers' => [
+					'edit' => $hCaptchaTrigger
+				],
+				'shouldSubmit' => true,
+				'abuseFilterIdSessionData' => '123',
+				'isBrowser' => 123,
 			] ],
 
 			// Scenario where the edit goes through (no error submitted)
@@ -752,6 +892,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				'expectedAFApiMessageDetails' => [],
 				'shouldSubmit' => false,
 				'abuseFilterIdSessionData' => null,
+				'isBrowser' => null,
 			] ],
 		];
 	}
