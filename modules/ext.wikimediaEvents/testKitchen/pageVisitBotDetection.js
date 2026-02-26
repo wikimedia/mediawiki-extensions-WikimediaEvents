@@ -1,19 +1,37 @@
 /**
- * This instrument is sending data four different ways to understand
- *  a discrepancy in sending and receiving we observed when running
- *  bot-detection-2026-01.
+ * This instrument sends one event at page load, and is meant to run on 100%
+ *   of enwiki traffic.  It sends two custom pieces of information and some
+ *   contextual attributes:
+ *
+ *   in action_context:
+ *     bot=1 if navigator.webdriver is present
+ *     bot=2 if navigator shows more than 70 CPU cores
+ *     bot=0 by default
+ *
+ *   in action_source:
+ *     the cyrb53 hash of path + search
+ *       NOTE: investigating how the caches send data to the Data Lake informs
+ *       us that the browser's location.pathname + location.search will not
+ *       match uri_path + uri_query in some edge cases, like URL-decoding,
+ *       capitalization, etc.  Varnish, ATS, and MediaWiki all do their own
+ *       normalization of the path.  The Data Lake only sees what HA Proxy
+ *       sends us, before those three layers of normalization.  And the
+ *       pageview definition tries to match this, but probably is not perfect.
+ *       More likely to match is the page id (if sent).  See more on wikitech:
+ *         Data_Platform/Data_Lake/Traffic/Pageviews/Redirects
+ *
+ *   contextual attributes:
+ *     ip address - used to join to webrequest
+ *     page id - preferred join key to webrequest, fall back to title hash
+ *     page namespace id - (same as above)
  */
 /* eslint-disable no-bitwise */
 
-// right now this is just a comparison of sending methods (see T416472)
-const INSTRUMENT_NAME = 'bot-detection-2026-02';
+const INSTRUMENT_NAME = 'bot-detection-2026-03';
 const SCHEMA_ID = '/analytics/product_metrics/web/base_with_ip/2.0.0';
 
 mw.loader.using( 'ext.testKitchen' ).then( () => {
 	const instrument = mw.testKitchen.getInstrument( INSTRUMENT_NAME );
-	if ( !instrument.isInSample() ) {
-		return;
-	}
 	instrument.setSchema( SCHEMA_ID );
 
 	let botScore = 0;
@@ -24,77 +42,12 @@ mw.loader.using( 'ext.testKitchen' ).then( () => {
 		botScore |= 2;
 	}
 
-	// fill in timing in centiseconds when sending the event below
-	let interactionData = {
+	const interactionData = {
 		action_context: 'bot=' + botScore,
 		action_source: cyrb53( location.pathname + location.search, 0 )
 	};
-	instrument.submitInteraction( 'page_load', interactionData );
-	sendOld( 'old_page_load', interactionData );
-
-	let alreadySent = false;
-	// used to calculate session time when sending the event
-	const now = Date.now();
-	window.addEventListener( 'pagehide', () => {
-		if ( alreadySent ) {
-			return;
-		}
-		// if this fires, we know js is running and ad-block didn't stop it
-		alreadySent = true;
-		interactionData = {
-			action_context: 't=' + Math.floor( ( Date.now() - now ) / 100 )
-		};
-		instrument.submitInteraction( 'page_hide', interactionData );
-		sendOld( 'old_page_hide', interactionData );
-	} );
-	window.addEventListener( 'visibilitychange', () => {
-		if ( alreadySent ) {
-			return;
-		}
-		if ( document.hidden ) {
-			// if this fires, we know js is running and ad-block didn't stop it
-			alreadySent = true;
-			interactionData = {
-				action_context: 't=' + Math.floor( ( Date.now() - now ) / 100 )
-			};
-			instrument.submitInteraction( 'page_hide', interactionData );
-			sendOld( 'old_page_hide', interactionData );
-		}
-	} );
+	instrument.send( 'page_load', interactionData );
 } );
-
-/**
- * use sendBeacon to send a manually-crafted event to the
- * old TestKitchen instrument endpoint (intake-analytics...)
- *
- * @param {string} action main name of the event
- * @param {Object} interactionData object with action_context and maybe action_source
- */
-function sendOld( action, interactionData ) {
-	if ( navigator.sendBeacon ) {
-		const OLD_ENDPOINT = 'https://intake-analytics.wikimedia.org/v1/events';
-		const STREAM_NAME = 'product_metrics.web_base_with_ip';
-
-		// Collect data using manual logging, event sent to endpoint over HTTPS:
-		const eventData = {
-			$schema: SCHEMA_ID,
-			meta: {
-				stream: STREAM_NAME,
-				domain: window.location.hostname
-			},
-			agent: {
-				client_platform: 'mediawiki_js',
-				// ext.eventLogging.metricsPlatform/MediaWikiMetricsClientIntegration.js#69
-				client_platform_family: mw.config.get( 'wgMFMode' ) !== null ? 'mobile_browser' : 'desktop_browser'
-			},
-			action: action,
-			action_context: interactionData.action_context,
-			action_source: interactionData.action_source,
-			instrument_name: INSTRUMENT_NAME
-		};
-		navigator.sendBeacon( OLD_ENDPOINT, JSON.stringify( eventData ) );
-	}
-}
 
 /**
  * Hash function with no security but low collisions
