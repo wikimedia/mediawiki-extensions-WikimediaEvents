@@ -3,13 +3,17 @@
 // visualeditor (visual and source)
 mw.hook( 've.activationComplete' ).add( () => {
 	if ( !ve.init.target.canEdit ) {
+		let platform = ve.init.target.constructor.static.platformType || 'other';
+		if ( platform === 'phone' ) {
+			platform = 'mobile';
+		}
 		// might be a block or just a protected page; the API will work that out
 		( new mw.Api() ).post( {
 			formatversion: 2,
 			action: 'wikimediaeventsblockededit',
 			page: mw.config.get( 'wgPageName' ),
 			interface: 'visualeditor',
-			platform: ve.getProp( ve.init.target, 'constructor', 'static', 'platformType' ) || 'other'
+			platform
 		} );
 	}
 } );
