@@ -2,6 +2,9 @@
 
 namespace WikimediaEvents;
 
+use CentralAuthApiSessionProvider;
+use CentralAuthHeaderSessionProvider;
+use CentralAuthSessionProvider;
 use ISearchResultSet;
 use MediaWiki\Actions\ActionEntryPoint;
 use MediaWiki\ChangeTags\Hook\ChangeTagsListActiveHook;
@@ -12,6 +15,8 @@ use MediaWiki\Context\RequestContext;
 use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
 use MediaWiki\Extension\ConfirmEdit\Hooks;
+use MediaWiki\Extension\NetworkSession\NetworkSessionProvider;
+use MediaWiki\Extension\OAuth\SessionProvider;
 use MediaWiki\Hook\BeforeInitializeHook;
 use MediaWiki\Hook\RecentChange_saveHook;
 use MediaWiki\Hook\SpecialSearchGoResultHook;
@@ -32,6 +37,8 @@ use MediaWiki\ResourceLoader as RL;
 use MediaWiki\ResourceLoader\Hook\ResourceLoaderRegisterModulesHook;
 use MediaWiki\ResourceLoader\ResourceLoader;
 use MediaWiki\Revision\RevisionRecord;
+use MediaWiki\Session\BotPasswordSessionProvider;
+use MediaWiki\Session\CookieSessionProvider;
 use MediaWiki\Skin\Skin;
 use MediaWiki\Storage\EditResult;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
@@ -113,7 +120,8 @@ class WikimediaEventsHooks implements
 	 * Insert a 'special' key with the resolved name of the special page (if the request is for a
 	 * special page).  If the name does not resolve, special is set to 'unknown' (see T304362).
 	 *
-	 * Add a 'loggedIn' key with the value of 1 if the user is logged in
+	 * Add a 'loggedIn' key with the value of 1 if the user is logged in.
+	 * Add an 'auth_type' key with the value of the SessionProvider type.
 	 * @param OutputPage $out
 	 * @param array &$headerItems
 	 */
@@ -141,6 +149,27 @@ class WikimediaEventsHooks implements
 
 		if ( $out->getUser()->isRegistered() ) {
 			$headerItems['loggedIn'] = 1;
+		}
+		$session = $out->getRequest()->getSession();
+		if ( !$session->getUser()->isAnon() ) {
+			if ( $session->getProvider() instanceof SessionProvider ) {
+				$sessionProviderMetadata = $session->getProviderMetadata();
+				$oauthVersion = $sessionProviderMetadata['oauthVersion'] ?? null;
+				$isOwnerOnly = ( $sessionProviderMetadata['consumerId'] ?? null ) === null;
+				$ownerOnlySuffix = $isOwnerOnly ? '-owneronly' : '';
+				$headerItems['auth_type'] = 'oauth' . $oauthVersion . $ownerOnlySuffix;
+			} else {
+				$headerItems['auth_type'] = match ( (string)$session->getProvider() ) {
+					CentralAuthSessionProvider::class => 'centralauth-cookie',
+					CookieSessionProvider::class => 'core-cookie',
+					BotPasswordSessionProvider::class => 'botpassword',
+					CentralAuthApiSessionProvider::class => 'centralauth-token',
+					CentralAuthHeaderSessionProvider::class => 'centralauth-token',
+					NetworkSessionProvider::class => 'networksession',
+					// @phan-suppress-next-line PhanTypeSuspiciousStringExpression
+					default => 'unknown-' . $session->getProvider(),
+				};
+			}
 		}
 	}
 
