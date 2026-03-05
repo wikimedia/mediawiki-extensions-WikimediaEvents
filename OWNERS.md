@@ -206,6 +206,14 @@ More details at <https://phabricator.wikimedia.org/T407570>
 An experiment to measure logged-out reader retention. This experiment is expected to be run monthly
 and so shouldn't be removed.
 
+## Attribution Research
+
+* Since: March 2026
+* Files: testKitchen/attribution.js
+* Contact: Data Engineering
+
+More details at <https://phabricator.wikimedia.org/T417050>
+
 # Code ownership for other code in WikimediaEvents
 
 ## Temporary account instrumentation

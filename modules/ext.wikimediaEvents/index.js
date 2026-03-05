@@ -29,6 +29,7 @@ require( './networkProbe.js' );
 require( './editSaves.js' );
 require( './loggedOutWarning.js' )();
 require( './accountCreation.js' )();
+require( './testKitchen/attribution.js' );
 require( './testKitchen/pageVisitBotDetection.js' );
 require( './testKitchen/externalPathTest.js' );
 require( './specialCreateAccount/init.js' );
