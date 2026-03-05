@@ -5,6 +5,7 @@ use MediaWiki\Auth\AuthenticationRequest;
 use MediaWiki\Auth\AuthenticationResponse;
 use MediaWiki\Auth\AuthManager;
 use MediaWiki\Auth\Hook\AuthManagerLoginAuthenticateAuditHook;
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\EmailAuth\EmailAuthAuthenticationRequest;
 use MediaWiki\Extension\OATHAuth\Auth\TwoFactorModuleSelectAuthenticationRequest;
 use MediaWiki\Output\Hook\BeforePageDisplayHook;
@@ -54,6 +55,13 @@ class AccountCreationHandler implements
 			$out->getRequest()->getSession()->getUser(),
 			$out->getRequest()
 		);
+		// tell client-side instrumentation if an account was just created
+		// this allows them to send events in the context of edge-unique experiments
+		// NOTE: requires onCentralAuthPostLoginRedirect to set the accountJustCreated query parameter
+		$accountJustCreated = RequestContext::getMain()->getRequest()->getVal( 'accountJustCreated' );
+		if ( $accountJustCreated ) {
+			$out->addJsConfigVars( 'wgTKAccountJustCreated', $accountJustCreated );
+		}
 	}
 
 	/** @inheritDoc */
