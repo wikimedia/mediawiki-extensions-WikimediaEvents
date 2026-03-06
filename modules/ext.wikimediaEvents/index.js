@@ -31,7 +31,7 @@ require( './testKitchen/pageVisitBotDetection.js' );
 require( './testKitchen/externalPathTest.js' );
 require( './specialCreateAccount/init.js' );
 require( './testKitchen/impactTest.js' );
-require( './testKitchen/pageVisit.js' );
+require( './testKitchen/loggedOutReaderRetention.js' );
 
 // Expose the session length instrument for re-use across the MediaWiki ecosystem.
 const { SessionLengthInstrumentMixin } = require( './sessionLength/mixin.js' );

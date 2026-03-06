@@ -197,13 +197,14 @@ sending events originating from instruments and logged-in experiments to.
 
 More details at <https://phabricator.wikimedia.org/T407570>
 
-## Test Kitchen A/A/A Test
+## Logged-out Reader Retention
 
-* Since: February 2026
-* Files: testKitchen/pageVisit.js
-* Contact: Experiment Platform
+* Since: March 2026
+* Files: testKitchen/loggedOutReaderRetention.js
+* Contact: Reader Growth, Experiment Platform
 
-A synthetic experiment to test to validate that A/A/A experiments can be run.
+An experiment to measure logged-out reader retention. This experiment is expected to be run monthly
+and so shouldn't be removed.
 
 # Code ownership for other code in WikimediaEvents
 
