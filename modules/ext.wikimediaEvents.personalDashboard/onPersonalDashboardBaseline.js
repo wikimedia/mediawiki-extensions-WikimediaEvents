@@ -44,11 +44,14 @@ if ( specialPageName === 'PersonalDashboard' ) {
 		instrumentPolicyLinks( instrument );
 
 		mw.hook( 'personaldashboard.recentactivity.loaded' ).add( () => {
-			ClickThroughRateInstrument.start(
-				'#personal-dashboard-go-to-recentchanges',
-				'Go to Recent Changes link',
-				instrument
-			);
+			// Not all views include this link
+			if ( document.querySelector( '#personal-dashboard-go-to-recentchanges' ) ) {
+				ClickThroughRateInstrument.start(
+					'#personal-dashboard-go-to-recentchanges',
+					'Go to Recent Changes link',
+					instrument
+				);
+			}
 		} );
 
 		mw.hook( 'personaldashboard.recentactivity.listcard.loaded' ).add( () => {
