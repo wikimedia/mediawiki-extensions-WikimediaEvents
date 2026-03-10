@@ -5,94 +5,101 @@
 
 const EXPERIMENT_ID = 'synth-test-new-external-path';
 const INSTRUMENT_ID = 'synth-test-external-path';
-const ACTION = 'page_visit';
-const SCHEMA_ID = '/analytics/product_metrics/web/base/2.0.0';
-const STREAM_NAME = 'product_metrics.web_base';
-const OLD_EXTERNAL_PATH = require( './externalPathTestConfig.json' ).EventLoggingServiceUri;
-const NEW_EXTERNAL_PATH = require( './externalPathTestConfig.json' ).TestKitchenInstrumentEventIntakeServiceUrl;
-
-if ( typeof NEW_EXTERNAL_PATH === 'undefined' ) {
-	return;
-}
 
 mw.loader.using( 'ext.testKitchen' ).then( () => {
 	const experiment = mw.testKitchen.getExperiment( EXPERIMENT_ID );
 	const instrument = mw.testKitchen.getInstrument( INSTRUMENT_ID );
 	const timezoneOffset = new Date().getTimezoneOffset();
 
+	// T417143 Send events if the user is enrolled in the experiment.
+	// One event instrument.submitInteraction() is sent to the new external path via normal background queue.
+	// The other event instrument.sendImmediately() is sent to the new external path via navigator.sendBeacon().
+	// Both events are triggered by page load, page unload (pagehide), and page visibility change.
 	if ( experiment.isAssignedGroup( 'control', 'treatment' ) ) {
-
-		//
+		// Set action_context for interactionData
 		const actionContextTK = {
-			tk_sdk: true,
-			ext_path: 'new',
+			method: 'send',
 			tz_offset: timezoneOffset
 		};
 
-		// Send event via the new external path:
-		instrument.submitInteraction( ACTION, {
-			action_context: JSON.stringify( actionContextTK )
+		// Send events on page load.
+		const sendPageLoadInteraction = () => {
+			instrument.submitInteraction( 'page_load', {
+				action_context: JSON.stringify( actionContextTK )
+			} );
+			instrument.sendImmediately( 'page_load', getImmediateInteractionData() );
+		};
+		if ( document.readyState === 'complete' ) {
+			sendPageLoadInteraction();
+		} else {
+			window.addEventListener( 'load', sendPageLoadInteraction );
+		}
+
+		// Send events when page unloaded via pagehide.
+		window.addEventListener( 'pagehide', () => {
+			instrument.submitInteraction( 'pagehide', {
+				action_context: JSON.stringify( actionContextTK )
+			} );
+			instrument.sendImmediately( 'pagehide', getImmediateInteractionData() );
 		} );
 
-		// Send event manually via the old external path:
-		const isMobileFrontendActive = mw.config.get( 'wgMFMode' ) !== null;
+		// Send events on page visibility change.
+		let count = 0;
+		window.addEventListener( 'visibilitychange', () => {
+			if ( document.hidden && count < 3 ) {
+				count += 1;
+				// Send the number of times visibility was changed to "hidden" as action_context
+				// for both event senders.
 
-		const actionContextOldPath = {
-			tk_sdk: false,
-			ext_path: 'old',
-			tz_offset: timezoneOffset
-		};
+				// For default event sender
+				const actionContext = actionContextTK;
+				actionContext.count = String( count );
+				const interactionData = {
+					action_context: JSON.stringify( actionContext )
+				};
+				instrument.submitInteraction( 'visibilitychange', interactionData );
 
-		const eventDataOld = {
-			$schema: SCHEMA_ID,
-			meta: {
-				stream: STREAM_NAME,
-				domain: window.location.hostname
-			},
-			agent: {
-				client_platform: 'mediawiki_js',
-
-				// https://gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/extensions/EventLogging/+/de06180f92aa89802d50fa1b9d2165f483022ac8/modules/ext.eventLogging.metricsPlatform/MediaWikiMetricsClientIntegration.js#69
-				client_platform_family: isMobileFrontendActive ? 'mobile_browser' : 'desktop_browser',
-				ua_string: navigator.userAgent
-			},
-			action: ACTION,
-			action_context: JSON.stringify( actionContextOldPath ),
-			instrument_name: INSTRUMENT_ID,
-			performer: {
-				// https://gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/extensions/EventLogging/+/de06180f92aa89802d50fa1b9d2165f483022ac8/modules/ext.eventLogging.metricsPlatform/MediaWikiMetricsClientIntegration.js#62
-				is_logged_in: !mw.user.isAnon()
+				// For sendImmediately event sender
+				const countContext = {
+					action_context: JSON.stringify( { count: String( count ) } )
+				};
+				const immediateInteractionData = getImmediateInteractionData( countContext );
+				instrument.sendImmediately( 'visibilitychange', immediateInteractionData );
 			}
-		};
-		navigator.sendBeacon( OLD_EXTERNAL_PATH, JSON.stringify( eventDataOld ) );
-
-		// Send event manually to the new external path, T417068:
-		const actionContextNewPath = {
-			tk_sdk: false,
-			ext_path: 'new',
-			tz_offset: timezoneOffset
-		};
-
-		const eventDataNew = {
-			$schema: SCHEMA_ID,
-			meta: {
-				stream: STREAM_NAME,
-				domain: window.location.hostname
-			},
-			agent: {
-				client_platform: 'mediawiki_js',
-				client_platform_family: isMobileFrontendActive ? 'mobile_browser' : 'desktop_browser',
-				ua_string: navigator.userAgent
-			},
-			action: ACTION,
-			action_context: JSON.stringify( actionContextNewPath ),
-			instrument_name: INSTRUMENT_ID,
-			performer: {
-				is_logged_in: !mw.user.isAnon()
-			}
-		};
-
-		navigator.sendBeacon( NEW_EXTERNAL_PATH, JSON.stringify( eventDataNew ) );
-
+		} );
 	}
 } );
+
+/**
+ * Adds sendImmediately-specific action context fields.
+ *
+ * @private
+ * @param {Object} [interactionData]
+ * @return {Object}
+ */
+function getImmediateInteractionData( interactionData = {} ) {
+	const timezoneOffset = new Date().getTimezoneOffset();
+
+	let actionContext = {};
+
+	if ( interactionData.action_context ) {
+		actionContext = JSON.parse( interactionData.action_context );
+	}
+
+	const mergedActionContext = Object.assign(
+		{},
+		actionContext,
+		{
+			method: 'sendImmediately',
+			tz_offset: timezoneOffset
+		}
+	);
+
+	return Object.assign(
+		{},
+		interactionData,
+		{
+			action_context: JSON.stringify( mergedActionContext )
+		}
+	);
+}
