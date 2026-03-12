@@ -264,5 +264,5 @@ Click Through (baseline) Rate for links on the Watchlist
 ## Logged out warning experiment
 
 * Since: February 2026
-* Files: ext.wikimediaEvents/loggedOutWarning.js
+* Files: ext.wikimediaEvents/loggedOutWarning.js, ext.wikimediaEvents/accountCreation.js, ext.wikimediaEvents/accountCreation/removeQueryParam.js, ext.wikimediaEvents/accountCreation/experiments.js, ext.wikimediaEvents/accountCreation/useAccountCreationInstrument.js
 * Contact: Growth
