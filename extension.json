@@ -263,6 +263,7 @@
 				"mobileSectionSwitch.js",
 				"hCaptcha.js",
 				"loggedOutWarning.js",
+				"editSaves.js",
 				{
 					"name": "config.json",
 					"config": [

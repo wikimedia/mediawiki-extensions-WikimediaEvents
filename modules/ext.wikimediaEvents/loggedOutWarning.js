@@ -40,14 +40,6 @@ function setupLoggedOutWarningInstrumentation() {
 			exposureLogged = true;
 		}
 	};
-	const submitEditInteraction = ( exp, newRevId ) => {
-		exp.send( 'edit_saved', {
-			page: {
-				namespace_id: mw.config.get( 'wgNamespaceNumber' ),
-				revision_id: newRevId
-			}
-		} );
-	};
 	// Experiment is only for MobileFrontend enabled sites
 	if ( mw.config.get( 'wgMFMode' ) === null ) {
 		return;
@@ -67,13 +59,10 @@ function setupLoggedOutWarningInstrumentation() {
 	} );
 
 	experimentPromise.then( ( exp ) => {
-		const submitSourceEditorEditInteraction = ( newRevId ) => submitEditInteraction( exp, newRevId );
 		const setupVisualEditorInstrumentation = ( target ) => {
 			if ( target.constructor.static.trackingName !== 'mobile' ) {
 				return;
 			}
-			// Log visual mode edit saves regardless of the user being anon or not
-			target.once( 'save', ( data ) => submitEditInteraction( exp, data.newrevid ) );
 			target.overlay.once( 'editor-loaded', () => {
 				// Experiment exposure and CTRs are only for anon users who should see
 				// the anon warning
@@ -96,7 +85,6 @@ function setupLoggedOutWarningInstrumentation() {
 		}
 		mw.hook( 'mobileFrontend.editorClosed' ).add( ( isSwitching ) => {
 			// Unsubscribe prior registered hook callbacks so they don't fire twice
-			mw.hook( 'mobileFrontend.sourceEditor.saveComplete' ).remove( submitSourceEditorEditInteraction );
 			mw.hook( 've.newTarget' ).remove( setupVisualEditorInstrumentation );
 			if ( isSwitching ) {
 				return;
@@ -113,9 +101,6 @@ function setupLoggedOutWarningInstrumentation() {
 				mw.hook( 've.newTarget' ).add( setupVisualEditorInstrumentation );
 			}
 			if ( editor === 'wikitext' ) {
-				// Log visual mode edit saves regardless of the user being anon or not
-				mw.hook( 'mobileFrontend.sourceEditor.saveComplete' )
-					.add( submitSourceEditorEditInteraction );
 				// Experiment exposure and CTRs are only for anon users who should see
 				// the anon warning
 				if ( !mw.user.isAnon() ) {

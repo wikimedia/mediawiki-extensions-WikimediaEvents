@@ -266,3 +266,8 @@ Click Through (baseline) Rate for links on the Watchlist
 * Since: February 2026
 * Files: ext.wikimediaEvents/loggedOutWarning.js, ext.wikimediaEvents/accountCreation.js, ext.wikimediaEvents/accountCreation/removeQueryParam.js, ext.wikimediaEvents/accountCreation/experiments.js, ext.wikimediaEvents/accountCreation/useAccountCreationInstrument.js
 * Contact: Growth
+
+## Various experiments around account creation and constructive edits
+* Since: March 2026
+* Files: ext.wikimediaEvents/editSaves.js
+* Contact: Growth
