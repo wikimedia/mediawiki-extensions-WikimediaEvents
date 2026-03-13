@@ -264,6 +264,7 @@
 				"hCaptcha.js",
 				"loggedOutWarning.js",
 				"editSaves.js",
+				"externalLinks.js",
 				{
 					"name": "config.json",
 					"config": [
@@ -279,7 +280,9 @@
 						"WMESchemaVisualEditorFeatureUseSamplingRate",
 						"DTSchemaEditAttemptStepSamplingRate",
 						"DTSchemaEditAttemptStepOversample",
-						"MFSchemaEditAttemptStepOversample"
+						"MFSchemaEditAttemptStepOversample",
+						"WikimediaEventsExternalLinkInstrumentation",
+						"WikimediaEventsExternalLinkTrackedDomains"
 					]
 				},
 				{
@@ -476,6 +479,14 @@
 		"WikimediaEventsCreateAccountInstrumentation": {
 			"description": "Whether to submit server-side instrumentation events for post-account creation pageviews. Default is false.",
 			"value": false
+		},
+		"WikimediaEventsExternalLinkInstrumentation": {
+			"description": "Whether to submit instrumentation events for external link clicks. Default is false.",
+			"value": false
+		},
+		"WikimediaEventsExternalLinkTrackedDomains": {
+			"description": "List of domains for which to submit instrumentation events for external link clicks. It matches the domain and all subdomains. Default is empty list. Example value: [\"example.com\", \"example.org\"]",
+			"value": []
 		}
 	},
 	"RateLimits": {
