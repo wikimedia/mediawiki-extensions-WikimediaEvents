@@ -15,10 +15,9 @@ if ( skin === 'vector-2022' || skin === 'vector' ) {
 
 // For now this is vector 2022 and minerva only.
 if ( skin === 'vector-2022' || skin === 'minerva' ) {
-	// ReadingsLists experiments T397532
-	// Check if user has hidden preference for reading lists
-	if ( mw.user.isNamed() && ( mw.user.options.get( 'readinglists-web-ui-enabled' ) === '1' ) ) {
-		require( './testKitchen/readingListAB.js' );
+	// ReadingLists instrument: Check if user is logged in.
+	if ( mw.user.isNamed() ) {
+		require( './readingListBaseline.js' );
 	}
 }
 

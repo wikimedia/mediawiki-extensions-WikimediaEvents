@@ -83,17 +83,6 @@ experiment A/B test (T378094)
 
 Details at <https://phabricator.wikimedia.org/T383611>.
 
-## ReadingList A/B test
-
-* Since: October 2025
-* Suggested Removal: November 2025
-* Folders: ext.wikimediaEvents/testKitchen/readingListAB.js
-* Contact: Reader Experience team
-
-Instrumentation for evaluating the impact of Reading List feature.
-
-Details at <https://phabricator.wikimedia.org/T3975>
-
 ## CommonJS for Web
 
 * Since: May 2023
@@ -263,6 +252,14 @@ A collection of standardized instruments, including:
 * Contact: Community Tech
 
 Click Through (baseline) Rate for links on the Watchlist
+
+## Baseline metrics on Reading List
+
+* Since: March 2026
+* Suggested Removal: Evaluate in June 2027
+* Files: ext.wikimediaEvents/readingListBaseline.js
+* Contact: Reader Experience team
+More details at <https://phabricator.wikimedia.org/T414368>.
 
 ## Mobile section switching
 
