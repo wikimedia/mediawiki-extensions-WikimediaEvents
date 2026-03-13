@@ -260,9 +260,14 @@ Click Through (baseline) Rate for links on the Watchlist
 * Modules: ext.wikimediaEvents.personalDashboard
 * Contact: Moderator Tools
 
-
 ## Logged out warning experiment
 
 * Since: February 2026
 * Files: ext.wikimediaEvents/loggedOutWarning.js, ext.wikimediaEvents/accountCreation.js, ext.wikimediaEvents/accountCreation/removeQueryParam.js, ext.wikimediaEvents/accountCreation/experiments.js, ext.wikimediaEvents/accountCreation/useAccountCreationInstrument.js
 * Contact: Growth
+
+## External links instrumentation
+
+* Since: March 2026
+* Files: ext.wikimediaEvents/externalLinks.js
+* Contact: Product Safety and Integrity
