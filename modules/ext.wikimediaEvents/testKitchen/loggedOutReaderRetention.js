@@ -35,11 +35,13 @@
 const EXPERIMENT_NAME_PREFIX = 'logged-out-retention-';
 
 mw.loader.using( 'ext.testKitchen' ).then( () => {
-	mw.testKitchen.getExperimentByPrefix( EXPERIMENT_NAME_PREFIX )
-		.send(
-			'page-visited',
-			{
-				instrument_name: 'LoggedOutReaderRetention'
-			}
+	mw.testKitchen.getExperimentsByPrefix( EXPERIMENT_NAME_PREFIX )
+		.forEach(
+			( experiment ) => experiment.send(
+				'page-visited',
+				{
+					instrument_name: 'LoggedOutReaderRetention'
+				}
+			)
 		);
 } );
