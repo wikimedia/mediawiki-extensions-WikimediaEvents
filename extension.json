@@ -302,6 +302,7 @@
 				"specialCreateAccount/init.js",
 				"specialCreateAccount/instrumentation.js",
 				"specialCreateAccount/useInstrument.js",
+				"specialCreateAccount/experimentInstrumentation.js",
 				"accountCreation.js",
 				"accountCreation/useAccountCreationInstrument.js",
 				"accountCreation/removeQueryParam.js",
