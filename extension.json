@@ -398,7 +398,8 @@
 			"sessionLength/mixin.test.js",
 			"searchSatisfaction/searchSatisfaction.test.js",
 			"searchSatisfaction/searchSli.test.js",
-			"specialCreateAccount/instrumentation.test.js"
+			"specialCreateAccount/instrumentation.test.js",
+			"externalLinks.test.js"
 		],
 		"dependencies": [
 			"ext.wikimediaEvents"
