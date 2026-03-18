@@ -9,7 +9,8 @@
 
 const moduleConfig = require( './config.json' );
 const skin = mw.config.get( 'skin' );
-const ignoredSkins = [ 'cologneblue', 'modern', 'monobook', 'timeless' ];
+// The schema should only run on Vector and Minerva skins.
+const allowedSkins = [ 'vector', 'vector-2022', 'minerva' ];
 const eventData = {};
 let msPaused = 0;
 const SCHEMA_NAME = 'ReadingDepth';
@@ -245,8 +246,7 @@ function enableTracking() {
 }
 
 mw.requestIdleCallback( () => {
-	// The schema should only run on Vector and Minerva skins.
-	if ( !ignoredSkins.includes( skin ) ) {
+	if ( allowedSkins.includes( skin ) ) {
 		sessionId = mw.user.sessionId();
 		// check if user has been selected for the default ReadingDepth sample group
 		if ( isInSample( moduleConfig.WMEReadingDepthSamplingRate ) ) {
