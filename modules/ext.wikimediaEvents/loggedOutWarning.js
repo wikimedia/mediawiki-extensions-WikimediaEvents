@@ -1,5 +1,4 @@
 const EXPERIMENT_NAME = 'growthexperiments-editattempt-anonwarning';
-const SCHEMA_NAME = '/analytics/product_metrics/web/base/1.5.0';
 const STREAM_NAME = 'mediawiki.product_metrics.contributors.experiments';
 
 const CLOSE_BUTTON_SELECTOR_VISUAL_MODE = '.ve-ui-toolbar-group-back > .oo-ui-toolGroup-tools > * > a';
@@ -50,7 +49,6 @@ function setupLoggedOutWarningInstrumentation() {
 		'ext.wikimediaEvents.testKitchen'
 	] ).then( () => {
 		const experiment = mw.testKitchen.getExperiment( EXPERIMENT_NAME );
-		experiment.setSchema( SCHEMA_NAME );
 		experiment.setStream( STREAM_NAME );
 		return experiment;
 	} ).catch( ( error ) => {
