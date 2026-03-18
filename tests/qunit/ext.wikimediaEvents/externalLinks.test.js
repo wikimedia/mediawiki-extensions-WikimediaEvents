@@ -12,7 +12,7 @@ QUnit.module( 'ext.wikimediaEvents/externalLinks', ( hooks ) => {
 	hooks.beforeEach( function () {
 		original = Object.assign( {}, config );
 		config.WikimediaEventsExternalLinkInstrumentation = true;
-		config.WikimediaEventsExternalLinkTrackedDomains = [ 'example.com', 'test.org' ];
+		config.WikimediaEventsExternalLinkTrackedDomains = [ 'example.com', 'foo.test.org' ];
 		config.WMEStatsBeaconUri = '/beacon/stats';
 
 		mw.config.set( 'wgUserId', null );
@@ -54,7 +54,7 @@ QUnit.module( 'ext.wikimediaEvents/externalLinks', ( hooks ) => {
 		assert.strictEqual( sendBeaconStub.callCount, 1, 'beacon sent' );
 		assert.strictEqual(
 			sendBeaconStub.getCall( 0 ).args[ 0 ],
-			'/beacon/stats?mediawiki_WikimediaEvents_extLinkClick_total:1|c%7C%23wiki:enwiki,domain:www_example_com',
+			'/beacon/stats?mediawiki_WikimediaEvents_extLinkClick_total:1|c%7C%23wiki:enwiki,domain:example_com',
 			'beacon payload includes subdomain'
 		);
 	} );
@@ -109,14 +109,14 @@ QUnit.module( 'ext.wikimediaEvents/externalLinks', ( hooks ) => {
 	} );
 
 	QUnit.test( 'replaces dots with underscores in domain label', ( assert ) => {
-		$content.append( '<a class="external" href="https://sub.test.org/page">Link</a>' );
+		$content.append( '<a class="external" href="https://foo.test.org/page">Link</a>' );
 		setupExternalLinkInstrumentation();
 
 		$content.find( 'a.external' ).trigger( 'mousedown' );
 
 		assert.strictEqual( sendBeaconStub.callCount, 1, 'beacon sent' );
 		assert.true(
-			sendBeaconStub.getCall( 0 ).args[ 0 ].includes( 'domain:sub_test_org' ),
+			sendBeaconStub.getCall( 0 ).args[ 0 ].includes( 'domain:foo_test_org' ),
 			'dots replaced with underscores'
 		);
 	} );
@@ -124,7 +124,7 @@ QUnit.module( 'ext.wikimediaEvents/externalLinks', ( hooks ) => {
 	QUnit.test( 'handles multiple tracked links independently', ( assert ) => {
 		$content.append(
 			'<a class="external" href="https://example.com/a">A</a>' +
-			'<a class="external" href="https://test.org/b">B</a>' +
+			'<a class="external" href="https://foo.test.org/b">B</a>' +
 			'<a class="external" href="https://untracked.com/c">C</a>'
 		);
 		setupExternalLinkInstrumentation();
