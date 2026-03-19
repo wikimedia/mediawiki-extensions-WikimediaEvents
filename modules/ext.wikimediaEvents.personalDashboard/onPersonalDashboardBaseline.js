@@ -26,12 +26,12 @@ function instrumentPolicyLinks( instrument ) {
 	} );
 }
 
-function instrumentDiffLinks( instrument ) {
-	const diffLinkCards = document.querySelectorAll( '.ext-personal-dashboard-moderation-card' );
-	for ( let i = 0; i < diffLinkCards.length; i++ ) {
+function instrumentLinks( instrument, selector, friendlyName ) {
+	const links = document.querySelectorAll( selector );
+	for ( let i = 0; i < links.length; i++ ) {
 		ClickThroughRateInstrument.start(
-			'.ext-personal-dashboard-moderation-card:nth-of-type(' + ( i + 1 ) + ')',
-			'Personal Dashboard diff link',
+			selector + ':nth-of-type(' + ( i + 1 ) + ')',
+			friendlyName,
 			instrument
 		);
 	}
@@ -55,7 +55,16 @@ if ( specialPageName === 'PersonalDashboard' ) {
 		} );
 
 		mw.hook( 'personaldashboard.recentactivity.listcard.loaded' ).add( () => {
-			instrumentDiffLinks( instrument );
+			instrumentLinks( instrument,
+				'.ext-personal-dashboard-moderation-card',
+				'Personal Dashboard diff link' );
+		} );
+
+		mw.hook( 'personaldashboard.activediscussions.listcard.loaded' ).add( () => {
+			instrumentLinks(
+				instrument,
+				'.ext-personal-dashboard-active-discussion-card',
+				'Personal Dashboard discussion link' );
 		} );
 
 		mw.hook( 'personaldashboard.impact.loaded' ).add( () => {
