@@ -28,6 +28,8 @@ function main() {
 	if ( !( exp && exp.isAssignedGroup( 'control', 'treatment' ) ) ) {
 		return;
 	}
+	// temporarily needed until a change is deployed, won't hurt if it's here
+	exp.setStream( 'product_metrics.web_base.attribution_research' );
 
 	// (logged out)
 	if ( mw.config.get( 'wgUserId' ) === null ) {
