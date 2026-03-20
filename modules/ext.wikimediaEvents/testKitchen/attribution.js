@@ -10,12 +10,42 @@ const ERASED = 'mw-tk-ae-erase';
 // expire in 7 days (TODO: change based on experiment length)
 const EXPIRE_REMEMBER = 604800;
 const DEPENDENCIES = [ 'mediawiki.storage', 'ext.testKitchen' ];
+// const DEPENDENCIES = [ 'mediawiki.storage', 'ext.testKitchen', 'mediawiki.visibleTimeout' ];
 
 function remember( key ) {
 	mw.storage.set( key, '1', EXPIRE_REMEMBER );
 }
 function was( key ) {
 	return mw.storage.get( key ) === '1';
+}
+
+/**
+ * Executes an action at or after the specified number of seconds.
+ * (copied from SearchSatisfaction)
+ *
+ * @param {number[]} checkinTimes Times (in seconds from start) when the
+ *  action should be executed.
+ * @param {Function} fn The action to execute.
+ * @private
+ */
+function interval( checkinTimes, fn ) {
+	// found this example, wanted to do it, no idea how require works in mw
+	// const visibleTimeout = require( 'mediawiki.visibleTimeout' );
+	//     ...
+	//     visibleTimeout.set( action, 1000 * timeout );
+	// have no idea how require works in mw world, will figure out later
+	let checkin = checkinTimes.shift();
+	let timeout = checkin;
+	function action() {
+		const current = checkin;
+		fn( current );
+		checkin = checkinTimes.shift();
+		if ( checkin ) {
+			timeout = checkin - current;
+			setTimeout( action, 1000 * timeout );
+		}
+	}
+	setTimeout( action, 1000 * timeout );
 }
 
 function main() {
@@ -30,6 +60,11 @@ function main() {
 	}
 	// temporarily needed until a change is deployed, won't hurt if it's here
 	exp.setStream( 'product_metrics.web_base.attribution_research' );
+
+	// set up session ticks to get a rough sense of time on page
+	// previous research showed p75=64s and p90=166s
+	const tickTimes = [ 5, 64, 166 ];
+	interval( tickTimes, ( tick ) => exp.send( 'tick', { action_context: String( tick ) } ) );
 
 	// (logged out)
 	if ( mw.config.get( 'wgUserId' ) === null ) {
