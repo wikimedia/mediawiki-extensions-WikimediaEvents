@@ -15,7 +15,6 @@ if ( mw.config.get( 'wgIsSearchResultPage' ) ) {
 	$( () => {
 		const entry = performance.getEntriesByType( 'navigation' )[ 0 ];
 		if ( entry && entry.loadEventEnd ) {
-			mw.track( 'timing.Search.FullTextResults', entry.loadEventEnd );
 			mw.track( 'stats.mediawiki_WikimediaEvents_Search_FullTextResults_seconds', entry.loadEventEnd );
 		}
 	} );
@@ -29,7 +28,6 @@ function trackAutocomplete( _topic, data ) {
 	} else if ( data.action === 'impression-results' && autocompleteStart !== null ) {
 		const took = performance.now() - autocompleteStart;
 		autocompleteStart = null;
-		mw.track( 'timing.Search.AutocompleteResults', took );
 		mw.track( 'stats.mediawiki_WikimediaEvents_Search_AutocompleteResults_seconds', took );
 	}
 }
