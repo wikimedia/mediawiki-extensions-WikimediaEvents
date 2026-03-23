@@ -214,6 +214,14 @@ and so shouldn't be removed.
 
 More details at <https://phabricator.wikimedia.org/T417050>
 
+## Logged-In Reader Retention
+
+* Since: March 2026
+* Files: testKitchen/activeReaderBaseline.js
+* Contact: Data Engineering
+
+More details at <https://phabricator.wikimedia.org/T420621>
+
 # Code ownership for other code in WikimediaEvents
 
 ## Temporary account instrumentation

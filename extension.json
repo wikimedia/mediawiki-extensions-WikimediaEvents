@@ -296,6 +296,7 @@
 					"name": "testKitchen/externalPathTestConfig.json",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleDataExternalPath"
 				},
+				"testKitchen/activeReaderBaseline.js",
 				"testKitchen/attribution.js",
 				"testKitchen/readingListAB.js",
 				"testKitchen/loggedOutReaderRetention.js",
