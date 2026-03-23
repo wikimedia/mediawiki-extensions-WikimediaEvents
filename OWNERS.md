@@ -283,6 +283,7 @@ Click Through (baseline) Rate for links on the Watchlist
 * Contact: Growth
 
 ## Various experiments around account creation and constructive edits
+
 * Since: March 2026
 * Files: ext.wikimediaEvents/editSaves.js
 * Contact: Growth
@@ -292,6 +293,12 @@ Click Through (baseline) Rate for links on the Watchlist
 * Since: March 2026
 * Files: ext.wikimediaEvents/externalLinks.js
 * Contact: Product Safety and Integrity
+
+## Mobile Account Menu
+
+* Since: March 2026
+* Files: ext.wikimediaEvents/mobileAccountMenu.js
+* Contact: Growth
 
 ## Email confirmation banner instrumentation
 

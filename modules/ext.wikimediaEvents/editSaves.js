@@ -22,7 +22,8 @@ mw.loader.using( [
 	'ext.wikimediaEvents.testKitchen'
 ] ).then( () => {
 	if ( !mw.config.get( 'wgMFMode' ) ) {
-		// For now, this is mobile-only. Though it should be expanded once there is a use-case for desktop as well.
+		// For now, this is mobile-only. Though it should be expanded
+		// once there is a use-case for desktop as well.
 		return;
 	}
 	const configuredExperiments = EXPERIMENTS.map(
