@@ -72,7 +72,8 @@ const onClickTrack = function ( logEvent ) {
 		const $closest = $target.closest( '[data-event-name]' );
 		if ( $closest.length ) {
 			// T352075
-			// Click tracking of this kind is restricted to certain types of elements to avoid duplicate events.
+			// Click tracking of this kind is restricted to
+			// certain types of elements to avoid duplicate events.
 			if ( [ 'A', 'BUTTON', 'INPUT' ].includes( $closest[ 0 ].tagName ) ) {
 				const destination = $closest.attr( 'href' );
 				logEvent( 'click', $closest.attr( 'data-event-name' ), destination );

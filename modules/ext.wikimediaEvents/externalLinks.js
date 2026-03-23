@@ -43,8 +43,9 @@ function setupInstrumentation() {
 		// Prometheus doesn't support labels with dots in values
 		const domain = trackingPrefix.replace( /\./g, '_' );
 		const wiki = mw.config.get( 'wgDBname' );
-		// Normally, we'd use mw.track here, but events created this way don't get sent in Chrome before
-		// leaving the page (T419956). This is critical, as most link clicks lead to the user leaving the page.
+		// Normally, we'd use mw.track here, but events created this way don't get sent
+		// in Chrome before leaving the page (T419956). This is critical, as most
+		// link clicks lead to the user leaving the page.
 		const serializedData = `mediawiki_WikimediaEvents_extLinkClick_total:1|c%7C%23wiki:${ wiki },domain:` + domain;
 		mw.eventLog.sendBeacon( config.WMEStatsBeaconUri + '?' + serializedData );
 	} );
