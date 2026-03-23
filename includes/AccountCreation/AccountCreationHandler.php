@@ -64,6 +64,43 @@ class AccountCreationHandler implements
 		}
 	}
 
+	/**
+	 * This hook is called after the user has been redirected back to
+	 * the content wiki after completing the cross-wiki login process.
+	 *
+	 * This uses query parameters to trigger onBeforePageDisplay to signal the client
+	 * The theory is that CentralAuthPostLoginRedirect fires once for each account creation and
+	 * $type is 'signup' iff this was a local, non-autocreate sign-up. This also fires for temp accounts.
+	 *
+	 * This class does not explicitly implement the CentralAuthPostLoginRedirectHook interface
+	 * in order to not create a hard dependency on the CentralAuth extension.
+	 *
+	 * @param string &$returnTo page name to redirect to
+	 * @param string &$returnToQuery url parameters
+	 * @param bool $_unused1 Deprecated since MW 1.42, do not use.
+	 *    Previously indicated that the login session would force the HTTPS protocol.
+	 * @param string $type 'signup' on signup, empty string otherwise.
+	 * @param string &$_unused2 Deprecated since MW 1.42, do not use.
+	 *    Previously allowed setting HTML to show on the login success page.
+	 *
+	 * @return bool True or no return value to continue or false to abort
+	 *
+	 * @see \MediaWiki\Extension\CentralAuth\Hooks\CentralAuthPostLoginRedirectHook::onCentralAuthPostLoginRedirect
+	 */
+	public function onCentralAuthPostLoginRedirect(
+		string &$returnTo, string &$returnToQuery, bool $_unused1, string $type, string &$_unused2
+	): bool {
+		if ( $type !== 'signup' ) {
+			return true;
+		}
+
+		$returnToQueryArray = wfCgiToArray( $returnToQuery );
+		$returnToQueryArray['accountJustCreated'] = '1';
+		$returnToQuery = wfArrayToCgi( $returnToQueryArray );
+
+		return true;
+	}
+
 	/** @inheritDoc */
 	public function onAuthChangeFormFields( $requests, $fieldInfo, &$formDescriptor, $action ) {
 		// This hook is called by AuthManager when the login form is built. For intermediate stages

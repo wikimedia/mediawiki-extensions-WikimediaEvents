@@ -164,6 +164,7 @@
 		"PageDeleteComplete": "TemporaryAccountsInstrumentation",
 		"PermissionStatusAudit": "BlockMetricsHooks",
 		"EditPage::showReadOnlyForm:initial": "EditPageHooks",
+		"CentralAuthPostLoginRedirect": "AccountCreation",
 		"AuthManagerLoginAuthenticateAudit": "AccountCreation"
 	},
 	"APIModules": {
