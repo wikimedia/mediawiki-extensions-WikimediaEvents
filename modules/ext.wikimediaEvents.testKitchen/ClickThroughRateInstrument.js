@@ -19,15 +19,14 @@ const findBySelector = ( selector ) => ( stateEntry ) => stateEntry.selector ===
  * @param {Object} stateEntry
  * @param {string} action
  */
-function submitInteraction( stateEntry, action ) {
+function send( stateEntry, action ) {
 	const {
 		funnelEntryToken,
 		friendlyName,
 		instrument
 	} = stateEntry;
 
-	instrument.submitInteraction( action, {
-		instrument_name: 'ClickThroughRateInstrument',
+	instrument.send( action, {
 		funnel_entry_token: funnelEntryToken,
 		element_friendly_name: friendlyName
 	} );
@@ -42,7 +41,7 @@ const intersectionObserver = new IntersectionObserver(
 		entries.forEach( ( { target } ) => {
 			state.forEach( ( stateEntry ) => {
 				if ( stateEntry.element === target ) {
-					submitInteraction( stateEntry, 'impression' );
+					send( stateEntry, 'impression' );
 				}
 			} );
 
@@ -92,7 +91,6 @@ const intersectionObserver = new IntersectionObserver(
  * | Field                          | Type      | Value(s)                       |
  * | ------------------------------ | --------- | ------------------------------ |
  * | action                         | string    | `"impression"`                 |
- * | instrument_name                | string    | `"ClickThroughRateInstrument"` |
  * | funnel_entry_token             | Token     |                                |
  * | funnel_event_sequence_position | usmallint | `1`                            |
  * | element_friendly_name          | string    |                                |
@@ -105,7 +103,6 @@ const intersectionObserver = new IntersectionObserver(
  * | Field                          | Type      | Value(s)                       |
  * | ------------------------------ | --------- | ------------------------------ |
  * | action                         | string    | `"click"`                      |
- * | instrument_name                | string    | `"ClickThroughRateInstrument"` |
  * | funnel_entry_token             | Token     |                                |
  * | funnel_event_sequence_position | usmallint | `2`, `3`, `4`, etc.            |
  * | element_friendly_name          | string    |                                |
@@ -218,7 +215,7 @@ document.addEventListener( 'click', ( event ) => {
 		// Note well that e.contains( e ) return true. This handles the simple case where the event
 		// target is an element that is being tracked by the instrument.
 		if ( stateEntry.element.contains( event.target ) ) {
-			submitInteraction( stateEntry, 'click' );
+			send( stateEntry, 'click' );
 			if ( stateEntry.trackSingleClick ) {
 				break;
 			}
