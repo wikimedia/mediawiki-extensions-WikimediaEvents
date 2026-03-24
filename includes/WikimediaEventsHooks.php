@@ -21,6 +21,7 @@ use MediaWiki\Hook\BeforeInitializeHook;
 use MediaWiki\Hook\RecentChange_saveHook;
 use MediaWiki\Hook\SpecialSearchGoResultHook;
 use MediaWiki\Hook\SpecialSearchResultsHook;
+use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Output\Hook\BeforePageDisplayHook;
 use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
@@ -95,6 +96,7 @@ class WikimediaEventsHooks implements
 	public function onBeforePageDisplay( $out, $skin ): void {
 		$out->addModules( 'ext.wikimediaEvents' );
 		$this->maybeAddWatchlistTracking( $out );
+		$this->maybeAddEmailConfirmationBannerTracking( $out );
 		$extensionRegistry = ExtensionRegistry::getInstance();
 		if ( $extensionRegistry->isLoaded( 'WikibaseRepository' ) ) {
 			// If we are in Wikibase Repo, load Wikibase module
@@ -636,6 +638,24 @@ class WikimediaEventsHooks implements
 		if ( $out->getTitle() && $out->getTitle()->isSpecial( "Watchlist" ) ) {
 			$out->addModules( 'ext.wikimediaEvents.WatchlistBaseline' );
 		}
+	}
+
+	private function maybeAddEmailConfirmationBannerTracking( OutputPage $out ): void {
+		if ( !$this->config->get( MainConfigNames::EmailConfirmationBanner ) ) {
+			return;
+		}
+		if ( !$this->config->get( MainConfigNames::EmailAuthentication ) ) {
+			return;
+		}
+		$user = $out->getUser();
+		if ( !$user->isNamed() || $user->getEmail() === '' || $user->isEmailConfirmed() ) {
+			return;
+		}
+		$title = $out->getTitle();
+		if ( $title && $title->isSpecial( 'Confirmemail' ) ) {
+			return;
+		}
+		$out->addModules( 'ext.wikimediaEvents.emailConfirmationBanner' );
 	}
 
 }

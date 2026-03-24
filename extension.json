@@ -383,6 +383,13 @@
 			"dependencies": [
 				"ext.wikimediaEvents.testKitchen"
 			]
+		},
+		"ext.wikimediaEvents.emailConfirmationBanner": {
+			"localBasePath": "modules/ext.wikimediaEvents/emailConfirmationBanner",
+			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents/emailConfirmationBanner",
+			"packageFiles": [
+				"emailConfirmationBanner.js"
+			]
 		}
 	},
 	"ResourceFileModulePaths": {

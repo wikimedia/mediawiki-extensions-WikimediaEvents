@@ -292,3 +292,9 @@ Click Through (baseline) Rate for links on the Watchlist
 * Since: March 2026
 * Files: ext.wikimediaEvents/externalLinks.js
 * Contact: Product Safety and Integrity
+
+## Email confirmation banner instrumentation
+
+* Since: March 2026
+* Modules: ext.wikimediaEvents.emailConfirmationBanner
+* Contact: Product Safety and Integrity
