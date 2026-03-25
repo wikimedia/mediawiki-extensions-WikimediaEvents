@@ -23,7 +23,7 @@ class HTMLNoScriptHiddenFieldTest extends HTMLFormFieldTestCase {
 		yield [
 			'params' => [ 'name' => 'test' ],
 			'value' => 'foo',
-			'hasErrors' => false,
+			'hasError' => false,
 			'expected' => '<noscript><input type="hidden" value="1" name="test"></noscript>'
 		];
 	}
