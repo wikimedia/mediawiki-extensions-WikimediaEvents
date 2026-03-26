@@ -35,6 +35,7 @@ require( './testKitchen/pageVisitBotDetection.js' );
 require( './testKitchen/externalPathTest.js' );
 require( './specialCreateAccount/init.js' );
 require( './testKitchen/impactTest.js' );
+require( './testKitchen/loggedInReaderRetention.js' );
 require( './testKitchen/loggedOutReaderRetention.js' );
 require( './externalLinks.js' )();
 
