@@ -304,6 +304,7 @@
 				},
 				"testKitchen/activeReaderBaseline.js",
 				"testKitchen/attribution.js",
+				"testKitchen/loggedInReaderRetention.js",
 				"testKitchen/loggedOutReaderRetention.js",
 				"specialCreateAccount/init.js",
 				"specialCreateAccount/instrumentation.js",

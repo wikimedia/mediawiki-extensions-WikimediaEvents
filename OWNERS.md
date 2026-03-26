@@ -186,6 +186,15 @@ sending events originating from instruments and logged-in experiments to.
 
 More details at <https://phabricator.wikimedia.org/T407570>
 
+## Logged-in Reader Retention
+
+* Since: March 2026
+* Files: testKitchen/loggedInReaderRetention.js
+* Contact: Reader Experience
+
+An experiment to measure logged-in reader retention. This experiment may be run monthly and so
+shouldn't be removed.
+
 ## Logged-out Reader Retention
 
 * Since: March 2026
@@ -203,7 +212,7 @@ and so shouldn't be removed.
 
 More details at <https://phabricator.wikimedia.org/T417050>
 
-## Logged-In Reader Retention
+## Active Reader Baseline
 
 * Since: March 2026
 * Files: testKitchen/activeReaderBaseline.js
