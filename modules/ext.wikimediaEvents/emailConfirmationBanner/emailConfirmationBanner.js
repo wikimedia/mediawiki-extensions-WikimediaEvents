@@ -1,28 +1,33 @@
-/* eslint-disable camelcase */
-const banner = document.querySelector( '.mw-emailconfirmbanner' );
-if ( !banner || !mw.testKitchen ) {
-	return;
-}
-if ( banner.dataset.tkInitialized ) {
-	return;
-}
-banner.dataset.tkInitialized = '1';
+mw.hook( 'mediawiki.emailConfirmationBanner.shown' ).add( ( container ) => {
+	if ( !mw.testKitchen ) {
+		return;
+	}
 
-const instrument = mw.testKitchen.getInstrument( 'email_confirmation_banner' );
-if ( !instrument ) {
-	return;
-}
+	const banner = container.querySelector( '.mw-emailconfirmbanner' );
+	if ( !banner ) {
+		return;
+	}
+	if ( banner.dataset.tkInitialized ) {
+		return;
+	}
+	banner.dataset.tkInitialized = '1';
 
-instrument.send( 'impression', {
-	action_source: 'banner'
+	const instrument = mw.testKitchen.getInstrument( 'email_confirmation_banner' );
+	if ( !instrument ) {
+		return;
+	}
+
+	instrument.send( 'impression', {
+		action_source: 'banner'
+	} );
+
+	const ctaLink = banner.querySelector( 'a[href*="Special:ConfirmEmail"]' );
+	if ( ctaLink ) {
+		ctaLink.addEventListener( 'click', () => {
+			instrument.send( 'click', {
+				action_source: 'banner',
+				action_context: 'confirm_email'
+			} );
+		}, { once: true } );
+	}
 } );
-
-const ctaLink = banner.querySelector( 'a[href*="Special:ConfirmEmail"]' );
-if ( ctaLink ) {
-	ctaLink.addEventListener( 'click', () => {
-		instrument.send( 'click', {
-			action_source: 'banner',
-			action_context: 'confirm_email'
-		} );
-	}, { once: true } );
-}

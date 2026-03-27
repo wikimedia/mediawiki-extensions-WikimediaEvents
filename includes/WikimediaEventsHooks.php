@@ -15,6 +15,7 @@ use MediaWiki\Context\RequestContext;
 use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
 use MediaWiki\Extension\ConfirmEdit\Hooks;
+use MediaWiki\Extension\EventLogging\MetricsPlatform\MetricsClientFactory;
 use MediaWiki\Extension\NetworkSession\NetworkSessionProvider;
 use MediaWiki\Extension\OAuth\SessionProvider;
 use MediaWiki\Hook\BeforeInitializeHook;
@@ -45,6 +46,8 @@ use MediaWiki\Storage\EditResult;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
 use MediaWiki\Title\NamespaceInfo;
 use MediaWiki\Title\Title;
+use MediaWiki\User\Hook\ConfirmEmailCompleteHook;
+use MediaWiki\User\Hook\InvalidateEmailCompleteHook;
 use MediaWiki\User\User;
 use MediaWiki\User\UserIdentity;
 use MediaWiki\WikiMap\WikiMap;
@@ -70,23 +73,31 @@ class WikimediaEventsHooks implements
 	SpecialSearchResultsHook,
 	RecentChange_saveHook,
 	ResourceLoaderRegisterModulesHook,
-	MakeGlobalVariablesScriptHook
+	MakeGlobalVariablesScriptHook,
+	ConfirmEmailCompleteHook,
+	InvalidateEmailCompleteHook
 {
+	private const EMAIL_CONFIRMATION_BANNER_STREAM = 'product_metrics.web_base';
+	private const EMAIL_CONFIRMATION_BANNER_SCHEMA = '/analytics/product_metrics/web/base/1.3.0';
+
 	private Config $config;
 	private NamespaceInfo $namespaceInfo;
 	private PermissionManager $permissionManager;
 	private WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup;
+	private MetricsClientFactory $metricsClientFactory;
 
 	public function __construct(
 		Config $config,
 		NamespaceInfo $namespaceInfo,
 		PermissionManager $permissionManager,
-		WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup
+		WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup,
+		MetricsClientFactory $metricsClientFactory
 	) {
 		$this->config = $config;
 		$this->namespaceInfo = $namespaceInfo;
 		$this->permissionManager = $permissionManager;
 		$this->wikimediaEventsRequestDetailsLookup = $wikimediaEventsRequestDetailsLookup;
+		$this->metricsClientFactory = $metricsClientFactory;
 	}
 
 	/**
@@ -638,6 +649,28 @@ class WikimediaEventsHooks implements
 		if ( $out->getTitle() && $out->getTitle()->isSpecial( "Watchlist" ) ) {
 			$out->addModules( 'ext.wikimediaEvents.WatchlistBaseline' );
 		}
+	}
+
+	/** @inheritDoc */
+	public function onConfirmEmailComplete( $user ): void {
+		$this->metricsClientFactory->newMetricsClient( RequestContext::getMain() )
+			->submitInteraction(
+				self::EMAIL_CONFIRMATION_BANNER_STREAM,
+				self::EMAIL_CONFIRMATION_BANNER_SCHEMA,
+				'email_confirmed',
+				[]
+			);
+	}
+
+	/** @inheritDoc */
+	public function onInvalidateEmailComplete( $user ): void {
+		$this->metricsClientFactory->newMetricsClient( RequestContext::getMain() )
+			->submitInteraction(
+				self::EMAIL_CONFIRMATION_BANNER_STREAM,
+				self::EMAIL_CONFIRMATION_BANNER_SCHEMA,
+				'email_invalidated',
+				[]
+			);
 	}
 
 	private function maybeAddEmailConfirmationBannerTracking( OutputPage $out ): void {
