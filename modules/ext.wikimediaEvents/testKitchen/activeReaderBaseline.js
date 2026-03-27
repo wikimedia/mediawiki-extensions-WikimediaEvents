@@ -13,7 +13,7 @@
  * Ideally a server-side transform would copy only the user id hash and rough
  *   timestamp to output
  */
-const INSTRUMENT_NAME = 'active-reader-baseline-2026-03';
+const INSTRUMENT_NAME = 'active-reader-baseline-2026-04';
 
 mw.loader.using( 'ext.testKitchen' ).then( () => {
 	// logged in and 0 edits
