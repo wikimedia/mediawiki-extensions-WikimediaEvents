@@ -4,7 +4,7 @@ const setupWe18V1ExperimentInstrumentation = require( './experimentInstrumentati
 // Don't run instrumentation automatically in QUnit tests.
 if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'CreateAccount' ) {
 	$( setupInstrumentation );
-	mw.loader.using( 'ext.testKitchen', 'ext.wikimediaEvents.testKitchen' ).then( () => {
+	mw.loader.using( [ 'ext.testKitchen', 'ext.wikimediaEvents.testKitchen' ] ).then( () => {
 		$( setupWe18V1ExperimentInstrumentation );
 	} );
 }
