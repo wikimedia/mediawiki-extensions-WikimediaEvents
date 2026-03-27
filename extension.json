@@ -38,7 +38,8 @@
 				"MainConfig",
 				"NamespaceInfo",
 				"PermissionManager",
-				"WikimediaEventsRequestDetailsLookup"
+				"WikimediaEventsRequestDetailsLookup",
+				"EventLogging.MetricsClientFactory"
 			]
 		},
 		"VectorInstrumentation": {
@@ -165,7 +166,9 @@
 		"PermissionStatusAudit": "BlockMetricsHooks",
 		"EditPage::showReadOnlyForm:initial": "EditPageHooks",
 		"CentralAuthPostLoginRedirect": "AccountCreation",
-		"AuthManagerLoginAuthenticateAudit": "AccountCreation"
+		"AuthManagerLoginAuthenticateAudit": "AccountCreation",
+		"ConfirmEmailComplete": "main",
+		"InvalidateEmailComplete": "main"
 	},
 	"APIModules": {
 		"wikimediaeventsblockededit": {

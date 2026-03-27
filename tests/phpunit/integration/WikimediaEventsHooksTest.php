@@ -3,6 +3,7 @@
 namespace WikimediaEvents\Tests\Integration;
 
 use MediaWiki\Context\RequestContext;
+use MediaWiki\Extension\EventLogging\MetricsPlatform\MetricsClientFactory;
 use MediaWiki\Extension\OAuth\SessionProvider as OAuthSessionProvider;
 use MediaWiki\Output\OutputPage;
 use MediaWiki\Request\FauxRequest;
@@ -168,7 +169,8 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 			$this->getServiceContainer()->getMainConfig(),
 			$this->getServiceContainer()->getNamespaceInfo(),
 			$this->getServiceContainer()->getPermissionManager(),
-			$this->getServiceContainer()->get( 'WikimediaEventsRequestDetailsLookup' )
+			$this->getServiceContainer()->get( 'WikimediaEventsRequestDetailsLookup' ),
+			$this->createMock( MetricsClientFactory::class )
 		);
 
 		$title = $this->makeMockTitle( 'Foo', [
@@ -266,7 +268,8 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 			$this->getServiceContainer()->getMainConfig(),
 			$this->getServiceContainer()->getNamespaceInfo(),
 			$this->getServiceContainer()->getPermissionManager(),
-			$this->getServiceContainer()->get( 'WikimediaEventsRequestDetailsLookup' )
+			$this->getServiceContainer()->get( 'WikimediaEventsRequestDetailsLookup' ),
+			$this->createMock( MetricsClientFactory::class )
 		);
 		$handler->onBeforePageDisplay( $out, $skin );
 
