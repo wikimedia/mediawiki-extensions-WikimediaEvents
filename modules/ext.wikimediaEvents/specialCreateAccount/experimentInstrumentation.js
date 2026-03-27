@@ -1,8 +1,6 @@
 const CREATE_ACCOUNT_FORM_V1_EXPERIMENT_NAME = 'we-1-8-account-creation-form-v1';
 const STREAM_NAME = 'mediawiki.product_metrics.contributors.experiments';
 
-const { ClickThroughRateInstrument } = require( 'ext.wikimediaEvents.testKitchen' );
-
 function setupWe18V1ExperimentInstrumentation() {
 
 	if ( !mw.config.get( 'wgMFMode' ) ) {
@@ -18,6 +16,7 @@ function setupWe18V1ExperimentInstrumentation() {
 		return;
 	}
 
+	const { ClickThroughRateInstrument } = require( 'ext.wikimediaEvents.testKitchen' );
 	const experiment = mw.testKitchen.getExperiment( CREATE_ACCOUNT_FORM_V1_EXPERIMENT_NAME );
 	experiment.setStream( STREAM_NAME );
 
