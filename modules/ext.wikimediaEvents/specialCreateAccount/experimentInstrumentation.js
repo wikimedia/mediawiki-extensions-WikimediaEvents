@@ -4,7 +4,14 @@ const STREAM_NAME = 'mediawiki.product_metrics.contributors.experiments';
 function setupWe18V1ExperimentInstrumentation() {
 
 	if ( !mw.config.get( 'wgMFMode' ) ) {
-		// For now, this is mobile-only. Though it should be expanded once there is a use-case for desktop as well.
+		// For now, this is mobile-only.
+		// Though it should be expanded once there is a use-case for desktop as well.
+		return;
+	}
+
+	if ( mw.config.get( 'wgDBname' ) !== 'enwiki' ) {
+		// This is enabled on the auth.wikimedia.org domain,
+		// so we have to check for the database ourselves.
 		return;
 	}
 
@@ -25,6 +32,12 @@ function setupWe18V1ExperimentInstrumentation() {
 		action_source: 'Special:CreateAccount'
 	} );
 
+	if ( document.querySelectorAll( '.cdx-message--error' ).length > 0 ) {
+		experiment.send( 'page_visit_with_error', {
+			action_source: 'Special:CreateAccount'
+		} );
+	}
+
 	const treatmentGroupSelector = '#userlogin2 .mw-userlogin-username a.username-learn-more-link';
 	const controlGroupSelector = '#userlogin2 .mw-userlogin-username label a';
 	ClickThroughRateInstrument.start(
@@ -38,6 +51,11 @@ function setupWe18V1ExperimentInstrumentation() {
 
 	// eslint-disable-next-line no-jquery/no-global-selector
 	$( '#userlogin2' ).on( 'submit', ( event ) => {
+
+		experiment.send( 'creation_attempt', {
+			action_source: 'Special:CreateAccount'
+		} );
+
 		const email = $( event.currentTarget ).find( '#wpEmail' ).val();
 		if ( email ) {
 			experiment.send( 'creation_attempt_with_email', {
