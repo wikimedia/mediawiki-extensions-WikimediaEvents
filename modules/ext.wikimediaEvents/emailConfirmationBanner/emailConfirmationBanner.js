@@ -24,7 +24,7 @@ mw.hook( 'mediawiki.emailConfirmationBanner.shown' ).add( ( container ) => {
 	const ctaLink = banner.querySelector( 'a[href*="Special:ConfirmEmail"]' );
 	if ( ctaLink ) {
 		ctaLink.addEventListener( 'click', () => {
-			instrument.send( 'click', {
+			instrument.sendImmediately( 'click', {
 				action_source: 'banner',
 				action_context: 'confirm_email'
 			} );
