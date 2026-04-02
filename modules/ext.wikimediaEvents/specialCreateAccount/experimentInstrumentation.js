@@ -27,6 +27,14 @@ function setupWe18V1ExperimentInstrumentation() {
 	const experiment = mw.testKitchen.getExperiment( CREATE_ACCOUNT_FORM_V1_EXPERIMENT_NAME );
 	experiment.setStream( STREAM_NAME );
 
+	if ( !document.querySelector( 'form#userlogin2' ) ) {
+		// This might happen if account creations is attempted from via the TOR browser or similar
+		experiment.send( 'page_visit_without_form', {
+			action_source: 'Special:CreateAccount'
+		} );
+		return;
+	}
+
 	experiment.sendExposure();
 	experiment.send( 'page_visit', {
 		action_source: 'Special:CreateAccount'
