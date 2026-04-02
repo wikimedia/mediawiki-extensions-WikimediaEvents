@@ -102,6 +102,19 @@ autoComplete.cameFromAutocomplete = wprov === 'acrw1';
 // Cleanup the location bar in supported browsers.
 if ( window.history.replaceState && wprov ) {
 	uri.searchParams.delete( 'wprov' );
+	// When 'title' is the only remaining parameter, use the canonical URL
+	if (
+		uri.searchParams.has( 'title' ) &&
+		uri.searchParams.size === 1 &&
+		uri.pathname === mw.config.get( 'wgScript' )
+	) {
+		const canonUrl = mw.util.getUrl( uri.searchParams.get( 'title' ) );
+		// Make sure that the wiki uses pretty URLs
+		if ( !canonUrl.includes( '?' ) ) {
+			uri.pathname = canonUrl;
+			uri.searchParams.delete( 'title' );
+		}
+	}
 	window.history.replaceState( {}, '', uri.toString() );
 }
 
