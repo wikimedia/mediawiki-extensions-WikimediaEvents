@@ -3,7 +3,6 @@
 namespace WikimediaEvents\Tests\Integration;
 
 use MediaWiki\Context\RequestContext;
-use MediaWiki\Extension\EventLogging\MetricsPlatform\MetricsClientFactory;
 use MediaWiki\Extension\OAuth\SessionProvider as OAuthSessionProvider;
 use MediaWiki\Output\OutputPage;
 use MediaWiki\Request\FauxRequest;
@@ -19,6 +18,7 @@ use Wikimedia\Stats\StatsFactory;
 use Wikimedia\Stats\StatsUtils;
 use Wikimedia\Stats\UnitTestingHelper;
 use Wikimedia\TestingAccessWrapper;
+use WikimediaEvents\Services\EmailConfirmationBannerExperimentLogger;
 use WikimediaEvents\WikimediaEventsHooks;
 
 /**
@@ -29,6 +29,16 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 
 	use MockTitleTrait;
 	use TempUserTestTrait;
+
+	private function newHookHandler(): WikimediaEventsHooks {
+		return new WikimediaEventsHooks(
+			$this->getServiceContainer()->getMainConfig(),
+			$this->getServiceContainer()->getNamespaceInfo(),
+			$this->getServiceContainer()->getPermissionManager(),
+			$this->getServiceContainer()->get( 'WikimediaEventsRequestDetailsLookup' ),
+			$this->getServiceContainer()->get( 'WikimediaEventsEmailConfirmationBannerExperimentLogger' )
+		);
+	}
 
 	/**
 	 * @dataProvider provideStatsFactoryOnPageSaveComplete
@@ -165,13 +175,7 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 			return $out;
 		};
 
-		$handler = new WikimediaEventsHooks(
-			$this->getServiceContainer()->getMainConfig(),
-			$this->getServiceContainer()->getNamespaceInfo(),
-			$this->getServiceContainer()->getPermissionManager(),
-			$this->getServiceContainer()->get( 'WikimediaEventsRequestDetailsLookup' ),
-			$this->createMock( MetricsClientFactory::class )
-		);
+		$handler = $this->newHookHandler();
 
 		$title = $this->makeMockTitle( 'Foo', [
 			'id' => 123,
@@ -264,15 +268,33 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 
 		$skin = $this->createMock( Skin::class );
 
-		$handler = new WikimediaEventsHooks(
-			$this->getServiceContainer()->getMainConfig(),
-			$this->getServiceContainer()->getNamespaceInfo(),
-			$this->getServiceContainer()->getPermissionManager(),
-			$this->getServiceContainer()->get( 'WikimediaEventsRequestDetailsLookup' ),
-			$this->createMock( MetricsClientFactory::class )
-		);
+		$handler = $this->newHookHandler();
 		$handler->onBeforePageDisplay( $out, $skin );
 
 		$this->assertContains( 'ext.wikimediaEvents.emailConfirmationBanner', $addedModules );
+	}
+
+	public function testConfirmEmailCompleteSendsExperimentEvent(): void {
+		$logger = $this->createMock( EmailConfirmationBannerExperimentLogger::class );
+		$logger->expects( $this->once() )
+			->method( 'log' )
+			->with( 'email_confirmed' );
+
+		$this->setService( 'WikimediaEventsEmailConfirmationBannerExperimentLogger', $logger );
+
+		$handler = $this->newHookHandler();
+		$handler->onConfirmEmailComplete( $this->createMock( User::class ) );
+	}
+
+	public function testInvalidateEmailCompleteSendsExperimentEvent(): void {
+		$logger = $this->createMock( EmailConfirmationBannerExperimentLogger::class );
+		$logger->expects( $this->once() )
+			->method( 'log' )
+			->with( 'email_invalidated' );
+
+		$this->setService( 'WikimediaEventsEmailConfirmationBannerExperimentLogger', $logger );
+
+		$handler = $this->newHookHandler();
+		$handler->onInvalidateEmailComplete( $this->createMock( User::class ) );
 	}
 }

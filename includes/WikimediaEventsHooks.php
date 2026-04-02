@@ -15,7 +15,6 @@ use MediaWiki\Context\RequestContext;
 use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
 use MediaWiki\Extension\ConfirmEdit\Hooks;
-use MediaWiki\Extension\EventLogging\MetricsPlatform\MetricsClientFactory;
 use MediaWiki\Extension\NetworkSession\NetworkSessionProvider;
 use MediaWiki\Extension\OAuth\SessionProvider;
 use MediaWiki\Hook\BeforeInitializeHook;
@@ -53,6 +52,7 @@ use MediaWiki\User\UserIdentity;
 use MediaWiki\WikiMap\WikiMap;
 use MobileContext;
 use WikimediaEvents\Hooks\HookRunner;
+use WikimediaEvents\Services\EmailConfirmationBannerExperimentLogger;
 use WikimediaEvents\Services\WikimediaEventsRequestDetailsLookup;
 
 /**
@@ -77,27 +77,24 @@ class WikimediaEventsHooks implements
 	ConfirmEmailCompleteHook,
 	InvalidateEmailCompleteHook
 {
-	private const EMAIL_CONFIRMATION_BANNER_STREAM = 'product_metrics.web_base';
-	private const EMAIL_CONFIRMATION_BANNER_SCHEMA = '/analytics/product_metrics/web/base/1.3.0';
-
 	private Config $config;
 	private NamespaceInfo $namespaceInfo;
 	private PermissionManager $permissionManager;
 	private WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup;
-	private MetricsClientFactory $metricsClientFactory;
+	private EmailConfirmationBannerExperimentLogger $emailConfirmationBannerExperimentLogger;
 
 	public function __construct(
 		Config $config,
 		NamespaceInfo $namespaceInfo,
 		PermissionManager $permissionManager,
 		WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup,
-		MetricsClientFactory $metricsClientFactory
+		EmailConfirmationBannerExperimentLogger $emailConfirmationBannerExperimentLogger
 	) {
 		$this->config = $config;
 		$this->namespaceInfo = $namespaceInfo;
 		$this->permissionManager = $permissionManager;
 		$this->wikimediaEventsRequestDetailsLookup = $wikimediaEventsRequestDetailsLookup;
-		$this->metricsClientFactory = $metricsClientFactory;
+		$this->emailConfirmationBannerExperimentLogger = $emailConfirmationBannerExperimentLogger;
 	}
 
 	/**
@@ -653,24 +650,12 @@ class WikimediaEventsHooks implements
 
 	/** @inheritDoc */
 	public function onConfirmEmailComplete( $user ): void {
-		$this->metricsClientFactory->newMetricsClient( RequestContext::getMain() )
-			->submitInteraction(
-				self::EMAIL_CONFIRMATION_BANNER_STREAM,
-				self::EMAIL_CONFIRMATION_BANNER_SCHEMA,
-				'email_confirmed',
-				[]
-			);
+		$this->emailConfirmationBannerExperimentLogger->log( 'email_confirmed' );
 	}
 
 	/** @inheritDoc */
 	public function onInvalidateEmailComplete( $user ): void {
-		$this->metricsClientFactory->newMetricsClient( RequestContext::getMain() )
-			->submitInteraction(
-				self::EMAIL_CONFIRMATION_BANNER_STREAM,
-				self::EMAIL_CONFIRMATION_BANNER_SCHEMA,
-				'email_invalidated',
-				[]
-			);
+		$this->emailConfirmationBannerExperimentLogger->log( 'email_invalidated' );
 	}
 
 	private function maybeAddEmailConfirmationBannerTracking( OutputPage $out ): void {

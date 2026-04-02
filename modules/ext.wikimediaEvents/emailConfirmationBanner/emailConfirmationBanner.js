@@ -12,19 +12,19 @@ mw.hook( 'mediawiki.emailConfirmationBanner.shown' ).add( ( container ) => {
 	}
 	banner.dataset.tkInitialized = '1';
 
-	const instrument = mw.testKitchen.getInstrument( 'email_confirmation_banner' );
-	if ( !instrument ) {
+	const experiment = mw.testKitchen.getExperiment( 'email_confirmation_banner_ab_test' );
+	if ( !experiment ) {
 		return;
 	}
 
-	instrument.send( 'impression', {
+	experiment.send( 'impression', {
 		action_source: 'banner'
 	} );
 
 	const ctaLink = banner.querySelector( 'a[href*="Special:ConfirmEmail"]' );
 	if ( ctaLink ) {
 		ctaLink.addEventListener( 'click', () => {
-			instrument.sendImmediately( 'click', {
+			experiment.send( 'click', {
 				action_source: 'banner',
 				action_context: 'confirm_email'
 			} );
