@@ -39,7 +39,7 @@
 				"NamespaceInfo",
 				"PermissionManager",
 				"WikimediaEventsRequestDetailsLookup",
-				"EventLogging.MetricsClientFactory"
+				"WikimediaEventsEmailConfirmationBannerExperimentLogger"
 			]
 		},
 		"VectorInstrumentation": {
