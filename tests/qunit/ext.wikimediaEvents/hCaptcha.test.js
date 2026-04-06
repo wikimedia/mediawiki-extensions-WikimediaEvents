@@ -40,8 +40,12 @@ QUnit.test( 'should track editing interfaces for hcaptcha.render() callbacks', f
 	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'expired', 'edit' ) );
 	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'open', 'visualeditor' ) );
 	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'close', 'visualeditor' ) );
+	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'open', 'mobilefrontend-editor' ) );
+	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'expired', 'mobilefrontend-editor' ) );
+	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'open', 'mobilefrontend-editor' ) );
+	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'close', 'mobilefrontend-editor' ) );
 
-	assert.deepEqual( this.track.callCount, 6, 'edit interfaces should cause mw.track events' );
+	assert.deepEqual( this.track.callCount, 12, 'edit interfaces should cause mw.track events' );
 	assert.deepEqual(
 		this.track.firstCall.args,
 		[
@@ -74,6 +78,48 @@ QUnit.test( 'should track editing interfaces for hcaptcha.render() callbacks', f
 		this.track.getCall( 5 ).args,
 		[ 'visualEditorFeatureUse', { action: 'close', feature: 'hcaptcha' } ]
 	);
+	assert.deepEqual(
+		this.track.getCall( 6 ).args,
+		[
+			'editAttemptStep',
+			{
+				action: 'saveFailure',
+				message: 'hcaptcha',
+				type: 'captchaExtension',
+				// eslint-disable-next-line camelcase
+				editor_interface: 'mobilefrontend'
+			}
+		]
+	);
+	assert.deepEqual(
+		this.track.getCall( 7 ).args,
+		[ 'visualEditorFeatureUse', { action: 'open', feature: 'hcaptcha' } ]
+	);
+	assert.deepEqual(
+		this.track.getCall( 8 ).args,
+		[ 'visualEditorFeatureUse', { action: 'expired', feature: 'hcaptcha' } ]
+	);
+	assert.deepEqual(
+		this.track.getCall( 9 ).args,
+		[
+			'editAttemptStep',
+			{
+				action: 'saveFailure',
+				message: 'hcaptcha',
+				type: 'captchaExtension',
+				// eslint-disable-next-line camelcase
+				editor_interface: 'mobilefrontend'
+			}
+		]
+	);
+	assert.deepEqual(
+		this.track.getCall( 10 ).args,
+		[ 'visualEditorFeatureUse', { action: 'open', feature: 'hcaptcha' } ]
+	);
+	assert.deepEqual(
+		this.track.getCall( 11 ).args,
+		[ 'visualEditorFeatureUse', { action: 'close', feature: 'hcaptcha' } ]
+	);
 } );
 
 QUnit.test( 'should track errors from editing interfaces for hcaptcha.render() callbacks', function ( assert ) {
@@ -81,11 +127,12 @@ QUnit.test( 'should track errors from editing interfaces for hcaptcha.render() c
 
 	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'error', 'edit', 'edit-error' ) );
 	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'error', 'visualeditor', 'visualeditor-error' ) );
+	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'error', 'mobilefrontend-editor', 'visualeditor-error' ) );
 	// an unknown interface should not trigger an error tracking call
 	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'error', 'somethingelse', 'somethingelse-error' ) );
 
 	// each error carrying an error payload triggers an additional track() call
-	assert.deepEqual( this.track.callCount, 4, 'edit interfaces should cause mw.track events' );
+	assert.deepEqual( this.track.callCount, 6, 'edit interfaces should cause mw.track events' );
 	assert.deepEqual(
 		this.track.getCall( 0 ).args,
 		[ 'visualEditorFeatureUse', { feature: 'hcaptcha', action: 'error' } ]
@@ -101,6 +148,14 @@ QUnit.test( 'should track errors from editing interfaces for hcaptcha.render() c
 	);
 	assert.deepEqual(
 		this.track.getCall( 3 ).args,
+		[ 'visualEditorFeatureUse', { feature: 'hcaptcha_error', action: 'visualeditor-error' } ]
+	);
+	assert.deepEqual(
+		this.track.getCall( 4 ).args,
+		[ 'visualEditorFeatureUse', { feature: 'hcaptcha', action: 'error' } ]
+	);
+	assert.deepEqual(
+		this.track.getCall( 5 ).args,
 		[ 'visualEditorFeatureUse', { feature: 'hcaptcha_error', action: 'visualeditor-error' } ]
 	);
 } );

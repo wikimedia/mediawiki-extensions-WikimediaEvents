@@ -7,7 +7,11 @@ function setupInstrumentation() {
 	// This dictionary maps the interfaceName values that are for editing interfaces
 	// to the string that should be used as editor_interface in the 'editAttemptStep'
 	// mw.track call. visualEditorFeatureUse handles editor_interface for us.
-	const editingInterfaces = { edit: 'wikitext', visualeditor: 'visualeditor' };
+	const editingInterfaces = {
+		edit: 'wikitext',
+		'mobilefrontend-editor': 'mobilefrontend',
+		visualeditor: 'visualeditor'
+	};
 
 	// Emit an event when various callbacks fire from hcaptcha.render()
 	mw.trackSubscribe( 'confirmEdit.hCaptchaRenderCallback', ( _, event, interfaceName, error ) => {
@@ -23,7 +27,11 @@ function setupInstrumentation() {
 				} );
 
 				// Record diff when hCaptcha challenge is presented (T406865)
-				const textArea = document.querySelector( 'textarea[name="wpTextbox1"]' );
+				const textArea = document.querySelector(
+					interfaceName === 'mobilefrontend-editor' ?
+						'textarea[id="wikitext-editor"]' :
+						'textarea[name="wpTextbox1"]'
+				);
 
 				// Try to get the ID of the revision the user is trying to edit.
 				// In case wgRevisionId is zero (which may happen when the edit
