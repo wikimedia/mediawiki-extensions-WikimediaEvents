@@ -68,14 +68,3 @@ if ( specialPageName === 'PersonalDashboard' ) {
 
 	} );
 }
-
-mw.loader.using( 'ext.testKitchen' ).then( () => {
-	const instrument = mw.testKitchen.getInstrument( 'personal-dashboard-health-metrics' );
-	const skin = mw.config.get( 'skin' );
-	const selector = skin === 'minerva' ? '#p-personal' : '#pt-personaldashboard';
-	ClickThroughRateInstrument.start(
-		selector,
-		'Personal Dashboard menu link',
-		instrument
-	);
-} );
