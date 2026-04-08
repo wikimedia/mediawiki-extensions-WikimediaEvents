@@ -8,20 +8,28 @@ const CTR_TARGET_ELEMENTS = [
 	{ selector: '.actions > a.signup', friendlyName: 'Sign up' },
 	{ selector: '.actions > a.login', friendlyName: 'Log in' },
 	{ selector: '.actions > a.anonymous', friendlyName: 'Anon editing' },
-	{ selector: '.anon-msg > * > a, .anon-msg > a', friendlyName: 'Temp account info' },
-	{
-		selector: CLOSE_BUTTON_SELECTOR_VISUAL_MODE +
-			', ' + CLOSE_BUTTON_SELECTOR_SOURCE_MODE,
-		friendlyName: 'Close button'
-	}
+	{ selector: '.anon-msg > * > a, .anon-msg > a', friendlyName: 'Temp account info' }
 ];
+const CTR_ADDITIONAL_ELEMENTS = {
+	editorCloseButton: 'Close button',
+	deviceCloseTab: 'Device close tab',
+	deviceBackButton: 'Device back button'
+};
 function setupLoggedOutWarningInstrumentation() {
 	// Used to avoid logging multiple exposure events when the editor is re-opened
 	let exposureLogged = false;
 	// Used to avoid re-setting CTRs after a editing mode switch, which does not
 	// show the warning
 	let lastEditorUsed = null;
-	const setupCTRs = ( experiment ) => {
+	// Used track whereas a back navigation happened interacting with the editor close button
+	// or interacting with an outside from doc element, eg: browser back.
+	let isCloseButtonClick = false;
+	// Used to skip editor closed logs once user actually starts editing
+	let isAnonEditingButtonClick = false;
+
+	const setupCTRs = ( experiment, submitCloseTab ) => {
+		isCloseButtonClick = false;
+		isAnonEditingButtonClick = false;
 		const { ClickThroughRateInstrument } = require( 'ext.wikimediaEvents.testKitchen' );
 		CTR_TARGET_ELEMENTS.forEach( ( targetElement ) => {
 			const { selector, friendlyName, element } = targetElement;
@@ -31,6 +39,33 @@ function setupLoggedOutWarningInstrumentation() {
 			targetElement.element = ClickThroughRateInstrument.start(
 				selector, friendlyName, experiment
 			);
+			document.querySelector( selector ).addEventListener( 'click', () => {
+				window.removeEventListener( 'pagehide', submitCloseTab );
+			} );
+		} );
+
+		$( CLOSE_BUTTON_SELECTOR_VISUAL_MODE ).on( 'mousedown touchstart', () => {
+			isCloseButtonClick = true;
+		} );
+		$( CLOSE_BUTTON_SELECTOR_SOURCE_MODE ).on( 'mousedown touchstart', () => {
+			isCloseButtonClick = true;
+		} );
+
+		window.addEventListener( 'pagehide', submitCloseTab );
+		// Send an impression for the close button and back button
+		experiment.send( 'impression', {
+			element_friendly_name: CTR_ADDITIONAL_ELEMENTS.deviceCloseTab
+		} );
+		experiment.send( 'impression', {
+			element_friendly_name: CTR_ADDITIONAL_ELEMENTS.deviceBackButton
+		} );
+		experiment.send( 'impression', {
+			element_friendly_name: CTR_ADDITIONAL_ELEMENTS.editorCloseButton
+		} );
+
+		document.querySelector( '.actions > a.anonymous' ).addEventListener( 'click', () => {
+			isAnonEditingButtonClick = true;
+			window.removeEventListener( 'pagehide', submitCloseTab );
 		} );
 	};
 	const submitExposureInteraction = ( exp ) => {
@@ -57,6 +92,12 @@ function setupLoggedOutWarningInstrumentation() {
 	} );
 
 	experimentPromise.then( ( exp ) => {
+		const submitCloseTab = () => {
+			exp.send( 'navigation_out', {
+				action_data: lastEditorUsed,
+				element_friendly_name: CTR_ADDITIONAL_ELEMENTS.deviceCloseTab
+			} );
+		};
 		const setupVisualEditorInstrumentation = ( target ) => {
 			if ( target.constructor.static.trackingName !== 'mobile' ) {
 				return;
@@ -73,7 +114,7 @@ function setupLoggedOutWarningInstrumentation() {
 					);
 					return;
 				}
-				setupCTRs( exp );
+				setupCTRs( exp, submitCloseTab );
 				submitExposureInteraction( exp );
 			} );
 		};
@@ -82,17 +123,36 @@ function setupLoggedOutWarningInstrumentation() {
 			return;
 		}
 		mw.hook( 'mobileFrontend.editorClosed' ).add( ( isSwitching ) => {
+			if ( isAnonEditingButtonClick ) {
+				return;
+			}
 			// Unsubscribe prior registered hook callbacks so they don't fire twice
 			mw.hook( 've.newTarget' ).remove( setupVisualEditorInstrumentation );
 			if ( isSwitching ) {
+				exp.send( 'mode_switch', {
+					action_data: lastEditorUsed === 'wikitext' ? 'visualeditor' : 'wikitext',
+					element_friendly_name: 'Mode switch'
+				} );
 				return;
+			} else {
+				const friendlyName = isCloseButtonClick === true ?
+					CTR_ADDITIONAL_ELEMENTS.editorCloseButton :
+					CTR_ADDITIONAL_ELEMENTS.deviceBackButton;
+
+				exp.send( 'navigation_back', {
+					action_data: lastEditorUsed,
+					element_friendly_name: friendlyName
+				} );
 			}
 			// Reset editor used state, we want to setup the CTRs if the user re-opens the editor
 			lastEditorUsed = null;
+			// Stop listening to close tab
+			window.removeEventListener( 'pagehide', submitCloseTab );
 		} );
 		mw.hook( 'mobileFrontend.editorOpened' ).add( ( editor ) => {
 			// If this is a editor mode switch the warning is no longer shown, skip
 			if ( lastEditorUsed && lastEditorUsed !== editor ) {
+				lastEditorUsed = editor;
 				return;
 			}
 			if ( editor === 'visualeditor' ) {
@@ -110,7 +170,7 @@ function setupLoggedOutWarningInstrumentation() {
 					);
 					return;
 				}
-				setupCTRs( exp );
+				setupCTRs( exp, submitCloseTab );
 				submitExposureInteraction( exp );
 			}
 			lastEditorUsed = editor;
