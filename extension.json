@@ -125,13 +125,21 @@
 				"UserFactory",
 				"StatsFactory"
 			]
+		},
+		"FY26WE18CreateAccountV2": {
+			"class": "WikimediaEvents\\CreateAccount\\ExperimentHooks",
+			"services": [
+				"MainConfig",
+				"TestKitchen.ExperimentManager"
+			]
 		}
 	},
 	"Hooks": {
 		"ArticleProtectComplete": "TemporaryAccountsInstrumentation",
 		"AuthChangeFormFields": [
 			"AccountCreation",
-			"CreateAccountInstrumentationHandler"
+			"CreateAccountInstrumentationHandler",
+			"FY26WE18CreateAccountV2"
 		],
 		"AuthenticationAttemptThrottled": "TemporaryAccountsInstrumentation",
 		"BeforeInitialize": "main",
@@ -315,10 +323,14 @@
 				"specialCreateAccount/instrumentation.js",
 				"specialCreateAccount/useInstrument.js",
 				"specialCreateAccount/experimentInstrumentation.js",
+				"specialCreateAccount/experimentFunctionality.js",
 				"accountCreation.js",
 				"accountCreation/useAccountCreationInstrument.js",
 				"accountCreation/removeQueryParam.js",
 				"accountCreation/experiments.js"
+			],
+			"styles": [
+				"specialCreateAccount/experimentStyles.less"
 			],
 			"dependencies": [
 				"ext.wikimediaEvents.testKitchen",
