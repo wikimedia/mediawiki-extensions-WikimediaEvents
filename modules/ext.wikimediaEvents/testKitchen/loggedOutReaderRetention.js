@@ -9,6 +9,10 @@
  * History
  * =======
  *
+ * 2026-04-09:
+ * The instrument was updated to meet platform requirements and guidelines.
+ * See https://phabricator.wikimedia.org/T422823 for more context.
+ *
  * 2026-03-06:
  * The instrument was repurposed to measure logged-out reader retention on a monthly basis. It was
  * renamed from `pageVisit.js` to `loggedOutReaderRetention.js` to reflect this.
@@ -36,12 +40,8 @@ const EXPERIMENT_NAME_PREFIX = 'logged-out-retention-';
 
 mw.loader.using( 'ext.testKitchen' ).then( () => {
 	mw.testKitchen.getExperimentsByPrefix( EXPERIMENT_NAME_PREFIX )
-		.forEach(
-			( experiment ) => experiment.send(
-				'page-visited',
-				{
-					instrument_name: 'LoggedOutReaderRetention'
-				}
-			)
-		);
+		.forEach( ( experiment ) => {
+			experiment.sendExposure();
+			experiment.send( 'page_visit' );
+		} );
 } );

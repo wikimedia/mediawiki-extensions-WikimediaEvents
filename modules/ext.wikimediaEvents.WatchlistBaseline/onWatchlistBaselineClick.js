@@ -10,7 +10,7 @@ if ( specialPageName === 'Watchlist' ) {
 
 		if ( lines.length >= MIN_WATCHLIST_ITEMS ) {
 			// Log that the user visited the watchlist page
-			instrument.send( 'page-visited', {
+			instrument.send( 'page_visit', {
 				action_source: 'Watchlist'
 			} );
 			lines.forEach( ( line ) => {
