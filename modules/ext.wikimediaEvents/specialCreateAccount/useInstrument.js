@@ -31,12 +31,12 @@ let funnelEntryToken;
  *
  * @return {LogEvent}
  */
+const INSTRUMENT_NAME = 'special-create-account';
+
 const useInstrument = () => {
+
 	if ( !instrument ) {
-		instrument = mw.eventLog.newInstrument(
-			'mediawiki.product_metrics.special_create_account',
-			'/analytics/product_metrics/web/base/1.3.0'
-		);
+		instrument = mw.testKitchen.getInstrument( INSTRUMENT_NAME );
 	}
 
 	return ( action, data = {} ) => {
@@ -72,8 +72,9 @@ const useInstrument = () => {
 
 		interactionData.funnel_name = 'create_account';
 
-		instrument.submitInteraction( action, interactionData );
-	};
-};
+		instrument.send( action, interactionData );
 
+	};
+
+};
 module.exports = { useInstrument };
