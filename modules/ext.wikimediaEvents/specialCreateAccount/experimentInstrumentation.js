@@ -1,5 +1,4 @@
 const CREATE_ACCOUNT_FORM_V1_EXPERIMENT_NAME = 'we-1-8-account-creation-form-v1';
-const STREAM_NAME = 'mediawiki.product_metrics.contributors.experiments';
 
 function setupWe18V1ExperimentInstrumentation() {
 
@@ -25,7 +24,6 @@ function setupWe18V1ExperimentInstrumentation() {
 
 	const { ClickThroughRateInstrument } = require( 'ext.wikimediaEvents.testKitchen' );
 	const experiment = mw.testKitchen.getExperiment( CREATE_ACCOUNT_FORM_V1_EXPERIMENT_NAME );
-	experiment.setStream( STREAM_NAME );
 
 	if ( !document.querySelector( 'form#userlogin2' ) ) {
 		// This might happen if account creations is attempted from via the TOR browser or similar
