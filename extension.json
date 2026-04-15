@@ -238,6 +238,7 @@
 				"webAccessibilitySettings.js",
 				"webUIScroll.js",
 				"readingDepth.js",
+				"readingListAccountCreationCTA.js",
 				"readingListBaseline.js",
 				"phpEngine.js",
 				"blockedEdit.js",

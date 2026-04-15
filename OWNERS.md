@@ -270,6 +270,14 @@ Click Through (baseline) Rate for links on the Watchlist
 * Contact: Reader Experience team
 More details at <https://phabricator.wikimedia.org/T414368>.
 
+## Reading List Account Creation CTA
+
+* Since: April 2026
+* Suggested Removal: June 2026
+* Files: ext.wikimediaEvents/readingListAccountCreationCTA.js
+* Contact: Reader Experience team
+More details at <https://phabricator.wikimedia.org/T420238>.
+
 ## Mobile section switching
 
 * Since: December 2025

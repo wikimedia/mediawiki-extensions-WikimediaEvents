@@ -20,6 +20,9 @@ if ( skin === 'vector-2022' || skin === 'minerva' ) {
 		require( './readingListBaseline.js' );
 	}
 }
+if ( skin === 'minerva' && mw.user.isAnon() ) {
+	require( './readingListAccountCreationCTA.js' );
+}
 
 require( './editAttemptStep.js' );
 require( './mobileSectionSwitch.js' );
