@@ -319,3 +319,9 @@ More details at <https://phabricator.wikimedia.org/T420238>.
 * Since: March 2026
 * Modules: ext.wikimediaEvents.emailConfirmationBanner
 * Contact: Product Safety and Integrity
+
+## Suggestion mode
+
+* Since: April 2026
+* Files: ext.wikimediaEvents/suggestionMode.js
+* Contact: Editing

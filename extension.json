@@ -270,6 +270,7 @@
 				},
 				"editAttemptStep.js",
 				"mobileSectionSwitch.js",
+				"suggestionMode.js",
 				"hCaptcha.js",
 				"loggedOutWarning.js",
 				"editSaves.js",
