@@ -38,6 +38,7 @@ require( './testKitchen/impactTest.js' );
 require( './testKitchen/loggedInReaderRetention.js' );
 require( './testKitchen/loggedOutReaderRetention.js' );
 require( './externalLinks.js' )();
+require( './suggestionMode.js' );
 
 // Expose the session length instrument for re-use across the MediaWiki ecosystem.
 const { SessionLengthInstrumentMixin } = require( './sessionLength/mixin.js' );
