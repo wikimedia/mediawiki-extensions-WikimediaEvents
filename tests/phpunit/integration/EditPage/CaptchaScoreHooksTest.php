@@ -896,4 +896,129 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			] ],
 		];
 	}
+
+	/** @dataProvider provideOnLocalUserCreatedForNoCreatedEvent */
+	public function testOnLocalUserCreatedForNoCreatedEvent(
+		bool $confirmEditLoaded,
+		bool $accountAutocreated,
+		string $captchaUsedForAccountCreation,
+		bool $captchaTriggeredForAccountCreation
+	): void {
+		if ( $confirmEditLoaded ) {
+			$this->markTestSkippedIfExtensionNotLoaded( 'ConfirmEdit' );
+
+			$this->overrideConfigValue(
+				'CaptchaTriggers',
+				[
+					'create' => [
+						'trigger' => $captchaTriggeredForAccountCreation,
+						'class' => $captchaUsedForAccountCreation,
+					],
+				]
+			);
+		}
+
+		$mockExtensionRegistry = $this->createMock( ExtensionRegistry::class );
+		$mockExtensionRegistry->method( 'isLoaded' )
+			->with( 'ConfirmEdit' )
+			->willReturn( $confirmEditLoaded );
+
+		$captchaScoreHooks = new CaptchaScoreHooks(
+			$this->createNoOpMock( EventSubmitter::class ),
+			$this->getServiceContainer()->getUserFactory(),
+			$this->getServiceContainer()->getUserGroupManager(),
+			$this->getServiceContainer()->getCentralIdLookup(),
+			$mockExtensionRegistry
+		);
+
+		$captchaScoreHooks->onLocalUserCreated( $this->getTestUser()->getUser(), $accountAutocreated );
+	}
+
+	public static function provideOnLocalUserCreatedForNoCreatedEvent(): array {
+		return [
+			'ConfirmEdit not loaded' => [
+				'confirmEditLoaded' => false,
+				'accountAutocreated' => true,
+				'captchaUsedForAccountCreation' => 'HCaptcha',
+				'captchaTriggeredForAccountCreation' => false,
+			],
+			'Account auto-created' => [
+				'confirmEditLoaded' => true,
+				'accountAutocreated' => true,
+				'captchaUsedForAccountCreation' => 'HCaptcha',
+				'captchaTriggeredForAccountCreation' => true,
+			],
+			'FancyCaptcha used for account creation' => [
+				'confirmEditLoaded' => true,
+				'accountAutocreated' => false,
+				'captchaUsedForAccountCreation' => 'FancyCaptcha',
+				'captchaTriggeredForAccountCreation' => true,
+			],
+			'Captcha not needed for account creation' => [
+				'confirmEditLoaded' => true,
+				'accountAutocreated' => false,
+				'captchaUsedForAccountCreation' => 'HCaptcha',
+				'captchaTriggeredForAccountCreation' => false,
+			],
+		];
+	}
+
+	public function testOnLocalUserCreatedForCreatedEvent(): void {
+		$this->markTestSkippedIfExtensionNotLoaded( 'ConfirmEdit' );
+		$this->overrideConfigValue(
+			'CaptchaTriggers',
+			[
+				'createaccount' => [
+					'trigger' => true,
+					'class' => 'HCaptcha',
+				],
+			]
+		);
+
+		$user = $this->getTestUser()->getUser();
+
+		$captchaInstance = Hooks::getInstance( CaptchaTriggers::CREATE_ACCOUNT );
+		$this->assertInstanceOf( HCaptcha::class, $captchaInstance );
+		$captchaInstance->storeSessionScore(
+			'hCaptcha-score',
+			0.37,
+			$user->getName()
+		);
+
+		RequestContext::getMain()->setRequest( new FauxRequest( [], true ) );
+
+		$userEntitySerializer = new UserEntitySerializer(
+			$this->getServiceContainer()->getUserFactory(),
+			$this->getServiceContainer()->getUserGroupManager(),
+			$this->getServiceContainer()->getCentralIdLookup()
+		);
+
+		$mockEventSubmitter = $this->createMock( EventSubmitter::class );
+		$mockEventSubmitter->expects( $this->once() )
+			->method( 'submit' )
+			->with(
+				'mediawiki.hcaptcha.risk_score',
+				[
+					'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.3.0',
+					'action' => 'createaccount',
+					'wiki_id' => WikiMap::getCurrentWikiId(),
+					'identifier' => $user->getId(),
+					'identifier_type' => 'account',
+					'performer' => $userEntitySerializer->toArray( $user ),
+					'http' => [ 'method' => 'POST' ],
+					'risk_score' => 0.37,
+					'mw_entry_point' => MW_ENTRY_POINT,
+				]
+			);
+
+		$captchaScoreHooks = new CaptchaScoreHooks(
+			$mockEventSubmitter,
+			$this->getServiceContainer()->getUserFactory(),
+			$this->getServiceContainer()->getUserGroupManager(),
+			$this->getServiceContainer()->getCentralIdLookup(),
+			$this->getServiceContainer()->getExtensionRegistry()
+		);
+
+		$captchaScoreHooks->onLocalUserCreated( $this->getTestUser()->getUser(), false );
+	}
 }

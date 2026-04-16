@@ -3,6 +3,7 @@
 namespace WikimediaEvents\EditPage;
 
 use MediaWiki\Api\ApiMessage;
+use MediaWiki\Auth\Hook\LocalUserCreatedHook;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\ConfirmEdit\AbuseFilter\CaptchaConsequence;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
@@ -25,9 +26,13 @@ use MediaWiki\WikiMap\WikiMap;
 use Wikimedia\Message\MessageSpecifier;
 
 /**
- * Hooks for logging hCaptcha risk scores during edit operations.
+ * Logging of hCaptcha risk scores for edits and account creations.
  */
-class CaptchaScoreHooks implements PageSaveCompleteHook, EditPage__attemptSave_afterHook {
+class CaptchaScoreHooks implements
+	PageSaveCompleteHook,
+	EditPage__attemptSave_afterHook,
+	LocalUserCreatedHook
+{
 
 	private const STREAM = 'mediawiki.hcaptcha.risk_score';
 	private const SCHEMA = '/analytics/mediawiki/hcaptcha/risk_score/1.3.0';
@@ -47,10 +52,10 @@ class CaptchaScoreHooks implements PageSaveCompleteHook, EditPage__attemptSave_a
 			return;
 		}
 
-		$hCaptcha = $this->getHCaptchaInstanceForEdits();
+		$hCaptcha = $this->getHCaptchaInstance( CaptchaTriggers::EDIT );
 		$title = $wikiPage->getTitle();
 
-		if ( !$hCaptcha || !$this->shouldHandleAction( $user, $title, $hCaptcha ) ) {
+		if ( !$hCaptcha || !$this->shouldHandleAction( CaptchaTriggers::EDIT, $user, $hCaptcha, $title ) ) {
 			return;
 		}
 
@@ -77,11 +82,11 @@ class CaptchaScoreHooks implements PageSaveCompleteHook, EditPage__attemptSave_a
 			return;
 		}
 
-		$hCaptcha = $this->getHCaptchaInstanceForEdits();
+		$hCaptcha = $this->getHCaptchaInstance( CaptchaTriggers::EDIT );
 		$user = $editpage_Obj->getContext()->getUser();
 		$title = $editpage_Obj->getTitle();
 
-		if ( !$hCaptcha || !$this->shouldHandleAction( $user, $title, $hCaptcha ) ) {
+		if ( !$hCaptcha || !$this->shouldHandleAction( CaptchaTriggers::EDIT, $user, $hCaptcha, $title ) ) {
 			return;
 		}
 
@@ -110,6 +115,35 @@ class CaptchaScoreHooks implements PageSaveCompleteHook, EditPage__attemptSave_a
 
 			$this->eventSubmitter->submit( self::STREAM, $payload );
 		}
+	}
+
+	/** @inheritDoc */
+	public function onLocalUserCreated( $user, $autocreated ): void {
+		// Skip autocreated accounts, as no form with hCaptcha will have been used for
+		// that account creation (as it was done automatically)
+		if ( $autocreated || !$this->extensionRegistry->isLoaded( 'ConfirmEdit' ) ) {
+			return;
+		}
+
+		$hCaptcha = $this->getHCaptchaInstance( CaptchaTriggers::CREATE_ACCOUNT );
+
+		if ( !$hCaptcha || !$this->shouldHandleAction( CaptchaTriggers::CREATE_ACCOUNT, $user, $hCaptcha ) ) {
+			return;
+		}
+
+		$riskScore = $this->getRiskScore( $hCaptcha, $user );
+		$request = RequestContext::getMain()->getRequest();
+
+		$event = $this->buildEventPayload(
+			CaptchaTriggers::CREATE_ACCOUNT,
+			$user->getId(),
+			'account',
+			$user,
+			$riskScore,
+			$request
+		);
+
+		$this->eventSubmitter->submit( self::STREAM, $event );
 	}
 
 	/**
@@ -163,32 +197,30 @@ class CaptchaScoreHooks implements PageSaveCompleteHook, EditPage__attemptSave_a
 	 * class; that is, whether the action should result in an event being
 	 * logged.
 	 *
+	 * @param string $action One of {@link CaptchaTriggers}
 	 * @param UserIdentity $userIdentity User performing the action
-	 * @param Title $title Page the action is performed for.
 	 * @param HCaptcha $hCaptcha hCaptcha instance associated with the action.
-	 *
+	 * @param Title|null $title Page the action is performed for, if relevant
 	 * @return bool True if the action should be handled, false otherwise.
 	 */
 	private function shouldHandleAction(
+		string $action,
 		UserIdentity $userIdentity,
-		Title $title,
-		HCaptcha $hCaptcha
+		HCaptcha $hCaptcha,
+		?Title $title = null
 	): bool {
 		$user = $this->userFactory->newFromUserIdentity( $userIdentity );
-		$triggersCaptcha = $hCaptcha->triggersCaptcha(
-			CaptchaTriggers::EDIT,
-			$title
-		);
+		$triggersCaptcha = $hCaptcha->triggersCaptcha( $action, $title );
 
 		return $triggersCaptcha && !$hCaptcha->canSkipCaptcha( $user );
 	}
 
 	/**
-	 * Obtain the hCaptcha instance to be used for edits, or null if hCaptcha is
-	 * not configured for edits.
+	 * Obtain the hCaptcha instance to be used for the specified action, or null
+	 * if hCaptcha is not used for that action.
 	 */
-	private function getHCaptchaInstanceForEdits(): ?HCaptcha {
-		$instance = Hooks::getInstance( CaptchaTriggers::EDIT );
+	private function getHCaptchaInstance( string $action ): ?HCaptcha {
+		$instance = Hooks::getInstance( $action );
 		if ( $instance instanceof HCaptcha ) {
 			return $instance;
 		}

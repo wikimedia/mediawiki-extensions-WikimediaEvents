@@ -150,7 +150,10 @@
 			"CaptchaScoreHooks",
 			"TemporaryAccountsInstrumentation"
 		],
-		"LocalUserCreated": "IPReputationHooks",
+		"LocalUserCreated": [
+			"CaptchaScoreHooks",
+			"IPReputationHooks"
+		],
 		"PreferencesFormPreSave": "VectorInstrumentation",
 		"SaveUserOptions": "PrefInstrumentation",
 		"ArticleViewHeader": "main",
