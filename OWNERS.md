@@ -325,3 +325,9 @@ More details at <https://phabricator.wikimedia.org/T420238>.
 * Since: April 2026
 * Files: ext.wikimediaEvents/suggestionMode.js
 * Contact: Editing
+
+## Email confirmation banner ab test
+
+* Since: April 2026
+* Files: ext.wikimediaEvents/emailConfirmationBanner/emailConfirmationBanner.js
+* Contact: Product Safety and Integrity
