@@ -1,13 +1,13 @@
 <?php
 namespace WikimediaEvents\CreateAccount;
 
-use ExtensionRegistry;
 use MediaWiki\Auth\AbstractPreAuthenticationProvider;
 use MediaWiki\Auth\AuthenticationRequest;
 use MediaWiki\Auth\AuthManager;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
 use MediaWiki\Extension\ConfirmEdit\Hooks;
+use MediaWiki\Registration\ExtensionRegistry;
 use StatusValue;
 
 /**

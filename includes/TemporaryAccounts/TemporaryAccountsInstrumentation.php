@@ -3,7 +3,6 @@
 namespace WikimediaEvents\TemporaryAccounts;
 
 use MediaWiki\Auth\Hook\AuthenticationAttemptThrottledHook;
-use MediaWiki\Hook\BlockIpCompleteHook;
 use MediaWiki\Logging\ManualLogEntry;
 use MediaWiki\Page\Hook\ArticleProtectCompleteHook;
 use MediaWiki\Page\Hook\PageDeleteCompleteHook;
@@ -11,6 +10,7 @@ use MediaWiki\Page\ProperPageIdentity;
 use MediaWiki\Permissions\Authority;
 use MediaWiki\Revision\RevisionLookup;
 use MediaWiki\Revision\RevisionRecord;
+use MediaWiki\Specials\Hook\BlockIpCompleteHook;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserIdentityUtils;

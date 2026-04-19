@@ -4,12 +4,12 @@ namespace WikimediaEvents\Tests\Integration\Api;
 
 use DOMDocument;
 use MediaWiki\Api\ApiUsageException;
+use MediaWiki\Content\TextContent;
 use MediaWiki\Extension\EventBus\Serializers\MediaWiki\UserEntitySerializer;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Tests\Api\ApiTestCase;
 use MediaWiki\User\User;
 use MediaWiki\WikiMap\WikiMap;
-use TextContent;
 use Wikimedia\TestingAccessWrapper;
 
 /**

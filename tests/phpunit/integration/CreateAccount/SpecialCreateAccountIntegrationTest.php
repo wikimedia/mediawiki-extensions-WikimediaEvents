@@ -2,7 +2,7 @@
 namespace WikimediaEvents\Tests\Integration\CreateAccount;
 
 use MediaWiki\MainConfigNames;
-use SpecialPageTestBase;
+use MediaWiki\Tests\Specials\SpecialPageTestBase;
 use WikimediaEvents\CreateAccount\CreateAccountInstrumentationAuthenticationRequest;
 use WikimediaEvents\CreateAccount\CreateAccountInstrumentationPreAuthenticationProvider;
 

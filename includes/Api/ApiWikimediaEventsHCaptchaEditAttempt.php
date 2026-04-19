@@ -5,6 +5,7 @@ namespace WikimediaEvents\Api;
 use MediaWiki\Api\ApiBase;
 use MediaWiki\Api\ApiMain;
 use MediaWiki\Api\ApiUsageException;
+use MediaWiki\Content\TextContent;
 use MediaWiki\Context\DerivativeContext;
 use MediaWiki\Extension\EventBus\Serializers\MediaWiki\UserEntitySerializer;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
@@ -14,7 +15,6 @@ use MediaWiki\User\CentralId\CentralIdLookup;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserGroupManager;
 use MediaWiki\WikiMap\WikiMap;
-use TextContent;
 use Wikimedia\ParamValidator\ParamValidator;
 
 class ApiWikimediaEventsHCaptchaEditAttempt extends ApiBase {

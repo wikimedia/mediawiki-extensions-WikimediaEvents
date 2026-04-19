@@ -2,7 +2,6 @@
 
 namespace WikimediaEvents\Tests\Integration\EditPage;
 
-use ExtensionRegistry;
 use MediaWiki\Api\ApiMessage;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\EditPage\EditPage;
@@ -13,6 +12,7 @@ use MediaWiki\Extension\ConfirmEdit\Hooks;
 use MediaWiki\Extension\EventBus\Serializers\MediaWiki\UserEntitySerializer;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Page\WikiPage;
+use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Status\Status;

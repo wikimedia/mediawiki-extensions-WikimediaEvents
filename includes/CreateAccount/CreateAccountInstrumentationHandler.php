@@ -1,8 +1,8 @@
 <?php
 namespace WikimediaEvents\CreateAccount;
 
-use Config;
 use MediaWiki\Auth\AuthManager;
+use MediaWiki\Config\Config;
 use MediaWiki\Output\Hook\BeforePageDisplayHook;
 use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\SpecialPage\Hook\AuthChangeFormFieldsHook;

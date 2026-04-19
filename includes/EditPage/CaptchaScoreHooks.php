@@ -2,7 +2,6 @@
 
 namespace WikimediaEvents\EditPage;
 
-use ExtensionRegistry;
 use MediaWiki\Api\ApiMessage;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\ConfirmEdit\AbuseFilter\CaptchaConsequence;
@@ -12,6 +11,7 @@ use MediaWiki\Extension\ConfirmEdit\Hooks;
 use MediaWiki\Extension\EventBus\Serializers\MediaWiki\UserEntitySerializer;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Hook\EditPage__attemptSave_afterHook;
+use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Request\WebRequest;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Session\Session;
@@ -22,7 +22,7 @@ use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserGroupManager;
 use MediaWiki\User\UserIdentity;
 use MediaWiki\WikiMap\WikiMap;
-use MessageSpecifier;
+use Wikimedia\Message\MessageSpecifier;
 
 /**
  * Hooks for logging hCaptcha risk scores during edit operations.
