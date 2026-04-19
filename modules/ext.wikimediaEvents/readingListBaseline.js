@@ -56,11 +56,11 @@ function trackNotificationClicks( instrument ) {
 function trackReadingListLinkClicks( instrument ) {
 	document.addEventListener( 'click', ( event ) => {
 		const $link = $( event.target ).closest( 'a' );
-		const $grid = $link.closest( '.reading-lists-grid' );
+		const $items = $link.closest( '.reading-lists-items' );
 
 		if (
 			$link.length &&
-			$grid.length
+			$items.length
 		) {
 			instrument.send( 'click', {
 				action_subtype: 'view_article',
