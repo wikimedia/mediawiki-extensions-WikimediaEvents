@@ -227,6 +227,7 @@ const schemaEditAttemptStep = new mw.eventLog.Schema(
 		user_is_temp: mw.user.isTemp(),
 		user_class: mw.user.isAnon() ? 'IP' : undefined,
 		user_editcount: mw.config.get( 'wgUserEditCount', 0 ),
+		user_groups: mw.config.get( 'wgUserGroups' ),
 		mw_version: mw.config.get( 'wgVersion' ),
 		page_token: mw.user.getPageviewToken(),
 		session_token: mw.user.sessionId(),
