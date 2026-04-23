@@ -23,7 +23,7 @@ function setupWe18V1ExperimentInstrumentation() {
 	}
 
 	const { ClickThroughRateInstrument } = require( 'ext.wikimediaEvents.testKitchen' );
-	const experiment = mw.testKitchen.getExperiment( CREATE_ACCOUNT_FORM_V1_EXPERIMENT_NAME );
+	const experiment = mw.testKitchen.compat.getExperiment( CREATE_ACCOUNT_FORM_V1_EXPERIMENT_NAME );
 
 	if ( !document.querySelector( 'form#userlogin2' ) ) {
 		// This might happen if account creations is attempted from via the TOR browser or similar

@@ -9,7 +9,7 @@ const EXPERIMENT_NAME = 'account-creation-reading-list-cta';
 
 const experimentPromise = mw.loader.using( 'ext.testKitchen' )
 	.then( () => {
-		const experiment = mw.testKitchen.getExperiment( EXPERIMENT_NAME );
+		const experiment = mw.testKitchen.compat.getExperiment( EXPERIMENT_NAME );
 		return experiment;
 	} )
 	.catch( ( error ) => {

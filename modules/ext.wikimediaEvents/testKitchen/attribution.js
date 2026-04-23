@@ -1,7 +1,7 @@
 const EXPERIMENT_NAME = 'attribution-research-short-baseline-run';
 /**
  * To test in browser, uncomment these lines
- * if ( !mw.testKitchen.getExperiment( EXPERIMENT_NAME ) ) {
+ * if ( !mw.testKitchen.compat.getExperiment( EXPERIMENT_NAME ) ) {
  *     mw.testKitchen.overrideExperimentGroup(EXPERIMENT_NAME, 'treatment');
  * }
  */
@@ -53,7 +53,7 @@ function main() {
 	if ( was( DONE ) || was( ERASED ) ) {
 		return;
 	}
-	const exp = mw.testKitchen.getExperiment( EXPERIMENT_NAME );
+	const exp = mw.testKitchen.compat.getExperiment( EXPERIMENT_NAME );
 
 	if ( !( exp && exp.isAssignedGroup( 'control', 'treatment' ) ) ) {
 		return;

@@ -12,10 +12,7 @@ mw.hook( 'mediawiki.emailConfirmationBanner.shown' ).add( ( container ) => {
 	}
 	banner.dataset.tkInitialized = '1';
 
-	const experiment = mw.testKitchen.getExperiment( 'ab-test-email-confirmation-banner' );
-	if ( !experiment ) {
-		return;
-	}
+	const experiment = mw.testKitchen.compat.getExperiment( 'ab-test-email-confirmation-banner' );
 
 	experiment.send( 'impression', {
 		action_source: 'banner'

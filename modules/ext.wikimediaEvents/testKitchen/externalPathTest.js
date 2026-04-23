@@ -7,7 +7,7 @@ const EXPERIMENT_ID = 'synth-test-new-external-path';
 const INSTRUMENT_ID = 'synth-test-external-path';
 
 mw.loader.using( 'ext.testKitchen' ).then( () => {
-	const experiment = mw.testKitchen.getExperiment( EXPERIMENT_ID );
+	const experiment = mw.testKitchen.compat.getExperiment( EXPERIMENT_ID );
 	const instrument = mw.testKitchen.getInstrument( INSTRUMENT_ID );
 	const timezoneOffset = new Date().getTimezoneOffset();
 

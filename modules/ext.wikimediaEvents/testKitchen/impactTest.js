@@ -14,7 +14,7 @@ const INSTRUMENT_NAME = 'PageVisit';
 
 mw.loader.using( 'ext.testKitchen' ).then( () => {
 	[ EXPERIMENT_NAME_1, EXPERIMENT_NAME_2, EXPERIMENT_NAME_3 ].forEach( ( experimentName ) => {
-		mw.testKitchen.getExperiment( experimentName )
+		mw.testKitchen.compat.getExperiment( experimentName )
 			.send(
 				'page-visited',
 				{ instrument_name: INSTRUMENT_NAME }

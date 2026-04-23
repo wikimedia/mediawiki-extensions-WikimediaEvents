@@ -18,7 +18,7 @@ const LOGGED_IN_RETENTION_EXPERIMENT_PREFIX = 'logged-in-retention-';
 mw.loader.using( 'ext.testKitchen' ).then( () => {
 	// Only logged-in, non-temp users.
 	if ( mw.user.isNamed() ) {
-		mw.testKitchen.getExperimentsByPrefix( LOGGED_IN_RETENTION_EXPERIMENT_PREFIX )
+		mw.testKitchen.compat.getExperimentsByPrefix( LOGGED_IN_RETENTION_EXPERIMENT_PREFIX )
 			.forEach( ( experiment ) => {
 				experiment.sendExposure();
 				experiment.send( 'page_visit' );

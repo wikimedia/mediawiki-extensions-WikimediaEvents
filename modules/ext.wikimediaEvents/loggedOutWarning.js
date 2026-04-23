@@ -48,7 +48,7 @@ function setupLoggedOutWarningInstrumentation() {
 		'ext.testKitchen',
 		'ext.wikimediaEvents.testKitchen'
 	] ).then( () => {
-		const experiment = mw.testKitchen.getExperiment( EXPERIMENT_NAME );
+		const experiment = mw.testKitchen.compat.getExperiment( EXPERIMENT_NAME );
 		experiment.setStream( STREAM_NAME );
 		return experiment;
 	} ).catch( ( error ) => {

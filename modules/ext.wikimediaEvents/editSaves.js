@@ -28,7 +28,7 @@ mw.loader.using( [
 	}
 	const configuredExperiments = EXPERIMENTS.map(
 		( experimentName ) => {
-			const experiment = mw.testKitchen.getExperiment( experimentName );
+			const experiment = mw.testKitchen.compat.getExperiment( experimentName );
 			experiment.setStream( STREAM_NAME );
 			return experiment;
 		}

@@ -8,7 +8,7 @@ const useAccountCreationInstrument = (
 		throw new Error( 'Experiment name is required' );
 	}
 	return mw.loader.using( [ 'ext.testKitchen' ] ).then( () => {
-		const experiment = mw.testKitchen.getExperiment( experimentName );
+		const experiment = mw.testKitchen.compat.getExperiment( experimentName );
 		if ( schemaId ) {
 			experiment.setSchema( schemaId );
 		}
