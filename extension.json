@@ -216,7 +216,7 @@
 	"attributes": {
 		"EventLogging": {
 			"Schemas": {
-				"EditAttemptStep": "/analytics/legacy/editattemptstep/2.0.2",
+				"EditAttemptStep": "/analytics/legacy/editattemptstep/2.2.0",
 				"VisualEditorFeatureUse": "/analytics/legacy/visualeditorfeatureuse/1.1.0",
 				"SearchSatisfaction": "/analytics/legacy/searchsatisfaction/1.5.0",
 				"WMDEBannerEvents": "/analytics/legacy/wmdebannerevents/1.0.0",
