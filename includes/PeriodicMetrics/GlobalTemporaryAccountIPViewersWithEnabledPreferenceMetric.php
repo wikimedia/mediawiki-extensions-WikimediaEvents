@@ -4,7 +4,7 @@ namespace WikimediaEvents\PeriodicMetrics;
 
 use GlobalPreferences\Services\GlobalPreferencesConnectionProvider;
 use MediaWiki\Extension\CentralAuth\CentralAuthDatabaseManager;
-use MediaWiki\Extension\CentralAuth\GlobalGroup\GlobalGroupLookup;
+use MediaWiki\Extension\CentralAuth\GlobalGroup\GlobalGroupManager;
 
 /**
  * A metric for the total number of users who have accepted the global preference to see temporary account IP
@@ -14,28 +14,21 @@ use MediaWiki\Extension\CentralAuth\GlobalGroup\GlobalGroupLookup;
  */
 class GlobalTemporaryAccountIPViewersWithEnabledPreferenceMetric implements IMetric {
 
-	private GlobalGroupLookup $globalGroupLookup;
-	private CentralAuthDatabaseManager $centralAuthDatabaseManager;
-	private GlobalPreferencesConnectionProvider $globalPreferencesConnectionProvider;
-
 	public function __construct(
-		GlobalGroupLookup $globalGroupLookup,
-		CentralAuthDatabaseManager $centralAuthDatabaseManager,
-		GlobalPreferencesConnectionProvider $globalPreferencesConnectionProvider
+		private readonly GlobalGroupManager $globalGroupManager,
+		private readonly CentralAuthDatabaseManager $centralAuthDatabaseManager,
+		private readonly GlobalPreferencesConnectionProvider $globalPreferencesConnectionProvider,
 	) {
-		$this->globalGroupLookup = $globalGroupLookup;
-		$this->centralAuthDatabaseManager = $centralAuthDatabaseManager;
-		$this->globalPreferencesConnectionProvider = $globalPreferencesConnectionProvider;
 	}
 
 	/** @inheritDoc */
 	public function calculate(): int {
 		// Get a list of the global groups which have the checkuser-temporary-account group but not the
 		// checkuser-temporary-account-no-preference group.
-		$groupsWithNonAutoEnrolledAccess = $this->globalGroupLookup->getGroupsWithPermission(
+		$groupsWithNonAutoEnrolledAccess = $this->globalGroupManager->getGroupsWithPermission(
 			'checkuser-temporary-account'
 		);
-		$groupsWithAutoEnrolledAccess = $this->globalGroupLookup->getGroupsWithPermission(
+		$groupsWithAutoEnrolledAccess = $this->globalGroupManager->getGroupsWithPermission(
 			'checkuser-temporary-account-no-preference'
 		);
 

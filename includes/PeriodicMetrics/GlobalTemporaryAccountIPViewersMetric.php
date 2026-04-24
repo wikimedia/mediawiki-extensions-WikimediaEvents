@@ -3,7 +3,7 @@
 namespace WikimediaEvents\PeriodicMetrics;
 
 use MediaWiki\Extension\CentralAuth\CentralAuthDatabaseManager;
-use MediaWiki\Extension\CentralAuth\GlobalGroup\GlobalGroupLookup;
+use MediaWiki\Extension\CentralAuth\GlobalGroup\GlobalGroupManager;
 
 /**
  * A metric for the total number of users with rights to see temporary account IP addresses where this access
@@ -12,26 +12,21 @@ use MediaWiki\Extension\CentralAuth\GlobalGroup\GlobalGroupLookup;
  */
 class GlobalTemporaryAccountIPViewersMetric implements IMetric {
 
-	private GlobalGroupLookup $globalGroupLookup;
-	private CentralAuthDatabaseManager $centralAuthDatabaseManager;
-
 	public function __construct(
-		GlobalGroupLookup $globalGroupLookup,
-		CentralAuthDatabaseManager $centralAuthDatabaseManager
+		private readonly GlobalGroupManager $globalGroupManager,
+		private readonly CentralAuthDatabaseManager $centralAuthDatabaseManager,
 	) {
-		$this->globalGroupLookup = $globalGroupLookup;
-		$this->centralAuthDatabaseManager = $centralAuthDatabaseManager;
 	}
 
 	/** @inheritDoc */
 	public function calculate(): int {
 		// Get a list of the global groups which give access to see temporary account IP addresses.
-		$globalGroupsWithRelevantPermission = $this->globalGroupLookup->getGroupsWithPermission(
+		$globalGroupsWithRelevantPermission = $this->globalGroupManager->getGroupsWithPermission(
 			'checkuser-temporary-account-no-preference'
 		);
 		$globalGroupsWithRelevantPermission = array_merge(
 			$globalGroupsWithRelevantPermission,
-			$this->globalGroupLookup->getGroupsWithPermission( 'checkuser-temporary-account' )
+			$this->globalGroupManager->getGroupsWithPermission( 'checkuser-temporary-account' )
 		);
 		$globalGroupsWithRelevantPermission = array_unique( $globalGroupsWithRelevantPermission );
 		if ( !count( $globalGroupsWithRelevantPermission ) ) {

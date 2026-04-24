@@ -3,7 +3,7 @@
 namespace WikimediaEvents\PeriodicMetrics;
 
 use MediaWiki\Extension\CentralAuth\CentralAuthDatabaseManager;
-use MediaWiki\Extension\CentralAuth\GlobalGroup\GlobalGroupLookup;
+use MediaWiki\Extension\CentralAuth\GlobalGroup\GlobalGroupManager;
 
 /**
  * A metric for the total number of users who have the checkuser-temporary-account-no-preference
@@ -11,20 +11,15 @@ use MediaWiki\Extension\CentralAuth\GlobalGroup\GlobalGroupLookup;
  */
 class GloballyAutoEnrolledTemporaryAccountIPViewersMetric implements IMetric {
 
-	private GlobalGroupLookup $globalGroupLookup;
-	private CentralAuthDatabaseManager $centralAuthDatabaseManager;
-
 	public function __construct(
-		GlobalGroupLookup $globalGroupLookup,
-		CentralAuthDatabaseManager $centralAuthDatabaseManager
+		private readonly GlobalGroupManager $globalGroupManager,
+		private readonly CentralAuthDatabaseManager $centralAuthDatabaseManager,
 	) {
-		$this->globalGroupLookup = $globalGroupLookup;
-		$this->centralAuthDatabaseManager = $centralAuthDatabaseManager;
 	}
 
 	/** @inheritDoc */
 	public function calculate(): int {
-		$globalGroupsWithRelevantPermission = $this->globalGroupLookup->getGroupsWithPermission(
+		$globalGroupsWithRelevantPermission = $this->globalGroupManager->getGroupsWithPermission(
 			'checkuser-temporary-account-no-preference'
 		);
 		if ( !count( $globalGroupsWithRelevantPermission ) ) {

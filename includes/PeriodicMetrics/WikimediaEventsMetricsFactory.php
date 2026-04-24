@@ -91,7 +91,7 @@ class WikimediaEventsMetricsFactory {
 	 */
 	public function newMetric( string $className ): IMetric {
 		if ( $this->extensionRegistry->isLoaded( 'CentralAuth' ) ) {
-			$globalGroupLookup = CentralAuthServices::getGlobalGroupLookup();
+			$globalGroupManager = CentralAuthServices::getGlobalGroupManager();
 			$centralAuthDatabaseManager = CentralAuthServices::getDatabaseManager();
 
 			if ( $this->extensionRegistry->isLoaded( 'GlobalPreferences' ) ) {
@@ -102,7 +102,7 @@ class WikimediaEventsMetricsFactory {
 				switch ( $className ) {
 					case GlobalTemporaryAccountIPViewersWithEnabledPreferenceMetric::class:
 						return new GlobalTemporaryAccountIPViewersWithEnabledPreferenceMetric(
-							$globalGroupLookup, $centralAuthDatabaseManager, $globalPreferencesConnectionProvider
+							$globalGroupManager, $centralAuthDatabaseManager, $globalPreferencesConnectionProvider
 						);
 				}
 			}
@@ -110,11 +110,11 @@ class WikimediaEventsMetricsFactory {
 			switch ( $className ) {
 				case GloballyAutoEnrolledTemporaryAccountIPViewersMetric::class:
 					return new GloballyAutoEnrolledTemporaryAccountIPViewersMetric(
-						$globalGroupLookup, $centralAuthDatabaseManager
+						$globalGroupManager, $centralAuthDatabaseManager
 					);
 				case GlobalTemporaryAccountIPViewersMetric::class:
 					return new GlobalTemporaryAccountIPViewersMetric(
-						$globalGroupLookup, $centralAuthDatabaseManager
+						$globalGroupManager, $centralAuthDatabaseManager
 					);
 			}
 		}
