@@ -58,9 +58,17 @@ class AccountCreationHandler implements
 		// tell client-side instrumentation if an account was just created
 		// this allows them to send events in the context of edge-unique experiments
 		// NOTE: requires onCentralAuthPostLoginRedirect to set the accountJustCreated query parameter
-		$accountJustCreated = RequestContext::getMain()->getRequest()->getVal( 'accountJustCreated' );
+		$request = RequestContext::getMain()->getRequest();
+		$accountJustCreated = $request->getVal( 'accountJustCreated' );
 		if ( $accountJustCreated ) {
 			$out->addJsConfigVars( 'wgTKAccountJustCreated', $accountJustCreated );
+		}
+		$readingListsAccountJustCreated = $request->getVal( 'readingListsAccountJustCreated' );
+		if ( $readingListsAccountJustCreated ) {
+			$out->addJsConfigVars(
+				'wgReadingListsAccountJustCreated',
+				$readingListsAccountJustCreated
+			);
 		}
 	}
 

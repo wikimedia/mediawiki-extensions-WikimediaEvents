@@ -17,7 +17,10 @@ const useAccountCreationInstrument = (
 		}
 
 		experiment.send( 'account_created' );
-		removeQueryParam( new URL( window.location.href ), 'accountJustCreated' );
+		removeQueryParam( new URL( window.location.href ), [
+			'accountJustCreated',
+			'readingListsAccountJustCreated'
+		] );
 		return experiment;
 	} ).catch( ( error ) => {
 		mw.log( 'Error loading ext.testKitchen module:', error );
