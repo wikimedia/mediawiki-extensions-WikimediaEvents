@@ -8,7 +8,7 @@ const DECLINE_ACTIONS = [ 'dismiss', 'keep', 'reject' ];
 
 const experimentPromise = mw.loader.using( 'ext.testKitchen' )
 	.then( () => {
-		const exp = mw.testKitchen.compat.getExperiment( EXPERIMENT_NAME );
+		const exp = ( mw.testKitchen.compat || mw.testKitchen ).getExperiment( EXPERIMENT_NAME );
 		const initialSuggestionsPref = mw.user.options.get( 'visualeditor-editcheck-suggestions' );
 		return { exp, initialSuggestionsPref };
 	} )
