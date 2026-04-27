@@ -1,6 +1,5 @@
 const EXPERIMENT_NAME = 'we-1-8-mobile-account-menu';
 const SCHEMA_NAME = '/analytics/product_metrics/web/base/2.0.0';
-const STREAM_NAME = 'mediawiki.product_metrics.contributors.experiments';
 
 function setUpAccountMenuInstrumentation() {
 	// Experiment only monitors wikis with a MinervaNeue skin
@@ -16,7 +15,6 @@ function setUpAccountMenuInstrumentation() {
 	const experimentPromise = mw.loader.using( [ 'ext.testKitchen', 'ext.wikimediaEvents.testKitchen' ] ).then( () => {
 		const experiment = mw.testKitchen.compat.getExperiment( EXPERIMENT_NAME );
 		experiment.setSchema( SCHEMA_NAME );
-		experiment.setStream( STREAM_NAME );
 		return experiment;
 	} ).catch( ( error ) => {
 		mw.log( 'Error loading ext.testKitchen module:', error );

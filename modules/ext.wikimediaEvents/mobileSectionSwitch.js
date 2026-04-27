@@ -1,14 +1,9 @@
 const editingSessionService = require( './editingSessionService.js' );
 
 const EXPERIMENT_NAME = 'fy25-26-we-1-1-19-mobile-section-dead-end-phase-2';
-const STREAM_NAME = 'mediawiki.product_metrics.contributors.experiments';
 
 const experimentPromise = mw.loader.using( 'ext.testKitchen' )
-	.then( () => {
-		const experiment = mw.testKitchen.compat.getExperiment( EXPERIMENT_NAME );
-		experiment.setStream( STREAM_NAME );
-		return experiment;
-	} )
+	.then( () => mw.testKitchen.getExperiment( EXPERIMENT_NAME ) )
 	.catch( ( error ) => {
 		mw.log( 'Error loading ext.testKitchen module:', error );
 		return null;

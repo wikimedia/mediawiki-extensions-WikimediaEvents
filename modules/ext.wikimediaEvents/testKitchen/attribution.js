@@ -58,8 +58,6 @@ function main() {
 	if ( !( exp && exp.isAssignedGroup( 'control', 'treatment' ) ) ) {
 		return;
 	}
-	// temporarily needed until a change is deployed, won't hurt if it's here
-	exp.setStream( 'product_metrics.web_base.attribution_research' );
 
 	// set up session ticks to get a rough sense of time on page
 	// previous research showed p75=64s and p90=166s

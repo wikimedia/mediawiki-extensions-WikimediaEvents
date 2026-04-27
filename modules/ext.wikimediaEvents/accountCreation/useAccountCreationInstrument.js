@@ -1,7 +1,6 @@
 const removeQueryParam = require( './removeQueryParam.js' );
 const useAccountCreationInstrument = (
 	experimentName,
-	streamName = null,
 	schemaId = null
 ) => {
 	if ( !experimentName ) {
@@ -11,9 +10,6 @@ const useAccountCreationInstrument = (
 		const experiment = mw.testKitchen.compat.getExperiment( experimentName );
 		if ( schemaId ) {
 			experiment.setSchema( schemaId );
-		}
-		if ( streamName ) {
-			experiment.setStream( streamName );
 		}
 
 		experiment.send( 'account_created' );

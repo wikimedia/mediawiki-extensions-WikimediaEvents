@@ -1,5 +1,4 @@
 const EXPERIMENT_NAME = 'growthexperiments-editattempt-anonwarning';
-const STREAM_NAME = 'mediawiki.product_metrics.contributors.experiments';
 
 const CLOSE_BUTTON_SELECTOR_VISUAL_MODE = '.ve-ui-toolbar-group-back > .oo-ui-toolGroup-tools > * > a';
 const CLOSE_BUTTON_SELECTOR_SOURCE_MODE = '.overlay-header.header.initial-header > ul > li > button.cancel';
@@ -82,14 +81,12 @@ function setupLoggedOutWarningInstrumentation() {
 	const experimentPromise = mw.loader.using( [
 		'ext.testKitchen',
 		'ext.wikimediaEvents.testKitchen'
-	] ).then( () => {
-		const experiment = mw.testKitchen.compat.getExperiment( EXPERIMENT_NAME );
-		experiment.setStream( STREAM_NAME );
-		return experiment;
-	} ).catch( ( error ) => {
-		mw.log( 'Error loading ext.testKitchen module:', error );
-		return null;
-	} );
+	] )
+		.then( () => mw.testKitchen.getExperiment( EXPERIMENT_NAME ) )
+		.catch( ( error ) => {
+			mw.log( 'Error loading ext.testKitchen module:', error );
+			return null;
+		} );
 
 	experimentPromise.then( ( exp ) => {
 		const submitCloseTab = () => {

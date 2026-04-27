@@ -1,5 +1,4 @@
 const { EXPERIMENTS } = require( './accountCreation/experiments.js' );
-const STREAM_NAME = 'mediawiki.product_metrics.contributors.experiments';
 // TODO: More experiments can be added here.
 
 /**
@@ -27,11 +26,7 @@ mw.loader.using( [
 		return;
 	}
 	const configuredExperiments = EXPERIMENTS.map(
-		( experimentName ) => {
-			const experiment = mw.testKitchen.compat.getExperiment( experimentName );
-			experiment.setStream( STREAM_NAME );
-			return experiment;
-		}
+		( experimentName ) => mw.testKitchen.getExperiment( experimentName )
 	);
 	mw.hook( 'mobileFrontend.sourceEditor.saveComplete' )
 		.add( ( newRevId ) => submitEditInteraction( configuredExperiments, newRevId ) );
