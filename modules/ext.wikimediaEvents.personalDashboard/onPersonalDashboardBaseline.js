@@ -36,6 +36,23 @@ function instrumentLinks( instrument, selector, friendlyName ) {
 		);
 	}
 }
+function instrumentReviewChangesLinks( instrument, selector ) {
+	const links = document.querySelectorAll( selector );
+	const friendlyNameDiff = 'Personal Dashboard diff link';
+	const friendlyNameWatchlist = 'Personal Dashboard watched diff link';
+	let i = 0;
+	for ( const link of links ) {
+		const origin = link.dataset.feedorigin;
+		const friendlyName = origin === 'recentchanges' ?
+			friendlyNameDiff : friendlyNameWatchlist;
+		ClickThroughRateInstrument.start(
+			selector + ':nth-of-type(' + ( i + 1 ) + ')',
+			friendlyName,
+			instrument
+		);
+		i++;
+	}
+}
 
 if ( specialPageName === 'PersonalDashboard' ) {
 	mw.loader.using( 'ext.testKitchen' ).then( () => {
@@ -55,9 +72,8 @@ if ( specialPageName === 'PersonalDashboard' ) {
 		} );
 
 		mw.hook( 'personaldashboard.recentactivity.listcard.loaded' ).add( () => {
-			instrumentLinks( instrument,
-				'.ext-personal-dashboard-moderation-card',
-				'Personal Dashboard diff link' );
+			instrumentReviewChangesLinks( instrument,
+				'.ext-personal-dashboard-moderation-card' );
 		} );
 
 		mw.hook( 'personaldashboard.activediscussions.listcard.loaded' ).add( () => {
