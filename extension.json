@@ -10,7 +10,7 @@
 	"descriptionmsg": "wikimediaevents-desc",
 	"license-name": "GPL-2.0-or-later",
 	"requires": {
-		"MediaWiki": ">= 1.46",
+		"MediaWiki": ">= 1.47.0",
 		"extensions": {
 			"EventLogging": "*",
 			"EventBus": "*"
@@ -525,9 +525,18 @@
 	},
 	"RateLimits": {
 		"wikimediaevents-hcaptcha-diff-logging": {
-			"ip": [ 8, 60 ],
-			"newbie": [ 8, 60 ],
-			"user": [ 8, 60 ]
+			"ip": [
+				8,
+				60
+			],
+			"newbie": [
+				8,
+				60
+			],
+			"user": [
+				8,
+				60
+			]
 		}
 	},
 	"ServiceWiringFiles": [
