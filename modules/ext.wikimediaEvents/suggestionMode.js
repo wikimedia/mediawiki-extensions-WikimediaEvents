@@ -9,21 +9,23 @@ const DECLINE_ACTIONS = [ 'dismiss', 'keep', 'reject' ];
 const experimentPromise = mw.loader.using( 'ext.testKitchen' )
 	.then( () => {
 		const exp = ( mw.testKitchen.compat || mw.testKitchen ).getExperiment( EXPERIMENT_NAME );
-		const initialSuggestionsPref = mw.user.options.get( 'visualeditor-editcheck-suggestions' );
-		return { exp, initialSuggestionsPref };
+		// Exclude any user who already has suggestion mode turned on or who has more than 100 edits
+		const isUserExcluded = ( mw.user.options.get( 'visualeditor-editcheck-suggestions' ) ||
+			( mw.user.isNamed() && mw.config.get( 'wgUserEditCount' ) > 100 ) );
+		return { exp, isUserExcluded };
 	} )
 	.catch( ( error ) => {
 		mw.log( 'Error loading ext.testKitchen module:', error );
 		return {};
 	} );
 
-experimentPromise.then( ( { exp, initialSuggestionsPref } ) => {
+experimentPromise.then( ( { exp, isUserExcluded } ) => {
 	if ( !( exp && exp.isAssignedGroup( 'control', 'treatment' ) ) ) {
 		return;
 	}
 
-	// Do not modify the settings of any user who already has suggestion mode turned on
-	if ( initialSuggestionsPref ) {
+	// Do not modify the settings of any excluded user
+	if ( isUserExcluded ) {
 		return;
 	}
 
@@ -33,13 +35,13 @@ experimentPromise.then( ( { exp, initialSuggestionsPref } ) => {
 
 mw.hook( 've.newTarget' ).add( ( target ) => {
 
-	experimentPromise.then( ( { exp, initialSuggestionsPref } ) => {
+	experimentPromise.then( ( { exp, isUserExcluded } ) => {
 		if ( !( exp && exp.isAssignedGroup( 'control', 'treatment' ) ) ) {
 			return;
 		}
 
-		// Skip experimentation for any user who already has suggestion mode turned on
-		if ( initialSuggestionsPref ) {
+		// Skip experimentation for any excluded user
+		if ( isUserExcluded ) {
 			return;
 		}
 
