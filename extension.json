@@ -425,7 +425,8 @@
 			"searchSatisfaction/searchSatisfaction.test.js",
 			"searchSatisfaction/searchSli.test.js",
 			"specialCreateAccount/instrumentation.test.js",
-			"externalLinks.test.js"
+			"externalLinks.test.js",
+			"readingListAccountCreationCTA.test.js"
 		],
 		"dependencies": [
 			"ext.wikimediaEvents"
