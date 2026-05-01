@@ -13,7 +13,8 @@
 		"MediaWiki": ">= 1.47.0",
 		"extensions": {
 			"EventLogging": "*",
-			"EventBus": "*"
+			"EventBus": "*",
+			"TestKitchen": "*"
 		}
 	},
 	"suggests": {
