@@ -1,42 +1,30 @@
-mw.loader.using( 'ext.testKitchen' ).then( () => {
-	const experiment = mw.testKitchen.compat.getExperiment( 'ab-test-email-confirmation-banner' );
-	if ( !experiment.isAssignedGroup( 'arm_a' ) ) {
-		experiment.sendExposure();
-	}
-} );
-
 mw.hook( 'mediawiki.emailConfirmationBanner.shown' ).add( ( container ) => {
+	if ( !mw.testKitchen ) {
+		return;
+	}
 
-	mw.loader.using( 'ext.testKitchen' ).then( () => {
-		const experiment = mw.testKitchen.compat.getExperiment( 'ab-test-email-confirmation-banner' );
-		if ( !experiment.isAssignedGroup( 'arm_a' ) ) {
-			return;
-		}
+	const banner = container.querySelector( '.mw-emailconfirmbanner' );
+	if ( !banner ) {
+		return;
+	}
+	if ( banner.dataset.tkInitialized ) {
+		return;
+	}
+	banner.dataset.tkInitialized = '1';
 
-		const banner = container.querySelector( '.mw-emailconfirmbanner' );
-		if ( !banner ) {
-			return;
-		}
-		if ( banner.dataset.tkInitialized ) {
-			return;
-		}
-		banner.dataset.tkInitialized = '1';
+	const experiment = mw.testKitchen.compat.getExperiment( 'ab-test-email-confirmation-banner' );
 
-		experiment.sendExposure();
-		experiment.send( 'impression', {
-			action_source: 'banner'
-		} );
-
-		const ctaLink = banner.querySelector( 'a[href*="Special:ConfirmEmail"]' );
-		if ( ctaLink ) {
-			ctaLink.addEventListener( 'click', () => {
-				experiment.send( 'click', {
-					action_source: 'banner',
-					action_context: 'confirm_email'
-				} );
-			}, { once: true } );
-		}
-
+	experiment.send( 'impression', {
+		action_source: 'banner'
 	} );
 
+	const ctaLink = banner.querySelector( 'a[href*="Special:ConfirmEmail"]' );
+	if ( ctaLink ) {
+		ctaLink.addEventListener( 'click', () => {
+			experiment.send( 'click', {
+				action_source: 'banner',
+				action_context: 'confirm_email'
+			} );
+		}, { once: true } );
+	}
 } );

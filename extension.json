@@ -318,8 +318,7 @@
 				"accountCreation.js",
 				"accountCreation/useAccountCreationInstrument.js",
 				"accountCreation/removeQueryParam.js",
-				"accountCreation/experiments.js",
-				"emailConfirmationBanner/emailConfirmationBanner.js"
+				"accountCreation/experiments.js"
 			],
 			"dependencies": [
 				"ext.wikimediaEvents.testKitchen",
@@ -394,6 +393,13 @@
 			],
 			"dependencies": [
 				"ext.wikimediaEvents.testKitchen"
+			]
+		},
+		"ext.wikimediaEvents.emailConfirmationBanner": {
+			"localBasePath": "modules/ext.wikimediaEvents/emailConfirmationBanner",
+			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents/emailConfirmationBanner",
+			"packageFiles": [
+				"emailConfirmationBanner.js"
 			]
 		}
 	},

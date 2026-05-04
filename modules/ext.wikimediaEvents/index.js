@@ -40,7 +40,6 @@ require( './specialCreateAccount/init.js' );
 require( './testKitchen/impactTest.js' );
 require( './testKitchen/loggedInReaderRetention.js' );
 require( './testKitchen/loggedOutReaderRetention.js' );
-require( './emailConfirmationBanner/emailConfirmationBanner.js' );
 require( './externalLinks.js' )();
 require( './suggestionMode.js' );
 
