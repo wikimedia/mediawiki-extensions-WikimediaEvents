@@ -94,7 +94,7 @@ function setupLoggedOutWarningInstrumentation() {
 	experimentPromise.then( ( exp ) => {
 		const submitCloseTab = () => {
 			exp.send( 'navigation_out', {
-				action_data: lastEditorUsed,
+				action_context: lastEditorUsed,
 				element_friendly_name: CTR_ADDITIONAL_ELEMENTS.deviceCloseTab
 			} );
 		};
@@ -130,7 +130,7 @@ function setupLoggedOutWarningInstrumentation() {
 			mw.hook( 've.newTarget' ).remove( setupVisualEditorInstrumentation );
 			if ( isSwitching ) {
 				exp.send( 'mode_switch', {
-					action_data: lastEditorUsed === 'wikitext' ? 'visualeditor' : 'wikitext',
+					action_context: lastEditorUsed === 'wikitext' ? 'visualeditor' : 'wikitext',
 					element_friendly_name: 'Mode switch'
 				} );
 				return;
@@ -140,7 +140,7 @@ function setupLoggedOutWarningInstrumentation() {
 					CTR_ADDITIONAL_ELEMENTS.deviceBackButton;
 
 				exp.send( 'navigation_back', {
-					action_data: lastEditorUsed,
+					action_context: lastEditorUsed,
 					element_friendly_name: friendlyName
 				} );
 			}
