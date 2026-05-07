@@ -66,6 +66,9 @@
 				"MainConfig"
 			]
 		},
+		"UserLoginInstrumentationHandler": {
+			"class": "WikimediaEvents\\UserLogin\\UserLoginInstrumentationHandler"
+		},
 		"AccountCreation": {
 			"class": "WikimediaEvents\\AccountCreation\\AccountCreationHandler",
 			"services": [
@@ -142,7 +145,8 @@
 		"AuthChangeFormFields": [
 			"AccountCreation",
 			"CreateAccountInstrumentationHandler",
-			"FY26WE18CreateAccountV2"
+			"FY26WE18CreateAccountV2",
+			"UserLoginInstrumentationHandler"
 		],
 		"AuthenticationAttemptThrottled": "TemporaryAccountsInstrumentation",
 		"BeforeInitialize": "main",
@@ -522,6 +526,10 @@
 			"description": "Whether to submit server-side instrumentation events for post-account creation pageviews. Default is false.",
 			"value": false
 		},
+		"WikimediaEventsUserLoginInstrumentation": {
+			"description": "Whether to submit server-side instrumentation events for Special:UserLogin form submissions (JS vs no-JS classification). Default is false.",
+			"value": false
+		},
 		"WikimediaEventsExternalLinkInstrumentation": {
 			"description": "Whether to submit instrumentation events for external link clicks. Default is false.",
 			"value": false
@@ -565,6 +573,13 @@
 					"WikimediaEventsCreateAccountInstrumentationClient"
 				],
 				"sort": 1
+			},
+			"UserLoginInstrumentationPreAuthenticationProvider": {
+				"class": "WikimediaEvents\\UserLogin\\UserLoginInstrumentationPreAuthenticationProvider",
+				"services": [
+					"TestKitchen.InstrumentManager"
+				],
+				"sort": 2
 			}
 		}
 	},
