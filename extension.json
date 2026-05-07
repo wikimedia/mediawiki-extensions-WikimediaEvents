@@ -327,8 +327,7 @@
 				"accountCreation.js",
 				"accountCreation/useAccountCreationInstrument.js",
 				"accountCreation/removeQueryParam.js",
-				"accountCreation/experiments.js",
-				"emailConfirmationBanner/emailConfirmationBanner.js"
+				"accountCreation/experiments.js"
 			],
 			"styles": [
 				"specialCreateAccount/experimentStyles.less"
@@ -342,6 +341,16 @@
 				"mediawiki.experiments",
 				"mediawiki.storage",
 				"mediawiki.visibleTimeout"
+			]
+		},
+		"ext.wikimediaEvents.emailConfirmationBanner": {
+			"localBasePath": "modules/ext.wikimediaEvents",
+			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents",
+			"packageFiles": [
+				"emailConfirmationBanner/emailConfirmationBanner.js"
+			],
+			"dependencies": [
+				"ext.testKitchen"
 			]
 		},
 		"ext.wikimediaEvents.wikibase": {
