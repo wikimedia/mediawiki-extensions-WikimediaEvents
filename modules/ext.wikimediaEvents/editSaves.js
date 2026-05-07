@@ -2,17 +2,17 @@ const { EXPERIMENTS } = require( './accountCreation/experiments.js' );
 // TODO: More experiments can be added here.
 
 /**
- * @param {TestKitchenExperiment[]} configuredExperiments
+ * @param {Promise<TestKitchenExperiment>[]} configuredExperiments
  * @param {number} newRevId
  */
 function submitEditInteraction( configuredExperiments, newRevId ) {
-	configuredExperiments.forEach( ( experiment ) => {
-		experiment.send( 'edit_saved', {
+	configuredExperiments.forEach( ( experimentPromise ) => {
+		experimentPromise.then( ( experiment ) => experiment.send( 'edit_saved', {
 			page: {
 				namespace_id: mw.config.get( 'wgNamespaceNumber' ),
 				revision_id: newRevId
 			}
-		} );
+		} ) );
 	} );
 }
 
