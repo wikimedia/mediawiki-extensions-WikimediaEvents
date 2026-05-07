@@ -21,5 +21,7 @@
 	"wikimediaevents-special-wikimediadebug-notenabled": "이 특수 문서는 활성화되어 있지 않습니다.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "$1 동안 디버그 쿠키 활성화",
 	"wikimediaevents-special-wikimediadebug-submit-renew": "$1 동안 쿠키 갱신",
-	"wikimediaevents-special-wikimediadebug-submit-clear": "쿠키 지우기"
+	"wikimediaevents-special-wikimediadebug-submit-clear": "쿠키 지우기",
+	"wikimediaevents-special-wikimediadebug-header-active": "[https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] 쿠키는 현재 <code>$1</code> 도메인에서 '''활성화'''되어 있습니다.\n\n$2에 만료됩니다.\n\n이 기기에서 쿠키를 삭제하려면 버튼을 클릭하세요. 이 버튼을 클릭하면 이 도메인의 쿠키만 삭제됩니다. 다른 도메인에서 쿠키를 활성화한 경우 해당 도메인의 특수 페이지를 통해 별도로 삭제하거나 브라우저의 쿠키 삭제 기능을 사용해야 합니다.",
+	"wikimediaevents-special-wikimediadebug-header-inactive": "<code>$1</code>에서 [https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] 쿠키를 활성화하려면 버튼을 클릭하세요.\n\n활성화되면 이 위키에 대한 기기의 웹 요청이 위키미디어 재단 서버로 '''개인 정보가 포함된 디버그 로그'''가 전송됩니다. 개발자의 요청을 받은 경우에만 활성화해 주세요. 쿠키를 활성화하면 웹 브라우징 속도가 느려질 수 있습니다.\n\n테스트에 여러개의 도메인이 포함되는 경우, 다른 도메인의 특수 문서에서도 쿠키를 활성화해야 합니다."
 }
