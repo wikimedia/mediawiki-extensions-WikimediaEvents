@@ -18,8 +18,8 @@ function setupLoggedOutWarningInstrumentation() {
 	// Used to avoid logging multiple exposure events when the editor is re-opened
 	let exposureLogged = false;
 	// Used to avoid re-setting CTRs after a editing mode switch, which does not
-	// show the warning
-	let lastEditorUsed = null;
+	// show the warning.
+	let lastEditorUsed = '';
 	// Used track whereas a back navigation happened interacting with the editor close button
 	// or interacting with an outside from doc element, eg: browser back.
 	let isCloseButtonClick = false;
@@ -142,7 +142,7 @@ function setupLoggedOutWarningInstrumentation() {
 				} );
 			}
 			// Reset editor used state, we want to setup the CTRs if the user re-opens the editor
-			lastEditorUsed = null;
+			lastEditorUsed = '';
 			// Stop listening to close tab
 			window.removeEventListener( 'pagehide', submitCloseTab );
 		} );
@@ -155,6 +155,7 @@ function setupLoggedOutWarningInstrumentation() {
 			if ( editor === 'visualeditor' ) {
 				mw.hook( 've.newTarget' ).add( setupVisualEditorInstrumentation );
 			}
+			lastEditorUsed = editor;
 			if ( editor === 'wikitext' ) {
 				// Experiment exposure and CTRs are only for anon users who should see
 				// the anon warning
@@ -170,7 +171,6 @@ function setupLoggedOutWarningInstrumentation() {
 				setupCTRs( exp, submitCloseTab );
 				submitExposureInteraction( exp );
 			}
-			lastEditorUsed = editor;
 		} );
 
 	} );
