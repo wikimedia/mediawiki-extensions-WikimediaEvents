@@ -12,6 +12,7 @@ use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Page\WikiPage;
 use MediaWiki\Page\WikiPageFactory;
 use MediaWiki\User\CentralId\CentralIdLookup;
+use MediaWiki\User\Registration\UserRegistrationLookup;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserGroupManager;
 use MediaWiki\WikiMap\WikiMap;
@@ -36,6 +37,7 @@ class ApiWikimediaEventsHCaptchaEditAttempt extends ApiBase {
 		private readonly UserGroupManager $userGroupManager,
 		private readonly CentralIdLookup $centralIdLookup,
 		private readonly EventSubmitter $eventSubmitter,
+		private readonly UserRegistrationLookup $userRegistrationLookup,
 	) {
 		parent::__construct( $mainModule, $moduleName );
 	}
@@ -236,7 +238,8 @@ class ApiWikimediaEventsHCaptchaEditAttempt extends ApiBase {
 		return new UserEntitySerializer(
 			$this->userFactory,
 			$this->userGroupManager,
-			$this->centralIdLookup
+			$this->centralIdLookup,
+			$this->userRegistrationLookup,
 		);
 	}
 }

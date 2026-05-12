@@ -45,7 +45,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			$this->getServiceContainer()->getUserFactory(),
 			$this->getServiceContainer()->getUserGroupManager(),
 			$this->getServiceContainer()->getCentralIdLookup(),
-			$mockExtensionRegistry
+			$mockExtensionRegistry,
+			$this->getServiceContainer()->getUserRegistrationLookup(),
 		);
 
 		// Should return immediately if ConfirmEdit is not loaded, so we can pass anything here that is deemed valid
@@ -89,7 +90,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			$services->getUserFactory(),
 			$services->getUserGroupManager(),
 			$services->getCentralIdLookup(),
-			$services->getExtensionRegistry()
+			$services->getExtensionRegistry(),
+			$services->getUserRegistrationLookup(),
 		);
 
 		$wikiPageMock = $this->createMock( WikiPage::class );
@@ -134,7 +136,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			$services->getUserFactory(),
 			$services->getUserGroupManager(),
 			$services->getCentralIdLookup(),
-			$services->getExtensionRegistry()
+			$services->getExtensionRegistry(),
+			$services->getUserRegistrationLookup(),
 		);
 
 		$wikiPageMock = $this->createMock( WikiPage::class );
@@ -226,7 +229,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$userEntitySerializer = new UserEntitySerializer(
 			$services->getUserFactory(),
 			$services->getUserGroupManager(),
-			$services->getCentralIdLookup()
+			$services->getCentralIdLookup(),
+			$services->getUserRegistrationLookup(),
 		);
 		$expectedPerformer = $userEntitySerializer->toArray( $user );
 
@@ -257,7 +261,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			$services->getUserFactory(),
 			$services->getUserGroupManager(),
 			$services->getCentralIdLookup(),
-			$services->getExtensionRegistry()
+			$services->getExtensionRegistry(),
+			$services->getUserRegistrationLookup(),
 		);
 		$wikiPageMock = $this->createMock( WikiPage::class );
 		$titleMock = $this->createMock( Title::class );
@@ -345,7 +350,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			$userEntitySerializer = new UserEntitySerializer(
 				$userFactoryMock,
 				$services->getUserGroupManager(),
-				$services->getCentralIdLookup()
+				$services->getCentralIdLookup(),
+				$services->getUserRegistrationLookup(),
 			);
 			$expectedEvent = [
 				'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.3.0',
@@ -379,7 +385,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			$services->getUserFactory(),
 			$services->getUserGroupManager(),
 			$services->getCentralIdLookup(),
-			$services->getExtensionRegistry()
+			$services->getExtensionRegistry(),
+			$services->getUserRegistrationLookup(),
 		);
 
 		$contextMock = $this->createMock( RequestContext::class );
@@ -928,7 +935,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			$this->getServiceContainer()->getUserFactory(),
 			$this->getServiceContainer()->getUserGroupManager(),
 			$this->getServiceContainer()->getCentralIdLookup(),
-			$mockExtensionRegistry
+			$mockExtensionRegistry,
+			$this->getServiceContainer()->getUserRegistrationLookup(),
 		);
 
 		$captchaScoreHooks->onLocalUserCreated( $this->getTestUser()->getUser(), $accountAutocreated );
@@ -990,7 +998,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$userEntitySerializer = new UserEntitySerializer(
 			$this->getServiceContainer()->getUserFactory(),
 			$this->getServiceContainer()->getUserGroupManager(),
-			$this->getServiceContainer()->getCentralIdLookup()
+			$this->getServiceContainer()->getCentralIdLookup(),
+			$this->getServiceContainer()->getUserRegistrationLookup(),
 		);
 
 		$mockEventSubmitter = $this->createMock( EventSubmitter::class );
@@ -1016,7 +1025,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			$this->getServiceContainer()->getUserFactory(),
 			$this->getServiceContainer()->getUserGroupManager(),
 			$this->getServiceContainer()->getCentralIdLookup(),
-			$this->getServiceContainer()->getExtensionRegistry()
+			$this->getServiceContainer()->getExtensionRegistry(),
+			$this->getServiceContainer()->getUserRegistrationLookup(),
 		);
 
 		$captchaScoreHooks->onLocalUserCreated( $this->getTestUser()->getUser(), false );
