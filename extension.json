@@ -316,17 +316,12 @@
 					"name": "data.json",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleData"
 				},
-				"testKitchen/impactTest.js",
 				"testKitchen/pageVisitBotDetection.js",
-				"testKitchen/externalPathTest.js",
-				{
-					"name": "testKitchen/externalPathTestConfig.json",
-					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleDataExternalPath"
-				},
 				"testKitchen/activeReaderBaseline.js",
 				"testKitchen/attribution.js",
 				"testKitchen/loggedInReaderRetention.js",
 				"testKitchen/loggedOutReaderRetention.js",
+				"testKitchen/nonCacheSplittingTest.js",
 				"specialCreateAccount/init.js",
 				"specialCreateAccount/instrumentation.js",
 				"specialCreateAccount/useInstrument.js",
