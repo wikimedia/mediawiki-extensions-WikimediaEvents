@@ -169,23 +169,6 @@ Moved here in <https://phabricator.wikimedia.org/T332438>.
 * Files: testKitchen/pageVisitBotDetection.js
 * Contact: Data Platform Engineering
 
-## Test Kitchen External Path Test
-
-* Since: January 2026
-* Files: testKitchen/externalPathTest.js
-* Contact: Experiment Platform
-
-A synthetic experiment to test the new external path that Test Kitchen will be
-sending events originating from instruments and logged-in experiments to.
-
-## Impact test
-
-* Since: November 2025
-* Files: testKitchen/impactTest.js
-* Contact: Experiment Platform
-
-More details at <https://phabricator.wikimedia.org/T407570>
-
 ## Logged-in Reader Retention
 
 * Since: March 2026
@@ -219,6 +202,15 @@ More details at <https://phabricator.wikimedia.org/T417050>
 * Contact: Data Engineering
 
 More details at <https://phabricator.wikimedia.org/T420621>
+
+## Non-cache-splitting Test
+
+* Since: May 2026
+* Files: testKitchen/nonCacheSplittingTest.js
+* Contact: Experiment Platform
+
+An experiment to test the ability to run non-cache-splitting experiments via Test Kitchen. See
+<https://phabricator.wikimedia.org/T419514> and its parent task for more details.
 
 # Code ownership for other code in WikimediaEvents
 

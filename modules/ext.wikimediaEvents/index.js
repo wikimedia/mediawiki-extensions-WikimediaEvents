@@ -35,11 +35,10 @@ require( './testKitchen/activeReaderBaseline.js' );
 require( './testKitchen/attribution.js' );
 require( './mobileAccountMenu.js' )();
 require( './testKitchen/pageVisitBotDetection.js' );
-require( './testKitchen/externalPathTest.js' );
 require( './specialCreateAccount/init.js' );
-require( './testKitchen/impactTest.js' );
 require( './testKitchen/loggedInReaderRetention.js' );
 require( './testKitchen/loggedOutReaderRetention.js' );
+require( './testKitchen/nonCacheSplittingTest.js' );
 require( './externalLinks.js' )();
 require( './suggestionMode.js' );
 
