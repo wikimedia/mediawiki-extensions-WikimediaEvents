@@ -12,6 +12,7 @@ use MediaWiki\Extension\IPReputation\IPoid\IPoidResponse;
 use MediaWiki\Extension\IPReputation\Services\IPReputationIPoidDataLookup;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
 use MediaWiki\User\CentralId\CentralIdLookup;
+use MediaWiki\User\Registration\UserRegistrationLookup;
 use MediaWiki\User\User;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserGroupManager;
@@ -50,8 +51,9 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 		UserGroupManager $userGroupManager,
 		EventSubmitter $eventSubmitter,
 		CentralIdLookup $centralIdLookup,
+		private readonly UserRegistrationLookup $userRegistrationLookup,
 		?IPReputationIPoidDataLookup $ipReputationIPoidDataLookup = null,
-		?callable $entryPointProvider = null
+		?callable $entryPointProvider = null,
 	) {
 		$this->config = $config;
 		$this->userFactory = $userFactory;
@@ -148,7 +150,10 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 		}
 		$event = $this->convertIPoidDataToEventLoggingFormat( $data );
 		$userEntitySerializer = new UserEntitySerializer(
-			$this->userFactory, $this->userGroupManager, $this->centralIdLookup
+			$this->userFactory,
+			$this->userGroupManager,
+			$this->centralIdLookup,
+			$this->userRegistrationLookup,
 		);
 		$event += [
 			'$schema' => self::SCHEMA,

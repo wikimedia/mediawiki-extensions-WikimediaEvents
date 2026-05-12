@@ -87,7 +87,8 @@
 				"UserFactory",
 				"UserGroupManager",
 				"EventLogging.EventSubmitter",
-				"CentralIdLookup"
+				"CentralIdLookup",
+				"UserRegistrationLookup"
 			],
 			"optional_services": [
 				"IPReputationIPoidDataLookup"
@@ -100,7 +101,8 @@
 				"UserFactory",
 				"UserGroupManager",
 				"CentralIdLookup",
-				"ExtensionRegistry"
+				"ExtensionRegistry",
+				"UserRegistrationLookup"
 			]
 		},
 		"TemporaryAccountsInstrumentation": {
@@ -194,7 +196,8 @@
 				"UserFactory",
 				"UserGroupManager",
 				"CentralIdLookup",
-				"EventLogging.EventSubmitter"
+				"EventLogging.EventSubmitter",
+				"UserRegistrationLookup"
 			]
 		}
 	},

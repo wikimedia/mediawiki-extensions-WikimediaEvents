@@ -44,7 +44,8 @@ class ApiWikimediaEventsHCaptchaEditTest extends ApiTestCase {
 		$userEntitySerializer = new UserEntitySerializer(
 			$services->getUserFactory(),
 			$services->getUserGroupManager(),
-			$services->getCentralIdLookup()
+			$services->getCentralIdLookup(),
+			$services->getUserRegistrationLookup(),
 		);
 		$expectedPerformer = $userEntitySerializer->toArray( $user );
 

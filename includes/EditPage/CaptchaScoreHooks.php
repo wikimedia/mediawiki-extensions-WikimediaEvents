@@ -19,6 +19,7 @@ use MediaWiki\Session\Session;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
 use MediaWiki\Title\Title;
 use MediaWiki\User\CentralId\CentralIdLookup;
+use MediaWiki\User\Registration\UserRegistrationLookup;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserGroupManager;
 use MediaWiki\User\UserIdentity;
@@ -43,6 +44,7 @@ class CaptchaScoreHooks implements
 		private readonly UserGroupManager $userGroupManager,
 		private readonly CentralIdLookup $centralIdLookup,
 		private readonly ExtensionRegistry $extensionRegistry,
+		private readonly UserRegistrationLookup $userRegistrationLookup,
 	) {
 	}
 
@@ -321,7 +323,8 @@ class CaptchaScoreHooks implements
 		return new UserEntitySerializer(
 			$this->userFactory,
 			$this->userGroupManager,
-			$this->centralIdLookup
+			$this->centralIdLookup,
+			$this->userRegistrationLookup,
 		);
 	}
 
