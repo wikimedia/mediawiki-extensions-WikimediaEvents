@@ -73,13 +73,13 @@ if ( specialPageName === 'PersonalDashboard' ) {
 
 		mw.hook( 'personaldashboard.recentactivity.listcard.loaded' ).add( () => {
 			instrumentReviewChangesLinks( instrument,
-				'.ext-personal-dashboard-moderation-card' );
+				'.personal-dashboard-review-changes__card' );
 		} );
 
 		mw.hook( 'personaldashboard.activediscussions.listcard.loaded' ).add( () => {
 			instrumentLinks(
 				instrument,
-				'.ext-personal-dashboard-active-discussion-card',
+				'.personal-dashboard-active-discussions__card',
 				'Personal Dashboard discussion link' );
 		} );
 
