@@ -5,7 +5,6 @@ namespace WikimediaEvents\Tests\Integration\Api;
 use DOMDocument;
 use MediaWiki\Api\ApiUsageException;
 use MediaWiki\Content\TextContent;
-use MediaWiki\Extension\EventBus\Serializers\MediaWiki\UserEntitySerializer;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Tests\Api\ApiTestCase;
 use MediaWiki\User\User;
@@ -41,12 +40,7 @@ class ApiWikimediaEventsHCaptchaEditTest extends ApiTestCase {
 
 		$expectedPageId = $shouldPageExist ? $title->getId() : 0;
 		$services = $this->getServiceContainer();
-		$userEntitySerializer = new UserEntitySerializer(
-			$services->getUserFactory(),
-			$services->getUserGroupManager(),
-			$services->getCentralIdLookup(),
-			$services->getUserRegistrationLookup(),
-		);
+		$userEntitySerializer = $services->get( 'EventBus.UserEntitySerializer' );
 		$expectedPerformer = $userEntitySerializer->toArray( $user );
 
 		$mockEventSubmitter = $this->createMock( EventSubmitter::class );

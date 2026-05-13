@@ -49,10 +49,8 @@ class IPReputationHooksTest extends MediaWikiIntegrationTestCase {
 			new IPReputationHooks(
 				$services->getMainConfig(),
 				$services->getUserFactory(),
-				$services->getUserGroupManager(),
 				$services->getService( 'EventLogging.EventSubmitter' ),
-				$services->getCentralIdLookup(),
-				$services->getUserRegistrationLookup(),
+				$services->getService( 'EventBus.UserEntitySerializer' ),
 				$services->getService( 'IPReputationIPoidDataLookup' ),
 				static fn () => 'index'
 			)

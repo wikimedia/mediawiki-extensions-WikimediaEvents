@@ -88,10 +88,8 @@
 			"services": [
 				"MainConfig",
 				"UserFactory",
-				"UserGroupManager",
 				"EventLogging.EventSubmitter",
-				"CentralIdLookup",
-				"UserRegistrationLookup"
+				"EventBus.UserEntitySerializer"
 			],
 			"optional_services": [
 				"IPReputationIPoidDataLookup"
@@ -102,10 +100,8 @@
 			"services": [
 				"EventLogging.EventSubmitter",
 				"UserFactory",
-				"UserGroupManager",
-				"CentralIdLookup",
 				"ExtensionRegistry",
-				"UserRegistrationLookup"
+				"EventBus.UserEntitySerializer"
 			]
 		},
 		"TemporaryAccountsInstrumentation": {
@@ -197,11 +193,8 @@
 			"class": "WikimediaEvents\\Api\\ApiWikimediaEventsHCaptchaEditAttempt",
 			"services": [
 				"WikiPageFactory",
-				"UserFactory",
-				"UserGroupManager",
-				"CentralIdLookup",
 				"EventLogging.EventSubmitter",
-				"UserRegistrationLookup"
+				"EventBus.UserEntitySerializer"
 			]
 		}
 	},

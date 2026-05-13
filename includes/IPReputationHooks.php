@@ -11,11 +11,8 @@ use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Extension\IPReputation\IPoid\IPoidResponse;
 use MediaWiki\Extension\IPReputation\Services\IPReputationIPoidDataLookup;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
-use MediaWiki\User\CentralId\CentralIdLookup;
-use MediaWiki\User\Registration\UserRegistrationLookup;
 use MediaWiki\User\User;
 use MediaWiki\User\UserFactory;
-use MediaWiki\User\UserGroupManager;
 use MediaWiki\User\UserIdentity;
 use MediaWiki\WikiMap\WikiMap;
 use Wikimedia\LightweightObjectStore\ExpirationAwareness;
@@ -34,9 +31,7 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 
 	private Config $config;
 	private UserFactory $userFactory;
-	private UserGroupManager $userGroupManager;
 	private EventSubmitter $eventSubmitter;
-	private CentralIdLookup $centralIdLookup;
 	/**
 	 * Callable that returns the entry point for this event as defined in MW_ENTRY_POINT.
 	 * Useful for testing.
@@ -48,18 +43,14 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 	public function __construct(
 		Config $config,
 		UserFactory $userFactory,
-		UserGroupManager $userGroupManager,
 		EventSubmitter $eventSubmitter,
-		CentralIdLookup $centralIdLookup,
-		private readonly UserRegistrationLookup $userRegistrationLookup,
+		private readonly UserEntitySerializer $userEntitySerializer,
 		?IPReputationIPoidDataLookup $ipReputationIPoidDataLookup = null,
 		?callable $entryPointProvider = null,
 	) {
 		$this->config = $config;
 		$this->userFactory = $userFactory;
-		$this->userGroupManager = $userGroupManager;
 		$this->eventSubmitter = $eventSubmitter;
-		$this->centralIdLookup = $centralIdLookup;
 		$this->ipReputationIPoidDataLookup = $ipReputationIPoidDataLookup;
 		$this->entryPointProvider = $entryPointProvider ?? static fn (): string => MW_ENTRY_POINT;
 	}
@@ -149,17 +140,11 @@ class IPReputationHooks implements PageSaveCompleteHook, LocalUserCreatedHook {
 			return;
 		}
 		$event = $this->convertIPoidDataToEventLoggingFormat( $data );
-		$userEntitySerializer = new UserEntitySerializer(
-			$this->userFactory,
-			$this->userGroupManager,
-			$this->centralIdLookup,
-			$this->userRegistrationLookup,
-		);
 		$event += [
 			'$schema' => self::SCHEMA,
 			'wiki_id' => WikiMap::getCurrentWikiId(),
 			'http' => [ 'client_ip' => $ip ],
-			'performer' => $userEntitySerializer->toArray( $user ),
+			'performer' => $this->userEntitySerializer->toArray( $user ),
 			'action' => $action,
 			'mw_entry_point' => ( $this->entryPointProvider )(),
 			'identifier' => $identifier,

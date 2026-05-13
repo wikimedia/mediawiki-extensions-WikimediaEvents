@@ -18,10 +18,7 @@ use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Session\Session;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
 use MediaWiki\Title\Title;
-use MediaWiki\User\CentralId\CentralIdLookup;
-use MediaWiki\User\Registration\UserRegistrationLookup;
 use MediaWiki\User\UserFactory;
-use MediaWiki\User\UserGroupManager;
 use MediaWiki\User\UserIdentity;
 use MediaWiki\WikiMap\WikiMap;
 use Wikimedia\Message\MessageSpecifier;
@@ -41,10 +38,8 @@ class CaptchaScoreHooks implements
 	public function __construct(
 		private readonly EventSubmitter $eventSubmitter,
 		private readonly UserFactory $userFactory,
-		private readonly UserGroupManager $userGroupManager,
-		private readonly CentralIdLookup $centralIdLookup,
 		private readonly ExtensionRegistry $extensionRegistry,
-		private readonly UserRegistrationLookup $userRegistrationLookup,
+		private readonly UserEntitySerializer $userEntitySerializer,
 	) {
 	}
 
@@ -168,7 +163,7 @@ class CaptchaScoreHooks implements
 			],
 			'identifier' => $identifier,
 			'identifier_type' => $identifierType,
-			'performer' => $this->getUserEntitySerializer()->toArray( $user ),
+			'performer' => $this->userEntitySerializer->toArray( $user ),
 			'risk_score' => $riskScore,
 			'mw_entry_point' => MW_ENTRY_POINT,
 			'wiki_id' => WikiMap::getCurrentWikiId(),
@@ -314,18 +309,6 @@ class CaptchaScoreHooks implements
 		// Cast $value to an integer and ensure it's positive or zero (T418505).
 		$intVal = (int)$value;
 		return ( $intVal >= 0 ? $intVal : null );
-	}
-
-	/**
-	 * Retrieve an instance of the UserEntitySerializer service.
-	 */
-	private function getUserEntitySerializer(): UserEntitySerializer {
-		return new UserEntitySerializer(
-			$this->userFactory,
-			$this->userGroupManager,
-			$this->centralIdLookup,
-			$this->userRegistrationLookup,
-		);
 	}
 
 	/**

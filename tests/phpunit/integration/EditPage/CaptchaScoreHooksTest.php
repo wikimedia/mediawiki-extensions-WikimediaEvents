@@ -9,7 +9,6 @@ use MediaWiki\Extension\ConfirmEdit\AbuseFilter\CaptchaConsequence;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
 use MediaWiki\Extension\ConfirmEdit\hCaptcha\HCaptcha;
 use MediaWiki\Extension\ConfirmEdit\Hooks;
-use MediaWiki\Extension\EventBus\Serializers\MediaWiki\UserEntitySerializer;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Page\WikiPage;
 use MediaWiki\Registration\ExtensionRegistry;
@@ -19,7 +18,6 @@ use MediaWiki\Status\Status;
 use MediaWiki\Storage\EditResult;
 use MediaWiki\Title\Title;
 use MediaWiki\User\User;
-use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserIdentityValue;
 use MediaWiki\WikiMap\WikiMap;
 use MediaWikiIntegrationTestCase;
@@ -43,10 +41,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$captchaScoreHooks = new CaptchaScoreHooks(
 			$eventSubmitterMock,
 			$this->getServiceContainer()->getUserFactory(),
-			$this->getServiceContainer()->getUserGroupManager(),
-			$this->getServiceContainer()->getCentralIdLookup(),
 			$mockExtensionRegistry,
-			$this->getServiceContainer()->getUserRegistrationLookup(),
+			$this->getServiceContainer()->get( 'EventBus.UserEntitySerializer' ),
 		);
 
 		// Should return immediately if ConfirmEdit is not loaded, so we can pass anything here that is deemed valid
@@ -88,10 +84,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$captchaScoreHooks = new CaptchaScoreHooks(
 			$eventSubmitterMock,
 			$services->getUserFactory(),
-			$services->getUserGroupManager(),
-			$services->getCentralIdLookup(),
 			$services->getExtensionRegistry(),
-			$services->getUserRegistrationLookup(),
+			$services->get( 'EventBus.UserEntitySerializer' ),
 		);
 
 		$wikiPageMock = $this->createMock( WikiPage::class );
@@ -134,10 +128,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$captchaScoreHooks = new CaptchaScoreHooks(
 			$eventSubmitterMock,
 			$services->getUserFactory(),
-			$services->getUserGroupManager(),
-			$services->getCentralIdLookup(),
 			$services->getExtensionRegistry(),
-			$services->getUserRegistrationLookup(),
+			$services->get( 'EventBus.UserEntitySerializer' ),
 		);
 
 		$wikiPageMock = $this->createMock( WikiPage::class );
@@ -226,12 +218,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$request = new FauxRequest( $requestParams, true );
 		RequestContext::getMain()->setRequest( $request );
 
-		$userEntitySerializer = new UserEntitySerializer(
-			$services->getUserFactory(),
-			$services->getUserGroupManager(),
-			$services->getCentralIdLookup(),
-			$services->getUserRegistrationLookup(),
-		);
+		$userEntitySerializer = $services->get( 'EventBus.UserEntitySerializer' );
 		$expectedPerformer = $userEntitySerializer->toArray( $user );
 
 		$expectedEvent = [
@@ -259,10 +246,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$captchaScoreHooks = new CaptchaScoreHooks(
 			$eventSubmitterMock,
 			$services->getUserFactory(),
-			$services->getUserGroupManager(),
-			$services->getCentralIdLookup(),
 			$services->getExtensionRegistry(),
-			$services->getUserRegistrationLookup(),
+			$services->get( 'EventBus.UserEntitySerializer' ),
 		);
 		$wikiPageMock = $this->createMock( WikiPage::class );
 		$titleMock = $this->createMock( Title::class );
@@ -307,9 +292,6 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$services = $this->getServiceContainer();
 		$user = $this->getTestUser()->getUser();
 
-		$userFactoryMock = $this->createMock( UserFactory::class );
-		$userFactoryMock->method( 'newFromUserIdentity' )->willReturn( $user );
-
 		$captchaInstance = Hooks::getInstance( CaptchaTriggers::EDIT );
 		if ( $captchaInstance instanceof HCaptcha ) {
 			$captchaInstance->storeSessionScore(
@@ -347,12 +329,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$eventSubmitterMock = $this->createMock( EventSubmitter::class );
 
 		if ( $shouldSubmit ) {
-			$userEntitySerializer = new UserEntitySerializer(
-				$userFactoryMock,
-				$services->getUserGroupManager(),
-				$services->getCentralIdLookup(),
-				$services->getUserRegistrationLookup(),
-			);
+			$userEntitySerializer = $services->get( 'EventBus.UserEntitySerializer' );
 			$expectedEvent = [
 				'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.3.0',
 				'action' => 'failed_edit',
@@ -383,10 +360,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$captchaScoreHooks = new CaptchaScoreHooks(
 			$eventSubmitterMock,
 			$services->getUserFactory(),
-			$services->getUserGroupManager(),
-			$services->getCentralIdLookup(),
 			$services->getExtensionRegistry(),
-			$services->getUserRegistrationLookup(),
+			$services->get( 'EventBus.UserEntitySerializer' ),
 		);
 
 		$contextMock = $this->createMock( RequestContext::class );
@@ -933,10 +908,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$captchaScoreHooks = new CaptchaScoreHooks(
 			$this->createNoOpMock( EventSubmitter::class ),
 			$this->getServiceContainer()->getUserFactory(),
-			$this->getServiceContainer()->getUserGroupManager(),
-			$this->getServiceContainer()->getCentralIdLookup(),
 			$mockExtensionRegistry,
-			$this->getServiceContainer()->getUserRegistrationLookup(),
+			$this->getServiceContainer()->get( 'EventBus.UserEntitySerializer' ),
 		);
 
 		$captchaScoreHooks->onLocalUserCreated( $this->getTestUser()->getUser(), $accountAutocreated );
@@ -995,12 +968,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 
 		RequestContext::getMain()->setRequest( new FauxRequest( [], true ) );
 
-		$userEntitySerializer = new UserEntitySerializer(
-			$this->getServiceContainer()->getUserFactory(),
-			$this->getServiceContainer()->getUserGroupManager(),
-			$this->getServiceContainer()->getCentralIdLookup(),
-			$this->getServiceContainer()->getUserRegistrationLookup(),
-		);
+		$userEntitySerializer = $this->getServiceContainer()->get( 'EventBus.UserEntitySerializer' );
 
 		$mockEventSubmitter = $this->createMock( EventSubmitter::class );
 		$mockEventSubmitter->expects( $this->once() )
@@ -1023,10 +991,8 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$captchaScoreHooks = new CaptchaScoreHooks(
 			$mockEventSubmitter,
 			$this->getServiceContainer()->getUserFactory(),
-			$this->getServiceContainer()->getUserGroupManager(),
-			$this->getServiceContainer()->getCentralIdLookup(),
 			$this->getServiceContainer()->getExtensionRegistry(),
-			$this->getServiceContainer()->getUserRegistrationLookup(),
+			$this->getServiceContainer()->get( 'EventBus.UserEntitySerializer' ),
 		);
 
 		$captchaScoreHooks->onLocalUserCreated( $this->getTestUser()->getUser(), false );

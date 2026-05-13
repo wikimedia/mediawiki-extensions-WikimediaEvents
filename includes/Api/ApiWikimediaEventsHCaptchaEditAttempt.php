@@ -11,10 +11,6 @@ use MediaWiki\Extension\EventBus\Serializers\MediaWiki\UserEntitySerializer;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Page\WikiPage;
 use MediaWiki\Page\WikiPageFactory;
-use MediaWiki\User\CentralId\CentralIdLookup;
-use MediaWiki\User\Registration\UserRegistrationLookup;
-use MediaWiki\User\UserFactory;
-use MediaWiki\User\UserGroupManager;
 use MediaWiki\WikiMap\WikiMap;
 use Wikimedia\ParamValidator\ParamValidator;
 
@@ -33,11 +29,8 @@ class ApiWikimediaEventsHCaptchaEditAttempt extends ApiBase {
 		ApiMain $mainModule,
 		string $moduleName,
 		private readonly WikiPageFactory $wikiPageFactory,
-		private readonly UserFactory $userFactory,
-		private readonly UserGroupManager $userGroupManager,
-		private readonly CentralIdLookup $centralIdLookup,
 		private readonly EventSubmitter $eventSubmitter,
-		private readonly UserRegistrationLookup $userRegistrationLookup,
+		private readonly UserEntitySerializer $userEntitySerializer,
 	) {
 		parent::__construct( $mainModule, $moduleName );
 	}
@@ -69,7 +62,7 @@ class ApiWikimediaEventsHCaptchaEditAttempt extends ApiBase {
 		$event = [
 			'$schema' => $this::SCHEMA,
 			'page_id' => $page->getId(),
-			'performer' => $this->getUserEntitySerializer()->toArray( $user ),
+			'performer' => $this->userEntitySerializer->toArray( $user ),
 			'proposed_content_diff' => $this->getContentDiff(
 				$page,
 				$params['proposed_content'],
@@ -229,17 +222,5 @@ class ApiWikimediaEventsHCaptchaEditAttempt extends ApiBase {
 		}
 
 		return "<table>{$body}</table>";
-	}
-
-	/**
-	 * Retrieve an instance of the UserEntitySerializer service.
-	 */
-	private function getUserEntitySerializer(): UserEntitySerializer {
-		return new UserEntitySerializer(
-			$this->userFactory,
-			$this->userGroupManager,
-			$this->centralIdLookup,
-			$this->userRegistrationLookup,
-		);
 	}
 }
