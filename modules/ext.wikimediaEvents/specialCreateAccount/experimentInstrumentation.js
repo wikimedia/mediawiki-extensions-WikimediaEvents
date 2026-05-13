@@ -1,6 +1,6 @@
-const CREATE_ACCOUNT_FORM_V1_EXPERIMENT_NAME = 'we-1-8-account-creation-form-v1';
+const CREATE_ACCOUNT_FORM_V2_EXPERIMENT_NAME = 'we-1-8-account-creation-form-v2';
 
-function setupWe18V1ExperimentInstrumentation() {
+function setupWe18V2ExperimentInstrumentation() {
 
 	if ( !mw.config.get( 'wgMFMode' ) ) {
 		// For now, this is mobile-only.
@@ -22,8 +22,8 @@ function setupWe18V1ExperimentInstrumentation() {
 		return;
 	}
 
-	const { ClickThroughRateInstrument } = require( 'ext.wikimediaEvents.testKitchen' );
-	const experiment = mw.testKitchen.compat.getExperiment( CREATE_ACCOUNT_FORM_V1_EXPERIMENT_NAME );
+	const { ClickThroughRateInstrument, UrlEnrolledExperiment } = require( 'ext.wikimediaEvents.testKitchen' );
+	const experiment = UrlEnrolledExperiment.getExperimentFromQuery( CREATE_ACCOUNT_FORM_V2_EXPERIMENT_NAME );
 
 	if ( !document.querySelector( 'form#userlogin2' ) ) {
 		// This might happen if account creations is attempted from via the TOR browser or similar
@@ -44,7 +44,7 @@ function setupWe18V1ExperimentInstrumentation() {
 		} );
 	}
 
-	const treatmentGroupSelector = '#userlogin2 .mw-userlogin-username a.username-learn-more-link';
+	const treatmentGroupSelector = '#userlogin2 .mw-userlogin-username a.mw-createaccount-username-policy-choose-carefully';
 	const controlGroupSelector = '#userlogin2 .mw-userlogin-username label a';
 	ClickThroughRateInstrument.start(
 		`${ treatmentGroupSelector }, ${ controlGroupSelector }`, 'username policy link', experiment
@@ -71,4 +71,4 @@ function setupWe18V1ExperimentInstrumentation() {
 	} );
 }
 
-module.exports = setupWe18V1ExperimentInstrumentation;
+module.exports = setupWe18V2ExperimentInstrumentation;
