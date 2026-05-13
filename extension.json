@@ -393,7 +393,8 @@
 			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.testKitchen",
 			"packageFiles": [
 				"index.js",
-				"ClickThroughRateInstrument.js"
+				"ClickThroughRateInstrument.js",
+				"UrlEnrolledExperiment.js"
 			],
 			"dependencies": [
 				"ext.eventLogging",
