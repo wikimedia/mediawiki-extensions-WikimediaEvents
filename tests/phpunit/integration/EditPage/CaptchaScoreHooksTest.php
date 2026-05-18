@@ -228,19 +228,13 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$userEntitySerializer = $services->get( 'EventBus.UserEntitySerializer' );
 		$expectedPerformer = $userEntitySerializer->toArray( $user );
 
-		$expectedEvent = [
-			'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.3.0',
+		$expectedEvent = $this->buildEventPayload( [
 			'action' => $isNullEdit ? 'null_edit' : CaptchaTriggers::EDIT,
-			'wiki_id' => WikiMap::getCurrentWikiId(),
 			'identifier' => $revisionId,
 			'identifier_type' => 'revision',
 			'performer' => $expectedPerformer,
-			'http' => [
-				'method' => 'POST',
-			],
 			'risk_score' => $riskScore !== null ? $riskScore : -1.0,
-			'mw_entry_point' => MW_ENTRY_POINT,
-		];
+		] );
 		if ( $hasEditingSessionId ) {
 			$expectedEvent['editing_session_id'] = (string)$requestParams['editingStatsId'];
 		}
@@ -340,21 +334,15 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 
 		if ( $shouldSubmit ) {
 			$userEntitySerializer = $services->get( 'EventBus.UserEntitySerializer' );
-			$expectedEvent = [
-				'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.3.0',
+			$expectedEvent = $this->buildEventPayload( [
 				'action' => 'failed_edit',
-				'wiki_id' => WikiMap::getCurrentWikiId(),
 				'identifier' => $expectedRevisionId,
 				'identifier_type' => 'latest_revision',
 				'performer' => $userEntitySerializer->toArray( $user ),
-				'http' => [
-					'method' => 'POST',
-				],
 				'risk_score' => 0.37,
-				'mw_entry_point' => MW_ENTRY_POINT,
 				'editing_session_id' => 'session-42',
 				'log_type' => $expectedLogType,
-			];
+			] );
 			$expectedEvent = array_merge(
 				$expectedEvent,
 				$expectedAFApiMessageDetails ?? []
@@ -994,7 +982,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			->with(
 				'mediawiki.hcaptcha.risk_score',
 				[
-					'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.3.0',
+					'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.4.0',
 					'action' => 'createaccount',
 					'wiki_id' => WikiMap::getCurrentWikiId(),
 					'identifier' => $user->getId(),
@@ -1015,5 +1003,14 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		);
 
 		$captchaScoreHooks->onLocalUserCreated( $this->getTestUser()->getUser(), false );
+	}
+
+	private static function buildEventPayload( array $values ): array {
+		return array_merge( [
+			'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.4.0',
+			'wiki_id' => WikiMap::getCurrentWikiId(),
+			'http' => [ 'method' => 'POST' ],
+			'mw_entry_point' => MW_ENTRY_POINT,
+		], $values );
 	}
 }

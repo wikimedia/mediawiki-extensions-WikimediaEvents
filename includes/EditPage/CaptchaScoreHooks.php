@@ -13,35 +13,31 @@ use MediaWiki\Extension\EventBus\Serializers\MediaWiki\UserEntitySerializer;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Hook\EditPage__attemptSave_afterHook;
 use MediaWiki\Registration\ExtensionRegistry;
-use MediaWiki\Request\WebRequest;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Session\Session;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
 use MediaWiki\Title\Title;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserIdentity;
-use MediaWiki\WikiMap\WikiMap;
 use Wikimedia\Message\MessageSpecifier;
 
 /**
  * Logging of hCaptcha risk scores for edits and account creations.
  */
-class CaptchaScoreHooks implements
+class CaptchaScoreHooks extends AbstractCaptchaScoreHook implements
 	PageSaveCompleteHook,
 	EditPage__attemptSave_afterHook,
 	LocalUserCreatedHook
 {
 
-	private const STREAM = 'mediawiki.hcaptcha.risk_score';
-	private const SCHEMA = '/analytics/mediawiki/hcaptcha/risk_score/1.3.0';
-
 	public function __construct(
 		private readonly EventSubmitter $eventSubmitter,
 		private readonly UserFactory $userFactory,
 		private readonly ExtensionRegistry $extensionRegistry,
-		private readonly UserEntitySerializer $userEntitySerializer,
+		UserEntitySerializer $userEntitySerializer,
 		private readonly ?CaptchaFactory $captchaFactory,
 	) {
+		parent::__construct( $userEntitySerializer );
 	}
 
 	/** @inheritDoc */
@@ -145,52 +141,6 @@ class CaptchaScoreHooks implements
 	}
 
 	/**
-	 * Build base event payload.
-	 */
-	private function buildEventPayload(
-		string $action,
-		int $identifier,
-		string $identifierType,
-		UserIdentity $user,
-		float $riskScore,
-		WebRequest $request,
-		?string $logType = null,
-	): array {
-		$event = [
-			'$schema' => self::SCHEMA,
-			'action' => $action,
-			'http' => [
-				'method' => $request->getMethod(),
-			],
-			'identifier' => $identifier,
-			'identifier_type' => $identifierType,
-			'performer' => $this->userEntitySerializer->toArray( $user ),
-			'risk_score' => $riskScore,
-			'mw_entry_point' => MW_ENTRY_POINT,
-			'wiki_id' => WikiMap::getCurrentWikiId(),
-		];
-
-		$isBrowser = $request->getHeader( 'x-is-browser' );
-		if ( $isBrowser !== false ) {
-			$value = $this->castToNonNegativeInteger( $isBrowser );
-			if ( $value !== null ) {
-				$event['x_is_browser'] = $value;
-			}
-		}
-
-		if ( $logType !== null ) {
-			$event['log_type'] = $logType;
-		}
-
-		$editingSessionId = $request->getRawVal( 'editingStatsId' );
-		if ( $editingSessionId ) {
-			$event['editing_session_id'] = $editingSessionId;
-		}
-
-		return $event;
-	}
-
-	/**
 	 * Determines if action that triggered a hook should be handled by this
 	 * class; that is, whether the action should result in an event being
 	 * logged.
@@ -291,27 +241,6 @@ class CaptchaScoreHooks implements
 		// Cast $value to an integer and ensure it is positive (T416622).
 		$intVal = $this->castToNonNegativeInteger( $value );
 		return ( $intVal !== null && $intVal > 0 ? $intVal : null );
-	}
-
-	/**
-	 * Validates if a value represents a valid natural number or zero, returning
-	 * its value as an integer if it is, or null if it is not.
-	 *
-	 * This is needed because the schema defines some fields (such as
-	 * abuse_filter_id and x_is_browser) as optional integers, but they may be
-	 * initially read as strings instead.
-	 *
-	 * @param mixed $value Raw value to cast.
-	 * @return int|null Integer value, null if $value does not represent an int.
-	 */
-	private function castToNonNegativeInteger( mixed $value ): ?int {
-		if ( !is_numeric( $value ) ) {
-			return null;
-		}
-
-		// Cast $value to an integer and ensure it's positive or zero (T418505).
-		$intVal = (int)$value;
-		return ( $intVal >= 0 ? $intVal : null );
 	}
 
 	/**

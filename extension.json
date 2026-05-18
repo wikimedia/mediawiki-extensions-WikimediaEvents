@@ -110,6 +110,17 @@
 				"ConfirmEditCaptchaFactory"
 			]
 		},
+		"CaptchaScoreBlocksHook": {
+			"class": "WikimediaEvents\\EditPage\\CaptchaScoreBlocksHook",
+			"services": [
+				"EventLogging.EventSubmitter",
+				"EventBus.UserEntitySerializer",
+				"DatabaseBlockStore"
+			],
+			"optional_services": [
+				"GlobalBlocking.GlobalBlockLookup"
+			]
+		},
 		"TemporaryAccountsInstrumentation": {
 			"class": "WikimediaEvents\\TemporaryAccounts\\TemporaryAccountsInstrumentation",
 			"services": [
@@ -152,6 +163,7 @@
 		],
 		"AuthenticationAttemptThrottled": "TemporaryAccountsInstrumentation",
 		"BeforeInitialize": "main",
+		"ConfirmEditHCaptchaRiskScoreRetrievedForBlocks": "CaptchaScoreBlocksHook",
 		"EditPage::attemptSave:after": "CaptchaScoreHooks",
 		"BeforePageDisplay": [
 			"main",
