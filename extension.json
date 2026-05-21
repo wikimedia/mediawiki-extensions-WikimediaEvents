@@ -335,6 +335,7 @@
 				"accountCreation/experiments.js"
 			],
 			"dependencies": [
+				"ext.testKitchen",
 				"ext.wikimediaEvents.testKitchen",
 				"web2017-polyfills",
 				"ext.eventLogging",
