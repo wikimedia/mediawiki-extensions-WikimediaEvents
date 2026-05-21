@@ -144,13 +144,6 @@
 				"UserFactory",
 				"StatsFactory"
 			]
-		},
-		"FY26WE18CreateAccountV2": {
-			"class": "WikimediaEvents\\CreateAccount\\ExperimentHooks",
-			"services": [
-				"MainConfig",
-				"TestKitchen.ExperimentManager"
-			]
 		}
 	},
 	"Hooks": {
@@ -344,9 +337,6 @@
 				"accountCreation/useAccountCreationInstrument.js",
 				"accountCreation/removeQueryParam.js",
 				"accountCreation/experiments.js"
-			],
-			"styles": [
-				"specialCreateAccount/experimentStyles.less"
 			],
 			"dependencies": [
 				"ext.wikimediaEvents.testKitchen",

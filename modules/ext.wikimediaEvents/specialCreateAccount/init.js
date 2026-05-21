@@ -12,7 +12,7 @@ if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'CreateAccount' ) {
 		$( setupInstrumentation );
 		$( setupWe18V2ExperimentInstrumentation );
 	} );
-	if ( mw.config.get( 'CreateAccountExperimentV2' ) ) {
+	if ( mw.config.get( 'GECreateAccountExperimentV2' ) ) {
 		$( attachPasswordRevealFunctionality );
 	}
 }
