@@ -9,7 +9,7 @@
 	"apihelp-wikimediaeventsblockededit-param-page": "पृष्ठ जिस पर सम्पादन का प्रयास किया गया था",
 	"apihelp-wikimediaeventsblockededit-param-interface": "सम्पादन करने के लिए उपयुक्त इंटरफ़ेस",
 	"apihelp-wikimediaeventsblockededit-param-platform": "सम्पादन करने के लिए उपयुक्त मंच",
-	"apihelp-wikimediaeventshcaptchaeditattempt-summary": "सम्पादन अंतर लॉग करता है जो hCaptcha चुनौती दिखाई जाए मगर सम्पादन अधूरा हो",
+	"apihelp-wikimediaeventshcaptchaeditattempt-summary": "सम्पादन अंतर लॉग करता है जहाँ hCaptcha चुनौती दिखाई जाए मगर सम्पादन अधूरा हो",
 	"apihelp-wikimediaeventshcaptchaeditattempt-param-title": "पृष्ठ शीर्षक",
 	"apihelp-wikimediaeventshcaptchaeditattempt-param-proposed_content": "प्रस्तावित सामग्री का टेक्स्ट (अधिकतम 8KB)",
 	"apihelp-wikimediaeventshcaptchaeditattempt-param-editing_session_id": "सम्पादन सत्र ID",
