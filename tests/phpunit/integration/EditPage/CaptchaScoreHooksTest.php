@@ -8,7 +8,7 @@ use MediaWiki\EditPage\EditPage;
 use MediaWiki\Extension\ConfirmEdit\AbuseFilter\CaptchaConsequence;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
 use MediaWiki\Extension\ConfirmEdit\hCaptcha\HCaptcha;
-use MediaWiki\Extension\ConfirmEdit\Hooks;
+use MediaWiki\Extension\ConfirmEdit\Services\CaptchaFactory;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Page\WikiPage;
 use MediaWiki\Registration\ExtensionRegistry;
@@ -43,6 +43,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			$this->getServiceContainer()->getUserFactory(),
 			$mockExtensionRegistry,
 			$this->getServiceContainer()->get( 'EventBus.UserEntitySerializer' ),
+			null
 		);
 
 		// Should return immediately if ConfirmEdit is not loaded, so we can pass anything here that is deemed valid
@@ -86,6 +87,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			$services->getUserFactory(),
 			$services->getExtensionRegistry(),
 			$services->get( 'EventBus.UserEntitySerializer' ),
+			$this->getServiceContainer()->get( 'ConfirmEditCaptchaFactory' )
 		);
 
 		$wikiPageMock = $this->createMock( WikiPage::class );
@@ -121,8 +123,10 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			[ 'sysop' => [ 'skipcaptcha' => true ] ]
 		);
 		$user = $this->getTestUser( [ 'sysop' ] )->getUser();
+		/** @var CaptchaFactory $captchaFactory */
+		$captchaFactory = $this->getServiceContainer()->get( 'ConfirmEditCaptchaFactory' );
 		/** @var HCaptcha $simpleCaptcha */
-		$simpleCaptcha = Hooks::getInstance( CaptchaTriggers::EDIT );
+		$simpleCaptcha = $captchaFactory->getGlobalInstance( CaptchaTriggers::EDIT );
 		$simpleCaptcha->storeSessionScore( 'hCaptcha-score', 0.1, $user->getName() );
 
 		$captchaScoreHooks = new CaptchaScoreHooks(
@@ -130,6 +134,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			$services->getUserFactory(),
 			$services->getExtensionRegistry(),
 			$services->get( 'EventBus.UserEntitySerializer' ),
+			$captchaFactory
 		);
 
 		$wikiPageMock = $this->createMock( WikiPage::class );
@@ -206,8 +211,10 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			] ]
 		);
 		$services = $this->getServiceContainer();
+		/** @var CaptchaFactory $captchaFactory */
+		$captchaFactory = $this->getServiceContainer()->get( 'ConfirmEditCaptchaFactory' );
 		/** @var HCaptcha $simpleCaptcha */
-		$simpleCaptcha = Hooks::getInstance( CaptchaTriggers::EDIT );
+		$simpleCaptcha = $captchaFactory->getGlobalInstance( CaptchaTriggers::EDIT );
 		$user = $this->createMock( User::class );
 		$user->method( 'getName' )->willReturn( $userName );
 		$user->method( 'isRegistered' )->willReturn( false );
@@ -248,6 +255,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			$services->getUserFactory(),
 			$services->getExtensionRegistry(),
 			$services->get( 'EventBus.UserEntitySerializer' ),
+			$captchaFactory
 		);
 		$wikiPageMock = $this->createMock( WikiPage::class );
 		$titleMock = $this->createMock( Title::class );
@@ -292,7 +300,9 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$services = $this->getServiceContainer();
 		$user = $this->getTestUser()->getUser();
 
-		$captchaInstance = Hooks::getInstance( CaptchaTriggers::EDIT );
+		/** @var CaptchaFactory $captchaFactory */
+		$captchaFactory = $this->getServiceContainer()->get( 'ConfirmEditCaptchaFactory' );
+		$captchaInstance = $captchaFactory->getGlobalInstance( CaptchaTriggers::EDIT );
 		if ( $captchaInstance instanceof HCaptcha ) {
 			$captchaInstance->storeSessionScore(
 				'hCaptcha-score',
@@ -362,6 +372,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			$services->getUserFactory(),
 			$services->getExtensionRegistry(),
 			$services->get( 'EventBus.UserEntitySerializer' ),
+			$captchaFactory
 		);
 
 		$contextMock = $this->createMock( RequestContext::class );
@@ -886,6 +897,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		string $captchaUsedForAccountCreation,
 		bool $captchaTriggeredForAccountCreation
 	): void {
+		$captchaFactory = null;
 		if ( $confirmEditLoaded ) {
 			$this->markTestSkippedIfExtensionNotLoaded( 'ConfirmEdit' );
 
@@ -898,6 +910,9 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 					],
 				]
 			);
+
+			/** @var CaptchaFactory $captchaFactory */
+			$captchaFactory = $this->getServiceContainer()->get( 'ConfirmEditCaptchaFactory' );
 		}
 
 		$mockExtensionRegistry = $this->createMock( ExtensionRegistry::class );
@@ -910,6 +925,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			$this->getServiceContainer()->getUserFactory(),
 			$mockExtensionRegistry,
 			$this->getServiceContainer()->get( 'EventBus.UserEntitySerializer' ),
+			$captchaFactory
 		);
 
 		$captchaScoreHooks->onLocalUserCreated( $this->getTestUser()->getUser(), $accountAutocreated );
@@ -958,7 +974,9 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 
 		$user = $this->getTestUser()->getUser();
 
-		$captchaInstance = Hooks::getInstance( CaptchaTriggers::CREATE_ACCOUNT );
+		/** @var CaptchaFactory $captchaFactory */
+		$captchaFactory = $this->getServiceContainer()->get( 'ConfirmEditCaptchaFactory' );
+		$captchaInstance = $captchaFactory->getGlobalInstance( CaptchaTriggers::CREATE_ACCOUNT );
 		$this->assertInstanceOf( HCaptcha::class, $captchaInstance );
 		$captchaInstance->storeSessionScore(
 			'hCaptcha-score',
@@ -993,6 +1011,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			$this->getServiceContainer()->getUserFactory(),
 			$this->getServiceContainer()->getExtensionRegistry(),
 			$this->getServiceContainer()->get( 'EventBus.UserEntitySerializer' ),
+			$captchaFactory
 		);
 
 		$captchaScoreHooks->onLocalUserCreated( $this->getTestUser()->getUser(), false );

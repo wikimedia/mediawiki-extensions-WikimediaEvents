@@ -8,7 +8,7 @@ use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\ConfirmEdit\AbuseFilter\CaptchaConsequence;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
 use MediaWiki\Extension\ConfirmEdit\hCaptcha\HCaptcha;
-use MediaWiki\Extension\ConfirmEdit\Hooks;
+use MediaWiki\Extension\ConfirmEdit\Services\CaptchaFactory;
 use MediaWiki\Extension\EventBus\Serializers\MediaWiki\UserEntitySerializer;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Hook\EditPage__attemptSave_afterHook;
@@ -40,6 +40,7 @@ class CaptchaScoreHooks implements
 		private readonly UserFactory $userFactory,
 		private readonly ExtensionRegistry $extensionRegistry,
 		private readonly UserEntitySerializer $userEntitySerializer,
+		private readonly ?CaptchaFactory $captchaFactory,
 	) {
 	}
 
@@ -217,9 +218,11 @@ class CaptchaScoreHooks implements
 	 * if hCaptcha is not used for that action.
 	 */
 	private function getHCaptchaInstance( string $action ): ?HCaptcha {
-		$instance = Hooks::getInstance( $action );
-		if ( $instance instanceof HCaptcha ) {
-			return $instance;
+		if ( $this->captchaFactory ) {
+			$instance = $this->captchaFactory->getGlobalInstance( $action );
+			if ( $instance instanceof HCaptcha ) {
+				return $instance;
+			}
 		}
 
 		return null;

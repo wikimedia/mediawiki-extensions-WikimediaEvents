@@ -31,12 +31,17 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 	use TempUserTestTrait;
 
 	private function newHookHandler(): WikimediaEventsHooks {
+		$captchaFactory = null;
+		if ( $this->getServiceContainer()->getExtensionRegistry()->isLoaded( 'ConfirmEdit' ) ) {
+			$captchaFactory = $this->getServiceContainer()->get( 'ConfirmEditCaptchaFactory' );
+		}
 		return new WikimediaEventsHooks(
 			$this->getServiceContainer()->getMainConfig(),
 			$this->getServiceContainer()->getNamespaceInfo(),
 			$this->getServiceContainer()->getPermissionManager(),
 			$this->getServiceContainer()->get( 'WikimediaEventsRequestDetailsLookup' ),
-			$this->getServiceContainer()->get( 'WikimediaEventsEmailConfirmationBannerExperimentLogger' )
+			$this->getServiceContainer()->get( 'WikimediaEventsEmailConfirmationBannerExperimentLogger' ),
+			$captchaFactory
 		);
 	}
 

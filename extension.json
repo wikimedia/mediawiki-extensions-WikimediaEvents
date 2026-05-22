@@ -41,6 +41,9 @@
 				"PermissionManager",
 				"WikimediaEventsRequestDetailsLookup",
 				"WikimediaEventsEmailConfirmationBannerExperimentLogger"
+			],
+			"optional_services": [
+				"ConfirmEditCaptchaFactory"
 			]
 		},
 		"VectorInstrumentation": {
@@ -102,6 +105,9 @@
 				"UserFactory",
 				"ExtensionRegistry",
 				"EventBus.UserEntitySerializer"
+			],
+			"optional_services": [
+				"ConfirmEditCaptchaFactory"
 			]
 		},
 		"TemporaryAccountsInstrumentation": {
@@ -559,6 +565,9 @@
 				"class": "WikimediaEvents\\CreateAccount\\CreateAccountInstrumentationPreAuthenticationProvider",
 				"services": [
 					"WikimediaEventsCreateAccountInstrumentationClient"
+				],
+				"optional_services": [
+					"ConfirmEditCaptchaFactory"
 				],
 				"sort": 1
 			},

@@ -6,7 +6,7 @@ use MediaWiki\Auth\PasswordAuthenticationRequest;
 use MediaWiki\Config\HashConfig;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
-use MediaWiki\Extension\ConfirmEdit\Hooks;
+use MediaWiki\Extension\ConfirmEdit\Services\CaptchaFactory;
 use MediaWiki\Tests\Unit\Auth\AuthenticationProviderTestTrait;
 use MediaWiki\User\User;
 use MediaWikiIntegrationTestCase;
@@ -39,7 +39,9 @@ class CreateAccountInstrumentationPreAuthenticationProviderTest extends MediaWik
 
 		$client = $this->createMock( CreateAccountInstrumentationClient::class );
 		$callIndex = 0;
-		$captcha = Hooks::getInstance( CaptchaTriggers::CREATE_ACCOUNT );
+		/** @var CaptchaFactory $captchaFactory */
+		$captchaFactory = $this->getServiceContainer()->get( 'ConfirmEditCaptchaFactory' );
+		$captcha = $captchaFactory->getGlobalInstance( CaptchaTriggers::CREATE_ACCOUNT );
 		$expectedCalls = [
 			[ RequestContext::getMain(), 'submit', [ 'action_context' => $user->getName() ] ],
 			[ RequestContext::getMain(), 'captcha_class_serverside', [ 'action_context' => $captcha->getName() ] ],
@@ -52,7 +54,10 @@ class CreateAccountInstrumentationPreAuthenticationProviderTest extends MediaWik
 				$this->assertEquals( $expectedCalls[$callIndex][2], $params );
 				$callIndex++;
 			} );
-		$provider = new CreateAccountInstrumentationPreAuthenticationProvider( $client );
+		$provider = new CreateAccountInstrumentationPreAuthenticationProvider(
+			$client,
+			$captchaFactory
+		);
 		$this->initProvider( $provider, new HashConfig() );
 
 		$status = $provider->testForAccountCreation(
@@ -69,7 +74,9 @@ class CreateAccountInstrumentationPreAuthenticationProviderTest extends MediaWik
 	 * @param AuthenticationRequest[] $reqs
 	 */
 	public function testShouldNotLogSubmitEventWhenRequestForHiddenFieldAbsent( array $reqs ): void {
-		$captcha = Hooks::getInstance( CaptchaTriggers::CREATE_ACCOUNT );
+		/** @var CaptchaFactory $captchaFactory */
+		$captchaFactory = $this->getServiceContainer()->get( 'ConfirmEditCaptchaFactory' );
+		$captcha = $captchaFactory->getGlobalInstance( CaptchaTriggers::CREATE_ACCOUNT );
 		$client = $this->createMock( CreateAccountInstrumentationClient::class );
 		$client->expects( $this->once() )
 			->method( 'submitInteraction' )
@@ -78,7 +85,10 @@ class CreateAccountInstrumentationPreAuthenticationProviderTest extends MediaWik
 				'captcha_class_serverside',
 				[ 'action_context' => $captcha->getName() ]
 			);
-		$provider = new CreateAccountInstrumentationPreAuthenticationProvider( $client );
+		$provider = new CreateAccountInstrumentationPreAuthenticationProvider(
+			$client,
+			$captchaFactory
+		);
 		$this->initProvider( $provider, new HashConfig() );
 		$user = $this->getTestUser()->getUser();
 
@@ -92,7 +102,9 @@ class CreateAccountInstrumentationPreAuthenticationProviderTest extends MediaWik
 	}
 
 	public function testShouldNotLogCaptchaClassServersideEventForUsersWithSkipCaptcha() {
-		$captcha = Hooks::getInstance( CaptchaTriggers::CREATE_ACCOUNT );
+		/** @var CaptchaFactory $captchaFactory */
+		$captchaFactory = $this->getServiceContainer()->get( 'ConfirmEditCaptchaFactory' );
+		$captcha = $captchaFactory->getGlobalInstance( CaptchaTriggers::CREATE_ACCOUNT );
 		$client = $this->createMock( CreateAccountInstrumentationClient::class );
 		$client->expects( $this->never() )
 			->method( 'submitInteraction' )
@@ -101,7 +113,10 @@ class CreateAccountInstrumentationPreAuthenticationProviderTest extends MediaWik
 				'captcha_class_serverside',
 				[ 'action_context' => $captcha->getName() ]
 			);
-		$provider = new CreateAccountInstrumentationPreAuthenticationProvider( $client );
+		$provider = new CreateAccountInstrumentationPreAuthenticationProvider(
+			$client,
+			$captchaFactory
+		);
 		$this->initProvider( $provider, new HashConfig() );
 		// sysop group will have 'skipcaptcha' in default ConfirmEdit config
 		$user = $this->getTestUser( [ 'sysop' ] )->getUser();

@@ -30,6 +30,7 @@ class SpecialCreateAccountIntegrationTest extends SpecialPageTestBase {
 						'CreateAccountInstrumentationPreAuthenticationProvider' => [
 							'class' => CreateAccountInstrumentationPreAuthenticationProvider::class,
 							'services' => [ 'WikimediaEventsCreateAccountInstrumentationClient' ],
+							'optional_services' => [ 'ConfirmEditCaptchaFactory' ],
 							'sort' => 1
 						],
 					]

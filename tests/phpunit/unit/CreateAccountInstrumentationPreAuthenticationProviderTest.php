@@ -19,7 +19,8 @@ class CreateAccountInstrumentationPreAuthenticationProviderTest extends MediaWik
 	 */
 	public function testShouldReturnAuthenticationRequests( string $action, array $expectedReqs ): void {
 		$provider = new CreateAccountInstrumentationPreAuthenticationProvider(
-			$this->createNoOpMock( CreateAccountInstrumentationClient::class )
+			$this->createNoOpMock( CreateAccountInstrumentationClient::class ),
+			null
 		);
 
 		$reqs = $provider->getAuthenticationRequests( $action, [] );

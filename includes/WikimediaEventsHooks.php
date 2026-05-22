@@ -13,7 +13,7 @@ use MediaWiki\Context\IContextSource;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
-use MediaWiki\Extension\ConfirmEdit\Hooks;
+use MediaWiki\Extension\ConfirmEdit\Services\CaptchaFactory;
 use MediaWiki\Extension\NetworkSession\NetworkSessionProvider;
 use MediaWiki\Extension\OAuth\SessionProvider;
 use MediaWiki\Hook\BeforeInitializeHook;
@@ -77,24 +77,15 @@ class WikimediaEventsHooks implements
 	ConfirmEmailCompleteHook,
 	InvalidateEmailCompleteHook
 {
-	private Config $config;
-	private NamespaceInfo $namespaceInfo;
-	private PermissionManager $permissionManager;
-	private WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup;
-	private EmailConfirmationBannerExperimentLogger $emailConfirmationBannerExperimentLogger;
 
 	public function __construct(
-		Config $config,
-		NamespaceInfo $namespaceInfo,
-		PermissionManager $permissionManager,
-		WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup,
-		EmailConfirmationBannerExperimentLogger $emailConfirmationBannerExperimentLogger
+		private readonly Config $config,
+		private readonly NamespaceInfo $namespaceInfo,
+		private readonly PermissionManager $permissionManager,
+		private readonly WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup,
+		private readonly EmailConfirmationBannerExperimentLogger $emailConfirmationBannerExperimentLogger,
+		private readonly ?CaptchaFactory $captchaFactory,
 	) {
-		$this->config = $config;
-		$this->namespaceInfo = $namespaceInfo;
-		$this->permissionManager = $permissionManager;
-		$this->wikimediaEventsRequestDetailsLookup = $wikimediaEventsRequestDetailsLookup;
-		$this->emailConfirmationBannerExperimentLogger = $emailConfirmationBannerExperimentLogger;
 	}
 
 	/**
@@ -112,7 +103,7 @@ class WikimediaEventsHooks implements
 		}
 		if ( $out->getTitle()->isSpecial( 'CreateAccount' ) && $extensionRegistry->isLoaded( 'ConfirmEdit' ) ) {
 			// Export the CAPTCHA type for A/B test (T405239)
-			$captcha = Hooks::getInstance( CaptchaTriggers::CREATE_ACCOUNT );
+			$captcha = $this->captchaFactory->getGlobalInstance( CaptchaTriggers::CREATE_ACCOUNT );
 			if ( !$captcha->canSkipCaptcha( $out->getUser() ) ) {
 				$out->addJsConfigVars( 'wgWikimediaEventsCaptchaClassType', $captcha->getName() );
 			}

@@ -6,8 +6,7 @@ use MediaWiki\Auth\AuthenticationRequest;
 use MediaWiki\Auth\AuthManager;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
-use MediaWiki\Extension\ConfirmEdit\Hooks;
-use MediaWiki\Registration\ExtensionRegistry;
+use MediaWiki\Extension\ConfirmEdit\Services\CaptchaFactory;
 use StatusValue;
 
 /**
@@ -15,10 +14,11 @@ use StatusValue;
  * for instrumenting form submissions from non-JS clients.
  */
 class CreateAccountInstrumentationPreAuthenticationProvider extends AbstractPreAuthenticationProvider {
-	private CreateAccountInstrumentationClient $client;
 
-	public function __construct( CreateAccountInstrumentationClient $client ) {
-		$this->client = $client;
+	public function __construct(
+		private readonly CreateAccountInstrumentationClient $client,
+		private readonly ?CaptchaFactory $captchaFactory,
+	) {
 	}
 
 	/** @inheritDoc */
@@ -49,8 +49,8 @@ class CreateAccountInstrumentationPreAuthenticationProvider extends AbstractPreA
 		// Log the CAPTCHA class name for the A/B test (T405239)
 		// We do this here and not in BeforePageDisplay, because Special:CreateAccount
 		// gets a lot of page views that have no form interactions.
-		if ( ExtensionRegistry::getInstance()->isLoaded( 'ConfirmEdit' ) ) {
-			$captcha = Hooks::getInstance( CaptchaTriggers::CREATE_ACCOUNT );
+		if ( $this->captchaFactory ) {
+			$captcha = $this->captchaFactory->getGlobalInstance( CaptchaTriggers::CREATE_ACCOUNT );
 			if ( !$captcha->canSkipCaptcha( $user ) ) {
 				$this->client->submitInteraction(
 					RequestContext::getMain(),
