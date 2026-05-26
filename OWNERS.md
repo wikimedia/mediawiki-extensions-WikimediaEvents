@@ -274,6 +274,14 @@ More details at <https://phabricator.wikimedia.org/T414368>.
 * Contact: Reader Experience team
 More details at <https://phabricator.wikimedia.org/T420238>.
 
+## Donor delight badge experiment
+
+* Since: May 2026
+* Suggested Removal: July 2026
+* Files: ext.wikimediaEvents/donorDelightBadgeExperiment.js
+* Contact: Reader Experience team
+Details at https://phabricator.wikimedia.org/T424069.
+
 ## Mobile section switching
 
 * Since: December 2025

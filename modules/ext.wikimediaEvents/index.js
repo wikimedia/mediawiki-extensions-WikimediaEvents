@@ -21,6 +21,7 @@ if ( skin === 'vector-2022' || skin === 'minerva' ) {
 	}
 }
 if ( skin === 'minerva' && mw.user.isAnon() ) {
+	require( './donorDelightBadgeExperiment.js' );
 	require( './readingListAccountCreationCTA.js' );
 }
 

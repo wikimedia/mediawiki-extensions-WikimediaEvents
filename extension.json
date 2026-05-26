@@ -257,6 +257,7 @@
 				"webUIScroll.js",
 				"readingDepth.js",
 				"readingListAccountCreationCTA.js",
+				"donorDelightBadgeExperiment.js",
 				"readingListBaseline.js",
 				"phpEngine.js",
 				"blockedEdit.js",
@@ -438,7 +439,8 @@
 			"searchSatisfaction/searchSli.test.js",
 			"specialCreateAccount/instrumentation.test.js",
 			"externalLinks.test.js",
-			"readingListAccountCreationCTA.test.js"
+			"readingListAccountCreationCTA.test.js",
+			"donorDelightBadgeExperiment.test.js"
 		],
 		"dependencies": [
 			"ext.wikimediaEvents"
