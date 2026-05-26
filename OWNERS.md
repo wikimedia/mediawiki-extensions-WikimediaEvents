@@ -203,14 +203,18 @@ More details at <https://phabricator.wikimedia.org/T417050>
 
 More details at <https://phabricator.wikimedia.org/T420621>
 
-## Non-cache-splitting Test
+## Detect Hoisting Errors Test
 
 * Since: May 2026
-* Files: testKitchen/nonCacheSplittingTest.js
+* Files: testKitchen/detectHoistingErrors.js
 * Contact: Experiment Platform
 
-An experiment to test the ability to run non-cache-splitting experiments via Test Kitchen. See
-<https://phabricator.wikimedia.org/T419514> and its parent task for more details.
+An eexperiment to detect "hoisting errors" – an error triggered by a mismatch
+between the `experiment.enrolled` and `.assigned` event fields and the internal
+experiment enrollment header sent by Varnish to EventGate, the event intake
+service.
+
+More details at https://phabricator.wikimedia.org/T427092
 
 # Code ownership for other code in WikimediaEvents
 
