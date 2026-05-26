@@ -314,7 +314,7 @@
 				"testKitchen/attribution.js",
 				"testKitchen/loggedInReaderRetention.js",
 				"testKitchen/loggedOutReaderRetention.js",
-				"testKitchen/nonCacheSplittingTest.js",
+				"testKitchen/detectHoistingErrors.js",
 				"specialCreateAccount/init.js",
 				"specialCreateAccount/instrumentation.js",
 				"specialCreateAccount/useInstrument.js",

@@ -38,7 +38,7 @@ require( './testKitchen/pageVisitBotDetection.js' );
 require( './specialCreateAccount/init.js' );
 require( './testKitchen/loggedInReaderRetention.js' );
 require( './testKitchen/loggedOutReaderRetention.js' );
-require( './testKitchen/nonCacheSplittingTest.js' );
+require( './testKitchen/detectHoistingErrors.js' );
 require( './externalLinks.js' )();
 require( './suggestionMode.js' );
 
