@@ -1,4 +1,4 @@
-const EXPERIMENT_NAME = 'attribution-research-short-baseline-run';
+const EXPERIMENT_NAME = 'attribution-research-2026-06-run';
 /**
  * To test in browser, uncomment these lines
  * if ( !mw.testKitchen.compat.getExperiment( EXPERIMENT_NAME ) ) {
@@ -7,8 +7,8 @@ const EXPERIMENT_NAME = 'attribution-research-short-baseline-run';
  */
 const DONE = 'mw-tk-ae-done';
 const ERASED = 'mw-tk-ae-erase';
-// expire in 7 days (TODO: change based on experiment length)
-const EXPIRE_REMEMBER = 604800;
+// expire in 30 days (TODO: change based on experiment length)
+const EXPIRE_REMEMBER = 2592000;
 const DEPENDENCIES = [ 'mediawiki.storage', 'ext.testKitchen' ];
 // const DEPENDENCIES = [ 'mediawiki.storage', 'ext.testKitchen', 'mediawiki.visibleTimeout' ];
 
