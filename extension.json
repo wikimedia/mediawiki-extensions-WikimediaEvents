@@ -394,7 +394,8 @@
 				"ClickThroughRateInstrument.js"
 			],
 			"dependencies": [
-				"ext.eventLogging"
+				"ext.eventLogging",
+				"ext.testKitchen"
 			]
 		},
 		"ext.wikimediaEvents.WatchlistBaseline": {
