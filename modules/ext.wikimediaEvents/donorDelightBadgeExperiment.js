@@ -27,6 +27,17 @@ function setupDonorDelightBadgeExperimentInstrumentation( experiment ) {
 	mw.hook( 'wikimediaCustomizations.donor.recentDonor' ).add( () => {
 		experiment.sendExposure();
 	} );
+
+	mw.hook( 'wikimediaCustomizations.donorDelightBadge.click' ).add( () => {
+		experiment.send( 'click', { action_context: 'heart_badge' } );
+	} );
+
+	mw.hook( 'wikimediaCustomizations.donorDelightBadge.hide' ).add( () => {
+		experiment.send( 'click', {
+			action_context: 'hide_badge',
+			action_source: 'thank_msg'
+		} );
+	} );
 }
 
 experimentPromise.then( setupDonorDelightBadgeExperimentInstrumentation );
