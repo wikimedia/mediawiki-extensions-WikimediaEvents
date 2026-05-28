@@ -73,9 +73,9 @@ function main() {
 		// NOTE: same attributes sent for all logged-out events right now
 		const contextualAttributes = [
 			// used to look up page popularity and topic for bucketing of readership
-			// (uncomment for full run) 'page_id',
+			'page_id',
 			// used to look up group of namespaces for bucketing of readership
-			// (uncomment for full run) 'page_namespace_id',
+			'page_namespace_id',
 			// used to contextualize the page_id for this action type
 			'mediawiki_database'
 		];
