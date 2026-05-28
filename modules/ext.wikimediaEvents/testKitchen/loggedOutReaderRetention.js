@@ -38,10 +38,11 @@
 // e.g. logged-out-retention-round1, logged-out-retention-round2, etc.
 const EXPERIMENT_NAME_PREFIX = 'logged-out-retention-';
 
-mw.loader.using( 'ext.testKitchen' ).then( () => {
-	mw.testKitchen.compat.getExperimentsByPrefix( EXPERIMENT_NAME_PREFIX )
-		.forEach( ( experiment ) => {
+mw.testKitchen.getExperimentsByPrefix( EXPERIMENT_NAME_PREFIX ).then(
+	( experiments ) => {
+		experiments.forEach( ( experiment ) => {
 			experiment.sendExposure();
 			experiment.send( 'page_visit' );
 		} );
-} );
+	}
+);
