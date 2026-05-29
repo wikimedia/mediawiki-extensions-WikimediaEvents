@@ -7,8 +7,8 @@ const EXPERIMENT_NAME = 'attribution-research-2026-06-run';
  */
 const DONE = 'mw-tk-ae-done';
 const ERASED = 'mw-tk-ae-erase';
-// expire in 30 days (TODO: change based on experiment length)
-const EXPIRE_REMEMBER = 2592000;
+// expire in 36 days (TODO: change based on experiment length)
+const EXPIRE_REMEMBER = 3110400;
 const DEPENDENCIES = [ 'mediawiki.storage', 'ext.testKitchen' ];
 // const DEPENDENCIES = [ 'mediawiki.storage', 'ext.testKitchen', 'mediawiki.visibleTimeout' ];
 
