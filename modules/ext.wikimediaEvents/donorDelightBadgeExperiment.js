@@ -7,13 +7,6 @@
 const EXPERIMENT_NAME = 'donor-delight-badge';
 const ASSIGNED_GROUPS = [ 'control', 'treatment-b-simple', 'treatment-c-delightful' ];
 
-const experimentPromise = mw.loader.using( 'ext.testKitchen' )
-	.then( () => mw.testKitchen.compat.getExperiment( EXPERIMENT_NAME ) )
-	.catch( ( error ) => {
-		mw.log( 'Error loading ext.testKitchen module:', error );
-		return null;
-	} );
-
 /**
  * @param {Object|null} experiment
  */
@@ -22,10 +15,11 @@ function setupDonorDelightBadgeExperimentInstrumentation( experiment ) {
 		return;
 	}
 
-	experiment.send( 'page_visit' );
-
-	mw.hook( 'wikimediaCustomizations.donor.recentDonor' ).add( () => {
-		experiment.sendExposure();
+	mw.hook( 'wikimediaCustomizations.donor.recentDonor' ).add( ( wasBadgeDisabledByUser ) => {
+		experiment.send( 'page_visit' );
+		if ( !wasBadgeDisabledByUser ) {
+			experiment.sendExposure();
+		}
 	} );
 
 	mw.hook( 'wikimediaCustomizations.donorDelightBadge.click' ).add( () => {
@@ -40,7 +34,8 @@ function setupDonorDelightBadgeExperimentInstrumentation( experiment ) {
 	} );
 }
 
-experimentPromise.then( setupDonorDelightBadgeExperimentInstrumentation );
+mw.testKitchen.compat.getExperiment( EXPERIMENT_NAME )
+	.then( setupDonorDelightBadgeExperimentInstrumentation );
 
 module.exports = {
 	test: {

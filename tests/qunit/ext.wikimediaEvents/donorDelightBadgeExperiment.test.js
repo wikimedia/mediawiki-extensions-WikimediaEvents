@@ -42,6 +42,14 @@ function createRecentDonorHook() {
 	};
 }
 
+const makeExperimentSpy = ( sandbox, group ) => sandbox.spy( {
+	isAssignedGroup( ...groups ) {
+		return groups.includes( group );
+	},
+	send() {},
+	sendExposure() {}
+} );
+
 QUnit.module( 'ext.wikimediaEvents/donorDelightBadgeExperiment', QUnit.newMwEnvironment( {
 	beforeEach() {
 		const realHook = mw.hook;
@@ -58,47 +66,21 @@ QUnit.module( 'ext.wikimediaEvents/donorDelightBadgeExperiment', QUnit.newMwEnvi
 } ) );
 
 QUnit.test( 'setupDonorDelightBadgeExperimentInstrumentation sends page_visit and exposure for control when recent donor hook fires', function ( assert ) {
-	const experiment = this.sandbox.spy( {
-		isAssignedGroup( ...groups ) {
-			return groups.includes( 'control' );
-		},
-		send() {},
-		sendExposure() {}
-	} );
+	const experiment = makeExperimentSpy( this.sandbox, 'control' );
 
 	donorDelightBadgeExperiment.test.setupDonorDelightBadgeExperimentInstrumentation( experiment );
 
-	assert.true( experiment.send.calledOnceWith( 'page_visit' ) );
+	assert.true( experiment.send.notCalled );
 	assert.true( experiment.sendExposure.notCalled );
 
 	mw.hook( RECENT_DONOR_HOOK ).fire();
 
+	assert.true( experiment.send.calledOnce );
 	assert.true( experiment.sendExposure.calledOnce );
 } );
 
-QUnit.test( 'setupDonorDelightBadgeExperimentInstrumentation defers control exposure until recent donor hook fires', function ( assert ) {
-	const experiment = this.sandbox.spy( {
-		isAssignedGroup( ...groups ) {
-			return groups.includes( 'control' );
-		},
-		send() {},
-		sendExposure() {}
-	} );
-
-	donorDelightBadgeExperiment.test.setupDonorDelightBadgeExperimentInstrumentation( experiment );
-
-	assert.true( experiment.send.calledOnceWith( 'page_visit' ) );
-	assert.true( experiment.sendExposure.notCalled );
-} );
-
 QUnit.test( 'setupDonorDelightBadgeExperimentInstrumentation sends exposure for treatment when recent donor hook fires', function ( assert ) {
-	const experiment = this.sandbox.spy( {
-		isAssignedGroup( ...groups ) {
-			return groups.includes( 'treatment-b-simple' );
-		},
-		send() {},
-		sendExposure() {}
-	} );
+	const experiment = makeExperimentSpy( this.sandbox, 'treatment-b-simple' );
 
 	donorDelightBadgeExperiment.test.setupDonorDelightBadgeExperimentInstrumentation( experiment );
 
@@ -111,13 +93,7 @@ QUnit.test( 'setupDonorDelightBadgeExperimentInstrumentation sends exposure for 
 } );
 
 QUnit.test( 'setupDonorDelightBadgeExperimentInstrumentation sends exposure when recent donor hook fired before setup', function ( assert ) {
-	const experiment = this.sandbox.spy( {
-		isAssignedGroup( ...groups ) {
-			return groups.includes( 'treatment-c-delightful' );
-		},
-		send() {},
-		sendExposure() {}
-	} );
+	const experiment = makeExperimentSpy( this.sandbox, 'treatment-c-delightful' );
 
 	mw.hook( RECENT_DONOR_HOOK ).fire();
 
@@ -127,14 +103,19 @@ QUnit.test( 'setupDonorDelightBadgeExperimentInstrumentation sends exposure when
 	assert.true( experiment.sendExposure.calledOnce );
 } );
 
+QUnit.test( 'setupDonorDelightBadgeExperimentInstrumentation no exposure event if badge was explicitly hidden', function ( assert ) {
+	const experiment = makeExperimentSpy( this.sandbox, 'treatment-c-delightful' );
+
+	mw.hook( RECENT_DONOR_HOOK ).fire( true );
+
+	donorDelightBadgeExperiment.test.setupDonorDelightBadgeExperimentInstrumentation( experiment );
+
+	assert.true( experiment.send.calledOnceWith( 'page_visit' ) );
+	assert.true( experiment.sendExposure.notCalled );
+} );
+
 QUnit.test( 'setupDonorDelightBadgeExperimentInstrumentation noops when not enrolled', function ( assert ) {
-	const experiment = this.sandbox.spy( {
-		isAssignedGroup() {
-			return false;
-		},
-		send() {},
-		sendExposure() {}
-	} );
+	const experiment = makeExperimentSpy( this.sandbox, null );
 
 	donorDelightBadgeExperiment.test.setupDonorDelightBadgeExperimentInstrumentation( experiment );
 
