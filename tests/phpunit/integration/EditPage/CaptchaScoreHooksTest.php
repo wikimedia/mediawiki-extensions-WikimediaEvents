@@ -982,7 +982,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 			->with(
 				'mediawiki.hcaptcha.risk_score',
 				[
-					'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.4.0',
+					'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.5.0',
 					'action' => 'createaccount',
 					'wiki_id' => WikiMap::getCurrentWikiId(),
 					'identifier' => $user->getId(),
@@ -1007,7 +1007,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 
 	private static function buildEventPayload( array $values ): array {
 		return array_merge( [
-			'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.4.0',
+			'$schema' => '/analytics/mediawiki/hcaptcha/risk_score/1.5.0',
 			'wiki_id' => WikiMap::getCurrentWikiId(),
 			'http' => [ 'method' => 'POST' ],
 			'mw_entry_point' => MW_ENTRY_POINT,

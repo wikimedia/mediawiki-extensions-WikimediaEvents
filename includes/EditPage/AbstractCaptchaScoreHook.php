@@ -15,7 +15,7 @@ use MediaWiki\WikiMap\WikiMap;
 abstract class AbstractCaptchaScoreHook {
 
 	protected const STREAM = 'mediawiki.hcaptcha.risk_score';
-	protected const SCHEMA = '/analytics/mediawiki/hcaptcha/risk_score/1.4.0';
+	protected const SCHEMA = '/analytics/mediawiki/hcaptcha/risk_score/1.5.0';
 
 	public function __construct(
 		protected readonly UserEntitySerializer $userEntitySerializer,

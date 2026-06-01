@@ -7,6 +7,7 @@ namespace WikimediaEvents\EditPage;
 use MediaWiki\Block\AbstractBlock;
 use MediaWiki\Block\Block;
 use MediaWiki\Block\DatabaseBlockStore;
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\ConfirmEdit\Hooks\ConfirmEditHCaptchaRiskScoreRetrievedForBlocksHook;
 use MediaWiki\Extension\EventBus\Serializers\MediaWiki\UserEntitySerializer;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
@@ -118,6 +119,17 @@ class CaptchaScoreBlocksHook extends AbstractCaptchaScoreHook
 	}
 
 	private function getActionTypeString( AbstractBlock $block ): ?string {
+		// The same hook serves both the editing and account-creation block
+		// flows; the originating page selects the action suffix.
+		$title = RequestContext::getMain()->getTitle();
+		if ( $title !== null && $title->isSpecial( 'CreateAccount' ) ) {
+			return match ( $block->getType() ) {
+				Block::TYPE_IP => 'ip_block_account_creation_attempt',
+				Block::TYPE_RANGE => 'ip_range_block_account_creation_attempt',
+				default => null,
+			};
+		}
+
 		return match ( $block->getType() ) {
 			Block::TYPE_IP => 'ip_block_edit_attempt',
 			Block::TYPE_RANGE => 'ip_range_block_edit_attempt',

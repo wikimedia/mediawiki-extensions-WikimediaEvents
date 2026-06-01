@@ -10,6 +10,7 @@ use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Extension\GlobalBlocking\GlobalBlock;
 use MediaWiki\Extension\GlobalBlocking\Services\GlobalBlockLookup;
 use MediaWiki\Request\FauxRequest;
+use MediaWiki\Title\Title;
 use MediaWiki\User\UserIdentityValue;
 use MediaWiki\WikiMap\WikiMap;
 use MediaWikiIntegrationTestCase;
@@ -22,7 +23,7 @@ use WikimediaEvents\EditPage\CaptchaScoreBlocksHook;
  */
 class CaptchaScoreBlocksHookTest extends MediaWikiIntegrationTestCase {
 
-	private const string SCHEMA = '/analytics/mediawiki/hcaptcha/risk_score/1.4.0';
+	private const string SCHEMA = '/analytics/mediawiki/hcaptcha/risk_score/1.5.0';
 
 	protected function setUp(): void {
 		parent::setUp();
@@ -475,5 +476,72 @@ class CaptchaScoreBlocksHookTest extends MediaWikiIntegrationTestCase {
 			'',
 			new FauxRequest( [], true )
 		);
+	}
+
+	/** @dataProvider provideAccountCreationBlockEvents */
+	public function testRiskScoreRetrievedForBlocksUsesAccountCreationActions(
+		int $blockType,
+		?string $expectedAction
+	): void {
+		$services = $this->getServiceContainer();
+		$blockId = 42;
+		$user = UserIdentityValue::newAnonymous( '1.2.3.4' );
+		$request = new FauxRequest( [], true );
+		RequestContext::getMain()->setRequest( $request );
+		RequestContext::getMain()->setTitle( Title::makeTitle( NS_SPECIAL, 'CreateAccount' ) );
+
+		$mockBlock = $this->createMock( DatabaseBlock::class );
+		$mockBlock->method( 'getType' )->willReturn( $blockType );
+		$mockBlock->method( 'getId' )->willReturn( $blockId );
+
+		$mockBlockStore = $this->createMock( DatabaseBlockStore::class );
+		$mockBlockStore->method( 'newFromID' )->with( $blockId )->willReturn( $mockBlock );
+
+		$eventSubmitter = $this->createMock( EventSubmitter::class );
+		if ( $expectedAction === null ) {
+			$eventSubmitter->expects( $this->never() )->method( 'submit' );
+		} else {
+			$eventSubmitter->expects( $this->once() )
+				->method( 'submit' )
+				->with(
+					'mediawiki.hcaptcha.risk_score',
+					$this->callback( static fn ( array $event ) =>
+						$event['action'] === $expectedAction && $event['$schema'] === self::SCHEMA
+					)
+				);
+		}
+
+		$hook = new CaptchaScoreBlocksHook(
+			$eventSubmitter,
+			$services->get( 'EventBus.UserEntitySerializer' ),
+			$mockBlockStore,
+			null,
+		);
+
+		$hook->onConfirmEditHCaptchaRiskScoreRetrievedForBlocks(
+			0.7,
+			[ $blockId ],
+			[],
+			$user,
+			'',
+			$request
+		);
+	}
+
+	public static function provideAccountCreationBlockEvents(): array {
+		return [
+			'IP block' => [
+				'blockType' => Block::TYPE_IP,
+				'expectedAction' => 'ip_block_account_creation_attempt',
+			],
+			'Range block' => [
+				'blockType' => Block::TYPE_RANGE,
+				'expectedAction' => 'ip_range_block_account_creation_attempt',
+			],
+			'Auto block is not logged for account creation' => [
+				'blockType' => Block::TYPE_AUTO,
+				'expectedAction' => null,
+			],
+		];
 	}
 }
