@@ -55,41 +55,40 @@ function instrumentReviewChangesLinks( instrument, selector ) {
 }
 
 if ( specialPageName === 'PersonalDashboard' ) {
-	mw.loader.using( 'ext.testKitchen' ).then( () => {
-		const instrument = mw.testKitchen.getInstrument( 'personal-dashboard-health-metrics' );
-		instrument.submitInteraction( 'pageview' );
-		instrumentPolicyLinks( instrument );
+	const instrument = mw.testKitchen.getInstrument(
+		'personal-dashboard-health-metrics'
+	);
+	instrument.submitInteraction( 'pageview' );
+	instrumentPolicyLinks( instrument );
 
-		mw.hook( 'personaldashboard.recentactivity.loaded' ).add( () => {
-			// Not all views include this link
-			if ( document.querySelector( '#personal-dashboard-go-to-recentchanges' ) ) {
-				ClickThroughRateInstrument.start(
-					'#personal-dashboard-go-to-recentchanges',
-					'Go to Recent Changes link',
-					instrument
-				);
-			}
-		} );
-
-		mw.hook( 'personaldashboard.recentactivity.listcard.loaded' ).add( () => {
-			instrumentReviewChangesLinks( instrument,
-				'.personal-dashboard-review-changes__card' );
-		} );
-
-		mw.hook( 'personaldashboard.activediscussions.listcard.loaded' ).add( () => {
-			instrumentLinks(
-				instrument,
-				'.personal-dashboard-active-discussions__card',
-				'Personal Dashboard discussion link' );
-		} );
-
-		mw.hook( 'personaldashboard.impact.loaded' ).add( () => {
+	mw.hook( 'personaldashboard.recentactivity.loaded' ).add( () => {
+		// Not all views include this link
+		if ( document.querySelector( '#personal-dashboard-go-to-recentchanges' ) ) {
 			ClickThroughRateInstrument.start(
-				'#personal-dashboard-thanks-link',
-				'Personal Dashboard thanks link',
+				'#personal-dashboard-go-to-recentchanges',
+				'Go to Recent Changes link',
 				instrument
 			);
-		} );
+		}
+	} );
 
+	mw.hook( 'personaldashboard.recentactivity.listcard.loaded' ).add( () => {
+		instrumentReviewChangesLinks( instrument,
+			'.personal-dashboard-review-changes__card' );
+	} );
+
+	mw.hook( 'personaldashboard.activediscussions.listcard.loaded' ).add( () => {
+		instrumentLinks(
+			instrument,
+			'.personal-dashboard-active-discussions__card',
+			'Personal Dashboard discussion link' );
+	} );
+
+	mw.hook( 'personaldashboard.impact.loaded' ).add( () => {
+		ClickThroughRateInstrument.start(
+			'#personal-dashboard-thanks-link',
+			'Personal Dashboard thanks link',
+			instrument
+		);
 	} );
 }

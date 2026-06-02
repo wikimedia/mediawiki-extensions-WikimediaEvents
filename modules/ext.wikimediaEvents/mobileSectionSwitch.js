@@ -2,12 +2,7 @@ const editingSessionService = require( './editingSessionService.js' );
 
 const EXPERIMENT_NAME = 'fy25-26-we-1-1-19-mobile-section-dead-end-phase-2';
 
-const experimentPromise = mw.loader.using( 'ext.testKitchen' )
-	.then( () => mw.testKitchen.getExperiment( EXPERIMENT_NAME ) )
-	.catch( ( error ) => {
-		mw.log( 'Error loading ext.testKitchen module:', error );
-		return null;
-	} );
+const experimentPromise = mw.testKitchen.getExperiment( EXPERIMENT_NAME );
 
 experimentPromise.then( ( experiment ) => {
 	if ( !( experiment && experiment.isAssignedGroup( 'control', 'treatment' ) ) ) {

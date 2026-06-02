@@ -78,15 +78,8 @@ function setupLoggedOutWarningInstrumentation() {
 		return;
 	}
 
-	const experimentPromise = mw.loader.using( [
-		'ext.testKitchen',
-		'ext.wikimediaEvents.testKitchen'
-	] )
-		.then( () => mw.testKitchen.getExperiment( EXPERIMENT_NAME ) )
-		.catch( ( error ) => {
-			mw.log( 'Error loading ext.testKitchen module:', error );
-			return null;
-		} );
+	const experimentPromise =
+		mw.testKitchen.getExperiment( EXPERIMENT_NAME );
 
 	experimentPromise.then( ( exp ) => {
 		const submitCloseTab = () => {
@@ -111,7 +104,10 @@ function setupLoggedOutWarningInstrumentation() {
 					);
 					return;
 				}
-				setupCTRs( exp, submitCloseTab );
+				mw.loader.using(
+					'ext.wikimediaEvents.testKitchen',
+					() => setupCTRs( exp, submitCloseTab )
+				);
 				submitExposureInteraction( exp );
 			} );
 		};
@@ -168,7 +164,10 @@ function setupLoggedOutWarningInstrumentation() {
 					);
 					return;
 				}
-				setupCTRs( exp, submitCloseTab );
+				mw.loader.using(
+					'ext.wikimediaEvents.testKitchen',
+					() => setupCTRs( exp, submitCloseTab )
+				);
 				submitExposureInteraction( exp );
 			}
 		} );

@@ -100,12 +100,13 @@ function setupInstrumentation() {
 		if ( !data || data.action !== 'loaded' ) {
 			return;
 		}
-		mw.loader.using( [ 'ext.testKitchen' ] ).then( () => {
-			const experiment = mw.testKitchen.compat.getExperiment( 'fy25-26-we-4-2-hcaptcha-editing' );
-			mw.track( 'visualEditorFeatureUse', {
-				feature: 'T410354_hcaptcha_edit_ab_test',
-				action: experiment.isAssignedGroup( 'control', 'control-2' ) ? 'FancyCaptcha' : 'hCaptcha'
-			} );
+		const experiment = mw.testKitchen.compat.getExperiment(
+			'fy25-26-we-4-2-hcaptcha-editing'
+		);
+		mw.track( 'visualEditorFeatureUse', {
+			feature: 'T410354_hcaptcha_edit_ab_test',
+			action: experiment.isAssignedGroup( 'control', 'control-2' ) ?
+				'FancyCaptcha' : 'hCaptcha'
 		} );
 	} );
 }

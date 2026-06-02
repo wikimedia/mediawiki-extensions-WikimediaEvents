@@ -2,19 +2,9 @@ const INSTRUMENT_NAME = 'reading-list-engagement';
 const ACTION_SAVE = 'save_article_to_reading_list';
 const ACTION_REMOVE = 'remove_article_from_reading_list';
 
-const instrumentPromise = mw.loader.using( 'ext.testKitchen' )
-	.then( () => {
-		try {
-			const instrument = mw.testKitchen.getInstrument( INSTRUMENT_NAME );
-			return instrument;
-		} catch ( error ) {
-			return null;
-		}
-	} )
-	.catch( ( error ) => {
-		mw.log( 'Error loading ext.testKitchen module:', error );
-		return null;
-	} );
+const instrumentPromise = Promise.resolve(
+	mw.testKitchen.getInstrument( INSTRUMENT_NAME )
+);
 
 /**
  * Track clicks on reading list bookmark icon

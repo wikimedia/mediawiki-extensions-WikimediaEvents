@@ -30,24 +30,22 @@
 const INSTRUMENT_NAME = 'bot-detection-2026-03';
 const SCHEMA_ID = '/analytics/product_metrics/web/base_with_ip/2.0.0';
 
-mw.loader.using( 'ext.testKitchen' ).then( () => {
-	const instrument = mw.testKitchen.getInstrument( INSTRUMENT_NAME );
-	instrument.setSchema( SCHEMA_ID );
+const instrument = mw.testKitchen.getInstrument( INSTRUMENT_NAME );
+instrument.setSchema( SCHEMA_ID );
 
-	let botScore = 0;
-	if ( navigator.webdriver === true ) {
-		botScore |= 1;
-	}
-	if ( navigator.hardwareConcurrency > 70 ) {
-		botScore |= 2;
-	}
+let botScore = 0;
+if ( navigator.webdriver === true ) {
+	botScore |= 1;
+}
+if ( navigator.hardwareConcurrency > 70 ) {
+	botScore |= 2;
+}
 
-	const interactionData = {
-		action_context: 'bot=' + botScore,
-		action_source: cyrb53( location.pathname + location.search, 0 )
-	};
-	instrument.send( 'page_load', interactionData );
-} );
+const interactionData = {
+	action_context: 'bot=' + botScore,
+	action_source: cyrb53( location.pathname + location.search, 0 )
+};
+instrument.send( 'page_load', interactionData );
 
 /**
  * Hash function with no security but low collisions

@@ -12,14 +12,14 @@ function setUpAccountMenuInstrumentation() {
 		return;
 	}
 
-	const experimentPromise = mw.loader.using( [ 'ext.testKitchen', 'ext.wikimediaEvents.testKitchen' ] ).then( () => {
-		const experiment = mw.testKitchen.compat.getExperiment( EXPERIMENT_NAME );
-		experiment.setSchema( SCHEMA_NAME );
-		return experiment;
-	} ).catch( ( error ) => {
-		mw.log( 'Error loading ext.testKitchen module:', error );
-		return null;
-	} );
+	const experimentPromise = mw.loader.using(
+		'ext.wikimediaEvents.testKitchen'
+	)
+		.then( () => mw.testKitchen.getExperiment( EXPERIMENT_NAME ) )
+		.then( ( experiment ) => {
+			experiment.setSchema( SCHEMA_NAME );
+			return experiment;
+		} );
 
 	experimentPromise.then( ( experiment ) => {
 		experiment.sendExposure();

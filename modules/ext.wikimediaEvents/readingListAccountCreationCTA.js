@@ -7,15 +7,8 @@
  */
 const EXPERIMENT_NAME = 'account-creation-reading-list-cta';
 
-const experimentPromise = mw.loader.using( 'ext.testKitchen' )
-	.then( () => {
-		const experiment = mw.testKitchen.compat.getExperiment( EXPERIMENT_NAME );
-		return experiment;
-	} )
-	.catch( ( error ) => {
-		mw.log( 'Error loading ext.testKitchen module:', error );
-		return null;
-	} );
+const accountCreationExperiment =
+	mw.testKitchen.compat.getExperiment( EXPERIMENT_NAME );
 
 const setupControlInstrumentation = ( experiment ) => {
 	const watchstar = document.querySelector( '#ca-watch' );
@@ -47,19 +40,17 @@ const setupControlInstrumentation = ( experiment ) => {
 };
 
 $( () => {
-	experimentPromise.then( ( experiment ) => {
-		if ( !experiment || !experiment.isAssignedGroup( 'control', 'treatment' ) ) {
-			return;
-		}
+	if ( !accountCreationExperiment.isAssignedGroup( 'control', 'treatment' ) ) {
+		return;
+	}
 
-		// send an exposure for all users in the experiment
-		experiment.sendExposure();
+	// send an exposure for all users in the experiment
+	accountCreationExperiment.sendExposure();
 
-		// if in control, add baseline tracking to the watchstar
-		if ( experiment.isAssignedGroup( 'control' ) ) {
-			setupControlInstrumentation( experiment );
-		}
-	} );
+	// if in control, add baseline tracking to the watchstar
+	if ( accountCreationExperiment.isAssignedGroup( 'control' ) ) {
+		setupControlInstrumentation( accountCreationExperiment );
+	}
 } );
 
 // export for unit testing

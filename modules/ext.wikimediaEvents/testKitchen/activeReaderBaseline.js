@@ -15,19 +15,16 @@
  */
 const INSTRUMENT_NAME = 'active-reader-baseline-2026-04';
 
-mw.loader.using( 'ext.testKitchen' ).then( () => {
-	// logged in and 0 edits
-	if ( mw.user.isNamed() && mw.config.get( 'wgUserEditCount' ) === 0 ) {
-
-		hashString( String( mw.user.getId() ) ).then( ( userIdHash ) => {
-			const instrument = mw.testKitchen.getInstrument( INSTRUMENT_NAME );
-			const interactionData = {
-				action_context: userIdHash
-			};
-			instrument.send( 'page_load', interactionData );
-		} );
-	}
-} );
+// logged in and 0 edits
+if ( mw.user.isNamed() && mw.config.get( 'wgUserEditCount' ) === 0 ) {
+	hashString( String( mw.user.getId() ) ).then( ( userIdHash ) => {
+		const instrument = mw.testKitchen.getInstrument( INSTRUMENT_NAME );
+		const interactionData = {
+			action_context: userIdHash
+		};
+		instrument.send( 'page_load', interactionData );
+	} );
+}
 
 /**
  * Secure hash function

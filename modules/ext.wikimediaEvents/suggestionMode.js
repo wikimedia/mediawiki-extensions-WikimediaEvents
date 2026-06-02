@@ -6,17 +6,14 @@ const EXPERIMENT_NAME = 'fy25-26-we-1-7-8-suggestion-mode-beta';
 const ACCEPT_ACTIONS = [ 'remove', 'accept', 'edit', 'fix', 'convert', 'useTarget', 'useLabel', 'recheck', 'add' ];
 const DECLINE_ACTIONS = [ 'dismiss', 'keep', 'reject' ];
 
-const experimentPromise = mw.loader.using( 'ext.testKitchen' )
-	.then( () => {
-		const exp = ( mw.testKitchen.compat || mw.testKitchen ).getExperiment( EXPERIMENT_NAME );
-		// Exclude any user who already has suggestion mode turned on or who has more than 100 edits
-		const isUserExcluded = ( mw.user.options.get( 'visualeditor-editcheck-suggestions' ) ||
-			( mw.user.isNamed() && mw.config.get( 'wgUserEditCount' ) > 100 ) );
+const experimentPromise = mw.testKitchen.getExperiment( EXPERIMENT_NAME )
+	.then( ( exp ) => {
+		const isUserExcluded = (
+			mw.user.options.get( 'visualeditor-editcheck-suggestions' ) ||
+			( mw.user.isNamed() && mw.config.get( 'wgUserEditCount' ) > 100 )
+		);
+
 		return { exp, isUserExcluded };
-	} )
-	.catch( ( error ) => {
-		mw.log( 'Error loading ext.testKitchen module:', error );
-		return {};
 	} );
 
 experimentPromise.then( ( { exp, isUserExcluded } ) => {

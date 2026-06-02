@@ -15,13 +15,11 @@
 // e.g. logged-in-retention-round1, logged-in-retention-round2, etc.
 const LOGGED_IN_RETENTION_EXPERIMENT_PREFIX = 'logged-in-retention-';
 
-mw.loader.using( 'ext.testKitchen' ).then( () => {
-	// Only logged-in, non-temp users.
-	if ( mw.user.isNamed() ) {
-		mw.testKitchen.compat.getExperimentsByPrefix( LOGGED_IN_RETENTION_EXPERIMENT_PREFIX )
-			.forEach( ( experiment ) => {
-				experiment.sendExposure();
-				experiment.send( 'page_visit' );
-			} );
-	}
-} );
+// Only logged-in, non-temp users.
+if ( mw.user.isNamed() ) {
+	mw.testKitchen.compat.getExperimentsByPrefix( LOGGED_IN_RETENTION_EXPERIMENT_PREFIX )
+		.forEach( ( experiment ) => {
+			experiment.sendExposure();
+			experiment.send( 'page_visit' );
+		} );
+}
