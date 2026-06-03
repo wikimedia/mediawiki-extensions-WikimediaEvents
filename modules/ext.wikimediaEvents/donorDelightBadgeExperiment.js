@@ -34,7 +34,7 @@ function setupDonorDelightBadgeExperimentInstrumentation( experiment ) {
 	} );
 }
 
-mw.testKitchen.compat.getExperiment( EXPERIMENT_NAME )
+mw.testKitchen.getExperiment( EXPERIMENT_NAME )
 	.then( setupDonorDelightBadgeExperimentInstrumentation );
 
 module.exports = {
