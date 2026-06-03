@@ -1,7 +1,7 @@
 const EXPERIMENT_NAME = 'attribution-research-2026-06-run';
 /**
  * To test in browser, uncomment these lines
- * if ( !mw.testKitchen.compat.getExperiment( EXPERIMENT_NAME ) ) {
+ * if ( !mw.testKitchen.getExperiment( EXPERIMENT_NAME ) ) {
  *     mw.testKitchen.overrideExperimentGroup(EXPERIMENT_NAME, 'treatment');
  * }
  */
@@ -48,12 +48,11 @@ function interval( checkinTimes, fn ) {
 	setTimeout( action, 1000 * timeout );
 }
 
-function main() {
+function main( exp ) {
 	// no longer in experiment scope somehow, do nothing
 	if ( was( DONE ) || was( ERASED ) ) {
 		return;
 	}
-	const exp = mw.testKitchen.compat.getExperiment( EXPERIMENT_NAME );
 
 	if ( !( exp && exp.isAssignedGroup( 'control', 'treatment' ) ) ) {
 		return;
@@ -146,4 +145,6 @@ function main() {
 	}
 }
 
-mw.loader.using( DEPENDENCIES ).then( () => main() );
+mw.loader.using( DEPENDENCIES ).then(
+	() => mw.testKitchen.getExperiment( EXPERIMENT_NAME ).then( main )
+);
