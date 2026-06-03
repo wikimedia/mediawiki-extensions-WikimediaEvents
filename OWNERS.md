@@ -229,7 +229,8 @@ More details at <https://phabricator.wikimedia.org/T357763>
 ## Special:CreateAccount instrumentation
 
 * Since: July 2025
-* Folders: ext.wikimediaEvents/specialCreateAccount
+* Folders: ext.wikimediaEvents/specialCreateAccount, ext.wikimediaEvents/accountCreation
+* Files: ext.wikimediaEvents/accountCreation.js
 * Contact: Growth Team
 
 More details at <https://phabricator.wikimedia.org/T394744>
@@ -293,12 +294,6 @@ Details at https://phabricator.wikimedia.org/T424069.
 * Since: January 2026
 * Modules: ext.wikimediaEvents.personalDashboard
 * Contact: Moderator Tools
-
-## Logged out warning experiment
-
-* Since: February 2026
-* Files: ext.wikimediaEvents/loggedOutWarning.js, ext.wikimediaEvents/accountCreation.js, ext.wikimediaEvents/accountCreation/removeQueryParam.js, ext.wikimediaEvents/accountCreation/experiments.js, ext.wikimediaEvents/accountCreation/useAccountCreationInstrument.js
-* Contact: Growth
 
 ## Various experiments around account creation and constructive edits
 
