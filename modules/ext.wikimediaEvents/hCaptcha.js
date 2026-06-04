@@ -9,7 +9,7 @@ function setupInstrumentation() {
 	// mw.track call. visualEditorFeatureUse handles editor_interface for us.
 	const editingInterfaces = {
 		edit: 'wikitext',
-		'mobilefrontend-editor': 'mobilefrontend',
+		mobilefrontendeditor: 'mobilefrontend',
 		visualeditor: 'visualeditor'
 	};
 
@@ -28,7 +28,7 @@ function setupInstrumentation() {
 
 				// Record diff when hCaptcha challenge is presented (T406865)
 				const textArea = document.querySelector(
-					interfaceName === 'mobilefrontend-editor' ?
+					interfaceName === 'mobilefrontendeditor' ?
 						'textarea[id="wikitext-editor"]' :
 						'textarea[name="wpTextbox1"]'
 				);
