@@ -40,10 +40,10 @@ QUnit.test( 'should track editing interfaces for hcaptcha.render() callbacks', f
 	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'expired', 'edit' ) );
 	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'open', 'visualeditor' ) );
 	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'close', 'visualeditor' ) );
-	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'open', 'mobilefrontend-editor' ) );
-	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'expired', 'mobilefrontend-editor' ) );
-	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'open', 'mobilefrontend-editor' ) );
-	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'close', 'mobilefrontend-editor' ) );
+	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'open', 'mobilefrontendeditor' ) );
+	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'expired', 'mobilefrontendeditor' ) );
+	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'open', 'mobilefrontendeditor' ) );
+	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'close', 'mobilefrontendeditor' ) );
 
 	assert.deepEqual( this.track.callCount, 12, 'edit interfaces should cause mw.track events' );
 	assert.deepEqual(
@@ -127,7 +127,7 @@ QUnit.test( 'should track errors from editing interfaces for hcaptcha.render() c
 
 	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'error', 'edit', 'edit-error' ) );
 	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'error', 'visualeditor', 'visualeditor-error' ) );
-	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'error', 'mobilefrontend-editor', 'visualeditor-error' ) );
+	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'error', 'mobilefrontendeditor', 'visualeditor-error' ) );
 	// an unknown interface should not trigger an error tracking call
 	handlers.forEach( ( handler ) => handler( 'confirmEdit.hCaptchaRenderCallback', 'error', 'somethingelse', 'somethingelse-error' ) );
 
