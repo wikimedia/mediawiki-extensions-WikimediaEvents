@@ -14,7 +14,14 @@ function decorateCreateAccountLinks() {
 	async function getExperimentParamValue() {
 		const isUserLogin = mw.config.get( 'wgCanonicalSpecialPageName' ) === 'Userlogin';
 		if ( isUserLogin ) {
-			return ( new URL( location ) ).searchParams.get( 'experiments' );
+			// TODO: this is building on the fact that this code is the only place that adds this param.
+			//       If ever this approach gets more usage, then this logic needs to become smarter.
+			const experimentsParam = mw.util.getParamValue( 'experiments' ) ||
+				( mw.util.getArrayParam( 'experiments' ) && mw.util.getArrayParam( 'experiments' )[ 0 ] );
+			if ( experimentsParam ) {
+				return experimentsParam;
+			}
+			return 'we-1-8-account-creation-form-v2:unknown';
 		}
 
 		const exp = await mw.testKitchen.getExperiment( 'we-1-8-account-creation-form-v2' );
