@@ -29,6 +29,7 @@ use MediaWiki\Extension\CentralAuth\SharedDomainUtils;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\WikiMap\WikiMap;
 use Monolog\Handler\AbstractHandler;
+use Monolog\LogRecord;
 
 /**
  * Counts authentication-related log events (those sent to the 'authevents'
@@ -86,7 +87,7 @@ class AuthManagerStatsdHandler extends AbstractHandler {
 	/**
 	 * @inheritDoc
 	 */
-	public function handle( array $record ): bool {
+	public function handle( array|LogRecord $record ): bool {
 		$event = $record['context']['event'] ?? null;
 		$type = $record['context']['eventType'] ?? $record['context']['type'] ?? null;
 		$entrypoint = $this->getEntryPoint();
