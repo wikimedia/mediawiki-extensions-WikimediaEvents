@@ -42,7 +42,7 @@ class BlockMetricsHooksTest extends MediaWikiIntegrationTestCase {
 			->method( 'submitEvent' )
 			->willReturnCallback( function ( string $streamName, array $event ) use ( $block, $user ) {
 				$this->assertSame( 'mediawiki.accountcreation_block', $streamName );
-				$this->assertArraySubmapSame(
+				$this->assertArrayContains(
 					[
 						'$schema' => BlockMetricsHooks::SCHEMA,
 						'database' => $this->getDb()->getDBname(),

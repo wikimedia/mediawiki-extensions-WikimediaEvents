@@ -306,7 +306,7 @@ class VectorPrefDiffInstrumentationTest extends MediaWikiIntegrationTestCase {
 		$result = $subject->createEventIfNecessary( $formData, $form, $user, $isFormSuccessful, [] );
 
 		if ( is_array( $expect ) ) {
-			$this->assertArraySubmapSame( $expect, $result );
+			$this->assertArrayContains( $expect, $result );
 			$this->assertArrayHasKey( 'user_hash', $result, '"user_hash" key is present' );
 			$this->assertIsString( $result['user_hash'], 'User hash is a string' );
 			$this->assertGreaterThan( 0, strlen( $result['user_hash'] ), 'A non-empty Hash string exists' );
