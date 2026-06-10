@@ -10,7 +10,7 @@ class UrlEnrolledExperiment {
 		this.experimentName = experimentName;
 		this.experimentGroup = experimentGroup;
 		this.isOverridden = isOverridden;
-		this.everyoneExperimentEventIntakeServiceUrl = `${ mw.config.get( 'wgServer' ) }/evt-103e/v2/events?hasty=true`;
+		this.everyoneExperimentEventIntakeServiceUrl = `https://${ mw.config.get( 'wgServerName' ) }/evt-103e/v2/events?hasty=true`;
 	}
 
 	static getExperimentFromQuery( experimentMachineReadableName ) {
@@ -68,7 +68,8 @@ class UrlEnrolledExperiment {
 		};
 		event.$schema = '/analytics/product_metrics/web/base/2.0.0';
 		event.meta = {
-			stream: 'product_metrics.web_base'
+			stream: 'product_metrics.web_base',
+			domain: location.hostname
 		};
 		if ( this.isOverridden ) {
 			const message =
@@ -82,9 +83,11 @@ class UrlEnrolledExperiment {
 				JSON.stringify( event, null, 2 )
 			);
 		} else {
+			const headers = { type: 'text/plain' };
+			const payload = new Blob( [ JSON.stringify( event ) ], headers );
 			navigator.sendBeacon(
 				this.everyoneExperimentEventIntakeServiceUrl,
-				JSON.stringify( event )
+				payload
 			);
 		}
 	}
