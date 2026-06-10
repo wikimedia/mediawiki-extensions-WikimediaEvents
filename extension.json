@@ -39,8 +39,7 @@
 				"MainConfig",
 				"NamespaceInfo",
 				"PermissionManager",
-				"WikimediaEventsRequestDetailsLookup",
-				"WikimediaEventsEmailConfirmationBannerExperimentLogger"
+				"WikimediaEventsRequestDetailsLookup"
 			],
 			"optional_services": [
 				"ConfirmEditCaptchaFactory"
@@ -191,9 +190,7 @@
 		"PermissionStatusAudit": "BlockMetricsHooks",
 		"EditPage::showReadOnlyForm:initial": "EditPageHooks",
 		"CentralAuthPostLoginRedirect": "AccountCreation",
-		"AuthManagerLoginAuthenticateAudit": "AccountCreation",
-		"ConfirmEmailComplete": "main",
-		"InvalidateEmailComplete": "main"
+		"AuthManagerLoginAuthenticateAudit": "AccountCreation"
 	},
 	"APIModules": {
 		"wikimediaeventsblockededit": {
@@ -346,16 +343,6 @@
 				"mediawiki.experiments",
 				"mediawiki.storage",
 				"mediawiki.visibleTimeout"
-			]
-		},
-		"ext.wikimediaEvents.emailConfirmationBanner": {
-			"localBasePath": "modules/ext.wikimediaEvents",
-			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents",
-			"packageFiles": [
-				"emailConfirmationBanner/emailConfirmationBanner.js"
-			],
-			"dependencies": [
-				"ext.testKitchen"
 			]
 		},
 		"ext.wikimediaEvents.wikibase": {

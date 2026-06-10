@@ -29,7 +29,6 @@ use MediaWiki\MediaWikiServices;
 use WikimediaEvents\AccountCreation\AccountCreationLogger;
 use WikimediaEvents\CreateAccount\CreateAccountInstrumentationClient;
 use WikimediaEvents\PeriodicMetrics\WikimediaEventsMetricsFactory;
-use WikimediaEvents\Services\EmailConfirmationBannerExperimentLogger;
 use WikimediaEvents\Services\WikimediaEventsRequestDetailsLookup;
 use WikimediaEvents\WikimediaEventsCountryCodeLookup;
 
@@ -61,10 +60,6 @@ return [
 	'WikimediaEventsRequestDetailsLookup' => static function (): WikimediaEventsRequestDetailsLookup {
 		return new WikimediaEventsRequestDetailsLookup();
 	},
-	'WikimediaEventsEmailConfirmationBannerExperimentLogger' =>
-		static function (): EmailConfirmationBannerExperimentLogger {
-			return new EmailConfirmationBannerExperimentLogger();
-		},
 	'WikimediaEventsMetricsFactory' => static function ( MediaWikiServices $services ): WikimediaEventsMetricsFactory {
 		return new WikimediaEventsMetricsFactory(
 			$services->getGroupPermissionsLookup(),

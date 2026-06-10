@@ -313,20 +313,8 @@ Details at https://phabricator.wikimedia.org/T424069.
 * Files: ext.wikimediaEvents/mobileAccountMenu.js
 * Contact: Growth
 
-## Email confirmation banner instrumentation
-
-* Since: March 2026
-* Modules: ext.wikimediaEvents.emailConfirmationBanner
-* Contact: Product Safety and Integrity
-
 ## Suggestion mode
 
 * Since: April 2026
 * Files: ext.wikimediaEvents/suggestionMode.js
 * Contact: Editing
-
-## Email confirmation banner ab test
-
-* Since: April 2026
-* Files: ext.wikimediaEvents/emailConfirmationBanner/emailConfirmationBanner.js
-* Contact: Product Safety and Integrity
