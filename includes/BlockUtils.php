@@ -68,10 +68,12 @@ class BlockUtils {
 			],
 		];
 		$securityLogContext = $request->getSecurityLogContext( $user );
-		if ( $securityLogContext['x-is-browser'] !== '' ) {
+		// The x-* keys are only populated by the WMF GetSecurityLogContext hook handler, so they
+		// may be absent in other environments (e.g. local development).
+		if ( ( $securityLogContext['x-is-browser'] ?? '' ) !== '' ) {
 			$event['x_is_browser'] = (int)$securityLogContext['x-is-browser'];
 		}
-		if ( $securityLogContext['x-trusted-request'] !== '' ) {
+		if ( ( $securityLogContext['x-trusted-request'] ?? '' ) !== '' ) {
 			$event['x_trusted_request'] = $securityLogContext['x-trusted-request'];
 		}
 		$xProvenance = $securityLogContext['x-provenance'] ?? [];
@@ -86,10 +88,10 @@ class BlockUtils {
 				$event['x_provenance_cloud'] = $xProvenance['cloud'];
 			}
 		}
-		if ( $securityLogContext['x-ja3n'] !== '' ) {
+		if ( ( $securityLogContext['x-ja3n'] ?? '' ) !== '' ) {
 			$event['x_ja3n'] = $securityLogContext['x-ja3n'];
 		}
-		if ( $securityLogContext['x-ja4h'] !== '' ) {
+		if ( ( $securityLogContext['x-ja4h'] ?? '' ) !== '' ) {
 			$event['x_ja4h'] = $securityLogContext['x-ja4h'];
 		}
 		if ( isset( $securityLogContext['ip_reputation_tunnels'] ) ) {
