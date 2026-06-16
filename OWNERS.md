@@ -318,3 +318,10 @@ Details at https://phabricator.wikimedia.org/T424069.
 * Since: April 2026
 * Files: ext.wikimediaEvents/suggestionMode.js
 * Contact: Editing
+
+## Email confirmation banner instrumentation
+
+* Since: June 2026
+* Modules: ext.wikimediaEvents.emailConfirmationBanner
+* Files: ext.wikimediaEvents/emailConfirmationBanner/emailConfirmationBanner.js, includes/Services/EmailConfirmationBannerInstrumentLogger.php
+* Contact: Product Safety and Integrity
