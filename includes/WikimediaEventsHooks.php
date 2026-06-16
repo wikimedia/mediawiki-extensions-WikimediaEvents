@@ -17,6 +17,7 @@ use MediaWiki\Extension\ConfirmEdit\Services\CaptchaFactory;
 use MediaWiki\Extension\NetworkSession\NetworkSessionProvider;
 use MediaWiki\Extension\OAuth\SessionProvider;
 use MediaWiki\Hook\BeforeInitializeHook;
+use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Output\Hook\BeforePageDisplayHook;
 use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
@@ -44,11 +45,14 @@ use MediaWiki\Storage\EditResult;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
 use MediaWiki\Title\NamespaceInfo;
 use MediaWiki\Title\Title;
+use MediaWiki\User\Hook\ConfirmEmailCompleteHook;
+use MediaWiki\User\Hook\InvalidateEmailCompleteHook;
 use MediaWiki\User\User;
 use MediaWiki\User\UserIdentity;
 use MediaWiki\WikiMap\WikiMap;
 use MobileContext;
 use WikimediaEvents\Hooks\HookRunner;
+use WikimediaEvents\Services\EmailConfirmationBannerInstrumentLogger;
 use WikimediaEvents\Services\WikimediaEventsRequestDetailsLookup;
 
 /**
@@ -69,7 +73,9 @@ class WikimediaEventsHooks implements
 	SpecialSearchResultsHook,
 	RecentChange_saveHook,
 	ResourceLoaderRegisterModulesHook,
-	MakeGlobalVariablesScriptHook
+	MakeGlobalVariablesScriptHook,
+	ConfirmEmailCompleteHook,
+	InvalidateEmailCompleteHook
 {
 
 	public function __construct(
@@ -77,6 +83,7 @@ class WikimediaEventsHooks implements
 		private readonly NamespaceInfo $namespaceInfo,
 		private readonly PermissionManager $permissionManager,
 		private readonly WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup,
+		private readonly EmailConfirmationBannerInstrumentLogger $emailConfirmationBannerInstrumentLogger,
 		private readonly ?CaptchaFactory $captchaFactory,
 	) {
 	}
@@ -88,6 +95,7 @@ class WikimediaEventsHooks implements
 	public function onBeforePageDisplay( $out, $skin ): void {
 		$out->addModules( 'ext.wikimediaEvents' );
 		$this->maybeAddWatchlistTracking( $out );
+		$this->maybeAddEmailConfirmationBannerTracking( $out );
 		$extensionRegistry = ExtensionRegistry::getInstance();
 		if ( $extensionRegistry->isLoaded( 'WikibaseRepository' ) ) {
 			// If we are in Wikibase Repo, load Wikibase module
@@ -611,6 +619,43 @@ class WikimediaEventsHooks implements
 		if ( $out->getTitle() && $out->getTitle()->isSpecial( "Watchlist" ) ) {
 			$out->addModules( 'ext.wikimediaEvents.WatchlistBaseline' );
 		}
+	}
+
+	/** @inheritDoc */
+	public function onConfirmEmailComplete( $user ): void {
+		$this->emailConfirmationBannerInstrumentLogger->log( 'email_confirmed' );
+	}
+
+	/** @inheritDoc */
+	public function onInvalidateEmailComplete( $user ): void {
+		$this->emailConfirmationBannerInstrumentLogger->log( 'email_invalidated' );
+	}
+
+	/**
+	 * Load the email confirmation banner instrument when the banner is shown.
+	 *
+	 * Mirrors the banner visibility conditions in core's
+	 * \MediaWiki\Mail\ConfirmEmail\EmailConfirmationBannerHandler::shouldShowBanner() so the module
+	 * (and its impression/click events) only loads on pages where the banner actually renders.
+	 *
+	 * @param OutputPage $out
+	 */
+	private function maybeAddEmailConfirmationBannerTracking( OutputPage $out ): void {
+		if ( !$this->config->get( MainConfigNames::EmailConfirmationBanner ) ) {
+			return;
+		}
+		if ( !$this->config->get( MainConfigNames::EmailAuthentication ) ) {
+			return;
+		}
+		$user = $out->getUser();
+		if ( !$user->isNamed() || $user->getEmail() === '' || $user->isEmailConfirmed() ) {
+			return;
+		}
+		$title = $out->getTitle();
+		if ( $title && $title->isSpecial( 'Confirmemail' ) ) {
+			return;
+		}
+		$out->addModules( 'ext.wikimediaEvents.emailConfirmationBanner' );
 	}
 
 }
