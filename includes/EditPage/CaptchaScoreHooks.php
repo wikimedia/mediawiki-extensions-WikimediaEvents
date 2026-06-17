@@ -16,7 +16,6 @@ use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Session\Session;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
-use MediaWiki\Title\Title;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserIdentity;
 use Wikimedia\Message\MessageSpecifier;
@@ -47,9 +46,8 @@ class CaptchaScoreHooks extends AbstractCaptchaScoreHook implements
 		}
 
 		$hCaptcha = $this->getHCaptchaInstance( CaptchaTriggers::EDIT );
-		$title = $wikiPage->getTitle();
 
-		if ( !$hCaptcha || !$this->shouldHandleAction( CaptchaTriggers::EDIT, $user, $hCaptcha, $title ) ) {
+		if ( !$hCaptcha || !$this->shouldLog( $user, $hCaptcha ) ) {
 			return;
 		}
 
@@ -78,9 +76,8 @@ class CaptchaScoreHooks extends AbstractCaptchaScoreHook implements
 
 		$hCaptcha = $this->getHCaptchaInstance( CaptchaTriggers::EDIT );
 		$user = $editpage_Obj->getContext()->getUser();
-		$title = $editpage_Obj->getTitle();
 
-		if ( !$hCaptcha || !$this->shouldHandleAction( CaptchaTriggers::EDIT, $user, $hCaptcha, $title ) ) {
+		if ( !$hCaptcha || !$this->shouldLog( $user, $hCaptcha ) ) {
 			return;
 		}
 
@@ -121,7 +118,7 @@ class CaptchaScoreHooks extends AbstractCaptchaScoreHook implements
 
 		$hCaptcha = $this->getHCaptchaInstance( CaptchaTriggers::CREATE_ACCOUNT );
 
-		if ( !$hCaptcha || !$this->shouldHandleAction( CaptchaTriggers::CREATE_ACCOUNT, $user, $hCaptcha ) ) {
+		if ( !$hCaptcha || !$this->shouldLog( $user, $hCaptcha ) ) {
 			return;
 		}
 
@@ -141,26 +138,23 @@ class CaptchaScoreHooks extends AbstractCaptchaScoreHook implements
 	}
 
 	/**
-	 * Determines if action that triggered a hook should be handled by this
-	 * class; that is, whether the action should result in an event being
-	 * logged.
+	 * Whether an event should be logged for an action performed by the given user.
 	 *
-	 * @param string $action One of {@link CaptchaTriggers}
 	 * @param UserIdentity $userIdentity User performing the action
-	 * @param HCaptcha $hCaptcha hCaptcha instance associated with the action.
-	 * @param Title|null $title Page the action is performed for, if relevant
-	 * @return bool True if the action should be handled, false otherwise.
+	 * @param HCaptcha $hCaptcha hCaptcha instance associated with the action
+	 * @return bool True if an event should be logged, false otherwise.
 	 */
-	private function shouldHandleAction(
-		string $action,
-		UserIdentity $userIdentity,
-		HCaptcha $hCaptcha,
-		?Title $title = null
-	): bool {
+	private function shouldLog( UserIdentity $userIdentity, HCaptcha $hCaptcha ): bool {
 		$user = $this->userFactory->newFromUserIdentity( $userIdentity );
-		$triggersCaptcha = $hCaptcha->triggersCaptcha( $action, $title );
 
-		return $triggersCaptcha && !$hCaptcha->canSkipCaptcha( $user );
+		// Bots never see a captcha, so never log for them.
+		if ( $user->isBot() ) {
+			return false;
+		}
+
+		// Log for non-exempt users. Users who encounter the showcaptcha
+		// consequence from AbuseFilter are also included here
+		return !$hCaptcha->canSkipCaptcha( $user ) || $hCaptcha->shouldForceShowCaptcha();
 	}
 
 	/**
