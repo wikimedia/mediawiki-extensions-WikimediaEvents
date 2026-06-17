@@ -21,6 +21,7 @@ use MediaWiki\User\User;
 use MediaWiki\User\UserIdentityValue;
 use MediaWiki\WikiMap\WikiMap;
 use MediaWikiIntegrationTestCase;
+use Wikimedia\TestingAccessWrapper;
 use WikimediaEvents\EditPage\CaptchaScoreHooks;
 
 /**
@@ -28,6 +29,15 @@ use WikimediaEvents\EditPage\CaptchaScoreHooks;
  * @group Database
  */
 class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
+
+	protected function tearDown(): void {
+		// Reset the CaptchaFactory cache so per-test captcha state doesn't leak.
+		$services = $this->getServiceContainer();
+		if ( $services->hasService( 'ConfirmEditCaptchaFactory' ) ) {
+			$services->get( 'ConfirmEditCaptchaFactory' )->unsetGlobalInstancesForTests();
+		}
+		parent::tearDown();
+	}
 
 	public function testWhenConfirmEditNotLoaded() {
 		$mockExtensionRegistry = $this->createMock( ExtensionRegistry::class );
@@ -62,9 +72,6 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		return [
 			'SimpleCaptcha instead of HCaptcha' => [
 				[ 'edit' => [ 'trigger' => true, 'class' => 'SimpleCaptcha' ] ],
-			],
-			'Captcha trigger disabled' => [
-				[ 'edit' => [ 'trigger' => false, 'class' => 'HCaptcha' ] ],
 			],
 		];
 	}
@@ -118,10 +125,7 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$eventSubmitterMock->expects( $this->never() )->method( 'submit' );
 
 		// Ensure the user has the required rights to skip captchas
-		$this->overrideConfigValue(
-			'GroupPermissions',
-			[ 'sysop' => [ 'skipcaptcha' => true ] ]
-		);
+		$this->setGroupPermissions( 'sysop', 'skipcaptcha', true );
 		$user = $this->getTestUser( [ 'sysop' ] )->getUser();
 		/** @var CaptchaFactory $captchaFactory */
 		$captchaFactory = $this->getServiceContainer()->get( 'ConfirmEditCaptchaFactory' );
@@ -258,6 +262,71 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		$revisionRecordMock->method( 'getId' )->willReturn( $revisionId );
 		$editResultMock = $this->createMock( EditResult::class );
 		$editResultMock->method( 'isNullEdit' )->willReturn( $isNullEdit );
+		$captchaScoreHooks->onPageSaveComplete(
+			$wikiPageMock,
+			$user,
+			'',
+			'',
+			$revisionRecordMock,
+			$editResultMock
+		);
+	}
+
+	/** A solved captcha (triggersCaptcha() false, T426056) must still be logged. */
+	public function testPageSaveCompleteSubmitsEventWhenCaptchaAlreadySolved() {
+		$this->markTestSkippedIfExtensionNotLoaded( 'ConfirmEdit' );
+
+		$this->overrideConfigValue(
+			'CaptchaTriggers',
+			[ 'edit' => [ 'trigger' => true, 'class' => 'HCaptcha' ] ]
+		);
+		$services = $this->getServiceContainer();
+		/** @var CaptchaFactory $captchaFactory */
+		$captchaFactory = $services->get( 'ConfirmEditCaptchaFactory' );
+		/** @var HCaptcha $hCaptcha */
+		$hCaptcha = $captchaFactory->getGlobalInstance( CaptchaTriggers::EDIT );
+
+		$user = $this->createMock( User::class );
+		$user->method( 'getName' )->willReturn( 'Solver' );
+		$user->method( 'isRegistered' )->willReturn( false );
+		$hCaptcha->storeSessionScore( 'hCaptcha-score', 0.42, 'Solver' );
+
+		// Simulate a solved captcha (T426056).
+		TestingAccessWrapper::newFromObject( $hCaptcha )->setCaptchaSolved( true );
+		$this->assertFalse(
+			$hCaptcha->triggersCaptcha( CaptchaTriggers::EDIT ),
+			'triggersCaptcha() should return false once the captcha is solved'
+		);
+
+		RequestContext::getMain()->setRequest( new FauxRequest( [], true ) );
+		$userEntitySerializer = $services->get( 'EventBus.UserEntitySerializer' );
+		$expectedEvent = $this->buildEventPayload( [
+			'action' => CaptchaTriggers::EDIT,
+			'identifier' => 5,
+			'identifier_type' => 'revision',
+			'performer' => $userEntitySerializer->toArray( $user ),
+			'risk_score' => 0.42,
+		] );
+
+		$eventSubmitterMock = $this->createMock( EventSubmitter::class );
+		$eventSubmitterMock->expects( $this->once() )->method( 'submit' )
+			->with( 'mediawiki.hcaptcha.risk_score', $expectedEvent );
+
+		$captchaScoreHooks = new CaptchaScoreHooks(
+			$eventSubmitterMock,
+			$services->getUserFactory(),
+			$services->getExtensionRegistry(),
+			$services->get( 'EventBus.UserEntitySerializer' ),
+			$captchaFactory
+		);
+		$wikiPageMock = $this->createMock( WikiPage::class );
+		$titleMock = $this->createMock( Title::class );
+		$wikiPageMock->method( 'getTitle' )->willReturn( $titleMock );
+		$revisionRecordMock = $this->createMock( RevisionRecord::class );
+		$revisionRecordMock->method( 'getId' )->willReturn( 5 );
+		$editResultMock = $this->createMock( EditResult::class );
+		$editResultMock->method( 'isNullEdit' )->willReturn( false );
+
 		$captchaScoreHooks->onPageSaveComplete(
 			$wikiPageMock,
 			$user,
@@ -410,26 +479,6 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 				'abuseFilterIdSessionData' => null,
 				'isBrowser' => null,
 			] ],
-			'hCaptcha trigger disabled' => [ [
-				'status' => Status::newFatal( new ApiMessage(
-					'abusefilter-disallowed',
-					'abusefilter-disallowed',
-					[ 'abusefilter' => [ 'id' => 123 ] ]
-				) ),
-				'expectedRevisionId' => 0,
-				'expectedLogType' => '',
-				'expectedAFApiMessageDetails' => [],
-				'captchaTriggers' => [
-					'edit' => array_merge(
-						$hCaptchaTrigger,
-						[ 'trigger' => false ]
-					),
-				],
-				'shouldSubmit' => false,
-				'abuseFilterIdSessionData' => null,
-				'isBrowser' => null,
-			] ],
-
 			// Scenarios passing the Abuse Filter ID in the status object
 			//
 			'hCaptcha failure, valid Abuse Filter ID in the status object (integer)' => [ [
@@ -1003,6 +1052,255 @@ class CaptchaScoreHooksTest extends MediaWikiIntegrationTestCase {
 		);
 
 		$captchaScoreHooks->onLocalUserCreated( $this->getTestUser()->getUser(), false );
+	}
+
+	public function testPageSaveCompleteSubmitsEventWhenTriggerDisabled() {
+		$this->markTestSkippedIfExtensionNotLoaded( 'ConfirmEdit' );
+
+		$this->overrideConfigValue(
+			'CaptchaTriggers',
+			[ 'edit' => [ 'trigger' => false, 'class' => 'HCaptcha' ] ]
+		);
+		$services = $this->getServiceContainer();
+		/** @var CaptchaFactory $captchaFactory */
+		$captchaFactory = $services->get( 'ConfirmEditCaptchaFactory' );
+		/** @var HCaptcha $hCaptcha */
+		$hCaptcha = $captchaFactory->getGlobalInstance( CaptchaTriggers::EDIT );
+
+		$user = $this->createMock( User::class );
+		$user->method( 'getName' )->willReturn( 'Editor' );
+		$user->method( 'isRegistered' )->willReturn( false );
+		$hCaptcha->storeSessionScore( 'hCaptcha-score', 0.3, 'Editor' );
+
+		RequestContext::getMain()->setRequest( new FauxRequest( [], true ) );
+		$userEntitySerializer = $services->get( 'EventBus.UserEntitySerializer' );
+		$expectedEvent = $this->buildEventPayload( [
+			'action' => CaptchaTriggers::EDIT,
+			'identifier' => 7,
+			'identifier_type' => 'revision',
+			'performer' => $userEntitySerializer->toArray( $user ),
+			'risk_score' => 0.3,
+		] );
+
+		$eventSubmitterMock = $this->createMock( EventSubmitter::class );
+		$eventSubmitterMock->expects( $this->once() )->method( 'submit' )
+			->with( 'mediawiki.hcaptcha.risk_score', $expectedEvent );
+
+		$captchaScoreHooks = new CaptchaScoreHooks(
+			$eventSubmitterMock,
+			$services->getUserFactory(),
+			$services->getExtensionRegistry(),
+			$services->get( 'EventBus.UserEntitySerializer' ),
+			$captchaFactory
+		);
+		$wikiPageMock = $this->createMock( WikiPage::class );
+		$wikiPageMock->method( 'getTitle' )->willReturn( $this->createMock( Title::class ) );
+		$revisionRecordMock = $this->createMock( RevisionRecord::class );
+		$revisionRecordMock->method( 'getId' )->willReturn( 7 );
+		$editResultMock = $this->createMock( EditResult::class );
+		$editResultMock->method( 'isNullEdit' )->willReturn( false );
+
+		$captchaScoreHooks->onPageSaveComplete(
+			$wikiPageMock, $user, '', '', $revisionRecordMock, $editResultMock
+		);
+	}
+
+	public function testOnEditPageAttemptSaveAfterDoesNotSubmitForExemptUser(): void {
+		$this->markTestSkippedIfExtensionNotLoaded( 'ConfirmEdit' );
+
+		$this->overrideConfigValue(
+			'CaptchaTriggers',
+			[ 'edit' => [ 'trigger' => true, 'class' => 'HCaptcha' ] ]
+		);
+		$this->setGroupPermissions( 'sysop', 'skipcaptcha', true );
+		$services = $this->getServiceContainer();
+		$user = $this->getTestUser( [ 'sysop' ] )->getUser();
+
+		$eventSubmitterMock = $this->createMock( EventSubmitter::class );
+		$eventSubmitterMock->expects( $this->never() )->method( 'submit' );
+
+		$captchaScoreHooks = new CaptchaScoreHooks(
+			$eventSubmitterMock,
+			$services->getUserFactory(),
+			$services->getExtensionRegistry(),
+			$services->get( 'EventBus.UserEntitySerializer' ),
+			$services->get( 'ConfirmEditCaptchaFactory' )
+		);
+
+		$contextMock = $this->createMock( RequestContext::class );
+		$contextMock->method( 'getUser' )->willReturn( $user );
+		$editPageMock = $this->createMock( EditPage::class );
+		$editPageMock->method( 'getContext' )->willReturn( $contextMock );
+		$editPageMock->method( 'getTitle' )->willReturn( $this->createMock( Title::class ) );
+
+		$captchaScoreHooks->onEditPage__attemptSave_after(
+			$editPageMock,
+			Status::newFatal( 'captcha' ),
+			[]
+		);
+	}
+
+	public function testOnEditPageAttemptSaveAfterSubmitsForExemptUserWithForcedCaptcha(): void {
+		$this->markTestSkippedIfExtensionNotLoaded( 'ConfirmEdit' );
+
+		$this->overrideConfigValue(
+			'CaptchaTriggers',
+			[ 'edit' => [ 'trigger' => true, 'class' => 'HCaptcha' ] ]
+		);
+		$this->setGroupPermissions( 'sysop', 'skipcaptcha', true );
+		$services = $this->getServiceContainer();
+		/** @var CaptchaFactory $captchaFactory */
+		$captchaFactory = $services->get( 'ConfirmEditCaptchaFactory' );
+		/** @var HCaptcha $hCaptcha */
+		$hCaptcha = $captchaFactory->getGlobalInstance( CaptchaTriggers::EDIT );
+		$hCaptcha->setForceShowCaptcha( true );
+
+		$user = $this->getTestUser( [ 'sysop' ] )->getUser();
+		$hCaptcha->storeSessionScore( 'hCaptcha-score', 0.37, $user->getName() );
+
+		RequestContext::getMain()->setRequest( new FauxRequest( [], true ) );
+
+		$eventSubmitterMock = $this->createMock( EventSubmitter::class );
+		$eventSubmitterMock->expects( $this->once() )->method( 'submit' );
+
+		$captchaScoreHooks = new CaptchaScoreHooks(
+			$eventSubmitterMock,
+			$services->getUserFactory(),
+			$services->getExtensionRegistry(),
+			$services->get( 'EventBus.UserEntitySerializer' ),
+			$captchaFactory
+		);
+
+		$contextMock = $this->createMock( RequestContext::class );
+		$contextMock->method( 'getUser' )->willReturn( $user );
+		$editPageMock = $this->createMock( EditPage::class );
+		$editPageMock->method( 'getContext' )->willReturn( $contextMock );
+		$editPageMock->method( 'getTitle' )->willReturn( $this->createMock( Title::class ) );
+		$revisionMock = $this->createMock( RevisionRecord::class );
+		$revisionMock->method( 'getId' )->willReturn( 101 );
+		$editPageMock->method( 'getExpectedParentRevision' )->willReturn( $revisionMock );
+
+		$captchaScoreHooks->onEditPage__attemptSave_after(
+			$editPageMock,
+			Status::newFatal( 'captcha' ),
+			[]
+		);
+	}
+
+	public function testOnLocalUserCreatedDoesNotSubmitForExemptUser(): void {
+		$this->markTestSkippedIfExtensionNotLoaded( 'ConfirmEdit' );
+
+		$this->overrideConfigValue(
+			'CaptchaTriggers',
+			[ 'createaccount' => [ 'trigger' => true, 'class' => 'HCaptcha' ] ]
+		);
+		$this->setGroupPermissions( 'sysop', 'skipcaptcha', true );
+		$services = $this->getServiceContainer();
+		$user = $this->getTestUser( [ 'sysop' ] )->getUser();
+
+		$eventSubmitterMock = $this->createMock( EventSubmitter::class );
+		$eventSubmitterMock->expects( $this->never() )->method( 'submit' );
+
+		$captchaScoreHooks = new CaptchaScoreHooks(
+			$eventSubmitterMock,
+			$services->getUserFactory(),
+			$services->getExtensionRegistry(),
+			$services->get( 'EventBus.UserEntitySerializer' ),
+			$services->get( 'ConfirmEditCaptchaFactory' )
+		);
+
+		$captchaScoreHooks->onLocalUserCreated( $user, false );
+	}
+
+	public function testPageSaveCompleteSubmitsEventForExemptUserWithForcedCaptcha() {
+		$this->markTestSkippedIfExtensionNotLoaded( 'ConfirmEdit' );
+
+		$this->overrideConfigValue(
+			'CaptchaTriggers',
+			[ 'edit' => [ 'trigger' => true, 'class' => 'HCaptcha' ] ]
+		);
+		$this->setGroupPermissions( 'sysop', 'skipcaptcha', true );
+		$services = $this->getServiceContainer();
+		/** @var CaptchaFactory $captchaFactory */
+		$captchaFactory = $services->get( 'ConfirmEditCaptchaFactory' );
+		/** @var HCaptcha $hCaptcha */
+		$hCaptcha = $captchaFactory->getGlobalInstance( CaptchaTriggers::EDIT );
+		$hCaptcha->setForceShowCaptcha( true );
+
+		$user = $this->getTestUser( [ 'sysop' ] )->getUser();
+		$hCaptcha->storeSessionScore( 'hCaptcha-score', 0.4, $user->getName() );
+
+		RequestContext::getMain()->setRequest( new FauxRequest( [], true ) );
+		$userEntitySerializer = $services->get( 'EventBus.UserEntitySerializer' );
+		$expectedEvent = $this->buildEventPayload( [
+			'action' => CaptchaTriggers::EDIT,
+			'identifier' => 9,
+			'identifier_type' => 'revision',
+			'performer' => $userEntitySerializer->toArray( $user ),
+			'risk_score' => 0.4,
+		] );
+
+		$eventSubmitterMock = $this->createMock( EventSubmitter::class );
+		$eventSubmitterMock->expects( $this->once() )->method( 'submit' )
+			->with( 'mediawiki.hcaptcha.risk_score', $expectedEvent );
+
+		$captchaScoreHooks = new CaptchaScoreHooks(
+			$eventSubmitterMock,
+			$services->getUserFactory(),
+			$services->getExtensionRegistry(),
+			$services->get( 'EventBus.UserEntitySerializer' ),
+			$captchaFactory
+		);
+		$wikiPageMock = $this->createMock( WikiPage::class );
+		$wikiPageMock->method( 'getTitle' )->willReturn( $this->createMock( Title::class ) );
+		$revisionRecordMock = $this->createMock( RevisionRecord::class );
+		$revisionRecordMock->method( 'getId' )->willReturn( 9 );
+		$editResultMock = $this->createMock( EditResult::class );
+		$editResultMock->method( 'isNullEdit' )->willReturn( false );
+
+		$captchaScoreHooks->onPageSaveComplete(
+			$wikiPageMock, $user, '', '', $revisionRecordMock, $editResultMock
+		);
+	}
+
+	public function testPageSaveCompleteDoesNotSubmitForBot(): void {
+		$this->markTestSkippedIfExtensionNotLoaded( 'ConfirmEdit' );
+
+		$this->overrideConfigValue(
+			'CaptchaTriggers',
+			[ 'edit' => [ 'trigger' => true, 'class' => 'HCaptcha' ] ]
+		);
+		$this->setGroupPermissions( 'bot', 'bot', true );
+		$services = $this->getServiceContainer();
+		/** @var CaptchaFactory $captchaFactory */
+		$captchaFactory = $services->get( 'ConfirmEditCaptchaFactory' );
+		/** @var HCaptcha $hCaptcha */
+		$hCaptcha = $captchaFactory->getGlobalInstance( CaptchaTriggers::EDIT );
+		// A bot is never shown a captcha, even when one is forced.
+		$hCaptcha->setForceShowCaptcha( true );
+
+		$user = $this->getTestUser( [ 'bot' ] )->getUser();
+
+		$eventSubmitterMock = $this->createMock( EventSubmitter::class );
+		$eventSubmitterMock->expects( $this->never() )->method( 'submit' );
+
+		$captchaScoreHooks = new CaptchaScoreHooks(
+			$eventSubmitterMock,
+			$services->getUserFactory(),
+			$services->getExtensionRegistry(),
+			$services->get( 'EventBus.UserEntitySerializer' ),
+			$captchaFactory
+		);
+		$wikiPageMock = $this->createMock( WikiPage::class );
+		$wikiPageMock->method( 'getTitle' )->willReturn( $this->createMock( Title::class ) );
+		$revisionRecordMock = $this->createMock( RevisionRecord::class );
+		$revisionRecordMock->method( 'getId' )->willReturn( 9 );
+		$editResultMock = $this->createMock( EditResult::class );
+		$editResultMock->method( 'isNullEdit' )->willReturn( false );
+
+		$captchaScoreHooks->onPageSaveComplete(
+			$wikiPageMock, $user, '', '', $revisionRecordMock, $editResultMock
+		);
 	}
 
 	private static function buildEventPayload( array $values ): array {
