@@ -307,12 +307,6 @@ Details at https://phabricator.wikimedia.org/T424069.
 * Files: ext.wikimediaEvents/externalLinks.js
 * Contact: Product Safety and Integrity
 
-## Mobile Account Menu
-
-* Since: March 2026
-* Files: ext.wikimediaEvents/mobileAccountMenu.js
-* Contact: Growth
-
 ## Suggestion mode
 
 * Since: April 2026

@@ -291,7 +291,6 @@
 				"hCaptcha.js",
 				"editSaves.js",
 				"externalLinks.js",
-				"mobileAccountMenu.js",
 				{
 					"name": "config.json",
 					"config": [

@@ -33,7 +33,6 @@ require( './editSaves.js' );
 require( './accountCreation.js' )();
 require( './testKitchen/activeReaderBaseline.js' );
 require( './testKitchen/attribution.js' );
-require( './mobileAccountMenu.js' )();
 require( './testKitchen/pageVisitBotDetection.js' );
 require( './specialCreateAccount/init.js' );
 require( './testKitchen/loggedInReaderRetention.js' );
