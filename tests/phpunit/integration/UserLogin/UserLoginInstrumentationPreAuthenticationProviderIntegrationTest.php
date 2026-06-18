@@ -49,7 +49,7 @@ class UserLoginInstrumentationPreAuthenticationProviderIntegrationTest extends M
 	}
 
 	public function testShouldEmitNoJsSubtypeWhenFieldIsPresent(): void {
-		$this->setMainTitle( Title::newFromText( 'Special:UserLogin' ) );
+		$this->setMainTitle( Title::makeTitle( NS_SPECIAL, 'UserLogin' ) );
 
 		$instrument = $this->createMock( InstrumentInterface::class );
 		$instrument->expects( $this->once() )
@@ -73,7 +73,7 @@ class UserLoginInstrumentationPreAuthenticationProviderIntegrationTest extends M
 	}
 
 	public function testShouldEmitJsSubtypeWhenFieldIsAbsent(): void {
-		$this->setMainTitle( Title::newFromText( 'Special:UserLogin' ) );
+		$this->setMainTitle( Title::makeTitle( NS_SPECIAL, 'UserLogin' ) );
 
 		$instrument = $this->createMock( InstrumentInterface::class );
 		$instrument->expects( $this->once() )
@@ -150,7 +150,7 @@ class UserLoginInstrumentationPreAuthenticationProviderIntegrationTest extends M
 	}
 
 	public function testShouldNotEmitWhenInstrumentationConfigIsDisabled(): void {
-		$this->setMainTitle( Title::newFromText( 'Special:UserLogin' ) );
+		$this->setMainTitle( Title::makeTitle( NS_SPECIAL, 'UserLogin' ) );
 
 		$manager = $this->createMock( InstrumentManagerInterface::class );
 		$manager->expects( $this->never() )->method( 'getInstrument' );
