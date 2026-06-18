@@ -156,7 +156,6 @@
 		],
 		"AuthenticationAttemptThrottled": "TemporaryAccountsInstrumentation",
 		"BeforeInitialize": "main",
-		"ConfirmEditHCaptchaRiskScoreRetrievedForBlocks": "CaptchaScoreBlocksHook",
 		"EditPage::attemptSave:after": "CaptchaScoreHooks",
 		"BeforePageDisplay": [
 			"main",

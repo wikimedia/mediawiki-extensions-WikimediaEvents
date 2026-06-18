@@ -8,7 +8,6 @@ use MediaWiki\Block\AbstractBlock;
 use MediaWiki\Block\Block;
 use MediaWiki\Block\DatabaseBlockStore;
 use MediaWiki\Context\RequestContext;
-use MediaWiki\Extension\ConfirmEdit\Hooks\ConfirmEditHCaptchaRiskScoreRetrievedForBlocksHook;
 use MediaWiki\Extension\EventBus\Serializers\MediaWiki\UserEntitySerializer;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Extension\GlobalBlocking\GlobalBlock;
@@ -27,8 +26,7 @@ use Psr\Log\LoggerInterface;
  * The class is only autoloaded when the hook fires, which only happens when
  * ConfirmEdit is present.
  */
-class CaptchaScoreBlocksHook extends AbstractCaptchaScoreHook
-	implements ConfirmEditHCaptchaRiskScoreRetrievedForBlocksHook {
+class CaptchaScoreBlocksHook extends AbstractCaptchaScoreHook {
 
 	private readonly LoggerInterface $logger;
 
