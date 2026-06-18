@@ -114,11 +114,7 @@
 			"class": "WikimediaEvents\\EditPage\\CaptchaScoreBlocksHook",
 			"services": [
 				"EventLogging.EventSubmitter",
-				"EventBus.UserEntitySerializer",
-				"DatabaseBlockStore"
-			],
-			"optional_services": [
-				"GlobalBlocking.GlobalBlockLookup"
+				"EventBus.UserEntitySerializer"
 			]
 		},
 		"TemporaryAccountsInstrumentation": {
@@ -156,6 +152,7 @@
 		],
 		"AuthenticationAttemptThrottled": "TemporaryAccountsInstrumentation",
 		"BeforeInitialize": "main",
+		"ConfirmEditHCaptchaRiskScoreRetrievedForBlocks": "CaptchaScoreBlocksHook",
 		"EditPage::attemptSave:after": "CaptchaScoreHooks",
 		"BeforePageDisplay": [
 			"main",

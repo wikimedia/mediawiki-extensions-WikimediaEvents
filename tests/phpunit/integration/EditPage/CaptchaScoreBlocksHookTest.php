@@ -4,17 +4,14 @@ namespace WikimediaEvents\Tests\Integration\EditPage;
 
 use MediaWiki\Block\Block;
 use MediaWiki\Block\DatabaseBlock;
-use MediaWiki\Block\DatabaseBlockStore;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Extension\GlobalBlocking\GlobalBlock;
-use MediaWiki\Extension\GlobalBlocking\Services\GlobalBlockLookup;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\Title\Title;
 use MediaWiki\User\UserIdentityValue;
 use MediaWiki\WikiMap\WikiMap;
 use MediaWikiIntegrationTestCase;
-use Psr\Log\LoggerInterface;
 use WikimediaEvents\EditPage\CaptchaScoreBlocksHook;
 
 /**
@@ -51,13 +48,6 @@ class CaptchaScoreBlocksHookTest extends MediaWikiIntegrationTestCase {
 			->method( 'getId' )
 			->willReturn( $blockId );
 
-		$mockBlockStore = $this->createMock( DatabaseBlockStore::class );
-		$mockBlockStore
-			->expects( $this->once() )
-			->method( 'newFromID' )
-			->with( $blockId )
-			->willReturn( $mockBlock );
-
 		$userEntitySerializer = $services->get( 'EventBus.UserEntitySerializer' );
 		$eventSubmitter = $this->createMock( EventSubmitter::class );
 		$eventSubmitter
@@ -78,17 +68,11 @@ class CaptchaScoreBlocksHookTest extends MediaWikiIntegrationTestCase {
 				]
 			);
 
-		$hook = new CaptchaScoreBlocksHook(
-			$eventSubmitter,
-			$userEntitySerializer,
-			$mockBlockStore,
-			null,
-		);
+		$hook = new CaptchaScoreBlocksHook( $eventSubmitter, $userEntitySerializer );
 
 		$hook->onConfirmEditHCaptchaRiskScoreRetrievedForBlocks(
 			$riskScore,
-			[ $blockId ],
-			[],
+			[ $mockBlock ],
 			$user,
 			'',
 			$request
@@ -124,11 +108,6 @@ class CaptchaScoreBlocksHookTest extends MediaWikiIntegrationTestCase {
 		$mockBlock->method( 'getType' )->willReturn( Block::TYPE_IP );
 		$mockBlock->method( 'getId' )->willReturn( $blockId );
 
-		$mockBlockStore = $this->createMock( DatabaseBlockStore::class );
-		$mockBlockStore->method( 'newFromID' )
-			->with( $blockId )
-			->willReturn( $mockBlock );
-
 		$userEntitySerializer = $services->get( 'EventBus.UserEntitySerializer' );
 		$eventSubmitter = $this->createMock( EventSubmitter::class );
 		$eventSubmitter->expects( $this->once() )
@@ -140,60 +119,14 @@ class CaptchaScoreBlocksHookTest extends MediaWikiIntegrationTestCase {
 				)
 			);
 
-		$hook = new CaptchaScoreBlocksHook(
-			$eventSubmitter,
-			$userEntitySerializer,
-			$mockBlockStore,
-			null,
-		);
+		$hook = new CaptchaScoreBlocksHook( $eventSubmitter, $userEntitySerializer );
 
 		$hook->onConfirmEditHCaptchaRiskScoreRetrievedForBlocks(
 			$riskScore,
-			[ $blockId ],
-			[],
+			[ $mockBlock ],
 			$user,
 			'abc123',
 			$request
-		);
-	}
-
-	public function testRiskScoreRetrievedForBlocksSkipsBlockNotFound(): void {
-		$services = $this->getServiceContainer();
-
-		$mockBlockStore = $this->createMock( DatabaseBlockStore::class );
-		$mockBlockStore
-			->method( 'newFromID' )
-			->willReturn( null );
-
-		$eventSubmitter = $this->createMock( EventSubmitter::class );
-		$eventSubmitter
-			->expects( $this->never() )
-			->method( 'submit' );
-
-		$mockLogger = $this->createMock( LoggerInterface::class );
-		$mockLogger
-			->expects( $this->once() )
-			->method( 'warning' )
-			->with(
-				'Local block {blockId} not found when collecting hCaptcha risk scores',
-				[ 'blockId' => 99 ]
-			);
-		$this->setLogger( 'WikimediaEvents', $mockLogger );
-
-		$hook = new CaptchaScoreBlocksHook(
-			$eventSubmitter,
-			$services->get( 'EventBus.UserEntitySerializer' ),
-			$mockBlockStore,
-			null,
-		);
-
-		$hook->onConfirmEditHCaptchaRiskScoreRetrievedForBlocks(
-			0.5,
-			[ 99 ],
-			[],
-			UserIdentityValue::newAnonymous( '1.2.3.4' ),
-			'',
-			new FauxRequest( [], true )
 		);
 	}
 
@@ -205,27 +138,16 @@ class CaptchaScoreBlocksHookTest extends MediaWikiIntegrationTestCase {
 			->method( 'getType' )
 			->willReturn( Block::TYPE_USER );
 
-		$mockBlockStore = $this->createMock( DatabaseBlockStore::class );
-		$mockBlockStore
-			->method( 'newFromID' )
-			->willReturn( $mockBlock );
-
 		$eventSubmitter = $this->createMock( EventSubmitter::class );
 		$eventSubmitter
 			->expects( $this->never() )
 			->method( 'submit' );
 
-		$hook = new CaptchaScoreBlocksHook(
-			$eventSubmitter,
-			$services->get( 'EventBus.UserEntitySerializer' ),
-			$mockBlockStore,
-			null,
-		);
+		$hook = new CaptchaScoreBlocksHook( $eventSubmitter, $services->get( 'EventBus.UserEntitySerializer' ) );
 
 		$hook->onConfirmEditHCaptchaRiskScoreRetrievedForBlocks(
 			0.5,
-			[ 1 ],
-			[],
+			[ $mockBlock ],
 			UserIdentityValue::newAnonymous( '1.2.3.4' ),
 			'',
 			new FauxRequest( [], true )
@@ -271,16 +193,6 @@ class CaptchaScoreBlocksHookTest extends MediaWikiIntegrationTestCase {
 			->method( 'getId' )
 			->willReturn( 5 );
 
-		$mockBlockStore = $this->createMock( DatabaseBlockStore::class );
-		$mockBlockStore->method( 'newFromID' )
-			->willReturnCallback( static fn ( int $id ) => match ( $id ) {
-				1 => $ipBlock,
-				2 => $rangeBlock,
-				3 => $autoBlock,
-				5 => $userBlock,
-				default => null,
-			} );
-
 		$actions = [];
 		$eventSubmitter = $this->createMock( EventSubmitter::class );
 		$eventSubmitter
@@ -292,17 +204,11 @@ class CaptchaScoreBlocksHookTest extends MediaWikiIntegrationTestCase {
 				}
 			);
 
-		$hook = new CaptchaScoreBlocksHook(
-			$eventSubmitter,
-			$services->get( 'EventBus.UserEntitySerializer' ),
-			$mockBlockStore,
-			null,
-		);
+		$hook = new CaptchaScoreBlocksHook( $eventSubmitter, $services->get( 'EventBus.UserEntitySerializer' ) );
 
 		$hook->onConfirmEditHCaptchaRiskScoreRetrievedForBlocks(
 			$riskScore,
-			[ 1, 2, 3, 4, 5 ],
-			[],
+			[ $ipBlock, $rangeBlock, $autoBlock, $userBlock ],
 			$user,
 			'',
 			$request
@@ -336,11 +242,6 @@ class CaptchaScoreBlocksHookTest extends MediaWikiIntegrationTestCase {
 			->method( 'getId' )
 			->willReturn( $blockId );
 
-		$mockGlobalBlockLookup = $this->createMock( GlobalBlockLookup::class );
-		$mockGlobalBlockLookup->method( 'newFromId' )
-			->with( $blockId )
-			->willReturn( $mockGlobalBlock );
-
 		$userEntitySerializer = $services->get( 'EventBus.UserEntitySerializer' );
 		$eventSubmitter = $this->createMock( EventSubmitter::class );
 		$eventSubmitter->expects( $this->once() )
@@ -360,17 +261,11 @@ class CaptchaScoreBlocksHookTest extends MediaWikiIntegrationTestCase {
 				]
 			);
 
-		$hook = new CaptchaScoreBlocksHook(
-			$eventSubmitter,
-			$userEntitySerializer,
-			$this->createMock( DatabaseBlockStore::class ),
-			$mockGlobalBlockLookup,
-		);
+		$hook = new CaptchaScoreBlocksHook( $eventSubmitter, $userEntitySerializer );
 
 		$hook->onConfirmEditHCaptchaRiskScoreRetrievedForBlocks(
 			$riskScore,
-			[],
-			[ $blockId ],
+			[ $mockGlobalBlock ],
 			$user,
 			'',
 			$request
@@ -387,91 +282,16 @@ class CaptchaScoreBlocksHookTest extends MediaWikiIntegrationTestCase {
 			->method( 'getType' )
 			->willReturn( Block::TYPE_USER );
 
-		$mockGlobalBlockLookup = $this->createMock( GlobalBlockLookup::class );
-		$mockGlobalBlockLookup
-			->method( 'newFromId' )
-			->willReturn( $mockGlobalBlock );
-
 		$eventSubmitter = $this->createMock( EventSubmitter::class );
 		$eventSubmitter
 			->expects( $this->never() )
 			->method( 'submit' );
 
-		$hook = new CaptchaScoreBlocksHook(
-			$eventSubmitter,
-			$services->get( 'EventBus.UserEntitySerializer' ),
-			$this->createMock( DatabaseBlockStore::class ),
-			$mockGlobalBlockLookup,
-		);
+		$hook = new CaptchaScoreBlocksHook( $eventSubmitter, $services->get( 'EventBus.UserEntitySerializer' ) );
 
 		$hook->onConfirmEditHCaptchaRiskScoreRetrievedForBlocks(
 			0.5,
-			[],
-			[ 1 ],
-			UserIdentityValue::newAnonymous( '1.2.3.4' ),
-			'',
-			new FauxRequest( [], true )
-		);
-	}
-
-	public function testRiskScoreRetrievedForBlocksSkipsGlobalBlockNotFound(): void {
-		$services = $this->getServiceContainer();
-
-		$mockGlobalBlockLookup = $this->createMock( GlobalBlockLookup::class );
-		$mockGlobalBlockLookup
-			->method( 'newFromId' )
-			->willReturn( null );
-
-		$eventSubmitter = $this->createMock( EventSubmitter::class );
-		$eventSubmitter
-			->expects( $this->never() )
-			->method( 'submit' );
-
-		$mockLogger = $this->createMock( LoggerInterface::class );
-		$mockLogger
-			->expects( $this->once() )
-			->method( 'warning' )
-			->with(
-				'Global block {blockId} not found when collecting hCaptcha risk scores',
-				[ 'blockId' => 99 ]
-			);
-		$this->setLogger( 'WikimediaEvents', $mockLogger );
-
-		$hook = new CaptchaScoreBlocksHook(
-			$eventSubmitter,
-			$services->get( 'EventBus.UserEntitySerializer' ),
-			$this->createMock( DatabaseBlockStore::class ),
-			$mockGlobalBlockLookup,
-		);
-
-		$hook->onConfirmEditHCaptchaRiskScoreRetrievedForBlocks(
-			0.5,
-			[],
-			[ 99 ],
-			UserIdentityValue::newAnonymous( '1.2.3.4' ),
-			'',
-			new FauxRequest( [], true )
-		);
-	}
-
-	public function testRiskScoreRetrievedForBlocksSkipsGlobalBlocksWhenLookupNotAvailable(): void {
-		$services = $this->getServiceContainer();
-
-		$eventSubmitter = $this->createMock( EventSubmitter::class );
-		$eventSubmitter->expects( $this->never() )->method( 'submit' );
-
-		// globalBlockLookup is null (GlobalBlocking extension not installed)
-		$hook = new CaptchaScoreBlocksHook(
-			$eventSubmitter,
-			$services->get( 'EventBus.UserEntitySerializer' ),
-			$this->createMock( DatabaseBlockStore::class ),
-			null,
-		);
-
-		$hook->onConfirmEditHCaptchaRiskScoreRetrievedForBlocks(
-			0.5,
-			[],
-			[ 1, 2, 3 ],
+			[ $mockGlobalBlock ],
 			UserIdentityValue::newAnonymous( '1.2.3.4' ),
 			'',
 			new FauxRequest( [], true )
@@ -494,9 +314,6 @@ class CaptchaScoreBlocksHookTest extends MediaWikiIntegrationTestCase {
 		$mockBlock->method( 'getType' )->willReturn( $blockType );
 		$mockBlock->method( 'getId' )->willReturn( $blockId );
 
-		$mockBlockStore = $this->createMock( DatabaseBlockStore::class );
-		$mockBlockStore->method( 'newFromID' )->with( $blockId )->willReturn( $mockBlock );
-
 		$eventSubmitter = $this->createMock( EventSubmitter::class );
 		if ( $expectedAction === null ) {
 			$eventSubmitter->expects( $this->never() )->method( 'submit' );
@@ -511,17 +328,11 @@ class CaptchaScoreBlocksHookTest extends MediaWikiIntegrationTestCase {
 				);
 		}
 
-		$hook = new CaptchaScoreBlocksHook(
-			$eventSubmitter,
-			$services->get( 'EventBus.UserEntitySerializer' ),
-			$mockBlockStore,
-			null,
-		);
+		$hook = new CaptchaScoreBlocksHook( $eventSubmitter, $services->get( 'EventBus.UserEntitySerializer' ) );
 
 		$hook->onConfirmEditHCaptchaRiskScoreRetrievedForBlocks(
 			0.7,
-			[ $blockId ],
-			[],
+			[ $mockBlock ],
 			$user,
 			'',
 			$request

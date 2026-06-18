@@ -4,18 +4,14 @@ declare( strict_types = 1 );
 
 namespace WikimediaEvents\EditPage;
 
-use MediaWiki\Block\AbstractBlock;
 use MediaWiki\Block\Block;
-use MediaWiki\Block\DatabaseBlockStore;
 use MediaWiki\Context\RequestContext;
+use MediaWiki\Extension\ConfirmEdit\Hooks\ConfirmEditHCaptchaRiskScoreRetrievedForBlocksHook;
 use MediaWiki\Extension\EventBus\Serializers\MediaWiki\UserEntitySerializer;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Extension\GlobalBlocking\GlobalBlock;
-use MediaWiki\Extension\GlobalBlocking\Services\GlobalBlockLookup;
-use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\Request\WebRequest;
 use MediaWiki\User\UserIdentity;
-use Psr\Log\LoggerInterface;
 
 /**
  * Logging of hCaptcha risk scores for block-related events.
@@ -26,40 +22,25 @@ use Psr\Log\LoggerInterface;
  * The class is only autoloaded when the hook fires, which only happens when
  * ConfirmEdit is present.
  */
-class CaptchaScoreBlocksHook extends AbstractCaptchaScoreHook {
-
-	private readonly LoggerInterface $logger;
+class CaptchaScoreBlocksHook extends AbstractCaptchaScoreHook
+	implements ConfirmEditHCaptchaRiskScoreRetrievedForBlocksHook {
 
 	public function __construct(
 		private readonly EventSubmitter $eventSubmitter,
 		UserEntitySerializer $userEntitySerializer,
-		private readonly DatabaseBlockStore $blockStore,
-		private readonly ?GlobalBlockLookup $globalBlockLookup,
 	) {
 		parent::__construct( $userEntitySerializer );
-		$this->logger = LoggerFactory::getInstance( 'WikimediaEvents' );
 	}
 
 	/** @inheritDoc */
 	public function onConfirmEditHCaptchaRiskScoreRetrievedForBlocks(
 		float $riskScore,
-		array $localBlockIds,
-		array $globalBlockIds,
+		array $relevantBlocks,
 		UserIdentity $user,
 		string $pageViewId,
 		$request
 	): void {
-		foreach ( $localBlockIds as $blockId ) {
-			$block = $this->blockStore->newFromID( $blockId );
-			if ( !$block ) {
-				$this->logger->warning(
-					'Local block {blockId} not found when collecting hCaptcha risk scores',
-					[ 'blockId' => $blockId ]
-				);
-
-				continue;
-			}
-
+		foreach ( $relevantBlocks as $block ) {
 			$this->handleBlock(
 				$block,
 				$riskScore,
@@ -68,32 +49,10 @@ class CaptchaScoreBlocksHook extends AbstractCaptchaScoreHook {
 				$request
 			);
 		}
-
-		if ( $this->globalBlockLookup !== null ) {
-			foreach ( $globalBlockIds as $blockId ) {
-				$block = $this->globalBlockLookup->newFromId( $blockId );
-				if ( !$block ) {
-					$this->logger->warning(
-						'Global block {blockId} not found when collecting hCaptcha risk scores',
-						[ 'blockId' => $blockId ]
-					);
-
-					continue;
-				}
-
-				$this->handleBlock(
-					$block,
-					$riskScore,
-					$user,
-					$pageViewId,
-					$request
-				);
-			}
-		}
 	}
 
 	private function handleBlock(
-		AbstractBlock $block,
+		Block $block,
 		float $riskScore,
 		UserIdentity $user,
 		string $pageViewId,
@@ -116,7 +75,7 @@ class CaptchaScoreBlocksHook extends AbstractCaptchaScoreHook {
 		}
 	}
 
-	private function getActionTypeString( AbstractBlock $block ): ?string {
+	private function getActionTypeString( Block $block ): ?string {
 		// The same hook serves both the editing and account-creation block
 		// flows; the originating page selects the action suffix.
 		$title = RequestContext::getMain()->getTitle();
