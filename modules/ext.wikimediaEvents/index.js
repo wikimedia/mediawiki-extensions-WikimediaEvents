@@ -50,4 +50,5 @@ mw.wikimediaEvents = { SessionLengthInstrumentMixin };
 
 if ( !window.QUnit ) {
 	require( './searchSatisfaction/index.js' )();
+	require( './searchSatisfaction/searchQuality.js' );
 }

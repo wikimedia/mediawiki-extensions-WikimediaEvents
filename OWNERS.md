@@ -37,6 +37,16 @@ Documentation at <https://wikitech.wikimedia.org/wiki/Performance.wikimedia.org/
 * Folders: ext.wikimediaEvents/searchSatisfaction
 * Contact: https://www.mediawiki.org/wiki/Wikimedia_Search_Platform
 
+## Search quality (Test Kitchen)
+
+* Since: June 2026
+* Files: ext.wikimediaEvents/searchSatisfaction/searchQuality.js
+* Contact: https://www.mediawiki.org/wiki/Wikimedia_Search_Platform
+
+Test Kitchen proof-of-concept for the zero-results rate and clicked result position. Re-uses
+the same core search signals as searchSatisfaction.js but emits to the `search-quality-2026-06`
+instrument. Unlike searchSatisfaction.js it loads on all skins (including mobile/Minerva).
+
 ## Reading depth
 
 * Since: November 2021

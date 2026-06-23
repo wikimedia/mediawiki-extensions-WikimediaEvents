@@ -275,6 +275,7 @@
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
 					"callbackParam": "searchSatisfaction/searchSli"
 				},
+				"searchSatisfaction/searchQuality.js",
 				{
 					"name": "clickTracking/webUIClick.js",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",
