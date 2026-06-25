@@ -42,7 +42,7 @@ function decorateCreateAccountLinks() {
 		} );
 	}
 
-	mw.loader.using( [ 'ext.testKitchen', 'ext.wikimediaEvents.testKitchen' ] ).then( async () => {
+	mw.loader.using( 'ext.wikimediaEvents.testKitchen' ).then( async () => {
 		const experimentValue = await getExperimentParamValue();
 		decorateLinksToAuthWikimediaOrg( experimentValue );
 

@@ -9,8 +9,7 @@ const DONE = 'mw-tk-ae-done';
 const ERASED = 'mw-tk-ae-erase';
 // expire in 36 days (TODO: change based on experiment length)
 const EXPIRE_REMEMBER = 3110400;
-const DEPENDENCIES = [ 'mediawiki.storage', 'ext.testKitchen' ];
-// const DEPENDENCIES = [ 'mediawiki.storage', 'ext.testKitchen', 'mediawiki.visibleTimeout' ];
+const DEPENDENCIES = [ 'mediawiki.storage' ];
 
 function remember( key ) {
 	mw.storage.set( key, '1', EXPIRE_REMEMBER );

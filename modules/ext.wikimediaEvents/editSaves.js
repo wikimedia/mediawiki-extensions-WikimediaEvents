@@ -17,7 +17,6 @@ function submitEditInteraction( configuredExperiments, newRevId ) {
 }
 
 mw.loader.using( [
-	'ext.testKitchen',
 	'ext.wikimediaEvents.testKitchen'
 ] ).then( () => {
 	if ( !mw.config.get( 'wgMFMode' ) ) {
