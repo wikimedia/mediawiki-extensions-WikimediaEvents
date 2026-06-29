@@ -77,24 +77,6 @@ function getMediaViewerSettings() {
 }
 
 /**
- * Check if there are pinned elements.
- * Generates a function to check if the current skin supports pinned elements.
- * Returns the 'analyticsPinnedState' result for the 'vector-2022' skin, otherwise false.
- *
- * @return {boolean} Pinned elements.
- */
-function getPinnedSettings() {
-	if ( mw.config.get( 'skin' ) === 'vector-2022' ) {
-		// Consumer of skins.vector.js module:
-		const skinsVector = require( 'skins.vector.js' );
-		const hasPinnedElementsFn = skinsVector.pinnableElement.analyticsPinnedState;
-		return hasPinnedElementsFn();
-	} else {
-		return false;
-	}
-}
-
-/**
  * @return {string} Get dark mode clientpref value
  */
 function getDarkModeSettings() {
@@ -129,7 +111,6 @@ module.exports = () => ( {
 	font: getFont(),
 	is_full_width: getInterfaceWidth(),
 	is_page_preview_on: getPagePreviewSettings(),
-	is_pinned: getPinnedSettings(),
 	is_media_viewer_enabled: getMediaViewerSettings(),
 	is_dark_mode_prepared_by_os: getDarkModeBrowserMedia(),
 	dark_mode_setting: getDarkModeSettings(),
