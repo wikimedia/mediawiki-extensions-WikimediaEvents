@@ -133,14 +133,6 @@ Details at <https://phabricator.wikimedia.org/T235189>.
 
 Details at <https://phabricator.wikimedia.org/T248987>.
 
-## Session Length Mixin
-
-* Since: November 2024
-* Folders: ext.wikimediaEvents/sessionLength
-* Contact: Web team
-
-Details at <https://phabricator.wikimedia.org/T378072>.
-
 ## Universal Language Selector
 
 * Since: March 2021
