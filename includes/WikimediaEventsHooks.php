@@ -286,25 +286,6 @@ class WikimediaEventsHooks implements
 	}
 
 	/**
-	 * Callback for ext.wikimediaEvents virtual data.json file.
-	 *
-	 * @param RL\Context $context
-	 * @param Config $config
-	 * @return array
-	 */
-	public static function getModuleData( RL\Context $context, Config $config ) {
-		$data = [];
-		$skin = $context->getSkin();
-		if ( in_array( $skin, [ 'vector', 'vector-2022' ] ) ) {
-			$data['webUIScrollTrackingSamplingRate'] = $config->get( 'WMEWebUIScrollTrackingSamplingRate' );
-			$data['webUIScrollTrackingSamplingRateAnons'] = $config->get( 'WMEWebUIScrollTrackingSamplingRateAnons' );
-			$data['webUIScrollTrackingTimeToWaitBeforeScrollUp'] =
-				$config->get( 'WMEWebUIScrollTrackingTimeToWaitBeforeScrollUp' );
-		}
-		return $data;
-	}
-
-	/**
 	 * Callback for dynamic source files, for conditional loading based on the current skin.
 	 *
 	 * @param RL\Context $context
@@ -323,7 +304,6 @@ class WikimediaEventsHooks implements
 					case 'searchSatisfaction/searchSatisfaction':
 					case 'searchSatisfaction/searchSli':
 					case 'universalLanguageSelector':
-					case 'webUIScroll':
 						return new RL\FilePath( $param . '.js' );
 					default:
 						return '';

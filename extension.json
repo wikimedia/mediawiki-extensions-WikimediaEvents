@@ -254,7 +254,6 @@
 				"editingSessionService.js",
 				"webCommon.js",
 				"webAccessibilitySettings.js",
-				"webUIScroll.js",
 				"readingDepth.js",
 				"readingListAccountCreationCTA.js",
 				"donorDelightBadgeExperiment.js",
@@ -310,10 +309,6 @@
 						"WikimediaEventsExternalLinkInstrumentation",
 						"WikimediaEventsExternalLinkTrackedDomains"
 					]
-				},
-				{
-					"name": "data.json",
-					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleData"
 				},
 				"testKitchen/pageVisitBotDetection.js",
 				"testKitchen/activeReaderBaseline.js",
@@ -435,15 +430,6 @@
 	},
 	"config": {
 		"WMEReadingDepthSamplingRate": {
-			"value": 0
-		},
-		"WMEWebUIScrollTrackingSamplingRate": {
-			"value": 0
-		},
-		"WMEWebUIScrollTrackingSamplingRateAnons": {
-			"value": 0
-		},
-		"WMEWebUIScrollTrackingTimeToWaitBeforeScrollUp": {
 			"value": 0
 		},
 		"WMEStatsdBaseUri": {

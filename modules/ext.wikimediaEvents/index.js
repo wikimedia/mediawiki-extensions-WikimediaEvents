@@ -10,7 +10,6 @@ require( './clickTracking/webUIClick.js' );
 const skin = mw.config.get( 'skin' );
 if ( skin === 'vector-2022' || skin === 'vector' ) {
 	require( './universalLanguageSelector.js' );
-	require( './webUIScroll.js' );
 }
 
 // For now this is vector 2022 and minerva only.
