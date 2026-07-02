@@ -50,6 +50,10 @@ const TICK_LIMIT = Math.ceil( RESET_MS / TICK_MS );
 const KEY_LAST_TIME = 'wmE-sessionTickLastTickTime';
 const KEY_COUNT = 'wmE-sessionTickTickCount';
 
+const FEATURE_NOT_AVAILABLE_STREAM = 'product_metrics.web_base_with_ip';
+const FEATURE_NOT_AVAILABLE_SCHEMA_ID = '/analytics/product_metrics/web/base_with_ip/2.0.0';
+const FEATURE_NOT_AVAILABLE_ACTION = 'feature_not_available';
+
 /**
  * Detect support for EventListenerOptions and set 'supportsPassive' flag.
  * See: https://dom.spec.whatwg.org/#dictdef-addeventlisteneroptions
@@ -67,7 +71,7 @@ function detectPassiveEventListenerSupport() {
 		window.addEventListener( 'testPassiveOption', noop, options );
 		window.removeEventListener( 'testPassiveOption', noop, options );
 	} catch ( e ) {
-		// Silently fail.
+		logFeatureNotAvailableEvent( 'passiveEventListener' );
 	}
 	return supportsPassive;
 }
@@ -75,8 +79,8 @@ function detectPassiveEventListenerSupport() {
 /**
  * Publish 'sessionReset' event to mw.track().
  *
- * This is allows EventLogging to periodically reset the
- * value returneed by `mw.eventLog.id.getSessionId`, which
+ * This allows EventLogging to periodically reset the
+ * value returned by `mw.eventLog.id.getSessionId`, which
  * other events make use of.
  */
 function sessionReset() {
@@ -98,6 +102,55 @@ function sessionTick( incr ) {
 			tick: count + incr
 		} );
 	}
+}
+
+/**
+ * Checks whether localStorage is available
+ * https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API#testing_for_availability
+ *
+ * Also, if not available, an event will be submitted with the specific reason
+ *
+ * @return whether or not localStorage is supported
+ */
+function detectLocalStorageSupport() {
+	try {
+		const testItem = '__localStorage_test__';
+		localStorage.setItem( testItem, testItem );
+		localStorage.removeItem( testItem );
+		return true;
+	} catch ( error ) {
+		let context = 'localStorage';
+		if ( error instanceof DOMException && error.name === 'QuotaExceededError' ) {
+			context = 'localStorage full';
+		}
+		logFeatureNotAvailableEvent( context );
+		return false;
+	}
+}
+
+/**
+ * Logs an event related to some feature that is not available
+ * @param context the value for the `action_context` field
+ */
+function logFeatureNotAvailableEvent( context ) {
+	const isMobileFrontendActive = mw.config.get( 'wgMFMode' ) !== null;
+	const event = {
+		$schema: FEATURE_NOT_AVAILABLE_SCHEMA_ID,
+		action: FEATURE_NOT_AVAILABLE_ACTION,
+		action_context: context,
+		agent: {
+			client_platform: 'mediawiki_js',
+			client_platform_family: isMobileFrontendActive ? 'mobile_browser' : 'desktop_browser',
+			ua_string: navigator.userAgent
+		},
+		performer: {
+			session_id: mw.user.sessionId(),
+			is_logged_in: !mw.user.isAnon(),
+			is_temp: mw.user.isTemp()
+		}
+	};
+
+	mw.eventLog.submit( FEATURE_NOT_AVAILABLE_STREAM, event );
 }
 
 /**
@@ -197,7 +250,13 @@ function regulator() {
 // - the feature is enabled,
 // - the browser supports the Page Visibility API,
 // - the browser supports passive event listeners (T274264, T248987).
-if ( enabled && document.hidden !== undefined && detectPassiveEventListenerSupport() ) {
+// - the browser supports localStorage (T413296)
+if (
+	enabled &&
+	document.hidden !== undefined &&
+	detectPassiveEventListenerSupport() &&
+	detectLocalStorageSupport()
+) {
 	// Optimization: Avoid slowing down initial paint and page load time.
 	// Delay storage I/O cost during module execution.
 	mw.requestIdleCallback( regulator );
