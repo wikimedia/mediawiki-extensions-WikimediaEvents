@@ -1,10 +1,9 @@
-const CREATE_ACCOUNT_FORM_V2_EXPERIMENT_NAME = 'we-1-8-account-creation-form-v2';
+const ACCOUNT_CREATION_NO_BENEFITS_DESKTOP_EXPERIMENT = 'we-1-8-account-creation-no-desktop-benefits';
 
-function setupWe18V2ExperimentInstrumentation() {
+function setupWe18NoDesktopBenefitsExperimentInstrumentation() {
 
-	if ( !mw.config.get( 'wgMFMode' ) ) {
-		// For now, this is mobile-only.
-		// Though it should be expanded once there is a use-case for desktop as well.
+	if ( mw.config.get( 'wgMFMode' ) ) {
+		// This is desktop-only
 		return;
 	}
 
@@ -23,7 +22,7 @@ function setupWe18V2ExperimentInstrumentation() {
 	}
 
 	const { ClickThroughRateInstrument, UrlEnrolledExperiment } = require( 'ext.wikimediaEvents.testKitchen' );
-	const experiment = UrlEnrolledExperiment.getExperimentFromQuery( CREATE_ACCOUNT_FORM_V2_EXPERIMENT_NAME );
+	const experiment = UrlEnrolledExperiment.getExperimentFromQuery( ACCOUNT_CREATION_NO_BENEFITS_DESKTOP_EXPERIMENT );
 
 	if ( !document.querySelector( 'form#userlogin2' ) ) {
 		// This might happen if account creations is attempted from via the TOR browser or similar
@@ -71,4 +70,4 @@ function setupWe18V2ExperimentInstrumentation() {
 	} );
 }
 
-module.exports = setupWe18V2ExperimentInstrumentation;
+module.exports = setupWe18NoDesktopBenefitsExperimentInstrumentation;

@@ -1,5 +1,5 @@
 const setupInstrumentation = require( './instrumentation.js' );
-const setupWe18V2ExperimentInstrumentation = require( './experimentInstrumentation.js' );
+const setupWe18NoDesktopBenefitsExperimentInstrumentation = require( './experimentInstrumentation.js' );
 const attachPasswordRevealFunctionality = require( './experimentFunctionality.js' );
 const decorateCreateAccountLinks = require( './experimentDecorateCreateAccountLinks.js' );
 
@@ -12,7 +12,7 @@ if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'CreateAccount' ) {
 		'ext.wikimediaEvents.testKitchen'
 	).then( () => {
 		$( setupInstrumentation );
-		$( setupWe18V2ExperimentInstrumentation );
+		$( setupWe18NoDesktopBenefitsExperimentInstrumentation );
 	} );
 	if ( mw.config.get( 'GECreateAccountExperimentV2' ) ) {
 		$( attachPasswordRevealFunctionality );
