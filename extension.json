@@ -408,17 +408,6 @@
 			"dependencies": [
 				"ext.wikimediaEvents.testKitchen"
 			]
-		},
-		"ext.wikimediaEvents.personalDashboard": {
-			"localBasePath": "modules/ext.wikimediaEvents.personalDashboard",
-			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.personalDashboard",
-			"packageFiles": [
-				"index.js",
-				"onPersonalDashboardBaseline.js"
-			],
-			"dependencies": [
-				"ext.wikimediaEvents.testKitchen"
-			]
 		}
 	},
 	"ResourceFileModulePaths": {

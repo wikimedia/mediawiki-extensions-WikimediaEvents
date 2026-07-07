@@ -291,12 +291,6 @@ Details at https://phabricator.wikimedia.org/T424069.
 * Files: ext.wikimediaEvents/mobileSectionSwitch.js
 * Contact: Editing
 
-## Baseline health metrics on PersonalDashboard
-
-* Since: January 2026
-* Modules: ext.wikimediaEvents.personalDashboard
-* Contact: Moderator Tools
-
 ## Various experiments around account creation and constructive edits
 
 * Since: March 2026
