@@ -101,9 +101,10 @@ $( () => {
 			trackNotificationClicks( instrument );
 		}
 
-		mw.hook( 'readingLists.bookmark.edit' ).add( ( isSaved, entryId, listPageCount, source ) => {
+		mw.hook( 'readingLists.bookmark.change' ).add( ( isSaved, source ) => {
 			const action = isSaved ? ACTION_SAVE : ACTION_REMOVE;
 			recordInstrumentEvent( instrument, action, source );
 		} );
+
 	} );
 } );
