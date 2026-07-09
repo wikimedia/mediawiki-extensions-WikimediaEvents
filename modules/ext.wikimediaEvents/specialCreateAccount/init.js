@@ -1,6 +1,5 @@
 const setupInstrumentation = require( './instrumentation.js' );
 const setupWe18NoDesktopBenefitsExperimentInstrumentation = require( './experimentInstrumentation.js' );
-const attachPasswordRevealFunctionality = require( './experimentFunctionality.js' );
 const decorateCreateAccountLinks = require( './experimentDecorateCreateAccountLinks.js' );
 
 // On all pageviews add an URL param to all links to Special:CreateAccount and Special:UserLogin
@@ -14,7 +13,4 @@ if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'CreateAccount' ) {
 		$( setupInstrumentation );
 		$( setupWe18NoDesktopBenefitsExperimentInstrumentation );
 	} );
-	if ( mw.config.get( 'GECreateAccountExperimentV2' ) ) {
-		$( attachPasswordRevealFunctionality );
-	}
 }
