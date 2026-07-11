@@ -268,21 +268,12 @@ class WikimediaEventsHooks implements
 					->setLabel( 'page', $nsType )
 					->setLabel( 'user', $accType )
 					->setLabel( 'entry', $entry )
-					->copyToStatsdAt( [
-						"timing.editResponseTime",
-						"timing.editResponseTime.page.$nsType",
-						"timing.editResponseTime.user.$accType",
-						"timing.editResponseTime.entry.$entry",
-					] )->observe( $timeMs );
+					->observe( $timeMs );
 				$stats->getTiming( 'WikimediaEvents_editResponseTimePerKB_seconds' )
 					->setLabel( 'page', $nsType )
 					->setLabel( 'user', $accType )
 					->setLabel( 'entry', $entry )
-					->copyToStatsdAt( [
-						"timing.editResponseTimePerKB.page.$nsType",
-						"timing.editResponseTimePerKB.user.$accType",
-						"timing.editResponseTimePerKB.entry.$entry",
-					] )->observe( $msPerKb );
+					->observe( $msPerKb );
 
 				$stats->getCounter( 'WikimediaEvents_edits_total' )
 					->setLabel( 'wiki', WikiMap::getCurrentWikiId() )
@@ -502,7 +493,6 @@ class WikimediaEventsHooks implements
 					->withComponent( 'WikimediaEvents' )
 					->getTiming( 'viewResponseTime_seconds' )
 					->setLabel( 'platform', $platform )
-					->copyToStatsdAt( "timing.viewResponseTime.{$platform}" )
 					->observeSeconds( $measure['duration'] );
 			}
 		} );
