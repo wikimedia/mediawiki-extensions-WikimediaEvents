@@ -7,6 +7,7 @@
  *     bot=1 if navigator.webdriver is present
  *     bot=2 if navigator shows more than 70 CPU cores
  *     bot=0 by default
+ *     ;co_id=<hash> appended from the Server-Timing response header, when present
  *
  *   in action_source:
  *     the cyrb53 hash of path + search
@@ -41,11 +42,37 @@ if ( navigator.hardwareConcurrency > 70 ) {
 	botScore |= 2;
 }
 
+const coId = getCoId();
+
 const interactionData = {
-	action_context: 'bot=' + botScore,
+	action_context: 'bot=' + botScore + ( coId ? ';co_id=' + coId : '' ),
 	action_source: cyrb53( location.pathname + location.search, 0 )
 };
 instrument.send( 'page_load', interactionData );
+
+/**
+ * Reads the co_id value from the navigation response's Server-Timing header.
+ *
+ * The Varnish frontend emits co_id as a Server-Timing metric, e.g.
+ *   WMF-Uniq;desc="...", co_id;desc="4278730233"
+ * The browser parses each metric into a PerformanceServerTiming entry, so we
+ * match the one named 'co_id' and return its (unquoted) description.
+ *
+ * @return {string} the co_id, or '' if unavailable
+ */
+function getCoId() {
+	if ( !window.performance || !performance.getEntriesByType ) {
+		return '';
+	}
+	const navigationEntry = performance.getEntriesByType( 'navigation' )[ 0 ];
+	if ( !navigationEntry || !navigationEntry.serverTiming ) {
+		return '';
+	}
+	const coIdTiming = navigationEntry.serverTiming.find(
+		( entry ) => entry.name === 'co_id'
+	);
+	return coIdTiming ? coIdTiming.description : '';
+}
 
 /**
  * Hash function with no security but low collisions
