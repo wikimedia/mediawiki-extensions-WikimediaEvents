@@ -1,0 +1,19 @@
+{
+	"@metadata": {
+		"authors": [
+			"AhmedG612"
+		]
+	},
+	"wikimediaevents-desc": "Waxay diiwaangelisaa dhacdooyinka gaarka ah ee Wikimedia iyadoo adeegsanaysa EventLogging",
+	"apihelp-wikimediaeventsblockededit-summary": "Diiwaangeli macluumaadka ku saabsan isku dayada wax ka beddelka ee la xannibay",
+	"apihelp-wikimediaeventsblockededit-param-page": "Bog lagu sameeyay isku day wax ka beddel ah",
+	"apihelp-wikimediaeventsblockededit-param-interface": "Is dhexgalka loo adeegsaday wax ka beddelka",
+	"apihelp-wikimediaeventsblockededit-param-platform": "Barmaamijka loo adeegsaday wax ka beddelka",
+	"tag-cross-wiki-upload": "Gelinta faylka ee wiki-yada kala duwan",
+	"tag-cross-wiki-upload-description": "Faylal laga soo geliyay gudaha tifaftiraha wikitext iyo tifaftiraha muuqaalka ee wiki-yada kale",
+	"wikimediaevents-special-wikimediadebug-notenabled": "Boggan gaarka ah lama hawlgelin.",
+	"wikimediaevents-special-wikimediadebug-submit-set": "Dhaqaaji kukiya khaladka ah ee $1",
+	"wikimediaevents-special-wikimediadebug-submit-renew": "Cusboonaysii kukiya $1",
+	"wikimediaevents-special-wikimediadebug-submit-clear": "Nadiifi kukiya",
+	"wikimediaevents-special-wikimediadebug-header-active": "Kukiga [https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] hadda waa '''la hawlgeliyay''' <code>$1</code>.\n\nWuxuu dhacayaa $2.\n\nGuji badhanka si aad uga tirtirto qalabkan. Fadlan ogow in tani ay kaliya ka tirtirayso kukiga domain-kan — haddii aad ka hawlgelisay domains kale, waa inaad si gaar ah uga nadiifi adigoo adeegsanaya bogga gaarka ah ee domain-yadaas (ama isticmaal qalabka nadiifinta kukiyada ee biraawsar \nkaaga)."
+}
