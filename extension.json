@@ -147,7 +147,6 @@
 		"AuthChangeFormFields": [
 			"AccountCreation",
 			"CreateAccountInstrumentationHandler",
-			"FY26WE18CreateAccountV2",
 			"UserLoginInstrumentationHandler"
 		],
 		"AuthenticationAttemptThrottled": "TemporaryAccountsInstrumentation",
