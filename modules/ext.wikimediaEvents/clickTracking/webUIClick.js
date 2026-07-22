@@ -87,21 +87,46 @@ function logEvent( action, name, destination ) {
 			token: mw.user.sessionId()
 		};
 
-		// Prepare data to log event via Metrics Platform (T351298)
-		const metricsPlatformData = webA11ySettings();
+		// Prepare data to log event (T351298)
+		const eventData = webA11ySettings();
 
-		metricsPlatformData.action_context = modes;
-		metricsPlatformData.viewport_size_bucket = data.viewportSizeBucket;
-		metricsPlatformData.action_source = name;
-		metricsPlatformData.is_temp = data.isTemp;
+		eventData.$schema = '/analytics/mediawiki/product_metrics/web_ui_actions/1.0.2';
+		eventData.action = action;
+		eventData.action_context = modes;
+		eventData.viewport_size_bucket = data.viewportSizeBucket;
+		eventData.action_source = name;
+		eventData.is_temp = data.isTemp;
 
-		// Log event via Metrics Platform (T351298)
-		mw.eventLog.submitInteraction(
-			'mediawiki.web_ui_actions',
-			'/analytics/mediawiki/product_metrics/web_ui_actions/1.0.2',
-			action,
-			metricsPlatformData
-		);
+		// Contextual attributes previously auto-populated by
+		// mw.eventLog.submitInteraction() (scheduled for
+		// deprecation - see T415370) from the stream's
+		// metrics_platform_client.provide_values config.
+		// Note that this temporary update will be replaced by
+		// an upcoming Test Kitchen migration (T432817).
+		const userGroups = mw.config.get( 'wgUserGroups' ) || [];
+		const isMobileFrontendActive = mw.config.get( 'wgMFMode' ) !== null;
+		eventData.agent = {
+			client_platform: 'mediawiki_js',
+			client_platform_family: isMobileFrontendActive ? 'mobile_browser' : 'desktop_browser'
+		};
+		eventData.page = {
+			namespace_id: data.pageNamespace
+		};
+		eventData.performer = {
+			is_logged_in: !data.isAnon,
+			session_id: data.token,
+			pageview_id: data.pageToken,
+			edit_count_bucket: data.editCountBucket,
+			groups: userGroups,
+			is_bot: userGroups.includes( 'bot' )
+		};
+		eventData.mediawiki = {
+			skin: data.skin,
+			database: mw.config.get( 'wgDBname' )
+		};
+
+		// Log event (T351298, T415370)
+		mw.eventLog.submit( 'mediawiki.web_ui_actions', eventData );
 	}
 }
 
