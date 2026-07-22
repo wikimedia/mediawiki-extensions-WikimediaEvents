@@ -32,13 +32,12 @@ class InstrumentConstructiveEdits extends Maintenance {
 	}
 
 	public function execute(): void {
+		$threshold = (int)$this->getOption( 'threshold', self::CONSTRUCTIVE_EDITS_SURVIVAL_HOURS );
+		$interval = (int)$this->getOption( 'interval', self::CONSTRUCTIVE_EDITS_SCRIPT_RUNS_INTERVAL_HOURS );
 		// Fetch every revision from all wikis.
-		$edits = $this->findAllEdits(
-			$this->getOption( 'threshold', self::CONSTRUCTIVE_EDITS_SURVIVAL_HOURS ),
-			$this->getOption( 'interval', self::CONSTRUCTIVE_EDITS_SCRIPT_RUNS_INTERVAL_HOURS )
-		);
+		$edits = $this->findAllEdits( $threshold, $interval );
 		// Send events for all constructive edits.
-		$this->logConstructiveEdits( $edits );
+		$this->logConstructiveEdits( $edits, $threshold );
 	}
 
 	/**
@@ -70,7 +69,7 @@ class InstrumentConstructiveEdits extends Maintenance {
 		return $result->getRows();
 	}
 
-	private function logConstructiveEdits( iterable $edits ): void {
+	private function logConstructiveEdits( iterable $edits, int $threshold ): void {
 		$services = $this->getServiceContainer();
 		$instrumentManager = $services->getService( 'TestKitchen.InstrumentManager' );
 		$instrument = $instrumentManager->getInstrument( self::CONSTRUCTIVE_EDITS_INSTRUMENT_NAME );
@@ -86,17 +85,31 @@ class InstrumentConstructiveEdits extends Maintenance {
 				$instrument->send(
 					'edit_survived',
 					[
+						// `action_context` records the survival threshold (in hours) that
+						// this edit met, e.g. "48H", for data lineage. See T431493.
+						'action_context' => $threshold . 'H',
+						// The contextual attributes below are supplied explicitly as
+						// interaction data rather than collected by TestKitchen from the
+						// request context: this maintenance script runs on the CLI over
+						// revisions from many wikis, so there is no single
+						// page/performer/wiki context to derive them from. EventFactory
+						// spreads interaction data at the top level of the event, so these
+						// nested fragments populate the schema's page/mediawiki/performer
+						// objects directly. For them to survive, the `constructive-edits`
+						// instrument config must NOT declare these as contextual
+						// attributes, otherwise EventFactory::addContextualAttributes()
+						// overwrites them with the (empty) CLI context.
 						'mediawiki' => [
 							'database' => $dbname
 						],
 						'page' => [
-							'id' => $edit->rc_cur_id,
-							'namespace_id' => $edit->rc_namespace,
-							'revision_id' => $edit->rc_this_oldid,
+							'id' => (int)$edit->rc_cur_id,
+							'namespace_id' => (int)$edit->rc_namespace,
+							'revision_id' => (int)$edit->rc_this_oldid,
 						],
 						'performer' => [
-							'id' => $edit->rc_user,
-							'is_bot' => $edit->rc_bot,
+							'id' => (int)$edit->rc_user,
+							'is_bot' => (bool)$edit->rc_bot,
 							'is_logged_in' => (bool)$edit->rc_user,
 							'is_temp' => $tempConfig->isTempName( $edit->rc_user_text )
 						]
