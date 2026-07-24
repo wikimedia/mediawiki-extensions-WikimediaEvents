@@ -50,9 +50,10 @@ const TICK_LIMIT = Math.ceil( RESET_MS / TICK_MS );
 const KEY_LAST_TIME = 'wmE-sessionTickLastTickTime';
 const KEY_COUNT = 'wmE-sessionTickTickCount';
 
-const FEATURE_NOT_AVAILABLE_STREAM = 'product_metrics.web_base_with_ip';
-const FEATURE_NOT_AVAILABLE_SCHEMA_ID = '/analytics/product_metrics/web/base_with_ip/2.0.0';
+const FEATURE_NOT_AVAILABLE_INSTRUMENT_NAME = 'session-tick-feature-availability';
 const FEATURE_NOT_AVAILABLE_ACTION = 'feature_not_available';
+
+const featureNotAvailableInstrument = mw.testKitchen.getInstrument( FEATURE_NOT_AVAILABLE_INSTRUMENT_NAME );
 
 /**
  * Detect support for EventListenerOptions and set 'supportsPassive' flag.
@@ -133,24 +134,9 @@ function detectLocalStorageSupport() {
  * @param context the value for the `action_context` field
  */
 function logFeatureNotAvailableEvent( context ) {
-	const isMobileFrontendActive = mw.config.get( 'wgMFMode' ) !== null;
-	const event = {
-		$schema: FEATURE_NOT_AVAILABLE_SCHEMA_ID,
-		action: FEATURE_NOT_AVAILABLE_ACTION,
-		action_context: context,
-		agent: {
-			client_platform: 'mediawiki_js',
-			client_platform_family: isMobileFrontendActive ? 'mobile_browser' : 'desktop_browser',
-			ua_string: navigator.userAgent
-		},
-		performer: {
-			session_id: mw.user.sessionId(),
-			is_logged_in: !mw.user.isAnon(),
-			is_temp: mw.user.isTemp()
-		}
-	};
-
-	mw.eventLog.submit( FEATURE_NOT_AVAILABLE_STREAM, event );
+	featureNotAvailableInstrument.send( FEATURE_NOT_AVAILABLE_ACTION, {
+		action_context: context
+	} );
 }
 
 /**
