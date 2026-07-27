@@ -11,8 +11,8 @@ under the terms of its license.
 
 ## Ownership
 
-The infrastructure that delivers the instruments is currently maintained by the [Data Products
-team](https://www.mediawiki.org/wiki/Data_Products).
+The infrastructure that delivers the instruments is currently maintained by the [Experiment Platform
+team](https://www.mediawiki.org/wiki/Data_Platform_Engineering/Experiment_Platform).
 
 The owners of individual instruments is documented in [OWNERS.md](./OWNERS.md).
 
@@ -21,7 +21,7 @@ instrument. This expectation is enforced by the [OwnersStructureTest PHPUnit
 test](./tests/phpunit/OwnersStructureTest.php), which will fail if the files that make up the
 instrument aren't listed alongside contact details for you and/or your team and a description of it.
 
-## Type Checking
+## Type checking
 
 As of [I63943fe97730953035a658f967a3d90cea9525a4](https://gerrit.wikimedia.org/r/q/I63943fe97730953035a658f967a3d90cea9525a4),
 you can opt in to using TypeScript to type check your instrument during CI. To do so, add the relative path
@@ -42,3 +42,8 @@ to your instrument file(s) to the `"include"` section in [tsconfig.json](./tscon
 WikimediaEvents is distributed under the GNU General Public License, Version 2, or, at your
 discretion, any later version. The GNU General Public License is available via the Web at
 <http://www.gnu.org/licenses/gpl-2.0.html>.
+
+## See also
+
+- [Event Platform](https://wikitech.wikimedia.org/wiki/Event_Platform)
+- [Test Kitchen](https://wikitech.wikimedia.org/wiki/Test_Kitchen)
