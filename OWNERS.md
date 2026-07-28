@@ -6,7 +6,7 @@ Foundation wikis. Including for all page types, namespaces, skins, and devices.
 Shipping code comes at a cost. It is important that instruments leave a trace to contact their owners
 so that, if optimisations are proposed, there is a way to contact them for code review, and also to
 routinely evaluate whether gathered data is still actively being used and providing value to free up
-budget for other teams to deploy instruments.
+budget for others to deploy instruments.
 
 Instrument owners can document the ownership of their instruments by ResourceLoader module, folder,
 or file(s). The sections below give examples of all three. Note well that files named `"index.js"`
@@ -51,7 +51,7 @@ instrument. Unlike searchSatisfaction.js it loads on all skins (including mobile
 
 * Since: November 2021
 * Files: readingDepth.js
-* Contact: https://www.mediawiki.org/wiki/Readers/Web/Team
+* Contact: Reader Experience
 
 Details at <https://phabricator.wikimedia.org/T294777>.
 
@@ -76,7 +76,7 @@ Details at <https://phabricator.wikimedia.org/T332024>.
 
 * Since: July 2019
 * Folders: ext.wikimediaEvents/clickTracking
-* Contact: Readers Web
+* Contact: Reader Experience
 
 Details at <https://phabricator.wikimedia.org/T220016>.
 
@@ -86,7 +86,7 @@ Details at <https://phabricator.wikimedia.org/T220016>.
 * Since: January 2025
 * Suggested Removal: March 2025
 * Folders: ext.wikimediaEvents/searchRecommendations
-* Contact: Web Team
+* Contact: Reader Experience
 
 A schema for evaluating the search recommendations
 experiment A/B test (T378094)
@@ -97,7 +97,7 @@ Details at <https://phabricator.wikimedia.org/T383611>.
 
 * Since: May 2023
 * Files: webCommon.js
-* Contact: Readers Web
+* Contact: Reader Experience
 
 Details at <https://phabricator.wikimedia.org/T335309>.
 
@@ -105,7 +105,7 @@ Details at <https://phabricator.wikimedia.org/T335309>.
 
 * Since: September 2023
 * Files: webAccessibilitySettings.js
-* Contact: Readers Web
+* Contact: Reader Experience
 
 Details at <https://phabricator.wikimedia.org/T346106>.
 
@@ -113,7 +113,7 @@ Details at <https://phabricator.wikimedia.org/T346106>.
 
 * Since: February 2020
 * Files: clientError.js
-* Contact: Data Products
+* Contact: Experiment Platform
 
 Details at <https://phabricator.wikimedia.org/T235189>.
 
@@ -121,7 +121,7 @@ Details at <https://phabricator.wikimedia.org/T235189>.
 
 * Since: June 2020
 * Files: sessionTick.js
-* Contact: Data Products
+* Contact: Experiment Platform
 
 Details at <https://phabricator.wikimedia.org/T248987>.
 
@@ -129,7 +129,7 @@ Details at <https://phabricator.wikimedia.org/T248987>.
 
 * Since: March 2021
 * Files: universalLanguageSelector.js
-* Contact: Language and Translation, Readers Web
+* Contact: Language and Product Localization, Reader Experience
 
 Migrated from the UniversalLanguageSwitcher extension. Details at
 <https://phabricator.wikimedia.org/T275894>.
@@ -157,16 +157,16 @@ More details at <https://phabricator.wikimedia.org/T311388>
 Previously maintained in VisualEditor and other extensions since 2014.
 Moved here in <https://phabricator.wikimedia.org/T332438>.
 
-## Data Platform Engineering Bot Detection Instruments
+## Data Platform Engineering's Bot Detection
 
 * Since: January 2026
-* Files: testKitchen/pageVisitBotDetection.js
+* Files: pageVisitBotDetection.js
 * Contact: Data Platform Engineering
 
 ## Logged-in Reader Retention
 
 * Since: March 2026
-* Files: testKitchen/loggedInReaderRetention.js
+* Files: readerRetentionAA/loggedInReaderRetention.js
 * Contact: Reader Experience
 
 An experiment to measure logged-in reader retention. This experiment may be run monthly and so
@@ -175,8 +175,8 @@ shouldn't be removed.
 ## Logged-out Reader Retention
 
 * Since: March 2026
-* Files: testKitchen/loggedOutReaderRetention.js
-* Contact: Reader Growth, Experiment Platform
+* Files: readerRetentionAA/loggedOutReaderRetention.js
+* Contact: Experiment Platform
 
 An experiment to measure logged-out reader retention. This experiment is expected to be run monthly
 and so shouldn't be removed.
@@ -184,7 +184,7 @@ and so shouldn't be removed.
 ## Attribution Research
 
 * Since: March 2026
-* Files: testKitchen/attribution.js
+* Files: attributionResearch.js
 * Contact: Data Engineering
 
 More details at <https://phabricator.wikimedia.org/T417050>
@@ -192,23 +192,16 @@ More details at <https://phabricator.wikimedia.org/T417050>
 ## Active Reader Baseline
 
 * Since: March 2026
-* Files: testKitchen/activeReaderBaseline.js
+* Files: activeReaderBaseline.js
 * Contact: Data Engineering
 
 More details at <https://phabricator.wikimedia.org/T420621>
 
-## Detect Hoisting Errors Test
+## Edit Saved A/A Tests
 
-* Since: May 2026
-* Files: testKitchen/detectHoistingErrors.js
+* Since: August 2026
+* Files: testKitchen/editSavedAA.js
 * Contact: Experiment Platform
-
-An eexperiment to detect "hoisting errors" – an error triggered by a mismatch
-between the `experiment.enrolled` and `.assigned` event fields and the internal
-experiment enrollment header sent by Varnish to EventGate, the event intake
-service.
-
-More details at https://phabricator.wikimedia.org/T427092
 
 # Code ownership for other code in WikimediaEvents
 
@@ -216,7 +209,7 @@ More details at https://phabricator.wikimedia.org/T427092
 
 * Since: October 2024
 * Files: TemporaryAccountsInstrumentation.php, PeriodicMetrics/*
-* Contact: Trust & Safety Product Team
+* Contact: Trust & Safety Product
 
 More details at <https://phabricator.wikimedia.org/T357763>
 
@@ -224,8 +217,7 @@ More details at <https://phabricator.wikimedia.org/T357763>
 
 * Since: July 2025
 * Folders: ext.wikimediaEvents/specialCreateAccount, ext.wikimediaEvents/accountCreation
-* Files: ext.wikimediaEvents/accountCreation.js
-* Contact: Growth Team
+* Contact: Growth
 
 More details at <https://phabricator.wikimedia.org/T394744>
 
@@ -245,49 +237,25 @@ A collection of standardized instruments, including:
 
 1. Click Through Rate (CTR)
 
-## Baseline clickthrough rate on watchlist
-
-* Since: September 2025
-* Modules: ext.wikimediaEvents.WatchlistBaseline
-* Contact: Community Tech
-
-Click Through (baseline) Rate for links on the Watchlist
-
 ## Baseline metrics on Reading List
 
 * Since: March 2026
 * Suggested Removal: Evaluate in June 2027
 * Files: ext.wikimediaEvents/readingListBaseline.js
-* Contact: Reader Experience team
+* Contact: Reader Experience
 More details at <https://phabricator.wikimedia.org/T414368>.
 
-## Reading List Account Creation CTA
+## Page visits for experiments
 
-* Since: April 2026
-* Suggested Removal: June 2026
-* Files: ext.wikimediaEvents/readingListAccountCreationCTA.js
-* Contact: Reader Experience team
-More details at <https://phabricator.wikimedia.org/T420238>.
+* Since: July 2026
+* Files: ext.wikimediaEvents/anyPageVisit.js
+* Contact: Experiment Platform
 
-## Donor delight badge experiment
-
-* Since: May 2026
-* Suggested Removal: July 2026
-* Files: ext.wikimediaEvents/donorDelightBadgeExperiment.js
-* Contact: Reader Experience team
-Details at https://phabricator.wikimedia.org/T424069.
-
-## Mobile section switching
-
-* Since: December 2025
-* Files: ext.wikimediaEvents/mobileSectionSwitch.js
-* Contact: Editing
-
-## Various experiments around account creation and constructive edits
+## Saved edits for experiments
 
 * Since: March 2026
-* Files: ext.wikimediaEvents/editSaves.js
-* Contact: Growth
+* Files: ext.wikimediaEvents/editSaved.js
+* Contact: Editing
 
 ## External links instrumentation
 

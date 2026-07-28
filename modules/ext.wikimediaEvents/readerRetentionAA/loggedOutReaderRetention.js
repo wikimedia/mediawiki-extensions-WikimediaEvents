@@ -8,6 +8,8 @@
  *
  * History
  * =======
+ * 2026-07-31:
+ * The instrument was updated to use the reusable pageVisit instrumentation.
  *
  * 2026-04-09:
  * The instrument was updated to meet platform requirements and guidelines.
@@ -37,12 +39,13 @@
 
 // e.g. logged-out-retention-round1, logged-out-retention-round2, etc.
 const EXPERIMENT_NAME_PREFIX = 'logged-out-retention-';
+const anyPageVisit = require( '../anyPageVisit.js' );
 
 mw.testKitchen.getExperimentsByPrefix( EXPERIMENT_NAME_PREFIX ).then(
 	( experiments ) => {
 		experiments.forEach( ( experiment ) => {
 			experiment.sendExposure();
-			experiment.send( 'page_visit' );
+			experiment.use( anyPageVisit );
 		} );
 	}
 );

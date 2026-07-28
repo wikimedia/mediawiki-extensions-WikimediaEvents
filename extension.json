@@ -255,8 +255,6 @@
 				"webCommon.js",
 				"webAccessibilitySettings.js",
 				"readingDepth.js",
-				"readingListAccountCreationCTA.js",
-				"donorDelightBadgeExperiment.js",
 				"readingListBaseline.js",
 				"phpEngine.js",
 				"blockedEdit.js",
@@ -285,10 +283,12 @@
 					"callbackParam": "universalLanguageSelector"
 				},
 				"editAttemptStep.js",
-				"mobileSectionSwitch.js",
 				"suggestionMode.js",
 				"hCaptcha.js",
-				"editSaves.js",
+				"editSaved.js",
+				"anyPageVisit.js",
+				"accountCreation/accountCreated.js",
+				"accountCreation/removeQueryParam.js",
 				"externalLinks.js",
 				{
 					"name": "config.json",
@@ -310,21 +310,17 @@
 						"WikimediaEventsExternalLinkTrackedDomains"
 					]
 				},
-				"testKitchen/pageVisitBotDetection.js",
-				"testKitchen/activeReaderBaseline.js",
-				"testKitchen/attribution.js",
-				"testKitchen/loggedInReaderRetention.js",
-				"testKitchen/loggedOutReaderRetention.js",
-				"testKitchen/detectHoistingErrors.js",
+				"pageVisitBotDetection.js",
+				"activeReaderBaseline.js",
+				"attributionResearch.js",
+				"readerRetentionAA/loggedInReaderRetention.js",
+				"readerRetentionAA/loggedOutReaderRetention.js",
 				"specialCreateAccount/init.js",
 				"specialCreateAccount/instrumentation.js",
 				"specialCreateAccount/useInstrument.js",
 				"specialCreateAccount/experimentDecorateCreateAccountLinks.js",
 				"specialCreateAccount/experimentInstrumentation.js",
-				"accountCreation.js",
-				"accountCreation/useAccountCreationInstrument.js",
-				"accountCreation/removeQueryParam.js",
-				"accountCreation/experiments.js"
+				"testKitchen/editSavedAA.js"
 			],
 			"dependencies": [
 				"ext.testKitchen",
@@ -391,17 +387,6 @@
 			"dependencies": [
 				"ext.testKitchen"
 			]
-		},
-		"ext.wikimediaEvents.WatchlistBaseline": {
-			"localBasePath": "modules/ext.wikimediaEvents.WatchlistBaseline",
-			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.WatchlistBaseline",
-			"packageFiles": [
-				"index.js",
-				"onWatchlistBaselineClick.js"
-			],
-			"dependencies": [
-				"ext.wikimediaEvents.testKitchen"
-			]
 		}
 	},
 	"ResourceFileModulePaths": {
@@ -419,9 +404,7 @@
 			"searchSatisfaction/searchSatisfaction.test.js",
 			"searchSatisfaction/searchSli.test.js",
 			"specialCreateAccount/instrumentation.test.js",
-			"externalLinks.test.js",
-			"readingListAccountCreationCTA.test.js",
-			"donorDelightBadgeExperiment.test.js"
+			"externalLinks.test.js"
 		],
 		"dependencies": [
 			"ext.wikimediaEvents"
