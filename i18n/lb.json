@@ -5,5 +5,6 @@
 		]
 	},
 	"apihelp-wikimediaeventshcaptchaeditattempt-param-title": "Säitentitel",
+	"apihelp-wikimediaeventshcaptchaeditattempt-param-revision_id": "Versiouns-ID vun der Säit, déi geännert gëtt",
 	"wikimediaevents-special-wikimediadebug-notenabled": "Dës Spezialsäit ass net aktivéiert."
 }
