@@ -10,6 +10,8 @@ use WikimediaEvents\CreateAccount\CreateAccountInstrumentationPreAuthenticationP
  * @covers \WikimediaEvents\CreateAccount\CreateAccountInstrumentationHandler::onAuthChangeFormFields
  * @covers \WikimediaEvents\CreateAccount\CreateAccountInstrumentationAuthenticationRequest
  * @covers \WikimediaEvents\CreateAccount\CreateAccountInstrumentationPreAuthenticationProvider
+ *
+ * @group Database
  */
 class SpecialCreateAccountIntegrationTest extends SpecialPageTestBase {
 	protected function newSpecialPage() {
