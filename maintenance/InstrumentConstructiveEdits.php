@@ -122,3 +122,6 @@ class InstrumentConstructiveEdits extends Maintenance {
 		}
 	}
 }
+
+$maintClass = InstrumentConstructiveEdits::class;
+require_once RUN_MAINTENANCE_IF_MAIN;
