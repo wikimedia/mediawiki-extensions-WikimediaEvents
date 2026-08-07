@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 // Long-term product-health instrumentation for the email confirmation banner.
 // Sends impression and click events to the email-confirmation-banner-2026-06 Test Kitchen
 // instrument. The matching server-side lifecycle events (email_confirmed, email_invalidated) are

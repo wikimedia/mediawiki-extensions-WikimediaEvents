@@ -35,7 +35,6 @@ function send( stateEntry, action ) {
 // Event Listeners
 // ===============
 
-// eslint-disable-next-line compat/compat
 const intersectionObserver = new IntersectionObserver(
 	( entries, observer ) => {
 		entries.forEach( ( { target } ) => {

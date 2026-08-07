@@ -131,6 +131,7 @@ function detectLocalStorageSupport() {
 
 /**
  * Logs an event related to some feature that is not available
+ *
  * @param context the value for the `action_context` field
  */
 function logFeatureNotAvailableEvent( context ) {
