@@ -79,10 +79,6 @@ function detectPassiveEventListenerSupport() {
 
 /**
  * Publish 'sessionReset' event to mw.track().
- *
- * This allows EventLogging to periodically reset the
- * value returned by `mw.eventLog.id.getSessionId`, which
- * other events make use of.
  */
 function sessionReset() {
 	mw.storage.set( KEY_COUNT, 0 );
