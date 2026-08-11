@@ -13,6 +13,10 @@
 		]
 	},
 	"wikimediaevents-desc": "使用EventLogging的维基媒体特定事件日志",
+	"apihelp-wikimediaeventsblockededit-summary": "有关禁止编辑尝试的日志信息",
+	"apihelp-wikimediaeventsblockededit-param-page": "尝试做出编辑的页面",
+	"apihelp-wikimediaeventsblockededit-param-interface": "用于编辑的界面",
+	"apihelp-wikimediaeventsblockededit-param-platform": "用于编辑的平台",
 	"tag-cross-wiki-upload": "[[Special:MyLanguage/Commons:Cross-wiki media upload tool|跨wiki上传]]",
 	"tag-cross-wiki-upload-description": "在其他wiki上使用wikitext和可视化编辑器上传的文件",
 	"wikimediaevents-special-wikimediadebug-desc": "WikimediaDebug",
@@ -20,5 +24,6 @@
 	"wikimediaevents-special-wikimediadebug-submit-set": "激活调试Cookie$1",
 	"wikimediaevents-special-wikimediadebug-submit-renew": "更新$1的cookie",
 	"wikimediaevents-special-wikimediadebug-submit-clear": "清除Cookie",
+	"wikimediaevents-special-wikimediadebug-header-active": "[https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] cookie功能目前在<code>$1</code>上为'''启用'''。\n\n到期时间为$2。\n\n点击按钮即可从此设备清除。请注意，这只会清除此网域上的cookie - 如果您在其他网域上启用了此cookie，则必须通过这些网域上的特殊页面来各自清除（或是使用浏览器的cookie清除功能）。",
 	"wikimediaevents-special-wikimediadebug-header-inactive": "点击按钮以在 <code>$1</code> 上激活[https://wikitech.wikimedia.org/wiki/WikimediaDebug WikimediaDebug] Cookie。\n\n激活后，您的设备对本维基的网页请求将向开发人员'''发送包含个人信息的调试日志'''。请仅在开发人员要求时激活本功能。请注意，这可能会导致浏览速度变慢。\n\n如果您正在测试跨域功能，请务必在其他相关域名的特殊页面上激活这一Cookie。"
 }
