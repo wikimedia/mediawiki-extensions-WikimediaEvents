@@ -251,6 +251,7 @@
 				"clientError.js",
 				"sessionTick.js",
 				"editingSessionService.js",
+				"earlyOnboarding.js",
 				"webCommon.js",
 				"webAccessibilitySettings.js",
 				"readingDepth.js",

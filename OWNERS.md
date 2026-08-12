@@ -307,3 +307,9 @@ Details at https://phabricator.wikimedia.org/T424069.
 * Modules: ext.wikimediaEvents.emailConfirmationBanner
 * Files: ext.wikimediaEvents/emailConfirmationBanner/emailConfirmationBanner.js, includes/Services/EmailConfirmationBannerInstrumentLogger.php
 * Contact: Product Safety and Integrity
+
+## Early Onboarding
+
+* Since: April 2026
+* Files: ext.wikimediaEvents/earlyOnboarding.js
+* Contact: Contributor Growth (and Reader Experience as a stakeholder)

@@ -39,6 +39,7 @@ require( './testKitchen/loggedOutReaderRetention.js' );
 require( './testKitchen/detectHoistingErrors.js' );
 require( './externalLinks.js' )();
 require( './suggestionMode.js' );
+require( './earlyOnboarding.js' );
 
 if ( !window.QUnit ) {
 	require( './searchSatisfaction/index.js' )();
