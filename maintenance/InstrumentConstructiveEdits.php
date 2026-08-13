@@ -27,8 +27,8 @@ class InstrumentConstructiveEdits extends Maintenance {
 	public function __construct() {
 		parent::__construct();
 		$this->addOption( 'dry-run', 'Does not send events' );
-		$this->addOption( 'threshold', 'How long a revision has to survive (hours)' );
-		$this->addOption( 'interval', 'Period between script runs (hours)' );
+		$this->addOption( 'threshold', 'How long a revision has to survive (hours)', false, true );
+		$this->addOption( 'interval', 'Period between script runs (hours)', false, true );
 	}
 
 	public function execute(): void {
