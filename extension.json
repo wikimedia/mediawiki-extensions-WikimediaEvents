@@ -318,8 +318,6 @@
 				"specialCreateAccount/init.js",
 				"specialCreateAccount/instrumentation.js",
 				"specialCreateAccount/useInstrument.js",
-				"specialCreateAccount/experimentDecorateCreateAccountLinks.js",
-				"specialCreateAccount/experimentInstrumentation.js",
 				"testKitchen/editSavedAA.js"
 			],
 			"dependencies": [
