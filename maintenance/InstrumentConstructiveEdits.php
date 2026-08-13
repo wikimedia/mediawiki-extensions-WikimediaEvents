@@ -6,6 +6,7 @@ use MediaWiki\ChangeTags\ChangeTags;
 use MediaWiki\Maintenance\Maintenance;
 use MediaWiki\RecentChanges\RecentChange;
 use stdClass;
+use Wikimedia\Timestamp\ConvertibleTimestamp;
 use Wikimedia\Timestamp\TimestampFormat;
 
 // @codeCoverageIgnoreStart
@@ -29,33 +30,84 @@ class InstrumentConstructiveEdits extends Maintenance {
 		$this->addOption( 'dry-run', 'Does not send events' );
 		$this->addOption( 'threshold', 'How long a revision has to survive (hours)', false, true );
 		$this->addOption( 'interval', 'Period between script runs (hours)', false, true );
+		$this->addOption(
+			'as-of',
+			'Behave as if the script ran at this time, to replay a missed run. Any time inside the '
+				. 'target interval works. Use the same --threshold and --interval as the missed run. '
+				. 'Any timestamp format MediaWiki accepts.',
+			false,
+			true
+		);
 	}
 
 	public function execute(): void {
 		$threshold = (int)$this->getOption( 'threshold', self::CONSTRUCTIVE_EDITS_SURVIVAL_HOURS );
 		$interval = (int)$this->getOption( 'interval', self::CONSTRUCTIVE_EDITS_SCRIPT_RUNS_INTERVAL_HOURS );
-		// Fetch every revision from all wikis.
-		$edits = $this->findAllEdits( $threshold, $interval );
-		// Send events for all constructive edits.
+		if ( $interval < 1 ) {
+			$this->fatalError( '--interval must be at least 1 hour.' );
+		}
+		if ( $threshold < 0 ) {
+			$this->fatalError( '--threshold cannot be negative.' );
+		}
+		[ $oldest, $newest ] = $this->getTimestampRange( $threshold, $interval );
+		// This queries one wiki. Puppet runs the script under foreachwiki.
+		$edits = $this->findAllEdits( $oldest, $newest );
 		$this->logConstructiveEdits( $edits, $threshold );
+	}
+
+	/**
+	 * Get the range of edits to report on, as [ oldest, newest ] MW timestamps.
+	 *
+	 * The range aligns to a multiple of the interval. A range measured back from
+	 * the current time moves between runs, because foreachwiki reaches each wiki
+	 * at a different moment. Edits near the bounds are then reported twice, or
+	 * not at all.
+	 *
+	 * Both query bounds are inclusive, so the newest bound is one second below
+	 * the next range. Without this, an edit on a boundary is reported twice.
+	 *
+	 * The interval must match how often the script runs. More frequent runs
+	 * align to the same interval and report the same edits again. A missed run
+	 * leaves a gap, which --as-of replays.
+	 *
+	 * @param int $threshold how long a revision has to survive (hours).
+	 * @param int $interval the period between script runs (hours).
+	 *
+	 * @return string[]
+	 */
+	private function getTimestampRange( int $threshold, int $interval ): array {
+		$asOf = $this->getOption( 'as-of' );
+		if ( $asOf === null ) {
+			$now = ConvertibleTimestamp::time();
+		} else {
+			$now = ConvertibleTimestamp::convert( TimestampFormat::UNIX, $asOf );
+			if ( $now === false ) {
+				$this->fatalError( "Could not parse --as-of value '$asOf'." );
+			}
+			$now = (int)$now;
+		}
+		$intervalSeconds = $interval * 3600;
+		$alignedNow = intdiv( $now, $intervalSeconds ) * $intervalSeconds;
+		$newest = $alignedNow - ( $threshold * 3600 );
+		return [
+			ConvertibleTimestamp::convert( TimestampFormat::MW, $newest - $intervalSeconds ),
+			ConvertibleTimestamp::convert( TimestampFormat::MW, $newest - 1 ),
+		];
 	}
 
 	/**
 	 * Find rows that have constructive edits.
 	 *
-	 * @param int $hours the number of previous hours to check.
-	 * @param int $interval the interval between edits.
+	 * @param string $oldest MW timestamp of the oldest edit to report on.
+	 * @param string $newest MW timestamp of the newest edit to report on.
 	 *
 	 * @return iterable<stdClass> a list of row IDs, identifying rows of constructive edits.
 	 */
-	private function findAllEdits( int $hours, int $interval ): iterable {
-		$startTime = time() - ( $hours * 3600 );
-		$endTime = wfTimestamp( TimestampFormat::MW, $startTime - ( $interval * 3600 ) );
-		$startTime = wfTimestamp( TimestampFormat::MW, $startTime );
+	private function findAllEdits( string $oldest, string $newest ): iterable {
 		$query = $this->getServiceContainer()->getChangesListQueryFactory()->newQuery()
 			->recentChangeFields()
-			->startAt( $startTime )
-			->endAt( $endTime )
+			->startAt( $newest )
+			->endAt( $oldest )
 			->requireSources( [
 				RecentChange::SRC_NEW,
 				RecentChange::SRC_EDIT
@@ -68,7 +120,7 @@ class InstrumentConstructiveEdits extends Maintenance {
 			->caller( __METHOD__ );
 
 		$result = $query->fetchResult();
-		$this->output( "Changes between $startTime and $endTime: {$result->count()}\n" );
+		$this->output( "Changes between $oldest and $newest: {$result->count()}\n" );
 		return $result->getRows();
 	}
 
