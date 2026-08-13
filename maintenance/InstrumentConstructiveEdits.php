@@ -61,7 +61,10 @@ class InstrumentConstructiveEdits extends Maintenance {
 				RecentChange::SRC_EDIT
 			] )
 			->excludeDeletedLogAction()
-			->excludeChangeTags( CHANGETAGS::REVERT_TAGS )
+			// Two distinct sets of tags, both unwanted. REVERT_TAGS (mw-rollback,
+			// mw-undo, mw-manual-revert) mark the edit that does the reverting.
+			// TAG_REVERTED (mw-reverted) marks the edit that was reverted. See T431493.
+			->excludeChangeTags( [ ...ChangeTags::REVERT_TAGS, ChangeTags::TAG_REVERTED ] )
 			->caller( __METHOD__ );
 
 		$result = $query->fetchResult();
