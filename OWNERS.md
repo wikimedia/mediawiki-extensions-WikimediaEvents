@@ -281,3 +281,9 @@ More details at <https://phabricator.wikimedia.org/T414368>.
 * Since: April 2026
 * Files: ext.wikimediaEvents/earlyOnboarding.js
 * Contact: Contributor Growth (and Reader Experience as a stakeholder)
+
+## DE 4.3.4 Email confirmation enforcement experiments
+
+* Since: August 2026
+* Files: ext.wikimediaEvents/emailConfirmationDelayedEnforcementAA.js
+* Contact: Product Safety and Integrity

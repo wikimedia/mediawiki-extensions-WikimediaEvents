@@ -16,6 +16,7 @@ use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
 use MediaWiki\Extension\ConfirmEdit\Services\CaptchaFactory;
 use MediaWiki\Extension\NetworkSession\NetworkSessionProvider;
 use MediaWiki\Extension\OAuth\SessionProvider;
+use MediaWiki\Extension\TestKitchen\Sdk\ExperimentManagerInterface;
 use MediaWiki\Hook\BeforeInitializeHook;
 use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
@@ -84,6 +85,7 @@ class WikimediaEventsHooks implements
 		private readonly PermissionManager $permissionManager,
 		private readonly WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup,
 		private readonly EmailConfirmationBannerInstrumentLogger $emailConfirmationBannerInstrumentLogger,
+		private readonly ExperimentManagerInterface $experimentManager,
 		private readonly ?CaptchaFactory $captchaFactory,
 	) {
 	}
@@ -96,6 +98,7 @@ class WikimediaEventsHooks implements
 		$out->addModules( 'ext.wikimediaEvents' );
 		$this->maybeAddWatchlistTracking( $out );
 		$this->maybeAddEmailConfirmationBannerTracking( $out );
+		$this->addEditClickHookUserInfo( $out );
 		$extensionRegistry = ExtensionRegistry::getInstance();
 		if ( $extensionRegistry->isLoaded( 'WikibaseRepository' ) ) {
 			// If we are in Wikibase Repo, load Wikibase module
@@ -594,6 +597,7 @@ class WikimediaEventsHooks implements
 	/** @inheritDoc */
 	public function onConfirmEmailComplete( $user ): void {
 		$this->emailConfirmationBannerInstrumentLogger->log( 'email_confirmed' );
+		$this->sendEmailConfirmedEvent( $user );
 	}
 
 	/** @inheritDoc */
@@ -626,6 +630,33 @@ class WikimediaEventsHooks implements
 			return;
 		}
 		$out->addModules( 'ext.wikimediaEvents.emailConfirmationBanner' );
+	}
+
+	/**
+	 * Send an event for DE 4.3.4 Email Confirmation A/A test when a user confirms their email.
+	 *
+	 * @param User $user
+	 */
+	private function sendEmailConfirmedEvent( User $user ): void {
+		$registration = $user->getRegistration();
+		if ( $registration && $registration > wfTimestamp( TS_MW, '2026-09-04 14:30:00' ) ) {
+			$experiment = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-delayed-pilot' );
+			$experiment->send( 'email_confirmed' );
+		}
+	}
+
+	/**
+	 * Expose the current user's email/bot status to JS for T433066's edit-link click hook.
+	 *
+	 * @param OutputPage $out
+	 */
+	private function addEditClickHookUserInfo( OutputPage $out ): void {
+		$user = $out->getUser();
+		$out->addJsConfigVars( [
+			'wgWMEUserHasEmail' => $user->isRegistered() && $user->getEmail() !== '',
+			'wgWMEUserEmailConfirmed' => $user->isRegistered() && $user->isEmailConfirmed(),
+			'wgWMEUserIsBot' => $user->isBot()
+		] );
 	}
 
 }

@@ -4,6 +4,7 @@ namespace WikimediaEvents\Tests\Integration;
 
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\OAuth\SessionProvider as OAuthSessionProvider;
+use MediaWiki\Extension\TestKitchen\Sdk\ExperimentManagerInterface;
 use MediaWiki\Output\OutputPage;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\Session\Session;
@@ -31,7 +32,8 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 	use TempUserTestTrait;
 
 	private function newHookHandler(
-		?EmailConfirmationBannerInstrumentLogger $emailConfirmationBannerInstrumentLogger = null
+		?EmailConfirmationBannerInstrumentLogger $emailConfirmationBannerInstrumentLogger = null,
+		?ExperimentManagerInterface $experimentManager = null
 	): WikimediaEventsHooks {
 		$captchaFactory = null;
 		if ( $this->getServiceContainer()->getExtensionRegistry()->isLoaded( 'ConfirmEdit' ) ) {
@@ -44,6 +46,8 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 			$this->getServiceContainer()->get( 'WikimediaEventsRequestDetailsLookup' ),
 			$emailConfirmationBannerInstrumentLogger
 				?? $this->createMock( EmailConfirmationBannerInstrumentLogger::class ),
+			$experimentManager
+				?? $this->createMock( ExperimentManagerInterface::class ),
 			$captchaFactory
 		);
 	}

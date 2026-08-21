@@ -40,7 +40,8 @@
 				"NamespaceInfo",
 				"PermissionManager",
 				"WikimediaEventsRequestDetailsLookup",
-				"WikimediaEventsEmailConfirmationBannerInstrumentLogger"
+				"WikimediaEventsEmailConfirmationBannerInstrumentLogger",
+				"TestKitchen.ExperimentManager"
 			],
 			"optional_services": [
 				"ConfirmEditCaptchaFactory"
@@ -318,7 +319,8 @@
 				"specialCreateAccount/init.js",
 				"specialCreateAccount/instrumentation.js",
 				"specialCreateAccount/useInstrument.js",
-				"testKitchen/editSavedAA.js"
+				"testKitchen/editSavedAA.js",
+				"emailConfirmationDelayedEnforcementAA.js"
 			],
 			"dependencies": [
 				"ext.testKitchen",

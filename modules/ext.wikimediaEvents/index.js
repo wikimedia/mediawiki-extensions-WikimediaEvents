@@ -10,6 +10,7 @@ require( './editAttemptStep.js' );
 require( './hCaptcha.js' )();
 require( './networkProbe.js' );
 require( './externalLinks.js' )();
+require( './emailConfirmationDelayedEnforcementAA.js' );
 require( './suggestionMode.js' );
 require( './specialCreateAccount/init.js' ); // Includes some experiments
 require( './activeReaderBaseline.js' );
