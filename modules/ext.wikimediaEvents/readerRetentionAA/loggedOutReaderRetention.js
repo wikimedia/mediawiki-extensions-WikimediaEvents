@@ -45,7 +45,7 @@ mw.testKitchen.getExperimentsByPrefix( EXPERIMENT_NAME_PREFIX ).then(
 	( experiments ) => {
 		experiments.forEach( ( experiment ) => {
 			experiment.sendExposure();
-			experiment.use( anyPageVisit );
+			experiment.use( anyPageVisit() );
 		} );
 	}
 );

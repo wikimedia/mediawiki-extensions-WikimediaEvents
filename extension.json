@@ -402,7 +402,8 @@
 			"searchSatisfaction/searchSatisfaction.test.js",
 			"searchSatisfaction/searchSli.test.js",
 			"specialCreateAccount/instrumentation.test.js",
-			"externalLinks.test.js"
+			"externalLinks.test.js",
+			"anyPageVisit.test.js"
 		],
 		"dependencies": [
 			"ext.wikimediaEvents"

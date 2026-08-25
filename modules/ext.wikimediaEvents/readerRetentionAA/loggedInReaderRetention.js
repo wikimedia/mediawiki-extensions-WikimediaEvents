@@ -25,7 +25,7 @@ if ( mw.user.isNamed() ) {
 		( experiments ) => {
 			experiments.forEach( ( experiment ) => {
 				experiment.sendExposure();
-				experiment.use( anyPageVisit );
+				experiment.use( anyPageVisit() );
 			} );
 		}
 	);
