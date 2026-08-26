@@ -45,6 +45,12 @@ function handleFirstEvent( event ) {
 		platform: mw.config.get( 'wgMFMode' ) !== null ? 'phone' : 'desktop'
 	};
 
+	// Tracking when an edit session was passed to us from the apps (T432853)
+	const appInstallId = mw.util.getParamValue( 'appinstallid' );
+	if ( appInstallId ) {
+		session.app_install_id = appInstallId;
+	}
+
 	// If 'editAttemptStep' events are being logged (indicated by this function being called),
 	// also log 'visualEditorFeatureUse' events, otherwise don't. This avoids unwanted logging
 	// from other features that use VE internally, such as ContentTranslation. (T334157)
