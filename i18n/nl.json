@@ -16,7 +16,7 @@
 	"apihelp-wikimediaeventsblockededit-param-page": "Een pagina waarop een bewerkingspoging is gedaan",
 	"apihelp-wikimediaeventsblockededit-param-interface": "De interface die werd gebruikt om te bewerken",
 	"apihelp-wikimediaeventsblockededit-param-platform": "Het platform dat werd gebruikt om te bewerken",
-	"apihelp-wikimediaeventshcaptchaeditattempt-summary": "Log de wijzigingen in de bewerking wanneer de hCaptcha-uitdaging wordt weergegeven, maar de bewerking onvolledig is",
+	"apihelp-wikimediaeventshcaptchaeditattempt-summary": "De wijzigingen registeren in de bewerking als de hCaptcha-uitdaging wordt weergegeven, maar de bewerking onvolledig is",
 	"apihelp-wikimediaeventshcaptchaeditattempt-param-title": "Paginatitel",
 	"apihelp-wikimediaeventshcaptchaeditattempt-param-proposed_content": "Voorgestelde inhoudstekst (max. 8KB)",
 	"apihelp-wikimediaeventshcaptchaeditattempt-param-editing_session_id": "Sessie-ID bewerken",
