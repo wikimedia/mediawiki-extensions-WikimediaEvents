@@ -639,7 +639,7 @@ class WikimediaEventsHooks implements
 	 */
 	private function sendEmailConfirmedEvent( User $user ): void {
 		$registration = $user->getRegistration();
-		if ( $registration && $registration > wfTimestamp( TS_MW, '2026-09-04 14:30:00' ) ) {
+		if ( $registration && $registration > wfTimestamp( TS_MW, '2026-09-04 00:00:00' ) ) {
 			$experiment = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-delayed-pilot' );
 			$experiment->send( 'email_confirmed' );
 		}
