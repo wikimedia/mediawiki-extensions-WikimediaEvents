@@ -15,7 +15,7 @@
 		hasEmail &&
 		!emailConfirmed &&
 		!isBot &&
-		userRegistration > 1788445800000 // 2026-09-03 14:30
+		userRegistration > 1788480000000 // 2026-09-04 00:00
 	) {
 		editLink.addEventListener( 'click', async () => {
 			const e = await mw.tk.getExperiment( 'email-confirmation-enforcement-delayed-pilot' );
