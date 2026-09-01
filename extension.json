@@ -169,6 +169,7 @@
 			"TemporaryAccountsInstrumentation"
 		],
 		"LocalUserCreated": [
+			"main",
 			"CaptchaScoreHooks",
 			"IPReputationHooks"
 		],
