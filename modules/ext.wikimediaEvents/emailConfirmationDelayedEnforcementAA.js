@@ -6,17 +6,8 @@
  */
 
 ( function () {
-	const hasEmail = mw.config.get( 'wgWMEUserHasEmail' );
-	const emailConfirmed = mw.config.get( 'wgWMEUserEmailConfirmed' );
-	const isBot = mw.config.get( 'wgWMEUserIsBot' );
 	const editLink = document.getElementById( 'ca-edit' );
-	const userRegistration = mw.config.get( 'wgUserRegistration' );
-	if ( editLink &&
-		hasEmail &&
-		!emailConfirmed &&
-		!isBot &&
-		userRegistration > 1788480000000 // 2026-09-04 00:00
-	) {
+	if ( editLink && mw.config.get( 'wgWMEUserEligibleForEmailExperiment' ) ) {
 		editLink.addEventListener( 'click', async () => {
 			const e = await mw.tk.getExperiment( 'email-confirmation-enforcement-delayed-pilot' );
 			e.sendExposure();
