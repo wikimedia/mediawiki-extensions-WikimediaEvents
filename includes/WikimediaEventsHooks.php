@@ -13,6 +13,7 @@ use MediaWiki\Config\Config;
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Deferred\DeferredUpdates;
+use MediaWiki\Extension\CentralAuth\User\CentralAuthUser;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
 use MediaWiki\Extension\ConfirmEdit\Services\CaptchaFactory;
 use MediaWiki\Extension\NetworkSession\NetworkSessionProvider;
@@ -524,9 +525,8 @@ class WikimediaEventsHooks implements
 		$this->experimentManager->updateUser( $user );
 		if (
 			!$autocreated &&
-			$user->isNamed() &&
-			$user->getEmail() !== '' &&
-			$user->getRegistration() > wfTimestamp( TS_MW, '2026-09-04 00:00:00' )
+			// We don't need to check whether the user was created on this wiki, because !$autocreated covers that
+			$this->isUserEligibleForEmailConfirmationExperiment( $user, ignoreCreationWiki: true )
 		) {
 			$experiment = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-upfront-pilot' );
 			$experiment->sendExposure();
@@ -662,14 +662,35 @@ class WikimediaEventsHooks implements
 		$out->addModules( 'ext.wikimediaEvents.emailConfirmationBanner' );
 	}
 
+	private function isUserEligibleForEmailConfirmationExperiment(
+		User $user,
+		bool $ignoreEmail = false,
+		bool $ignoreCreationWiki = false
+	): bool {
+		return $user->isNamed() &&
+			( $ignoreEmail || $user->getEmail() !== '' ) &&
+			( $ignoreEmail || !$user->isEmailConfirmed() ) &&
+			!$user->isBot() &&
+			// User was created after the experiment started
+			$user->getRegistration() > wfTimestamp( TS_MW, '2026-09-04 00:00:00' ) &&
+			// User was created on this wiki
+			(
+				$ignoreCreationWiki ||
+				CentralAuthUser::getInstance( $user )?->getHomeWiki() === WikiMap::getCurrentWikiId()
+			);
+	}
+
 	/**
 	 * Send an event for DE 4.3.4 Email Confirmation A/A test when a user confirms their email.
 	 *
 	 * @param User $user
 	 */
 	private function sendEmailConfirmedEvent( User $user ): void {
-		$registration = $user->getRegistration();
-		if ( $registration && $registration > wfTimestamp( TS_MW, '2026-09-04 00:00:00' ) ) {
+		// Check eligibility but don't check for unconfirmed email, since the user has just confirmed their email
+		// Also don't check for same-wiki-ness, if the user confirms their email anywhere we want to capture that
+		if ( $this->isUserEligibleForEmailConfirmationExperiment(
+				$user, ignoreEmail: true, ignoreCreationWiki: true
+		) ) {
 			$delayed = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-delayed-pilot' );
 			$delayed->send( 'email_confirmed' );
 
@@ -685,11 +706,10 @@ class WikimediaEventsHooks implements
 	 */
 	private function addEditClickHookUserInfo( OutputPage $out ): void {
 		$user = $out->getUser();
-		$out->addJsConfigVars( [
-			'wgWMEUserHasEmail' => $user->isRegistered() && $user->getEmail() !== '',
-			'wgWMEUserEmailConfirmed' => $user->isRegistered() && $user->isEmailConfirmed(),
-			'wgWMEUserIsBot' => $user->isBot()
-		] );
+		if ( $this->isUserEligibleForEmailConfirmationExperiment( $user ) ) {
+			$out->addJsConfigVars( [
+				'wgWMEUserEligibleForEmailExperiment' => true
+			] );
+		}
 	}
-
 }
