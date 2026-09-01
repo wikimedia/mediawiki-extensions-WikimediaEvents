@@ -6,6 +6,7 @@ use CentralAuthApiSessionProvider;
 use CentralAuthHeaderSessionProvider;
 use CentralAuthSessionProvider;
 use MediaWiki\Actions\ActionEntryPoint;
+use MediaWiki\Auth\Hook\LocalUserCreatedHook;
 use MediaWiki\ChangeTags\Hook\ChangeTagsListActiveHook;
 use MediaWiki\ChangeTags\Hook\ListDefinedTagsHook;
 use MediaWiki\Config\Config;
@@ -76,7 +77,8 @@ class WikimediaEventsHooks implements
 	ResourceLoaderRegisterModulesHook,
 	MakeGlobalVariablesScriptHook,
 	ConfirmEmailCompleteHook,
-	InvalidateEmailCompleteHook
+	InvalidateEmailCompleteHook,
+	LocalUserCreatedHook
 {
 
 	public function __construct(
@@ -509,6 +511,34 @@ class WikimediaEventsHooks implements
 	}
 
 	/**
+	 * @param User $user
+	 * @param bool $autocreated
+	 * @return void
+	 */
+	public function onLocalUserCreated( $user, $autocreated ) {
+		// HACK: Ensure that the use the ExperimentManager usage below, and any later ones, use the
+		// new user rather than the previous one. However, if this is a user creating an account for
+		// another user, then we don't want this state to stick, we need to restore the old one.
+		$oldUser = RequestContext::getMain()->getUser();
+		// @phan-suppress-next-line PhanUndeclaredMethod
+		$this->experimentManager->updateUser( $user );
+		if (
+			!$autocreated &&
+			$user->isNamed() &&
+			$user->getEmail() !== '' &&
+			$user->getRegistration() > wfTimestamp( TS_MW, '2026-09-04 00:00:00' )
+		) {
+			$experiment = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-upfront-pilot' );
+			$experiment->sendExposure();
+		}
+		if ( $oldUser->isNamed() ) {
+			// If this account was created for someone else, restore the previous user
+			// @phan-suppress-next-line PhanUndeclaredMethod
+			$this->experimentManager->updateUser( $oldUser );
+		}
+	}
+
+	/**
 	 * WMDE runs banner campaigns to encourage users to create an account and edit.
 	 *
 	 * The tracking already implemented in the Campaigns extension doesn't quite cover the WMDE
@@ -640,8 +670,11 @@ class WikimediaEventsHooks implements
 	private function sendEmailConfirmedEvent( User $user ): void {
 		$registration = $user->getRegistration();
 		if ( $registration && $registration > wfTimestamp( TS_MW, '2026-09-04 00:00:00' ) ) {
-			$experiment = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-delayed-pilot' );
-			$experiment->send( 'email_confirmed' );
+			$delayed = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-delayed-pilot' );
+			$delayed->send( 'email_confirmed' );
+
+			$upfront = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-upfront-pilot' );
+			$upfront->send( 'email_confirmed' );
 		}
 	}
 
