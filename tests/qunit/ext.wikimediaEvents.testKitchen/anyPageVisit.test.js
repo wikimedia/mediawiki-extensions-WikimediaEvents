@@ -1,9 +1,9 @@
 /* eslint-env qunit */
 'use strict';
 
-const anyPageVisit = require( 'ext.wikimediaEvents/anyPageVisit.js' );
+const anyPageVisit = require( 'ext.wikimediaEvents.testKitchen/anyPageVisit.js' );
 
-QUnit.module( 'ext.wikimediaEvents/anyPageVisit', () => {
+QUnit.module( 'ext.wikimediaEvents.testKitchen/anyPageVisit', () => {
 	const {
 		classifyReferrer,
 		REFERRER_CLASS_NONE,

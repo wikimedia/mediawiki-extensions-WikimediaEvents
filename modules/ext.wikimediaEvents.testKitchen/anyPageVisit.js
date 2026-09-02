@@ -17,7 +17,7 @@
  * Usage:
  * ```
  * // Assuming `experiment` is an instance of mw.testKitchen.Experiment
- * const anyPageVisit = require('./anyPageVisit.js');
+ * const { anyPageVisit } = require( 'ext.wikimediaEvents.testKitchen' );
  * experiment.use( anyPageVisit() );
  *
  * // To also record the referrer class in action_source:
@@ -29,8 +29,8 @@
  * at experiment/instrument level.
  *
  * See also:
- * - ./accountCreation/accountCreated.js
- * - ./editSaved.js
+ * - ../ext.wikimediaEvents/accountCreation/accountCreated.js
+ * - ../ext.wikimediaEvents/editSaved.js
  */
 
 const PAGE_VISIT_ACTION = 'page_visit';

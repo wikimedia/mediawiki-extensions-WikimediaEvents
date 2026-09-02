@@ -248,7 +248,7 @@ More details at <https://phabricator.wikimedia.org/T414368>.
 ## Page visits for experiments
 
 * Since: July 2026
-* Files: ext.wikimediaEvents/anyPageVisit.js
+* Files: ext.wikimediaEvents.testKitchen/anyPageVisit.js
 * Contact: Experiment Platform
 
 ## Saved edits for experiments

@@ -288,7 +288,6 @@
 				"suggestionMode.js",
 				"hCaptcha.js",
 				"editSaved.js",
-				"anyPageVisit.js",
 				"accountCreation/accountCreated.js",
 				"accountCreation/removeQueryParam.js",
 				"externalLinks.js",
@@ -372,7 +371,8 @@
 			"packageFiles": [
 				"index.js",
 				"ClickThroughRateInstrument.js",
-				"UrlEnrolledExperiment.js"
+				"UrlEnrolledExperiment.js",
+				"anyPageVisit.js"
 			],
 			"dependencies": [
 				"ext.eventLogging",
@@ -395,21 +395,22 @@
 		"remoteExtPath": "WikimediaEvents/modules"
 	},
 	"QUnitTestModule": {
-		"localBasePath": "tests/qunit/ext.wikimediaEvents/",
-		"remoteExtPath": "WikimediaEvents/tests/qunit/ext.wikimediaEvents/",
+		"localBasePath": "tests/qunit",
+		"remoteExtPath": "WikimediaEvents/tests/qunit",
 		"scripts": [
-			"clickTracking.test.js",
-			"clientError.test.js",
-			"statsd.test.js",
-			"hCaptcha.test.js",
-			"searchSatisfaction/searchSatisfaction.test.js",
-			"searchSatisfaction/searchSli.test.js",
-			"specialCreateAccount/instrumentation.test.js",
-			"externalLinks.test.js",
-			"anyPageVisit.test.js"
+			"ext.wikimediaEvents/clickTracking.test.js",
+			"ext.wikimediaEvents/clientError.test.js",
+			"ext.wikimediaEvents/statsd.test.js",
+			"ext.wikimediaEvents/hCaptcha.test.js",
+			"ext.wikimediaEvents/searchSatisfaction/searchSatisfaction.test.js",
+			"ext.wikimediaEvents/searchSatisfaction/searchSli.test.js",
+			"ext.wikimediaEvents/specialCreateAccount/instrumentation.test.js",
+			"ext.wikimediaEvents/externalLinks.test.js",
+			"ext.wikimediaEvents.testKitchen/anyPageVisit.test.js"
 		],
 		"dependencies": [
-			"ext.wikimediaEvents"
+			"ext.wikimediaEvents",
+			"ext.wikimediaEvents.testKitchen"
 		]
 	},
 	"config": {

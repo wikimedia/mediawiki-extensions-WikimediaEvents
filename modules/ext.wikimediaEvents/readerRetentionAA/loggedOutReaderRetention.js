@@ -39,7 +39,7 @@
 
 // e.g. logged-out-retention-round1, logged-out-retention-round2, etc.
 const EXPERIMENT_NAME_PREFIX = 'logged-out-retention-';
-const anyPageVisit = require( '../anyPageVisit.js' );
+const { anyPageVisit } = require( 'ext.wikimediaEvents.testKitchen' );
 
 mw.testKitchen.getExperimentsByPrefix( EXPERIMENT_NAME_PREFIX ).then(
 	( experiments ) => {

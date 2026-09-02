@@ -17,7 +17,7 @@
 
 // e.g. logged-in-retention-round1, logged-in-retention-round2, etc.
 const LOGGED_IN_RETENTION_EXPERIMENT_PREFIX = 'logged-in-retention-';
-const anyPageVisit = require( '../anyPageVisit.js' );
+const { anyPageVisit } = require( 'ext.wikimediaEvents.testKitchen' );
 
 // Only logged-in, non-temp users.
 if ( mw.user.isNamed() ) {

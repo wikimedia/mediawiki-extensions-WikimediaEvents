@@ -1,4 +1,5 @@
 module.exports = {
 	ClickThroughRateInstrument: require( './ClickThroughRateInstrument.js' ),
-	UrlEnrolledExperiment: require( './UrlEnrolledExperiment.js' )
+	UrlEnrolledExperiment: require( './UrlEnrolledExperiment.js' ),
+	anyPageVisit: require( './anyPageVisit.js' )
 };
