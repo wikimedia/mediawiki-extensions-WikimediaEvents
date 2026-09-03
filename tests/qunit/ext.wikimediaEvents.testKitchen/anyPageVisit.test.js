@@ -64,7 +64,15 @@ QUnit.module( 'ext.wikimediaEvents.testKitchen/anyPageVisit', () => {
 		assert.strictEqual( send.callCount, 1, 'send called once' );
 		const [ action, interactionData ] = send.getCall( 0 ).args;
 		assert.strictEqual( action, 'page_visit', 'page_visit action' );
-		assert.deepEqual( interactionData, {}, 'no action_source recorded by default' );
+		assert.deepEqual(
+			interactionData,
+			{
+				action_context: JSON.stringify( {
+					is_hidden: document.hidden === true
+				} )
+			},
+			'no action_source recorded by default'
+		);
 	} );
 
 	QUnit.test( 'factory records referrer class when requested', function ( assert ) {
@@ -80,6 +88,26 @@ QUnit.module( 'ext.wikimediaEvents.testKitchen/anyPageVisit', () => {
 				REFERRER_CLASS_EXTERNAL
 			].includes( interactionData.action_source ),
 			'action_source is a valid referrer class'
+		);
+		assert.deepEqual(
+			JSON.parse( interactionData.action_context ),
+			{ is_hidden: document.hidden === true },
+			'action_context records is_hidden'
+		);
+	} );
+
+	QUnit.test( 'factory records is_hidden in action_context', function ( assert ) {
+		const send = this.sandbox.spy();
+		anyPageVisit()( { send } );
+
+		assert.strictEqual( send.callCount, 1, 'send called once' );
+		const interactionData = send.getCall( 0 ).args[ 1 ];
+		assert.strictEqual(
+			interactionData.action_context,
+			JSON.stringify( {
+				is_hidden: document.hidden === true
+			} ),
+			'is_hidden recorded in action_context'
 		);
 	} );
 

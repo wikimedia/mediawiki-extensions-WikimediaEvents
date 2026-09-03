@@ -117,7 +117,11 @@ function classifyReferrer( referrer ) {
  * @return {function(mw.testKitchen.EventSenderInterface): void}
  */
 function anyPageVisit( { recordReferrerClass = false } = {} ) {
-	const interactionData = {};
+	const interactionData = {
+		action_context: JSON.stringify( {
+			is_hidden: document.hidden === true
+		} )
+	};
 	if ( recordReferrerClass ) {
 		interactionData.action_source = classifyReferrer( document.referrer );
 	}
