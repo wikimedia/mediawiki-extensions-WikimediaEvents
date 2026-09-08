@@ -1,14 +1,14 @@
 <?php
 
-namespace WikimediaEvents\Tests\Integration\Services;
+namespace WikimediaEvents\Tests\Integration\EmailConfirmation;
 
 use MediaWiki\Extension\TestKitchen\Sdk\InstrumentInterface;
 use MediaWiki\Extension\TestKitchen\Sdk\InstrumentManagerInterface;
 use MediaWikiIntegrationTestCase;
-use WikimediaEvents\Services\EmailConfirmationBannerInstrumentLogger;
+use WikimediaEvents\EmailConfirmation\EmailConfirmationBannerInstrumentLogger;
 
 /**
- * @covers \WikimediaEvents\Services\EmailConfirmationBannerInstrumentLogger
+ * @covers \WikimediaEvents\EmailConfirmation\EmailConfirmationBannerInstrumentLogger
  */
 class EmailConfirmationBannerInstrumentLoggerTest extends MediaWikiIntegrationTestCase {
 

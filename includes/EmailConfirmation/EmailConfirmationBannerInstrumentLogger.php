@@ -1,6 +1,6 @@
 <?php
 
-namespace WikimediaEvents\Services;
+namespace WikimediaEvents\EmailConfirmation;
 
 use MediaWiki\Extension\TestKitchen\Sdk\InstrumentManagerInterface;
 

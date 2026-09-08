@@ -273,7 +273,7 @@ More details at <https://phabricator.wikimedia.org/T414368>.
 
 * Since: June 2026
 * Modules: ext.wikimediaEvents.emailConfirmationBanner
-* Files: ext.wikimediaEvents/emailConfirmationBanner/emailConfirmationBanner.js, includes/Services/EmailConfirmationBannerInstrumentLogger.php
+* Files: ext.wikimediaEvents/emailConfirmationBanner/emailConfirmationBanner.js, includes/EmailConfirmation/*
 * Contact: Product Safety and Integrity
 
 ## Early Onboarding
@@ -285,7 +285,7 @@ More details at <https://phabricator.wikimedia.org/T414368>.
 ## DE 4.3.4 Email confirmation enforcement experiments
 
 * Since: August 2026
-* Files: ext.wikimediaEvents/emailConfirmationDelayedEnforcementAA.js
+* Files: ext.wikimediaEvents/emailConfirmationDelayedEnforcementAA.js, includes/EmailConfirmation/*
 * Contact: Product Safety and Integrity
 
 ## DE 5.4.1 Donor Identification

@@ -28,8 +28,8 @@ use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use WikimediaEvents\AccountCreation\AccountCreationLogger;
 use WikimediaEvents\CreateAccount\CreateAccountInstrumentationClient;
+use WikimediaEvents\EmailConfirmation\EmailConfirmationBannerInstrumentLogger;
 use WikimediaEvents\PeriodicMetrics\WikimediaEventsMetricsFactory;
-use WikimediaEvents\Services\EmailConfirmationBannerInstrumentLogger;
 use WikimediaEvents\Services\WikimediaEventsRequestDetailsLookup;
 use WikimediaEvents\WikimediaEventsCountryCodeLookup;
 

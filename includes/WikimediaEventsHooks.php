@@ -6,21 +6,18 @@ use CentralAuthApiSessionProvider;
 use CentralAuthHeaderSessionProvider;
 use CentralAuthSessionProvider;
 use MediaWiki\Actions\ActionEntryPoint;
-use MediaWiki\Auth\Hook\LocalUserCreatedHook;
 use MediaWiki\ChangeTags\Hook\ChangeTagsListActiveHook;
 use MediaWiki\ChangeTags\Hook\ListDefinedTagsHook;
 use MediaWiki\Config\Config;
 use MediaWiki\Context\IContextSource;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Deferred\DeferredUpdates;
-use MediaWiki\Extension\CentralAuth\User\CentralAuthUser;
 use MediaWiki\Extension\ConfirmEdit\CaptchaTriggers;
 use MediaWiki\Extension\ConfirmEdit\Services\CaptchaFactory;
 use MediaWiki\Extension\NetworkSession\NetworkSessionProvider;
 use MediaWiki\Extension\OAuth\SessionProvider;
 use MediaWiki\Extension\TestKitchen\Sdk\ExperimentManagerInterface;
 use MediaWiki\Hook\BeforeInitializeHook;
-use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Output\Hook\BeforePageDisplayHook;
 use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
@@ -48,14 +45,11 @@ use MediaWiki\Storage\EditResult;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
 use MediaWiki\Title\NamespaceInfo;
 use MediaWiki\Title\Title;
-use MediaWiki\User\Hook\ConfirmEmailCompleteHook;
-use MediaWiki\User\Hook\InvalidateEmailCompleteHook;
 use MediaWiki\User\User;
 use MediaWiki\User\UserIdentity;
 use MediaWiki\WikiMap\WikiMap;
 use MobileContext;
 use WikimediaEvents\Hooks\HookRunner;
-use WikimediaEvents\Services\EmailConfirmationBannerInstrumentLogger;
 use WikimediaEvents\Services\WikimediaEventsRequestDetailsLookup;
 
 /**
@@ -76,10 +70,7 @@ class WikimediaEventsHooks implements
 	SpecialSearchResultsHook,
 	RecentChange_saveHook,
 	ResourceLoaderRegisterModulesHook,
-	MakeGlobalVariablesScriptHook,
-	ConfirmEmailCompleteHook,
-	InvalidateEmailCompleteHook,
-	LocalUserCreatedHook
+	MakeGlobalVariablesScriptHook
 {
 
 	public function __construct(
@@ -87,7 +78,6 @@ class WikimediaEventsHooks implements
 		private readonly NamespaceInfo $namespaceInfo,
 		private readonly PermissionManager $permissionManager,
 		private readonly WikimediaEventsRequestDetailsLookup $wikimediaEventsRequestDetailsLookup,
-		private readonly EmailConfirmationBannerInstrumentLogger $emailConfirmationBannerInstrumentLogger,
 		private readonly ExperimentManagerInterface $experimentManager,
 		private readonly ?CaptchaFactory $captchaFactory,
 	) {
@@ -100,8 +90,6 @@ class WikimediaEventsHooks implements
 	public function onBeforePageDisplay( $out, $skin ): void {
 		$out->addModules( 'ext.wikimediaEvents' );
 		$this->maybeAddWatchlistTracking( $out );
-		$this->maybeAddEmailConfirmationBannerTracking( $out );
-		$this->addEditClickHookUserInfo( $out );
 		$extensionRegistry = ExtensionRegistry::getInstance();
 		if ( $extensionRegistry->isLoaded( 'WikibaseRepository' ) ) {
 			// If we are in Wikibase Repo, load Wikibase module
@@ -512,33 +500,6 @@ class WikimediaEventsHooks implements
 	}
 
 	/**
-	 * @param User $user
-	 * @param bool $autocreated
-	 * @return void
-	 */
-	public function onLocalUserCreated( $user, $autocreated ) {
-		// HACK: Ensure that the use the ExperimentManager usage below, and any later ones, use the
-		// new user rather than the previous one. However, if this is a user creating an account for
-		// another user, then we don't want this state to stick, we need to restore the old one.
-		$oldUser = RequestContext::getMain()->getUser();
-		// @phan-suppress-next-line PhanUndeclaredMethod
-		$this->experimentManager->updateUser( $user );
-		if (
-			!$autocreated &&
-			// We don't need to check whether the user was created on this wiki, because !$autocreated covers that
-			$this->isUserEligibleForEmailConfirmationExperiment( $user, ignoreCreationWiki: true )
-		) {
-			$experiment = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-upfront-pilot' );
-			$experiment->sendExposure();
-		}
-		if ( $oldUser->isNamed() ) {
-			// If this account was created for someone else, restore the previous user
-			// @phan-suppress-next-line PhanUndeclaredMethod
-			$this->experimentManager->updateUser( $oldUser );
-		}
-	}
-
-	/**
 	 * WMDE runs banner campaigns to encourage users to create an account and edit.
 	 *
 	 * The tracking already implemented in the Campaigns extension doesn't quite cover the WMDE
@@ -621,95 +582,6 @@ class WikimediaEventsHooks implements
 	private function maybeAddWatchlistTracking( OutputPage $out ): void {
 		if ( $out->getTitle() && $out->getTitle()->isSpecial( "Watchlist" ) ) {
 			$out->addModules( 'ext.wikimediaEvents.WatchlistBaseline' );
-		}
-	}
-
-	/** @inheritDoc */
-	public function onConfirmEmailComplete( $user ): void {
-		$this->emailConfirmationBannerInstrumentLogger->log( 'email_confirmed' );
-		$this->sendEmailConfirmedEvent( $user );
-	}
-
-	/** @inheritDoc */
-	public function onInvalidateEmailComplete( $user ): void {
-		$this->emailConfirmationBannerInstrumentLogger->log( 'email_invalidated' );
-	}
-
-	/**
-	 * Load the email confirmation banner instrument when the banner is shown.
-	 *
-	 * Mirrors the banner visibility conditions in core's
-	 * \MediaWiki\Mail\ConfirmEmail\EmailConfirmationBannerHandler::shouldShowBanner() so the module
-	 * (and its impression/click events) only loads on pages where the banner actually renders.
-	 *
-	 * @param OutputPage $out
-	 */
-	private function maybeAddEmailConfirmationBannerTracking( OutputPage $out ): void {
-		if ( !$this->config->get( MainConfigNames::EmailConfirmationBanner ) ) {
-			return;
-		}
-		if ( !$this->config->get( MainConfigNames::EmailAuthentication ) ) {
-			return;
-		}
-		$user = $out->getUser();
-		if ( !$user->isNamed() || $user->getEmail() === '' || $user->isEmailConfirmed() ) {
-			return;
-		}
-		$title = $out->getTitle();
-		if ( $title && $title->isSpecial( 'Confirmemail' ) ) {
-			return;
-		}
-		$out->addModules( 'ext.wikimediaEvents.emailConfirmationBanner' );
-	}
-
-	private function isUserEligibleForEmailConfirmationExperiment(
-		User $user,
-		bool $ignoreEmail = false,
-		bool $ignoreCreationWiki = false
-	): bool {
-		return $user->isNamed() &&
-			( $ignoreEmail || $user->getEmail() !== '' ) &&
-			( $ignoreEmail || !$user->isEmailConfirmed() ) &&
-			!$user->isBot() &&
-			// User was created after the experiment started
-			$user->getRegistration() > wfTimestamp( TS_MW, '2026-09-04 00:00:00' ) &&
-			// User was created on this wiki
-			(
-				$ignoreCreationWiki ||
-				CentralAuthUser::getInstance( $user )?->getHomeWiki() === WikiMap::getCurrentWikiId()
-			);
-	}
-
-	/**
-	 * Send an event for DE 4.3.4 Email Confirmation A/A test when a user confirms their email.
-	 *
-	 * @param User $user
-	 */
-	private function sendEmailConfirmedEvent( User $user ): void {
-		// Check eligibility but don't check for unconfirmed email, since the user has just confirmed their email
-		// Also don't check for same-wiki-ness, if the user confirms their email anywhere we want to capture that
-		if ( $this->isUserEligibleForEmailConfirmationExperiment(
-				$user, ignoreEmail: true, ignoreCreationWiki: true
-		) ) {
-			$delayed = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-delayed-pilot' );
-			$delayed->send( 'email_confirmed' );
-
-			$upfront = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-upfront-pilot' );
-			$upfront->send( 'email_confirmed' );
-		}
-	}
-
-	/**
-	 * Expose the current user's email/bot status to JS for T433066's edit-link click hook.
-	 *
-	 * @param OutputPage $out
-	 */
-	private function addEditClickHookUserInfo( OutputPage $out ): void {
-		$user = $out->getUser();
-		if ( $this->isUserEligibleForEmailConfirmationExperiment( $user ) ) {
-			$out->addJsConfigVars( [
-				'wgWMEUserEligibleForEmailExperiment' => true
-			] );
 		}
 	}
 }
