@@ -287,3 +287,9 @@ More details at <https://phabricator.wikimedia.org/T414368>.
 * Since: August 2026
 * Files: ext.wikimediaEvents/emailConfirmationDelayedEnforcementAA.js
 * Contact: Product Safety and Integrity
+
+## DE 5.4.1 Donor Identification
+
+* Since: September 2026
+* Files: ext.wikimediaEvents/donorIdentification.js
+* Contact: Reader Experience
