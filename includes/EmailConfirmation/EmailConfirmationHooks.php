@@ -9,6 +9,7 @@ use MediaWiki\Extension\CentralAuth\User\CentralAuthUser;
 use MediaWiki\Extension\TestKitchen\Sdk\ExperimentManagerInterface;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Output\Hook\BeforePageDisplayHook;
+use MediaWiki\Storage\Hook\PageSaveCompleteHook;
 use MediaWiki\User\Hook\ConfirmEmailCompleteHook;
 use MediaWiki\User\Hook\InvalidateEmailCompleteHook;
 use MediaWiki\User\User;
@@ -18,7 +19,8 @@ class EmailConfirmationHooks implements
 	BeforePageDisplayHook,
 	ConfirmEmailCompleteHook,
 	InvalidateEmailCompleteHook,
-	LocalUserCreatedHook
+	LocalUserCreatedHook,
+	PageSaveCompleteHook
 {
 	public function __construct(
 		private readonly Config $config,
@@ -52,6 +54,13 @@ class EmailConfirmationHooks implements
 				'wgWMEUserEligibleForEmailExperiment' => true
 			] );
 		}
+
+		// Log a page_visit event for users in the email-confirmation-* experiments
+		// Check basic eligibility, but don't check for unconfirmed email, since we want to continue
+		// sending events after the user confirms their email.
+		if ( $this->isUserEligibleForEmailConfirmationExperiment( $user, ignoreEmail: true ) ) {
+			$this->sendEventToBothExperiments( 'page_visit', [], [ 'page_namespace_id' ] );
+		}
 	}
 
 	/** @inheritDoc */
@@ -64,11 +73,7 @@ class EmailConfirmationHooks implements
 		if ( $this->isUserEligibleForEmailConfirmationExperiment(
 				$user, ignoreEmail: true, ignoreCreationWiki: true
 		) ) {
-			$delayed = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-delayed-pilot' );
-			$delayed->send( 'email_confirmed' );
-
-			$upfront = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-upfront-pilot' );
-			$upfront->send( 'email_confirmed' );
+			$this->sendEventToBothExperiments( 'email_confirmed' );
 		}
 	}
 
@@ -100,6 +105,39 @@ class EmailConfirmationHooks implements
 		}
 	}
 
+	/** @inheritDoc */
+	public function onPageSaveComplete(
+		$wikiPage,
+		$userIdentity,
+		$summary,
+		$flags,
+		$revisionRecord,
+		$editResult
+	) {
+		$currentUser = RequestContext::getMain()->getUser();
+		if (
+			// Ignore maintenance scripts
+			( PHP_SAPI === 'cli' && !defined( 'MW_PHPUNIT_TEST' ) ) ||
+			// Ignore null edits
+			$editResult->isNullEdit() ||
+			// Ignore edits not made by the current user (which implies this wasn't real user interaction)
+			!$userIdentity->equals( $currentUser )
+		) {
+			return;
+		}
+
+		// Send events for the email-confirmation-enforcement-* experiments.
+		// Check basic eligibility, but don't check for unconfirmed email, since we want to continue
+		// sending events after the user confirms their email.
+		if ( $this->isUserEligibleForEmailConfirmationExperiment( $currentUser, ignoreEmail: true ) ) {
+			$this->sendEventToBothExperiments(
+				'edit_saved',
+				[ 'page' => [ 'revision_id' => $revisionRecord->getId() ] ],
+				[ 'mediawiki_database', 'page_namespace_id' ]
+			);
+		}
+	}
+
 	private function isUserEligibleForEmailConfirmationExperiment(
 		User $user,
 		bool $ignoreEmail = false,
@@ -108,7 +146,6 @@ class EmailConfirmationHooks implements
 		return $user->isNamed() &&
 			( $ignoreEmail || $user->getEmail() !== '' ) &&
 			( $ignoreEmail || !$user->isEmailConfirmed() ) &&
-			!$user->isBot() &&
 			// User was created after the experiment started
 			$user->getRegistration() > wfTimestamp( TS_MW, '2026-09-04 00:00:00' ) &&
 			// User was created on this wiki
@@ -116,5 +153,17 @@ class EmailConfirmationHooks implements
 				$ignoreCreationWiki ||
 				CentralAuthUser::getInstance( $user )?->getHomeWiki() === WikiMap::getCurrentWikiId()
 			);
+	}
+
+	private function sendEventToBothExperiments(
+		string $eventName,
+		array $interactionData = [],
+		array $contextualAttributes = []
+	): void {
+		$delayed = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-delayed-pilot' );
+		$delayed->send( $eventName, $interactionData, $contextualAttributes );
+
+		$upfront = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-upfront-pilot' );
+		$upfront->send( $eventName, $interactionData, $contextualAttributes );
 	}
 }

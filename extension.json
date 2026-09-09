@@ -174,7 +174,8 @@
 			"main",
 			"IPReputationHooks",
 			"CaptchaScoreHooks",
-			"TemporaryAccountsInstrumentation"
+			"TemporaryAccountsInstrumentation",
+			"EmailConfirmationHooks"
 		],
 		"LocalUserCreated": [
 			"EmailConfirmationHooks",
