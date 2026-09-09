@@ -263,6 +263,7 @@
 				"networkProbe.js",
 				"clickTracking/utils.js",
 				"searchSatisfaction/index.js",
+				"donorIdentification.js",
 				{
 					"name": "searchSatisfaction/searchSatisfaction.js",
 					"callback": "WikimediaEvents\\WikimediaEventsHooks::getModuleFile",

@@ -42,6 +42,12 @@ if ( skin === 'vector-2022' || skin === 'minerva' ) {
 	}
 }
 
+// Minerva only for the moment
+if ( skin === 'minerva' ) {
+	// donor ID: catch hooks and log events for the donor account registration experiment
+	require( './donorIdentification.js' );
+}
+
 if ( !window.QUnit ) {
 	require( './searchSatisfaction/index.js' )();
 	require( './searchSatisfaction/searchQuality.js' );
