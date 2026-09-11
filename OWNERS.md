@@ -301,3 +301,20 @@ More details at <https://phabricator.wikimedia.org/T414368>.
 * Contact: Reader Experience
 
 * Records experiment exposure and page visits for T437076.
+
+## Diff product health metrics
+
+* Since: September 2026
+* Modules: ext.wikimediaEvents.diff
+* Contact: Moderator Tools
+
+Baseline for the DE1.3.3 diff review work: impressions and clicks for the interactive
+affordances on a diff page, plus which presentation mode the reader is using. Emits to the
+`diff-health-metrics` instrument. Replaces the `specialDiff.click.*` instrumentation removed
+in T353366.
+
+Note that this module depends on `ext.eventLogging` even though it calls nothing from it:
+`ext.eventLogging` is what sets `wgUserEditCountBucket`, and without the ordering guarantee
+the `performer_edit_count_bucket` contextual attribute can arrive empty.
+
+More details at <https://phabricator.wikimedia.org/T434795>

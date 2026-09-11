@@ -409,6 +409,29 @@
 			"dependencies": [
 				"ext.testKitchen"
 			]
+		},
+		"ext.wikimediaEvents.diff": {
+			"localBasePath": "modules/ext.wikimediaEvents.diff",
+			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.diff",
+			"packageFiles": [
+				"index.js",
+				"context.js",
+				"diffMode.js",
+				"diffModeSwitcher.js",
+				"elements.js",
+				"impressions.js",
+				{
+					"name": "feedSources.json",
+					"callback": "WikimediaEvents\\WikimediaEventsHooks::getPersonalDashboardFeedSources"
+				}
+			],
+			"dependencies": [
+				"ext.eventLogging",
+				"ext.testKitchen",
+				"ext.wikimediaEvents.testKitchen",
+				"mediawiki.user",
+				"mediawiki.util"
+			]
 		}
 	},
 	"ResourceFileModulePaths": {
@@ -427,11 +450,17 @@
 			"ext.wikimediaEvents/searchSatisfaction/searchSli.test.js",
 			"ext.wikimediaEvents/specialCreateAccount/instrumentation.test.js",
 			"ext.wikimediaEvents/externalLinks.test.js",
-			"ext.wikimediaEvents.testKitchen/anyPageVisit.test.js"
+			"ext.wikimediaEvents.testKitchen/anyPageVisit.test.js",
+			"ext.wikimediaEvents.diff/context.test.js",
+			"ext.wikimediaEvents.diff/diffMode.test.js",
+			"ext.wikimediaEvents.diff/diffModeSwitcher.test.js",
+			"ext.wikimediaEvents.diff/elements.test.js",
+			"ext.wikimediaEvents.diff/impressions.test.js"
 		],
 		"dependencies": [
 			"ext.wikimediaEvents",
-			"ext.wikimediaEvents.testKitchen"
+			"ext.wikimediaEvents.testKitchen",
+			"ext.wikimediaEvents.diff"
 		]
 	},
 	"config": {

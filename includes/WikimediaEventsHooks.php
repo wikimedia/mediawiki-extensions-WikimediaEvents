@@ -90,6 +90,7 @@ class WikimediaEventsHooks implements
 	public function onBeforePageDisplay( $out, $skin ): void {
 		$out->addModules( 'ext.wikimediaEvents' );
 		$this->maybeAddWatchlistTracking( $out );
+		$this->maybeAddDiffTracking( $out );
 		$extensionRegistry = ExtensionRegistry::getInstance();
 		if ( $extensionRegistry->isLoaded( 'WikibaseRepository' ) ) {
 			// If we are in Wikibase Repo, load Wikibase module
@@ -583,5 +584,52 @@ class WikimediaEventsHooks implements
 		if ( $out->getTitle() && $out->getTitle()->isSpecial( "Watchlist" ) ) {
 			$out->addModules( 'ext.wikimediaEvents.WatchlistBaseline' );
 		}
+	}
+
+	/**
+	 * Add the diff instrumentation module on diff views (T434795).
+	 *
+	 * The DifferenceEngineViewHeader hook would read better here, but it is not run for a diff
+	 * of a page's first revision, and those pageviews are in scope. The diff query parameter
+	 * is what Article::view() itself branches on to reach Article::showDiffPage(), and the
+	 * module makes sure a diff really rendered before doing anything.
+	 *
+	 * @param OutputPage $out
+	 */
+	private function maybeAddDiffTracking( OutputPage $out ): void {
+		if ( !$out->getRequest()->getCheck( 'diff' ) ) {
+			return;
+		}
+		$out->addModules( 'ext.wikimediaEvents.diff' );
+	}
+
+	/**
+	 * Get the names of the registered Personal Dashboard feed sources.
+	 *
+	 * The Review Changes cards put an origin parameter on their diff links, in the form
+	 * origin=personaldashboard-<source> (T421397). The diff instrument keeps a known set of
+	 * values and drops the rest, so the set must agree with the sources that Personal
+	 * Dashboard registers.
+	 *
+	 * Read the attribute, because it is the one source of truth. Any extension can add a
+	 * source to it, and PersonalDashboardFeedSourceFactory reads the same attribute to make
+	 * the sources themselves.
+	 *
+	 * The attribute is empty if Personal Dashboard is not installed. The instrument then
+	 * recognises no origin, which is correct.
+	 *
+	 * @param RL\Context $context
+	 * @param Config $config
+	 * @return array Data for the feedSources.json package file
+	 */
+	public static function getPersonalDashboardFeedSources(
+		RL\Context $context,
+		Config $config
+	): array {
+		return [
+			'sources' => array_keys(
+				ExtensionRegistry::getInstance()->getAttribute( 'PersonalDashboardFeedSources' )
+			),
+		];
 	}
 }

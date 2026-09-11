@@ -6,11 +6,14 @@ use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\OAuth\SessionProvider as OAuthSessionProvider;
 use MediaWiki\Extension\TestKitchen\Sdk\ExperimentManagerInterface;
 use MediaWiki\Output\OutputPage;
+use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Request\FauxRequest;
+use MediaWiki\ResourceLoader as RL;
 use MediaWiki\Session\Session;
 use MediaWiki\Session\SessionProvider;
 use MediaWiki\Skin\Skin;
 use MediaWiki\Tests\User\TempUser\TempUserTestTrait;
+use MediaWiki\Title\Title;
 use MediaWiki\User\User;
 use MediaWiki\WikiMap\WikiMap;
 use MockTitleTrait;
@@ -251,4 +254,76 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 		$handler->onXAnalyticsSetHeader( $out, $headerItems );
 		$this->assertSame( 'oauth2-owneronly', $headerItems['auth_type'] );
 	}
+
+	/**
+	 * @dataProvider provideDiffTracking
+	 */
+	public function testDiffTracking( array $requestParams, bool $expected ): void {
+		$title = $this->createMock( Title::class );
+		$title->method( 'isSpecial' )->willReturn( false );
+
+		$addedModules = [];
+		$out = $this->createMock( OutputPage::class );
+		$out->method( 'addModules' )->willReturnCallback(
+			static function ( $module ) use ( &$addedModules ) {
+				$addedModules = array_merge( $addedModules, (array)$module );
+			}
+		);
+		$out->method( 'getTitle' )->willReturn( $title );
+		$out->method( 'getUser' )->willReturn( $this->createMock( User::class ) );
+		$out->method( 'getRequest' )->willReturn( new FauxRequest( $requestParams ) );
+
+		$handler = $this->newHookHandler();
+		$handler->onBeforePageDisplay( $out, $this->createMock( Skin::class ) );
+
+		$this->assertSame(
+			$expected,
+			in_array( 'ext.wikimediaEvents.diff', $addedModules, true )
+		);
+	}
+
+	public static function provideDiffTracking(): array {
+		return [
+			'diff of a specific revision' => [ [ 'diff' => '1234' ], true ],
+			'diff=prev' => [ [ 'diff' => 'prev' ], true ],
+			// Special:Diff redirects to these, and DifferenceEngine treats an empty diff
+			// parameter as "diff against the previous revision", so it counts too.
+			'empty diff parameter' => [ [ 'diff' => '' ], true ],
+			'not a diff' => [ [], false ],
+			'oldid alone is a permalink, not a diff' => [ [ 'oldid' => '1234' ], false ],
+		];
+	}
+
+	/**
+	 * @dataProvider providePersonalDashboardFeedSources
+	 */
+	public function testPersonalDashboardFeedSources( array $attribute, array $expected ): void {
+		// $scope is unused, but it keeps the override until the test ends, and PHP 8.5 marks
+		// setAttributeForTest() #[NoDiscard] (T413223).
+		$scope = ExtensionRegistry::getInstance()
+			->setAttributeForTest( 'PersonalDashboardFeedSources', $attribute );
+
+		$data = WikimediaEventsHooks::getPersonalDashboardFeedSources(
+			$this->createMock( RL\Context::class ),
+			$this->getServiceContainer()->getMainConfig()
+		);
+
+		$this->assertSame( [ 'sources' => $expected ], $data );
+	}
+
+	public static function providePersonalDashboardFeedSources(): array {
+		// The attribute maps a source name to an ObjectFactory spec. Only the keys matter
+		// here, because the origin parameter carries the name.
+		$spec = [ 'class' => 'ExampleFeedSource' ];
+
+		return [
+			'the registered source names, in registration order' => [
+				[ 'watchlist' => $spec, 'mostedited' => $spec ],
+				[ 'watchlist', 'mostedited' ],
+			],
+			// Personal Dashboard is not installed, so the instrument recognises no origin.
+			'no registered sources' => [ [], [] ],
+		];
+	}
+
 }
