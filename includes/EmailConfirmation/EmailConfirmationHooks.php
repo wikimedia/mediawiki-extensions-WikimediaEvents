@@ -9,6 +9,7 @@ use MediaWiki\Extension\CentralAuth\User\CentralAuthUser;
 use MediaWiki\Extension\TestKitchen\Sdk\ExperimentManagerInterface;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Output\Hook\BeforePageDisplayHook;
+use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
 use MediaWiki\User\Hook\ConfirmEmailCompleteHook;
 use MediaWiki\User\Hook\InvalidateEmailCompleteHook;
@@ -151,6 +152,8 @@ class EmailConfirmationHooks implements
 			// User was created on this wiki
 			(
 				$ignoreCreationWiki ||
+				// Don't check CentralAuth if it's not installed
+				!ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ||
 				CentralAuthUser::getInstance( $user )?->getHomeWiki() === WikiMap::getCurrentWikiId()
 			);
 	}
