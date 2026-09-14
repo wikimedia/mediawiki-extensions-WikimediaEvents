@@ -293,3 +293,11 @@ More details at <https://phabricator.wikimedia.org/T414368>.
 * Since: September 2026
 * Files: ext.wikimediaEvents/donorIdentification.js
 * Contact: Reader Experience
+
+## Pre-image carousel retest A/A
+
+* Since: September 2026
+* Modules: ext.wikimediaEvents.preImageCarouselRetestAA
+* Contact: Reader Experience
+
+* Records experiment exposure and page visits for T437076.

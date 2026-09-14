@@ -375,6 +375,17 @@
 				"mediawiki.cookie"
 			]
 		},
+		"ext.wikimediaEvents.preImageCarouselRetestAA": {
+			"localBasePath": "modules/ext.wikimediaEvents",
+			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents",
+			"packageFiles": [
+				"testKitchen/preImageCarouselRetestAA.js"
+			],
+			"dependencies": [
+				"ext.testKitchen",
+				"ext.wikimediaEvents.testKitchen"
+			]
+		},
 		"ext.wikimediaEvents.testKitchen": {
 			"localBasePath": "modules/ext.wikimediaEvents.testKitchen",
 			"remoteExtPath": "WikimediaEvents/modules/ext.wikimediaEvents.testKitchen",
