@@ -141,7 +141,7 @@ class EmailConfirmationHooks implements
 		}
 	}
 
-	private function isUserEligibleForEmailConfirmationExperiment(
+	public static function isUserEligibleForEmailConfirmationExperiment(
 		User $user,
 		bool $ignoreEmail = false,
 		bool $ignoreCreationWiki = false
@@ -149,6 +149,7 @@ class EmailConfirmationHooks implements
 		return $user->isNamed() &&
 			( $ignoreEmail || $user->getEmail() !== '' ) &&
 			( $ignoreEmail || !$user->isEmailConfirmed() ) &&
+			( !$user->isBot() ) &&
 			// User was created after the experiment started
 			$user->getRegistration() > wfTimestamp( TS_MW, '2026-09-04 00:00:00' ) &&
 			// User was created on this wiki

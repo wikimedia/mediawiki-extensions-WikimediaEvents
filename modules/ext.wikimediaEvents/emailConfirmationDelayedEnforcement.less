@@ -1,0 +1,59 @@
+/**
+ * Styles for DE 4.3.4 email-confirmation-enforcement-delayed Test Kitchen test.
+ * Likely obsolete/removable after 2027-01-15, see emailConfirmationDelayedEnforcement.js.
+ */
+@import 'mediawiki.skin.variables.less';
+
+.mw-email-confirmation-toast {
+	// The Codex message box shown as a toast via mw.notify().
+	&.cdx-message {
+		position: relative;
+		color: @color-base;
+		background-color: @background-color-warning-subtle;
+		border: 1px solid @border-color-warning;
+		// Forced with !important because mw.notification's own container background otherwise
+		// wins the cascade against the Codex "warning" message-box styling.
+		box-shadow: none !important; /* stylelint-disable-line declaration-no-important */
+		outline: none !important; /* stylelint-disable-line declaration-no-important */
+		padding: .5em;
+		text-align: left;
+
+		a {
+			color: var( --color-progressive );
+		}
+
+		// Purely visual; clicking anywhere on the toast already dismisses it via
+		// mw.notification's own delegated click handler.
+		button {
+			position: absolute;
+			top: 2px;
+			right: 2px;
+			border: 0;
+			background: none;
+			cursor: pointer;
+			font-size: 16px;
+			line-height: 1;
+		}
+	}
+
+	// The outer mw.notification wrapper around the message box above.
+	&.mw-notification {
+		border: none !important; /* stylelint-disable-line declaration-no-important */
+		box-shadow: none !important; /* stylelint-disable-line declaration-no-important */
+		outline: none !important; /* stylelint-disable-line declaration-no-important */
+		background-color: transparent !important; /* stylelint-disable-line declaration-no-important */
+	}
+}
+
+// Toasts on desktop normally appear at the top of the page, but the banner from
+// WikimediaEventsHooks::onSiteNoticeAfter is already there and they'd overlap,
+// so reposition to put it down below per the Figma design.
+#mw-notification-area.mw-email-confirmation-toast {
+	top: auto;
+	bottom: 0;
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.test-kitchen-experiment-email-confirmation-enforcement-delayed-edit-blocked .mw-emailconfirmbanner {
+	display: none;
+}

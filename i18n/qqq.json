@@ -21,6 +21,8 @@
 	"tag-cross-wiki-upload": "Tag on cross-wiki uploads",
 	"tag-cross-wiki-upload-description": "Description for the cross-wiki-upload tag.",
 	"tag-cross-wiki-upload-helppage": "{{notranslate}}",
+	"wikimediaevents-de-4-3-4-email-confirmation-experiment-banner": "Banner shown at the top of the pages when user is in the treatment group for DE 4.3.4 email confirmation experiment.",
+	"wikimediaevents-de-4-3-4-email-confirmation-experiment-toast": "Toast notification shown when a user is in the treatment group for DE 4.3.4 email confirmation experiment clicks on the Edit link on a page.",
 	"wikimediaevents-special-wikimediadebug-desc": "{{doc-special|WikimediaDebug}}",
 	"wikimediaevents-special-wikimediadebug-notenabled": "Error message shown when Special:WikimediaDebug is disabled.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "Button text for setting the WikimediaDebug cookie.\n\nParameters:\n* $1 - the duration of the cookie (e.g. 1 hour)",
