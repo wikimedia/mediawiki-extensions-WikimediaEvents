@@ -199,7 +199,8 @@
 		"CentralAuthPostLoginRedirect": "AccountCreation",
 		"AuthManagerLoginAuthenticateAudit": "AccountCreation",
 		"ConfirmEmailComplete": "EmailConfirmationHooks",
-		"InvalidateEmailComplete": "EmailConfirmationHooks"
+		"InvalidateEmailComplete": "EmailConfirmationHooks",
+		"SiteNoticeAfter": "main"
 	},
 	"APIModules": {
 		"wikimediaeventsblockededit": {
@@ -330,7 +331,7 @@
 				"specialCreateAccount/instrumentation.js",
 				"specialCreateAccount/useInstrument.js",
 				"testKitchen/editSavedAA.js",
-				"emailConfirmationDelayedEnforcementAA.js"
+				"emailConfirmationDelayedEnforcement.js"
 			],
 			"dependencies": [
 				"ext.testKitchen",
@@ -342,6 +343,12 @@
 				"mediawiki.experiments",
 				"mediawiki.storage",
 				"mediawiki.visibleTimeout"
+			],
+			"messages": [
+				"wikimediaevents-de-4-3-4-email-confirmation-experiment-toast"
+			],
+			"styles": [
+				"emailConfirmationDelayedEnforcement.less"
 			]
 		},
 		"ext.wikimediaEvents.wikibase": {

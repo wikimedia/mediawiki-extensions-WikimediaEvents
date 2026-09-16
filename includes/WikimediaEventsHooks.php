@@ -18,6 +18,7 @@ use MediaWiki\Extension\NetworkSession\NetworkSessionProvider;
 use MediaWiki\Extension\OAuth\SessionProvider;
 use MediaWiki\Extension\TestKitchen\Sdk\ExperimentManagerInterface;
 use MediaWiki\Hook\BeforeInitializeHook;
+use MediaWiki\Html\Html;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Output\Hook\BeforePageDisplayHook;
 use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
@@ -38,6 +39,7 @@ use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Search\ISearchResultSet;
 use MediaWiki\Session\BotPasswordSessionProvider;
 use MediaWiki\Session\CookieSessionProvider;
+use MediaWiki\Skin\Hook\SiteNoticeAfterHook;
 use MediaWiki\Skin\Skin;
 use MediaWiki\Specials\Hook\SpecialSearchGoResultHook;
 use MediaWiki\Specials\Hook\SpecialSearchResultsHook;
@@ -70,8 +72,16 @@ class WikimediaEventsHooks implements
 	SpecialSearchResultsHook,
 	RecentChange_saveHook,
 	ResourceLoaderRegisterModulesHook,
-	MakeGlobalVariablesScriptHook
+	MakeGlobalVariablesScriptHook,
+	SiteNoticeAfterHook
 {
+
+	/**
+	 * Defaults to EmailConfirmationHooks::isUserEligibleForEmailConfirmationExperiment()
+	 * for production, but allows for overrides in tests as not all test shards have the
+	 * same resources
+	 */
+	private \Closure $isUserEligibleForEmailConfirmationExperiment;
 
 	public function __construct(
 		private readonly Config $config,
@@ -81,6 +91,8 @@ class WikimediaEventsHooks implements
 		private readonly ExperimentManagerInterface $experimentManager,
 		private readonly ?CaptchaFactory $captchaFactory,
 	) {
+		$this->isUserEligibleForEmailConfirmationExperiment =
+			EmailConfirmation\EmailConfirmationHooks::isUserEligibleForEmailConfirmationExperiment( ... );
 	}
 
 	/**
@@ -631,5 +643,45 @@ class WikimediaEventsHooks implements
 				ExtensionRegistry::getInstance()->getAttribute( 'PersonalDashboardFeedSources' )
 			),
 		];
+	}
+
+	/**
+	 * Render the T433066 email-confirmation-enforcement-delayed banner server-side.
+	 *
+	 * The companion click-blocking toast stays client-side in
+	 * emailConfirmationDelayedEnforcement.js, since it's only needed once the user clicks the
+	 * edit link. The banner has no such dependency on an event listener, so it's rendered here
+	 * instead.
+	 *
+	 * @param string &$siteNotice
+	 * @param Skin $skin
+	 */
+	public function onSiteNoticeAfter( &$siteNotice, $skin ): void {
+		$user = $skin->getUser();
+		$title = $skin->getTitle();
+		if ( !$title || !$this->shouldShowEmailConfirmationDelayedBanner( $user, $title ) ) {
+			return;
+		}
+
+		$skin->getOutput()->addModuleStyles( 'mediawiki.codex.messagebox.styles' );
+
+		$content = $skin->msg( 'wikimediaevents-de-4-3-4-email-confirmation-experiment-banner' )->parse();
+		$siteNotice .= Html::warningBox( $content, 'wme-email-confirmation-delayed-banner' );
+	}
+
+	/**
+	 * @param User $user
+	 * @param Title $title
+	 * @return bool
+	 */
+	private function shouldShowEmailConfirmationDelayedBanner( User $user, Title $title ): bool {
+		$experiment = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-delayed' );
+		if (
+			( $this->isUserEligibleForEmailConfirmationExperiment )( $user ) &&
+			$experiment->isAssignedGroup( 'edit-blocked' )
+		) {
+			return $this->permissionManager->quickUserCan( 'edit', $user, $title );
+		}
+		return false;
 	}
 }

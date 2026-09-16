@@ -4,8 +4,10 @@ namespace WikimediaEvents\Tests\Integration;
 
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\OAuth\SessionProvider as OAuthSessionProvider;
+use MediaWiki\Extension\TestKitchen\Sdk\ExperimentInterface;
 use MediaWiki\Extension\TestKitchen\Sdk\ExperimentManagerInterface;
 use MediaWiki\Output\OutputPage;
+use MediaWiki\Permissions\PermissionManager;
 use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\ResourceLoader as RL;
@@ -44,10 +46,24 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 			$this->getServiceContainer()->getNamespaceInfo(),
 			$this->getServiceContainer()->getPermissionManager(),
 			$this->getServiceContainer()->get( 'WikimediaEventsRequestDetailsLookup' ),
-			$experimentManager
-				?? $this->createMock( ExperimentManagerInterface::class ),
+			$experimentManager ?? $this->getServiceContainer()->get( 'TestKitchen.ExperimentManager' ),
 			$captchaFactory
 		);
+	}
+
+	/**
+	 * @return ExperimentManagerInterface&\PHPUnit\Framework\MockObject\MockObject
+	 */
+	private function mockExperimentManager( bool $isAssignedEditBlockedGroup ): ExperimentManagerInterface {
+		$experiment = $this->createMock( ExperimentInterface::class );
+		$experiment->method( 'isAssignedGroup' )->with( 'edit-blocked' )->willReturn( $isAssignedEditBlockedGroup );
+
+		$experimentManager = $this->createMock( ExperimentManagerInterface::class );
+		$experimentManager->method( 'getExperiment' )
+			->with( 'email-confirmation-enforcement-delayed' )
+			->willReturn( $experiment );
+
+		return $experimentManager;
 	}
 
 	/**
@@ -324,6 +340,127 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 			// Personal Dashboard is not installed, so the instrument recognises no origin.
 			'no registered sources' => [ [], [] ],
 		];
+	}
+
+	/**
+	 * Covers both {@link WikimediaEventsHooks::onSiteNoticeAfter} and the private
+	 * shouldShowEmailConfirmationDelayedBanner()
+	 * @return User&\PHPUnit\Framework\MockObject\MockObject
+	 */
+	private function mockEligibleUser( array $overrides = [] ) {
+		$user = $this->createMock( User::class );
+		$user->method( 'isNamed' )->willReturn( $overrides['isNamed'] ?? true );
+		$user->method( 'getEmail' )->willReturn( $overrides['email'] ?? 'user@example.com' );
+		$user->method( 'isEmailConfirmed' )->willReturn( $overrides['isEmailConfirmed'] ?? false );
+		$user->method( 'isBot' )->willReturn( $overrides['isBot'] ?? false );
+		$user->method( 'getRegistration' )->willReturn( $overrides['registration'] ?? '20260910000000' );
+		return $user;
+	}
+
+	/**
+	 * Bypasses EmailConfirmationHooks::isUserEligibleForEmailConfirmationExperiment() (which
+	 * calls CentralAuthUser::getInstance() directly and so isn't mockable) by poking the
+	 * private property that holds it, so the handler always reports the user as eligible.
+	 */
+	private function newAlwaysEligibleHookHandler(
+		?ExperimentManagerInterface $experimentManager = null
+	): WikimediaEventsHooks {
+		$handler = $this->newHookHandler( $experimentManager );
+		TestingAccessWrapper::newFromObject( $handler )->isUserEligibleForEmailConfirmationExperiment =
+			static fn () => true;
+		return $handler;
+	}
+
+	private function mockSkin( User $user, ?Title $title, ?OutputPage $out = null ): Skin {
+		$skin = $this->createMock( Skin::class );
+		$skin->method( 'getUser' )->willReturn( $user );
+		$skin->method( 'getTitle' )->willReturn( $title );
+		if ( $out ) {
+			$skin->method( 'getOutput' )->willReturn( $out );
+			$skin->method( 'msg' )->willReturnCallback( static fn ( ...$args ) => wfMessage( ...$args ) );
+		} else {
+			$skin->expects( $this->never() )->method( 'getOutput' );
+		}
+		return $skin;
+	}
+
+	public function testOnSiteNoticeAfterWithNoTitle(): void {
+		$siteNotice = 'existing-notice';
+		$this->newHookHandler()->onSiteNoticeAfter(
+			$siteNotice,
+			$this->mockSkin( $this->mockEligibleUser(), null )
+		);
+
+		$this->assertSame( 'existing-notice', $siteNotice );
+	}
+
+	/**
+	 * @dataProvider provideIneligibleUserOverrides
+	 */
+	public function testOnSiteNoticeAfterWithIneligibleUser( array $overrides ): void {
+		$permissionManager = $this->createMock( PermissionManager::class );
+		$permissionManager->expects( $this->never() )->method( 'quickUserCan' );
+		$this->setService( 'PermissionManager', $permissionManager );
+
+		$siteNotice = 'existing-notice';
+		$this->newHookHandler()->onSiteNoticeAfter(
+			$siteNotice,
+			$this->mockSkin( $this->mockEligibleUser( $overrides ), $this->makeMockTitle( 'Test' ) )
+		);
+
+		$this->assertSame( 'existing-notice', $siteNotice );
+	}
+
+	public static function provideIneligibleUserOverrides(): array {
+		return [
+			'anonymous/unregistered user' => [ [ 'isNamed' => false ] ],
+			'bot user' => [ [ 'isBot' => true ] ],
+			'user with confirmed email' => [ [ 'isEmailConfirmed' => true ] ],
+			'user with no email' => [ [ 'email' => '' ] ],
+			'user registered before the experiment started' => [ [ 'registration' => '20200101000000' ] ],
+		];
+	}
+
+	public function testOnSiteNoticeAfterWithEligibleUserWhoCannotEdit(): void {
+		$permissionManager = $this->createMock( PermissionManager::class );
+		$permissionManager->method( 'quickUserCan' )->willReturn( false );
+		$this->setService( 'PermissionManager', $permissionManager );
+
+		$siteNotice = 'existing-notice';
+		$this->newAlwaysEligibleHookHandler( $this->mockExperimentManager( true ) )->onSiteNoticeAfter(
+			$siteNotice,
+			$this->mockSkin( $this->createMock( User::class ), $this->makeMockTitle( 'Test' ) )
+		);
+
+		$this->assertSame( 'existing-notice', $siteNotice );
+	}
+
+	public function testOnSiteNoticeAfterWithEligibleUserWhoCanEdit(): void {
+		$user = $this->createMock( User::class );
+		$title = $this->makeMockTitle( 'Test' );
+
+		$permissionManager = $this->createMock( PermissionManager::class );
+		$permissionManager->expects( $this->once() )->method( 'quickUserCan' )
+			->with( 'edit', $user, $title )
+			->willReturn( true );
+		$this->setService( 'PermissionManager', $permissionManager );
+
+		$out = $this->createMock( OutputPage::class );
+		$out->expects( $this->once() )->method( 'addModuleStyles' )
+			->with( 'mediawiki.codex.messagebox.styles' );
+
+		$siteNotice = 'existing-notice';
+		$this->newAlwaysEligibleHookHandler( $this->mockExperimentManager( true ) )->onSiteNoticeAfter(
+			$siteNotice,
+			$this->mockSkin( $user, $title, $out )
+		);
+
+		$this->assertStringContainsString( 'existing-notice', $siteNotice );
+		$this->assertStringContainsString( 'wme-email-confirmation-delayed-banner', $siteNotice );
+		$this->assertStringContainsString(
+			wfMessage( 'wikimediaevents-de-4-3-4-email-confirmation-experiment-banner' )->parse(),
+			$siteNotice
+		);
 	}
 
 }

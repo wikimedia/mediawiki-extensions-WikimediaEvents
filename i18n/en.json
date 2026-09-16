@@ -18,6 +18,8 @@
 	"tag-cross-wiki-upload": "Cross-wiki upload",
 	"tag-cross-wiki-upload-description": "Files uploaded from inside the wikitext and visual editors on other wikis",
 	"tag-cross-wiki-upload-helppage": "Special:MyLanguage/Commons:Cross-wiki media upload tool",
+	"wikimediaevents-de-4-3-4-email-confirmation-experiment-banner": "Editing with this account is restricted until you [[Special:ConfirmEmail|confirm your email address]].\n\nThis is required if you ever need to recover your account, and other features and security protections on {{SITENAME}} may require a confirmed email.",
+	"wikimediaevents-de-4-3-4-email-confirmation-experiment-toast": "Editing with this account is restricted until you [$1 confirm your email address].",
 	"wikimediaevents-special-wikimediadebug-desc": "WikimediaDebug",
 	"wikimediaevents-special-wikimediadebug-notenabled": "This special page is not enabled.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "Activate debug cookie for $1",
