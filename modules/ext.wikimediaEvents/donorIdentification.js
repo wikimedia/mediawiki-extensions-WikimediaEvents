@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const accountCreated = require( './accountCreation/accountCreated.js' );
 
 const FUNDRAISING_COOKIE = 'centralnotice_hide_fundraising';
@@ -26,12 +27,13 @@ function setupInstrumentation( experiment ) {
 
 	const donationDate = donorInfo.created ? new Date( donorInfo.created * 1000 ) : null;
 	const daysSince = Math.floor( ( Date.now() - donationDate ) / ( 1000 * 60 * 60 * 24 ) );
+	const action_context = JSON.stringify( { donation_cookie_days: daysSince } );
 
 	mw.hook( 'wikimediaCustomizations.donorAccountCreation.yes' ).add( () => {
 		experiment.send( 'click', {
 			action_subtype: 'yes',
 			action_source: 'link_account_popup',
-			action_context: { donation_cookie_days: daysSince }
+			action_context
 		} );
 	} );
 
@@ -39,7 +41,7 @@ function setupInstrumentation( experiment ) {
 		experiment.send( 'click', {
 			action_subtype: 'no',
 			action_source: 'link_account_popup',
-			action_context: { donation_cookie_days: daysSince }
+			action_context
 		} );
 	} );
 
@@ -47,7 +49,7 @@ function setupInstrumentation( experiment ) {
 		experiment.send( 'click', {
 			action_subtype: 'later',
 			action_source: 'link_account_popup',
-			action_context: { donation_cookie_days: daysSince }
+			action_context
 		} );
 	} );
 
