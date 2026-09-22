@@ -85,24 +85,26 @@ class EmailConfirmationHooks implements
 
 	/** @inheritDoc */
 	public function onLocalUserCreated( $user, $autocreated ) {
-		// HACK: Ensure that the use the ExperimentManager usage below, and any later ones, use the
-		// new user rather than the previous one. However, if this is a user creating an account for
-		// another user, then we don't want this state to stick, we need to restore the old one.
-		$oldUser = RequestContext::getMain()->getUser();
-		// @phan-suppress-next-line PhanUndeclaredMethod
-		$this->experimentManager->updateUser( $user );
 		if (
 			!$autocreated &&
 			// We don't need to check whether the user was created on this wiki, because !$autocreated covers that
 			$this->isUserEligibleForEmailConfirmationExperiment( $user, ignoreCreationWiki: true )
 		) {
+			// HACK: Ensure that the use the ExperimentManager usage below, and any later ones, use the
+			// new user rather than the previous one. However, if this is a user creating an account for
+			// another user, then we don't want this state to stick, we need to restore the old one.
+			$oldUser = RequestContext::getMain()->getUser();
+			// @phan-suppress-next-line PhanUndeclaredMethod
+			$this->experimentManager->updateUser( $user );
+
 			$experiment = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-upfront-pilot' );
 			$experiment->sendExposure();
-		}
-		if ( $oldUser->isNamed() ) {
-			// If this account was created for someone else, restore the previous user
-			// @phan-suppress-next-line PhanUndeclaredMethod
-			$this->experimentManager->updateUser( $oldUser );
+
+			if ( $oldUser->isNamed() ) {
+				// If this account was created for someone else, restore the previous user
+				// @phan-suppress-next-line PhanUndeclaredMethod
+				$this->experimentManager->updateUser( $oldUser );
+			}
 		}
 	}
 
