@@ -1,4 +1,3 @@
-/* eslint-env qunit */
 'use strict';
 
 const anyPageVisit = require( 'ext.wikimediaEvents.testKitchen/anyPageVisit.js' );
