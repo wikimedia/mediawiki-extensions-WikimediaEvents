@@ -393,7 +393,8 @@
 				"index.js",
 				"ClickThroughRateInstrument.js",
 				"UrlEnrolledExperiment.js",
-				"anyPageVisit.js"
+				"anyPageVisit.js",
+				"helpers.js"
 			],
 			"dependencies": [
 				"ext.eventLogging",
@@ -427,7 +428,8 @@
 			"ext.wikimediaEvents/searchSatisfaction/searchSli.test.js",
 			"ext.wikimediaEvents/specialCreateAccount/instrumentation.test.js",
 			"ext.wikimediaEvents/externalLinks.test.js",
-			"ext.wikimediaEvents.testKitchen/anyPageVisit.test.js"
+			"ext.wikimediaEvents.testKitchen/anyPageVisit.test.js",
+			"ext.wikimediaEvents.testKitchen/helpers.test.js"
 		],
 		"dependencies": [
 			"ext.wikimediaEvents",

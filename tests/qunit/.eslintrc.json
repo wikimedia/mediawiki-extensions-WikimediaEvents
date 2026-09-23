@@ -1,4 +1,15 @@
 {
 	"root": true,
-	"extends": "wikimedia/mediawiki/qunit"
+	"extends": "wikimedia/mediawiki/qunit",
+	"rules": {
+		"camelcase": [
+			"error",
+			{
+				"properties": "never"
+			}
+		]
+	},
+	"env": {
+		"qunit": true
+	}
 }
