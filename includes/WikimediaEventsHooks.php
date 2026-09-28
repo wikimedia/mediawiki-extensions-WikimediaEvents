@@ -685,7 +685,7 @@ class WikimediaEventsHooks implements
 		// @phan-suppress-next-line PhanPluginUnreachableCode
 		$experiment = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-delayed' );
 		if (
-			( $this->isUserEligibleForEmailConfirmationExperiment )( $user ) &&
+			( $this->isUserEligibleForEmailConfirmationExperiment )( $user, $experiment ) &&
 			$experiment->isAssignedGroup( 'edit-blocked' )
 		) {
 			return $this->permissionManager->quickUserCan( 'edit', $user, $title );
