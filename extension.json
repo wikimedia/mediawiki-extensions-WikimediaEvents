@@ -200,7 +200,8 @@
 		"AuthManagerLoginAuthenticateAudit": "AccountCreation",
 		"ConfirmEmailComplete": "EmailConfirmationHooks",
 		"InvalidateEmailComplete": "EmailConfirmationHooks",
-		"SiteNoticeAfter": "main"
+		"SiteNoticeAfter": "main",
+		"getUserPermissionsErrorsExpensive": "EmailConfirmationHooks"
 	},
 	"APIModules": {
 		"wikimediaeventsblockededit": {
