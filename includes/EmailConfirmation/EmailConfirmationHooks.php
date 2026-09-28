@@ -9,6 +9,7 @@ use MediaWiki\Extension\CentralAuth\User\CentralAuthUser;
 use MediaWiki\Extension\TestKitchen\Sdk\ExperimentManagerInterface;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Output\Hook\BeforePageDisplayHook;
+use MediaWiki\Permissions\Hook\GetUserPermissionsErrorsExpensiveHook;
 use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Storage\Hook\PageSaveCompleteHook;
 use MediaWiki\User\Hook\ConfirmEmailCompleteHook;
@@ -19,6 +20,7 @@ use MediaWiki\WikiMap\WikiMap;
 class EmailConfirmationHooks implements
 	BeforePageDisplayHook,
 	ConfirmEmailCompleteHook,
+	GetUserPermissionsErrorsExpensiveHook,
 	InvalidateEmailCompleteHook,
 	LocalUserCreatedHook,
 	PageSaveCompleteHook
@@ -139,6 +141,27 @@ class EmailConfirmationHooks implements
 				[ 'mediawiki_database', 'page_namespace_id' ]
 			);
 		}
+	}
+
+	/** @inheritDoc */
+	public function onGetUserPermissionsErrorsExpensive( $title, $user, $action, &$result ) {
+		$currentUser = RequestContext::getMain()->getUser();
+		if (
+			$action !== 'edit' ||
+			// Ignore edits not made by the current user
+			!$user->equals( $currentUser ) ||
+			!$this->isUserEligibleForEmailConfirmationExperiment( $user )
+		) {
+			return true;
+		}
+
+		$experiment = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-delayed' );
+		$experiment->sendExposure();
+		if ( $experiment->isAssignedGroup( 'edit-blocked' ) ) {
+			$result = 'confirmedittext';
+			return false;
+		}
+		return true;
 	}
 
 	public static function isUserEligibleForEmailConfirmationExperiment(
