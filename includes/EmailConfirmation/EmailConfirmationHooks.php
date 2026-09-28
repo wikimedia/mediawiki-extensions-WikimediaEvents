@@ -99,7 +99,7 @@ class EmailConfirmationHooks implements
 			// @phan-suppress-next-line PhanUndeclaredMethod
 			$this->experimentManager->updateUser( $user );
 
-			$experiment = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-upfront-pilot' );
+			$experiment = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-upfront' );
 			$experiment->sendExposure();
 
 			if ( $oldUser->isNamed() ) {
@@ -174,7 +174,7 @@ class EmailConfirmationHooks implements
 			( $ignoreEmail || !$user->isEmailConfirmed() ) &&
 			( !$user->isBot() ) &&
 			// User was created after the experiment started
-			$user->getRegistration() > wfTimestamp( TS_MW, '2026-09-04 00:00:00' ) &&
+			$user->getRegistration() > wfTimestamp( TS_MW, '2026-10-02 00:00:00' ) &&
 			// User was created on this wiki
 			(
 				$ignoreCreationWiki ||
@@ -189,10 +189,10 @@ class EmailConfirmationHooks implements
 		array $interactionData = [],
 		array $contextualAttributes = []
 	): void {
-		$delayed = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-delayed-pilot' );
+		$delayed = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-delayed' );
 		$delayed->send( $eventName, $interactionData, $contextualAttributes );
 
-		$upfront = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-upfront-pilot' );
+		$upfront = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-upfront' );
 		$upfront->send( $eventName, $interactionData, $contextualAttributes );
 	}
 }
