@@ -6,6 +6,7 @@ use MediaWiki\Auth\Hook\LocalUserCreatedHook;
 use MediaWiki\Config\Config;
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Extension\CentralAuth\User\CentralAuthUser;
+use MediaWiki\Extension\TestKitchen\Sdk\ExperimentInterface;
 use MediaWiki\Extension\TestKitchen\Sdk\ExperimentManagerInterface;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Output\Hook\BeforePageDisplayHook;
@@ -52,7 +53,8 @@ class EmailConfirmationHooks implements
 		}
 
 		// Add a JS config var if the user is eligible for the email-confirmation-* experiments
-		if ( $this->isUserEligibleForEmailConfirmationExperiment( $user ) ) {
+		$experiment = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-delayed' );
+		if ( $this->isUserEligibleForEmailConfirmationExperiment( $user, $experiment ) ) {
 			$out->addJsConfigVars( [
 				'wgWMEUserEligibleForEmailExperiment' => true
 			] );
@@ -61,9 +63,7 @@ class EmailConfirmationHooks implements
 		// Log a page_visit event for users in the email-confirmation-* experiments
 		// Check basic eligibility, but don't check for unconfirmed email, since we want to continue
 		// sending events after the user confirms their email.
-		if ( $this->isUserEligibleForEmailConfirmationExperiment( $user, ignoreEmail: true ) ) {
-			$this->sendEventToBothExperiments( 'page_visit', [], [ 'page_namespace_id' ] );
-		}
+		$this->sendEventToBothExperiments( $user, 'page_visit', [], [ 'page_namespace_id' ], ignoreEmail: true );
 	}
 
 	/** @inheritDoc */
@@ -73,11 +73,7 @@ class EmailConfirmationHooks implements
 		// Send events for the email-confirmation-enforcement-* experiments.
 		// Check eligibility but don't check for unconfirmed email, since the user has just confirmed their email
 		// Also don't check for same-wiki-ness, if the user confirms their email anywhere we want to capture that
-		if ( $this->isUserEligibleForEmailConfirmationExperiment(
-				$user, ignoreEmail: true, ignoreCreationWiki: true
-		) ) {
-			$this->sendEventToBothExperiments( 'email_confirmed' );
-		}
+		$this->sendEventToBothExperiments( $user, 'email_confirmed', ignoreEmail: true, ignoreCreationWiki: true );
 	}
 
 	/** @inheritDoc */
@@ -87,10 +83,12 @@ class EmailConfirmationHooks implements
 
 	/** @inheritDoc */
 	public function onLocalUserCreated( $user, $autocreated ) {
+		$experimentBeforeUpdate = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-upfront' );
 		if (
 			!$autocreated &&
 			// We don't need to check whether the user was created on this wiki, because !$autocreated covers that
-			$this->isUserEligibleForEmailConfirmationExperiment( $user, ignoreCreationWiki: true )
+			$this->isUserEligibleForEmailConfirmationExperiment( $user, $experimentBeforeUpdate,
+				ignoreCreationWiki: true )
 		) {
 			// HACK: Ensure that the use the ExperimentManager usage below, and any later ones, use the
 			// new user rather than the previous one. However, if this is a user creating an account for
@@ -99,6 +97,7 @@ class EmailConfirmationHooks implements
 			// @phan-suppress-next-line PhanUndeclaredMethod
 			$this->experimentManager->updateUser( $user );
 
+			// Re-fetch the experiment because we have updated the ExperimentManager
 			$experiment = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-upfront' );
 			$experiment->sendExposure();
 
@@ -134,13 +133,13 @@ class EmailConfirmationHooks implements
 		// Send events for the email-confirmation-enforcement-* experiments.
 		// Check basic eligibility, but don't check for unconfirmed email, since we want to continue
 		// sending events after the user confirms their email.
-		if ( $this->isUserEligibleForEmailConfirmationExperiment( $currentUser, ignoreEmail: true ) ) {
-			$this->sendEventToBothExperiments(
-				'edit_saved',
-				[ 'page' => [ 'revision_id' => $revisionRecord->getId() ] ],
-				[ 'mediawiki_database', 'page_namespace_id' ]
-			);
-		}
+		$this->sendEventToBothExperiments(
+			$currentUser,
+			'edit_saved',
+			[ 'page' => [ 'revision_id' => $revisionRecord->getId() ] ],
+			[ 'mediawiki_database', 'page_namespace_id' ],
+			ignoreEmail: true
+		);
 	}
 
 	/** @inheritDoc */
@@ -149,13 +148,15 @@ class EmailConfirmationHooks implements
 		if (
 			$action !== 'edit' ||
 			// Ignore edits not made by the current user
-			!$user->equals( $currentUser ) ||
-			!$this->isUserEligibleForEmailConfirmationExperiment( $user )
+			!$user->equals( $currentUser )
 		) {
 			return true;
 		}
-
 		$experiment = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-delayed' );
+		if ( !$this->isUserEligibleForEmailConfirmationExperiment( $user, $experiment ) ) {
+			return true;
+		}
+
 		$experiment->sendExposure();
 		if ( $experiment->isAssignedGroup( 'edit-blocked' ) ) {
 			$result = 'confirmedittext';
@@ -166,15 +167,20 @@ class EmailConfirmationHooks implements
 
 	public static function isUserEligibleForEmailConfirmationExperiment(
 		User $user,
+		ExperimentInterface $experiment,
 		bool $ignoreEmail = false,
 		bool $ignoreCreationWiki = false
 	): bool {
+		$startDate = $experiment->getStartDate();
+		$userRegistration = $user->getRegistration();
 		return $user->isNamed() &&
 			( $ignoreEmail || $user->getEmail() !== '' ) &&
 			( $ignoreEmail || !$user->isEmailConfirmed() ) &&
 			( !$user->isBot() ) &&
 			// User was created after the experiment started
-			$user->getRegistration() > wfTimestamp( TS_MW, '2026-10-02 00:00:00' ) &&
+			$startDate &&
+			$userRegistration &&
+			$startDate->getTimestamp() < wfTimestamp( TS_UNIX, $userRegistration ) &&
 			// User was created on this wiki
 			(
 				$ignoreCreationWiki ||
@@ -185,14 +191,25 @@ class EmailConfirmationHooks implements
 	}
 
 	private function sendEventToBothExperiments(
+		User $user,
 		string $eventName,
 		array $interactionData = [],
-		array $contextualAttributes = []
+		array $contextualAttributes = [],
+		bool $ignoreEmail = false,
+		bool $ignoreCreationWiki = false
 	): void {
 		$delayed = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-delayed' );
-		$delayed->send( $eventName, $interactionData, $contextualAttributes );
+		if ( $this->isUserEligibleForEmailConfirmationExperiment( $user, $delayed,
+			$ignoreEmail, $ignoreCreationWiki )
+		) {
+			$delayed->send( $eventName, $interactionData, $contextualAttributes );
+		}
 
 		$upfront = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-upfront' );
-		$upfront->send( $eventName, $interactionData, $contextualAttributes );
+		if ( $this->isUserEligibleForEmailConfirmationExperiment( $user, $upfront,
+			$ignoreEmail, $ignoreCreationWiki )
+		) {
+			$upfront->send( $eventName, $interactionData, $contextualAttributes );
+		}
 	}
 }
