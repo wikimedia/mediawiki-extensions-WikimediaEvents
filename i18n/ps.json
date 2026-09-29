@@ -1,11 +1,15 @@
 {
 	"@metadata": {
 		"authors": [
+			"باران",
 			"شاه زمان پټان"
 		]
 	},
 	"wikimediaevents-desc": "د EventLogging کارولو سره د ويکي‌رسنۍ ځانگړې پېښې يادښتوي",
 	"apihelp-wikimediaeventsblockededit-summary": "د بنديز لگېدلو سمون هڅو اړوند يادښت مالومات",
 	"apihelp-wikimediaeventshcaptchaeditattempt-param-title": "مخ سرليک",
-	"apihelp-wikimediaeventshcaptchaeditattempt-param-editing_session_id": "ناستې پېژند سمول"
+	"apihelp-wikimediaeventshcaptchaeditattempt-param-proposed_content": "د وړانديز شوې منځپانگې ليک (ډېرترډېره ۸کی‌بي)",
+	"apihelp-wikimediaeventshcaptchaeditattempt-param-editing_session_id": "ناستې پېژند سمول",
+	"apihelp-wikimediaeventshcaptchaeditattempt-param-revision_id": "د هغه مخ د بياليدنې پېژند چې سمېږي",
+	"wikimediaevents-special-wikimediadebug-notenabled": "دا ځانگړی مخ چارن شوی نه دی."
 }
