@@ -310,3 +310,17 @@ Note that this module depends on `ext.eventLogging` even though it calls nothing
 the `performer_edit_count_bucket` contextual attribute can arrive empty.
 
 More details at <https://phabricator.wikimedia.org/T434795>
+
+## Event data products
+
+* Since: October 2026
+* Files: EventDataProducts/*
+* Contact: Data Engineering (https://wikitech.wikimedia.org/wiki/Event_Platform)
+
+Producers of reusable Event Platform streams (data products), as opposed to analytics
+instrumentation.
+
+* `RevisionHtmlFeatureCountsChangeIngress` produces the
+  `mediawiki.revision_html_feature_counts_change.v1` stream from prefetched Linked Artifacts Cache
+  `revision_feature_counts` artifacts.
+  See [T432604 IR2.1.2d: Feature count data product [Attribution API]](https://phabricator.wikimedia.org/T432604)

@@ -150,6 +150,23 @@
 			]
 		}
 	},
+	"DomainEventIngresses": [
+		{
+			"class": "WikimediaEvents\\EventDataProducts\\RevisionHtmlFeatureCountsChangeIngress",
+			"services": [
+				"EventBus.EventBusFactory",
+				"EventBus.StreamNameMapper",
+				"EventBus.EventSerializer",
+				"EventBus.PageEntitySerializer",
+				"EventBus.RevisionEntitySerializer",
+				"PageStore",
+				"RevisionStore"
+			],
+			"events": [
+				"RevisionLinkedArtifactPrefetched"
+			]
+		}
+	],
 	"Hooks": {
 		"ArticleProtectComplete": "TemporaryAccountsInstrumentation",
 		"AuthChangeFormFields": [
