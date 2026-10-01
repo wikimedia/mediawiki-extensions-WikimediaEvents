@@ -1,9 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"شاه زمان پټان"
+			"شاه زمان پټان",
+			"باران"
 		]
 	},
 	"wikimediaevents-desc": "د EventLogging کارولو سره د ويکي‌رسنۍ ځانگړې پېښې يادښتوي",
-	"apihelp-wikimediaeventsblockededit-summary": "د بنديز لگېدلو سمون هڅو اړوند يادښت مالومات"
+	"apihelp-wikimediaeventsblockededit-summary": "د بنديز لگېدلو سمون هڅو اړوند يادښت مالومات",
+	"wikimediaevents-special-wikimediadebug-notenabled": "دا ځانگړی مخ چارن شوی نه دی."
 }
