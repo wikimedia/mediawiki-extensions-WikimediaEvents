@@ -20,6 +20,8 @@
 	"apierror-wikimediaevents-skipcaptcha-not-applicable": "Benutzer mit skipcaptcha-Erlaubnis können diese API nicht verwenden",
 	"tag-cross-wiki-upload": "Wikiübergreifender Upload",
 	"tag-cross-wiki-upload-description": "Dateien, die von innerhalb des Wikitext- und visuellen Editors auf anderen Wikis hochgeladen wurden.",
+	"wikimediaevents-de-4-3-4-email-confirmation-experiment-banner": "Das Bearbeiten mit diesem Konto ist eingeschränkt, bis du [[Special:ConfirmEmail|deine E-Mail-Adresse bestätigt hast]].\n\nDies ist erforderlich, falls du dein Konto einmal wiederherstellen musst, und auch für andere Funktionen und Sicherheitsmaßnahmen auf {{SITENAME}} ist möglicherweise eine bestätigte E-Mail-Adresse erforderlich.",
+	"wikimediaevents-de-4-3-4-email-confirmation-experiment-toast": "Die Bearbeitungsmöglichkeiten mit diesem Konto sind eingeschränkt, bis du [$1 deine E-Mail-Adresse bestätigst].",
 	"wikimediaevents-special-wikimediadebug-desc": "Wikimedia-Debug",
 	"wikimediaevents-special-wikimediadebug-notenabled": "Diese Spezialseite ist nicht aktiviert.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "Debug-Cookie für $1 aktivieren",
