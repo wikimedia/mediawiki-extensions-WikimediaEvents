@@ -17,6 +17,8 @@
 	"apierror-wikimediaevents-skipcaptcha-not-applicable": "Isticmaalayaasha leh oggolaanshaha skipcaptcha ma isticmaali karaan API-kan",
 	"tag-cross-wiki-upload": "Gelinta faylka ee wiki-yada kala duwan",
 	"tag-cross-wiki-upload-description": "Faylal laga soo geliyay gudaha tifaftiraha wikitext iyo tifaftiraha muuqaalka ee wiki-yada kale",
+	"wikimediaevents-de-4-3-4-email-confirmation-experiment-banner": "Tafatirka akoonkan waa xaddidan yahay ilaa aad [[Special:ConfirmEmail|xaqiijiso cinwaankaaga iimaylka]].\n\nTani waa loo baahan yahay haddii aad mar uun u baahato inaad soo ceshato akoonkaaga, waxaana laga yaabaa in astaamo kale iyo ilaalinta amniga ee {{SITENAME}} ay u baahan yihiin iimayl la xaqiijiyay.",
+	"wikimediaevents-de-4-3-4-email-confirmation-experiment-toast": "Tafatirka akoonkan waa xaddidan yahay ilaa aad [$1 xaqiijiso cinwaankaaga iimaylka].",
 	"wikimediaevents-special-wikimediadebug-notenabled": "Boggan gaarka ah lama hawlgelin.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "Dhaqaaji kukiya khaladka ah ee $1",
 	"wikimediaevents-special-wikimediadebug-submit-renew": "Cusboonaysii kukiya $1",

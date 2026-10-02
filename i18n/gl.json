@@ -19,6 +19,8 @@
 	"apierror-wikimediaevents-skipcaptcha-not-applicable": "Os usuarios con permiso «skipcaptcha» non poden usar esta API",
 	"tag-cross-wiki-upload": "Subida interwiki",
 	"tag-cross-wiki-upload-description": "Ficheiros subidos dende o texto wiki e editores visuais noutros wikis",
+	"wikimediaevents-de-4-3-4-email-confirmation-experiment-banner": "A edición con esta conta está restrinxida ata que [[Special:ConfirmEmail|confirmes o teu enderezo de correo electrónico]].\n\nIsto é necesario se algunha vez tes que recuperar a túa conta; ademais, algunhas funcións e proteccións de seguranza de {{SITENAME}} poden necesitar un correo electrónico confirmado.",
+	"wikimediaevents-de-4-3-4-email-confirmation-experiment-toast": "A edición con esta conta está restrinxida ata que [$1 confirmes o teu enderezo de correo electrónico].",
 	"wikimediaevents-special-wikimediadebug-notenabled": "Esta páxina especial non está activada.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "Activar a cookie de depuración durante $1",
 	"wikimediaevents-special-wikimediadebug-submit-renew": "Renovar a cookie por $1",
