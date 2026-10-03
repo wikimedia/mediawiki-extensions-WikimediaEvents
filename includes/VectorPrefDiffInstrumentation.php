@@ -8,7 +8,7 @@ use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Preferences\Hook\PreferencesFormPreSaveHook;
 use MediaWiki\User\User;
-use MWCryptHash;
+use Wikimedia\MWCryptHash;
 
 /**
  * T261842: The Web team is interested in all skin changes involving Vector
