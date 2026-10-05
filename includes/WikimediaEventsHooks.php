@@ -675,6 +675,11 @@ class WikimediaEventsHooks implements
 	 * @return bool
 	 */
 	private function shouldShowEmailConfirmationDelayedBanner( User $user, Title $title ): bool {
+		// HACK: Temporarily disable this behavior, in an attempt to improve experiment integrity
+		return false;
+
+		// phpcs:disable Squiz.PHP.NonExecutableCode.Unreachable
+		// @phan-suppress-next-line PhanPluginUnreachableCode
 		$experiment = $this->experimentManager->getExperiment( 'email-confirmation-enforcement-delayed' );
 		if (
 			( $this->isUserEligibleForEmailConfirmationExperiment )( $user ) &&
@@ -683,5 +688,6 @@ class WikimediaEventsHooks implements
 			return $this->permissionManager->quickUserCan( 'edit', $user, $title );
 		}
 		return false;
+		// phpcs:enable Squiz.PHP.NonExecutableCode.Unreachable
 	}
 }

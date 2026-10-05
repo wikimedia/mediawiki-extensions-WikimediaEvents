@@ -436,6 +436,7 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 	}
 
 	public function testOnSiteNoticeAfterWithEligibleUserWhoCanEdit(): void {
+		$this->markTestSkipped( 'This behavior is temporarily disabled in WikimediaEventsHooks' );
 		$user = $this->createMock( User::class );
 		$title = $this->makeMockTitle( 'Test' );
 
