@@ -274,9 +274,12 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 	/**
 	 * @dataProvider provideDiffTracking
 	 */
-	public function testDiffTracking( array $requestParams, bool $expected ): void {
+	public function testDiffTracking( array $requestParams, bool $isNamed, bool $expected ): void {
 		$title = $this->createMock( Title::class );
 		$title->method( 'isSpecial' )->willReturn( false );
+
+		$user = $this->createMock( User::class );
+		$user->method( 'isNamed' )->willReturn( $isNamed );
 
 		$addedModules = [];
 		$out = $this->createMock( OutputPage::class );
@@ -286,7 +289,7 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 			}
 		);
 		$out->method( 'getTitle' )->willReturn( $title );
-		$out->method( 'getUser' )->willReturn( $this->createMock( User::class ) );
+		$out->method( 'getUser' )->willReturn( $user );
 		$out->method( 'getRequest' )->willReturn( new FauxRequest( $requestParams ) );
 
 		$handler = $this->newHookHandler();
@@ -300,13 +303,15 @@ class WikimediaEventsHooksTest extends \MediaWikiIntegrationTestCase {
 
 	public static function provideDiffTracking(): array {
 		return [
-			'diff of a specific revision' => [ [ 'diff' => '1234' ], true ],
-			'diff=prev' => [ [ 'diff' => 'prev' ], true ],
+			'diff of a specific revision' => [ [ 'diff' => '1234' ], true, true ],
+			'diff=prev' => [ [ 'diff' => 'prev' ], true, true ],
 			// Special:Diff redirects to these, and DifferenceEngine treats an empty diff
 			// parameter as "diff against the previous revision", so it counts too.
-			'empty diff parameter' => [ [ 'diff' => '' ], true ],
-			'not a diff' => [ [], false ],
-			'oldid alone is a permalink, not a diff' => [ [ 'oldid' => '1234' ], false ],
+			'empty diff parameter' => [ [ 'diff' => '' ], true, true ],
+			'not a diff' => [ [], true, false ],
+			'oldid alone is a permalink, not a diff' => [ [ 'oldid' => '1234' ], true, false ],
+			// An anonymous or temporary account is not named (T440220).
+			'diff viewed by an unnamed account' => [ [ 'diff' => '1234' ], false, false ],
 		];
 	}
 

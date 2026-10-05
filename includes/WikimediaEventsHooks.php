@@ -606,10 +606,13 @@ class WikimediaEventsHooks implements
 	 * is what Article::view() itself branches on to reach Article::showDiffPage(), and the
 	 * module makes sure a diff really rendered before doing anything.
 	 *
+	 * isNamed() rather than isRegistered(): a temporary account is the logged-out editor
+	 * population on a wiki with IP masking, and only named accounts are in scope (T440220).
+	 *
 	 * @param OutputPage $out
 	 */
 	private function maybeAddDiffTracking( OutputPage $out ): void {
-		if ( !$out->getRequest()->getCheck( 'diff' ) ) {
+		if ( !$out->getRequest()->getCheck( 'diff' ) || !$out->getUser()->isNamed() ) {
 			return;
 		}
 		$out->addModules( 'ext.wikimediaEvents.diff' );

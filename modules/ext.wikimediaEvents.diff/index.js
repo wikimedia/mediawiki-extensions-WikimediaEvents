@@ -12,7 +12,9 @@
  * own impression is not usable on a diff page.
  *
  * Which wikis this collects on, and at what rate, is the instrument's sample_rate map in the
- * Test Kitchen UI, not a config variable here.
+ * Test Kitchen UI, not a config variable here. Who it collects from is decided server-side:
+ * WikimediaEventsHooks::maybeAddDiffTracking() adds this module for named accounts only
+ * (T440220).
  *
  * Safely no-ops when Test Kitchen is unavailable or the reader is out of sample.
  */
