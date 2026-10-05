@@ -17,6 +17,8 @@
 	"apierror-wikimediaevents-skipcaptcha-not-applicable": "КОрисници со дозвола skipcaptcha не можат да го користат овој приложник",
 	"tag-cross-wiki-upload": "Подигање на сите викија",
 	"tag-cross-wiki-upload-description": "Податотеки подигнати од викитекстуалниот и нагледниот уредник на други викија",
+	"wikimediaevents-de-4-3-4-email-confirmation-experiment-banner": "Уредувањето со оваа сметка е ограничено додека не [[Special:ConfirmEmail|ја потврдите вашата е-пошта]].\n\nОва се бара доколку некогаш се јави потреба да си ја повратите сметката. Исто така, други функции и безбедносни заштити на {{SITENAME}} може да бараат потврдена е-пошта.",
+	"wikimediaevents-de-4-3-4-email-confirmation-experiment-toast": "Уредувањето со оваа сметка е огранчено додека не [$1 ја потврдите вашата е-пошта].",
 	"wikimediaevents-special-wikimediadebug-notenabled": "Оваа службена страница не е овозможена.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "Активирај колаче за отстранување грешки за $1",
 	"wikimediaevents-special-wikimediadebug-submit-renew": "Обнови колаче за $1",
