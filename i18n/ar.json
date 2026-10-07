@@ -21,6 +21,7 @@
 	"apierror-wikimediaevents-skipcaptcha-not-applicable": "لا يمكن للمستخدمين الذين لديهم إذن تخطي التحقق من الكابتشا استخدام واجهة برمجة التطبيقات هذه",
 	"tag-cross-wiki-upload": "تحميل عبر الويكي",
 	"tag-cross-wiki-upload-description": "الملفات التي تم تحميلها من داخل محرر نصوص الويكي والمحرر المرئي على مواقع الويكي الأخرى",
+	"wikimediaevents-de-4-3-4-email-confirmation-experiment-toast": "التعديل باستخدام هذا الحساب مقيد حتى تقوم بتأكيد عنوان بريدك $1 .",
 	"wikimediaevents-special-wikimediadebug-notenabled": "هذه الصفحة الخاصة غير مفعلة.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "تفعيل ملف تعريف الارتباط التصحيحي مقابل $1",
 	"wikimediaevents-special-wikimediadebug-submit-renew": "تجديد ملف تعريف الارتباط مقابل $1",
