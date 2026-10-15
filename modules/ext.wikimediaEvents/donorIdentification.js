@@ -4,10 +4,6 @@ const accountCreated = require( './accountCreation/accountCreated.js' );
 const FUNDRAISING_COOKIE = 'centralnotice_hide_fundraising';
 const EXPERIMENT_NAME = 'donor-status-consent';
 
-const experimentPromise = Promise.resolve(
-	mw.testKitchen.getExperiment( EXPERIMENT_NAME )
-);
-
 // catch hooks from interacting with the experimental dialog
 function setupInstrumentation( experiment ) {
 	const donationCookie = mw.cookie.get( FUNDRAISING_COOKIE, '' );
@@ -29,6 +25,7 @@ function setupInstrumentation( experiment ) {
 	const daysSince = Math.floor( ( Date.now() - donationDate ) / ( 1000 * 60 * 60 * 24 ) );
 	const action_context = JSON.stringify( { donation_cookie_days: daysSince } );
 
+	experiment.use( accountCreated );
 	mw.hook( 'wikimediaCustomizations.donorAccountCreation.yes' ).add( () => {
 		experiment.send( 'click', {
 			action_subtype: 'yes',
@@ -52,16 +49,12 @@ function setupInstrumentation( experiment ) {
 			action_context
 		} );
 	} );
-
-	mw.hook( 'wikimediaCustomizations.donorAccountCreation.accountConnected' ).add( () => {
-		accountCreated( experiment );
-	} );
 }
 
 $( () => {
-	experimentPromise.then( ( experiment ) => {
+	mw.testKitchen.getExperiment( EXPERIMENT_NAME ).then( ( experiment ) => {
 		// only fire if the user is in the experiment, since they could also have used a campaign
-		if ( experiment && experiment.getAssignedGroup() ) {
+		if ( experiment.getAssignedGroup() ) {
 			setupInstrumentation( experiment );
 		}
 	} );
