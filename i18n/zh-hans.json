@@ -25,6 +25,8 @@
 	"apierror-wikimediaevents-skipcaptcha-not-applicable": "拥有skipcaptcha权限的用户无法使用此API",
 	"tag-cross-wiki-upload": "跨wiki上传",
 	"tag-cross-wiki-upload-description": "在其他wiki上使用wikitext和可视化编辑器上传的文件",
+	"wikimediaevents-de-4-3-4-email-confirmation-experiment-banner": "要使用此账号做出编辑，请[[Special:ConfirmEmail|确认您的电子邮件地址]]。\n\n为防止日后出现账号丢失需要找回的情况，还请务必提前进行此操作。此外，{{SITENAME}}上的其他功能和相关安全保护措施也可能要求验证电子邮件地址。",
+	"wikimediaevents-de-4-3-4-email-confirmation-experiment-toast": "要使用此账号做出编辑，请[$1 确认您的电子邮件地址]。",
 	"wikimediaevents-special-wikimediadebug-desc": "WikimediaDebug",
 	"wikimediaevents-special-wikimediadebug-notenabled": "此特殊页面未启用。",
 	"wikimediaevents-special-wikimediadebug-submit-set": "激活调试Cookie$1",
