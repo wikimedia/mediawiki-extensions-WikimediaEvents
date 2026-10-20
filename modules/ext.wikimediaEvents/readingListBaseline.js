@@ -7,6 +7,10 @@ const RL_MENU_SELECTOR = '#pt-readinglists-2, #pt-readinglists, #pt-readinglists
 const SOURCE_USER_MENU = 'user_menu'; // corresponds to dropdown
 const SOURCE_USER_MENU_OVERFLOW = 'top_right'; // corresponds to p-vector-user-menu-overflow
 const SOURCE_STICKY_HEADER = 'sticky_header';
+const SOURCE_MW_NOTIFY_NOTIFICATION = 'article_saved_popup';
+const SOURCE_READING_LIST_FEED = 'reading_list';
+const SOURCE_READING_LIST_CUSTOM_LIST = 'reading_list_custom_list';
+const SOURCE_ARTICLE = 'article';
 
 /**
  * @param {Event} event
@@ -50,24 +54,64 @@ function trackBookmarkListIconButtonClicks( instrument ) {
  */
 function trackNotificationClicks( instrument ) {
 	document.addEventListener( 'click', ( event ) => {
-		const $link = $( event.target ).closest( 'a' );
-
+		const link = findClosestElementFromEvent( event, 'a' );
+		const linkHref = link ? link.getAttribute( 'href' ) : '';
 		// Check if it's a reading list link inside a notification
 		if (
-			$link.length &&
-			$link.attr( 'href' ) &&
-			$link.attr( 'href' ).includes( 'Special:ReadingLists' ) &&
-			$link.closest( '.mw-notification' ).length
+			link &&
+			linkHref &&
+			linkHref.includes( 'Special:ReadingLists' ) &&
+			link.closest( '.mw-notification' )
 		) {
-
-			instrument.send( 'click', {
-				action_subtype: 'view_reading_list',
-				action_source: 'article_saved_popup'
-			} );
+			recordInstrumentEvent( instrument, 'view_reading_list', SOURCE_MW_NOTIFY_NOTIFICATION );
 		}
 	}, true ); // Use capture phase (true) so this runs before stopPropagation
 	// within mw.notification.notify is called
 }
+
+/**
+ * @param {string} path
+ * @return {boolean}
+ */
+const isOnCollectionPage = ( path ) => {
+	/**
+	 * @param {string} str
+	 * @return {boolean}
+	*/
+	const isInt = ( str ) => !!str.match( /^[0-9]*$/ ) && !Number.isNaN( parseInt( str, 10 ) );
+	const pathPrefix = mw.config.get( 'wgArticlePath' ).replace( '$1', '' );
+	const rlPath = path.indexOf( pathPrefix ) === 0 ? path.slice( pathPrefix.length ) : path;
+	// Remove any empty segments e.g. // or trailing "/"
+	const segments = rlPath.split( '/' ).filter( ( str ) => str );
+	// Given URLs can't be considered stable, its a reading list (feed) if:
+	// Special:ReadingLists/<username> OR Special:ReadingLists/
+	// It's reading_list_custom if:
+	// Special:ReadingLists/<username>/<id> OR Special:ReadingLists/<username>/<id>/<name>
+	// OR Special:ReadingLists/<id> OR Special:ReadingLists/<id>/<name>
+	return segments.length > 3 && isInt( segments[ 2 ] ) ||
+		segments.length === 3 && isInt( segments[ 1 ] ) ||
+		segments.length === 3 && isInt( segments[ 2 ] ) ||
+		segments.length === 2 && isInt( segments[ 1 ] );
+};
+
+/**
+ * Check whether the user is currently on the ReadingLists page.
+ *
+ * @return {boolean}
+ */
+
+const isReadingListPage = () => mw.config.get( 'wgCanonicalSpecialPageName' ) === 'ReadingLists';
+/**
+ * @param {string} path
+ * @return {string}
+ */
+const getSource = ( path ) => {
+	if ( isReadingListPage() ) {
+		return isOnCollectionPage( path ) ? SOURCE_READING_LIST_CUSTOM_LIST : SOURCE_READING_LIST_FEED;
+	} else {
+		return SOURCE_ARTICLE;
+	}
+};
 
 /**
  * Track clicks to saved articles from the reading list special page
@@ -76,36 +120,36 @@ function trackNotificationClicks( instrument ) {
  */
 function trackReadingListLinkClicks( instrument ) {
 	document.addEventListener( 'click', ( event ) => {
-		const $link = $( event.target ).closest( 'a' );
-		const $items = $link.closest( '.reading-lists-items' );
-
+		const link = findClosestElementFromEvent( event, 'a' );
 		if (
-			$link.length &&
-			$items.length
+			link &&
+			link.closest( '.reading-lists-items' )
 		) {
-			instrument.send( 'click', {
-				action_subtype: 'view_article',
-				action_source: 'reading_list'
-			} );
+			recordInstrumentEvent( instrument, 'view_article', getSource( location.pathname ) );
 		}
 	} );
 }
 
 /**
  * @param {Object} instrument The instrument object
- * @param {string} subtype
- * @param {string} source
+ * @param {string} action_subtype
+ * @param {string} action_source
+ * @param {string} action
  */
-function recordInstrumentEvent( instrument, subtype, source ) {
-	instrument.send( 'click', {
-		action_subtype: subtype,
-		action_source: source
+function recordInstrumentEvent( instrument, action_subtype, action_source, action = 'click' ) {
+	// @ts-ignore
+	instrument.send( action, {
+		action_subtype,
+		action_source
 	} );
 }
 
+/**
+ * @param {Object} instrument The instrument object
+ */
 const init = ( instrument ) => {
 	// Only run on the reading lists special page
-	if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'ReadingLists' ) {
+	if ( isReadingListPage() ) {
 		trackReadingListLinkClicks( instrument );
 	}
 
@@ -121,16 +165,27 @@ const init = ( instrument ) => {
 		const action = isSaved ? ACTION_SAVE : ACTION_REMOVE;
 		recordInstrumentEvent( instrument, action, source );
 	} );
+
+	mw.hook( 'readingLists.actions' ).add( ( action, subtype ) => {
+		recordInstrumentEvent( instrument,
+			subtype,
+			getSource( location.pathname ),
+			action
+		);
+	} );
 };
 
 $( () => {
+	// @ts-ignore
 	if ( window.QUnit ) {
 		return;
 	}
+	// @ts-ignore
 	init( mw.testKitchen.getInstrument( INSTRUMENT_NAME ) );
 } );
 
 module.exports = {
 	init,
-	trackBookmarkListIconButtonClicks
+	trackBookmarkListIconButtonClicks,
+	isOnCollectionPage
 };

@@ -1,6 +1,7 @@
 {
 	"include": [
 		"modules/ext.wikimediaEvents/clientError.js",
+		"modules/ext.wikimediaEvents/readingListBaseline.js",
 		"modules/index.d.ts"
 	],
 	"compilerOptions": {
