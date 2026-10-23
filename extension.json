@@ -458,6 +458,7 @@
 			"ext.wikimediaEvents/searchSatisfaction/searchSatisfaction.test.js",
 			"ext.wikimediaEvents/searchSatisfaction/searchSli.test.js",
 			"ext.wikimediaEvents/specialCreateAccount/instrumentation.test.js",
+			"ext.wikimediaEvents/readingListBaseline.test.js",
 			"ext.wikimediaEvents/externalLinks.test.js",
 			"ext.wikimediaEvents.testKitchen/anyPageVisit.test.js",
 			"ext.wikimediaEvents.testKitchen/helpers.test.js",
