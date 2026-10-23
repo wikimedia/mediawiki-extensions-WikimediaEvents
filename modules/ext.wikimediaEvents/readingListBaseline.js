@@ -1,25 +1,46 @@
+/* eslint-disable camelcase */
 const INSTRUMENT_NAME = 'reading-list-engagement';
 const ACTION_SAVE = 'save_article_to_reading_list';
 const ACTION_REMOVE = 'remove_article_from_reading_list';
+// Minerva omits the ID so we require a separate selector for that.
+const RL_MENU_SELECTOR = '#pt-readinglists-2, #pt-readinglists, #pt-readinglists-sticky-header, .menu__item--readinglists';
+const SOURCE_USER_MENU = 'user_menu'; // corresponds to dropdown
+const SOURCE_USER_MENU_OVERFLOW = 'top_right'; // corresponds to p-vector-user-menu-overflow
+const SOURCE_STICKY_HEADER = 'sticky_header';
 
-const instrumentPromise = Promise.resolve(
-	mw.testKitchen.getInstrument( INSTRUMENT_NAME )
-);
+/**
+ * @param {Event} event
+ * @param {string} selector
+ * @return {Element|null}
+ */
+function findClosestElementFromEvent( event, selector ) {
+	if ( !event.target ) {
+		return null;
+	}
+	const target = /** @type Element */(
+		event.target
+	);
+	return target.closest( selector );
+}
 
 /**
  * Track clicks on reading list bookmark icon
  *
- * @param {jQuery} $bookmarkButton The bookmark button element
  * @param {Object} instrument The instrument object
  */
-function trackBookmarkIconButtonClicks( $bookmarkButton, instrument ) {
-	$bookmarkButton.on( 'click', ( event ) => {
-		const isToolbarButton = event.target.closest( '#pt-readinglists-2' ) !== null;
-		instrument.send( 'click', {
-			action_subtype: 'view_reading_list',
-			action_source: isToolbarButton ? 'top_right' : 'user_menu'
-		} );
-	} );
+function trackBookmarkListIconButtonClicks( instrument ) {
+	document.body.addEventListener( 'click', ( /** @type Event */event ) => {
+		const link = findClosestElementFromEvent( event, RL_MENU_SELECTOR );
+		if ( !link ) {
+			return;
+		}
+
+		const isStickyHeader = findClosestElementFromEvent( event, '#ca-bookmark-sticky-header' );
+		const isToolbarButton = findClosestElementFromEvent( event, '#pt-readinglists-2' ) !== null;
+		const userMenuSource = isToolbarButton ? SOURCE_USER_MENU_OVERFLOW : SOURCE_USER_MENU;
+		const action_source = isStickyHeader ? SOURCE_STICKY_HEADER : userMenuSource;
+		recordInstrumentEvent( instrument, 'view_reading_list', action_source );
+	}, true );
 }
 
 /**
@@ -82,29 +103,34 @@ function recordInstrumentEvent( instrument, subtype, source ) {
 	} );
 }
 
-$( () => {
+const init = ( instrument ) => {
+	// Only run on the reading lists special page
+	if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'ReadingLists' ) {
+		trackReadingListLinkClicks( instrument );
+	}
 
-	instrumentPromise.then( ( instrument ) => {
-		if ( !instrument ) {
-			return;
-		}
+	// Note sticky header may be added via JavaScript, and is only present in selector for testing.
+	// Checking the other selectors should be sufficient for detecting the reading list feature.
+	const bookmarkButtons = document.querySelectorAll( RL_MENU_SELECTOR );
+	if ( bookmarkButtons.length ) {
+		trackBookmarkListIconButtonClicks( instrument );
+		trackNotificationClicks( instrument );
+	}
 
-		const $bookmarkButton = $( document ).find( '.mw-ui-icon-bookmarkList, .menu__item--readinglists, #pt-readinglists a' );
-
-		// Only run on the reading lists special page
-		if ( mw.config.get( 'wgCanonicalSpecialPageName' ) === 'ReadingLists' ) {
-			trackReadingListLinkClicks( instrument );
-		}
-
-		if ( $bookmarkButton.length ) {
-			trackBookmarkIconButtonClicks( $bookmarkButton, instrument );
-			trackNotificationClicks( instrument );
-		}
-
-		mw.hook( 'readingLists.bookmark.change' ).add( ( isSaved, source ) => {
-			const action = isSaved ? ACTION_SAVE : ACTION_REMOVE;
-			recordInstrumentEvent( instrument, action, source );
-		} );
-
+	mw.hook( 'readingLists.bookmark.change' ).add( ( isSaved, source ) => {
+		const action = isSaved ? ACTION_SAVE : ACTION_REMOVE;
+		recordInstrumentEvent( instrument, action, source );
 	} );
+};
+
+$( () => {
+	if ( window.QUnit ) {
+		return;
+	}
+	init( mw.testKitchen.getInstrument( INSTRUMENT_NAME ) );
 } );
+
+module.exports = {
+	init,
+	trackBookmarkListIconButtonClicks
+};
