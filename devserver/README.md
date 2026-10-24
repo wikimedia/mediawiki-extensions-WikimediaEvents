@@ -39,7 +39,6 @@ services:
 `LocalSettings.php`:
 
 ```php
-$wgStatsdServer = 'statsd';
 $wgWMEStatsdBaseUri = 'http://localhost:8127/beacon/statsv';
 ```
 
