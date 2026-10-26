@@ -164,6 +164,24 @@
 			"events": [
 				"RevisionLinkedArtifactPrefetched"
 			]
+		},
+		{
+			"class": "WikimediaEvents\\EventDataProducts\\EntityTagsChangeIngress",
+			"services": [
+				"EventBus.EventBusFactory",
+				"EventBus.StreamNameMapper",
+				"EventBus.EventSerializer",
+				"EventBus.PageEntitySerializer",
+				"EventBus.RevisionEntitySerializer",
+				"EventBus.UserEntitySerializer",
+				"TitleFactory",
+				"ChangeTagsStore",
+				"PageStore"
+			],
+			"events": [
+				"RevisionTagsUpdated",
+				"LogTagsUpdated"
+			]
 		}
 	],
 	"Hooks": {

@@ -324,3 +324,7 @@ instrumentation.
   `mediawiki.revision_html_feature_counts_change.v1` stream from prefetched Linked Artifacts Cache
   `revision_feature_counts` artifacts.
   See [T432604 IR2.1.2d: Feature count data product [Attribution API]](https://phabricator.wikimedia.org/T432604)
+* `EntityTagsChangeIngress` produces the `mediawiki.revision_tags_change.v1` and
+  `mediawiki.log_tags_change.v1` streams from the `RevisionTagsUpdated` and `LogTagsUpdated` domain
+  events. The events do not contain private (`mw-private-`) tags.
+  See <https://phabricator.wikimedia.org/T434143>
