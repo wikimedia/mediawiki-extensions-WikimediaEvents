@@ -187,6 +187,8 @@ function shouldIgnoreFileUrl( fileUrl ) {
 		fileUrl.includes( '/inj_js/' ) ||
 		fileUrl.startsWith( 'blob:' ) ||
 		fileUrl.startsWith( 'jar:' ) ||
+		// coming from Instagram's in-app browser
+		fileUrl.startsWith( 'iabjs://' ) ||
 		// from Windows file system.
 		fileUrl.startsWith( 'C:\\' ) ||
 		fileUrl.startsWith( 'chrome://' ) ||
