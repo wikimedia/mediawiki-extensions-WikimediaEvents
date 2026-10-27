@@ -23,6 +23,7 @@ $cfg['directory_list'] = array_merge(
 		'../../extensions/GlobalBlocking',
 		'../../extensions/OATHAuth',
 		'../../extensions/TestKitchen',
+		'../../extensions/Thanks',
 	]
 );
 
@@ -47,6 +48,7 @@ $cfg['exclude_analysis_directory_list'] = array_merge(
 		'../../extensions/GlobalBlocking',
 		'../../extensions/OATHAuth',
 		'../../extensions/TestKitchen',
+		'../../extensions/Thanks',
 	]
 );
 

@@ -19,7 +19,8 @@
 	},
 	"suggests": {
 		"extensions": {
-			"IPReputation": "*"
+			"IPReputation": "*",
+			"Thanks": "*"
 		}
 	},
 	"AutoloadNamespaces": {
@@ -181,6 +182,19 @@
 			"events": [
 				"RevisionTagsUpdated",
 				"LogTagsUpdated"
+			]
+		},
+		{
+			"class": "WikimediaEvents\\EventDataProducts\\UserThankEventIngress",
+			"services": [
+				"EventBus.EventBusFactory",
+				"EventBus.StreamNameMapper",
+				"EventBus.EventSerializer",
+				"EventBus.UserEntitySerializer",
+				"TitleFactory"
+			],
+			"events": [
+				"UserThanked"
 			]
 		}
 	],
