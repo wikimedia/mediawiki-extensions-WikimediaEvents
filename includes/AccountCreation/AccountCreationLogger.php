@@ -29,7 +29,7 @@ class AccountCreationLogger {
 	/**
 	 * @var array Mapping of special page titles to their corresponding event streams.
 	 */
-	private $pageStreamMap = [
+	private const PAGE_STREAM_MAP = [
 		'CreateAccount' => self::STREAM_REGISTER,
 		'Userlogin' => self::STREAM_LOGIN,
 	];
@@ -178,7 +178,7 @@ class AccountCreationLogger {
 	 */
 	private function determineStreamForPage( PageReference $pageReference ): ?string {
 		[ $canonicalName, ] = $this->specialPageFactory->resolveAlias( $pageReference->getDBkey() );
-		return $this->pageStreamMap[$canonicalName ?? ''] ?? null;
+		return self::PAGE_STREAM_MAP[$canonicalName ?? ''] ?? null;
 	}
 
 }
