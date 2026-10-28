@@ -24,6 +24,8 @@
 	"apierror-wikimediaevents-skipcaptcha-not-applicable": "Gebruikers met het recht skipcaptcha kunnen deze API niet gebruiken",
 	"tag-cross-wiki-upload": "Upload vanaf een andere wiki",
 	"tag-cross-wiki-upload-description": "Bestanden geüpload vanuit de visuele tekstverwerker in andere wiki's",
+	"wikimediaevents-de-4-3-4-email-confirmation-experiment-banner": "Bewerken met dit account is beperkt totdat u [[Special:ConfirmEmail|uw e-mailadres bevestigt]].\n\nDit is vereist als u uw account ooit wilt herstellen, en voor andere functies en beveiligingsmaatregelen op {{SITENAME}} is mogelijk een bevestigd e-mailadres vereist.",
+	"wikimediaevents-de-4-3-4-email-confirmation-experiment-toast": "Bewerken met dit account is niet mogelijk totdat u [$1 uw e-mailadres bevestigt].",
 	"wikimediaevents-special-wikimediadebug-notenabled": "Deze speciale pagina is niet ingeschakeld.",
 	"wikimediaevents-special-wikimediadebug-submit-set": "Debug-cookie voor $1 activeren",
 	"wikimediaevents-special-wikimediadebug-submit-renew": "Cookie voor $1 vernieuwen",
