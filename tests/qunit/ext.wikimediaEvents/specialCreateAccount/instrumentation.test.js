@@ -6,7 +6,9 @@ const instrument = require( 'ext.wikimediaEvents/specialCreateAccount/useInstrum
 QUnit.module( 'ext.wikimediaEvents.specialCreateAccount.instrumentation', QUnit.newMwEnvironment( {
 	beforeEach() {
 		mw.config.set( {
-			wgWikimediaEventsCaptchaClassType: 'hCaptcha'
+			wgWikimediaEventsCaptchaClassType: 'hCaptcha',
+			wgWikimediaEventsCreateAccountIsBlocked: false,
+			wgWikimediaEventsCreateAccountIsNewRequest: true
 		} );
 		// We need to stub mw.track and mw.trackSubscribe to avoid issues with
 		// data pollution in between test runs, as there is no straightforward
@@ -33,6 +35,8 @@ QUnit.module( 'ext.wikimediaEvents.specialCreateAccount.instrumentation', QUnit.
 
 		$( '#qunit-fixture' ).append( this.$form );
 		setupInstrumentation();
+		// Ignore the impression event, other tests check it.
+		this.submitInteraction.resetHistory();
 	},
 
 	afterEach() {
@@ -209,4 +213,53 @@ QUnit.test( 'should submit interaction events for errors passed to hcaptcha.rend
 		expectedCount,
 		'"edit" interface should not be tracked'
 	);
+} );
+
+QUnit.test( 'should submit impression event on setup', function ( assert ) {
+	mw.config.set( 'wgWikimediaEventsCreateAccountIsBlocked', true );
+	setupInstrumentation();
+
+	assert.deepEqual(
+		this.submitInteraction.firstCall.args,
+		[ 'impression', { source: 'page', context: '{"is_blocked":true,"return_to":""}' } ]
+	);
+} );
+
+QUnit.test( 'should pass the returnto value to instrumentation', function ( assert ) {
+	mw.config.set( 'wgWikimediaEventsCreateAccountIsBlocked', true );
+	this.sandbox.stub( URLSearchParams.prototype, 'get' )
+		.callsFake( ( name ) => name === 'returnto' ? 'Main Page' : null );
+	setupInstrumentation();
+
+	assert.deepEqual(
+		this.submitInteraction.firstCall.args,
+		[ 'impression', { source: 'page', context: '{"is_blocked":true,"return_to":"Main%20Page"}' } ]
+	);
+} );
+
+QUnit.test( 'should not submit impression event for repeated requests', function ( assert ) {
+	mw.config.set( 'wgWikimediaEventsCreateAccountIsNewRequest', false );
+	setupInstrumentation();
+
+	assert.false( this.submitInteraction.calledWith( 'impression' ) );
+} );
+
+QUnit.test.each( 'getImpressionContext', {
+	'not blocked, no returnto': [ false, '', '{"is_blocked":false,"return_to":""}' ],
+	'blocked, short returnto': [ true, 'Main_Page', '{"is_blocked":true,"return_to":"Main_Page"}' ],
+	'long returnto': [
+		false,
+		'A'.repeat( 400 ),
+		'{"is_blocked":false,"return_to":"' + 'A'.repeat( 200 ) + '"}'
+	],
+	'long returnto with escaped characters': [
+		true,
+		' '.repeat( 400 ),
+		'{"is_blocked":true,"return_to":"' + '%20'.repeat( 400 ).slice( 0, 200 ) + '"}'
+	]
+}, ( assert, [ isBlocked, returnTo, expected ] ) => {
+	const context = setupInstrumentation.getImpressionContext( isBlocked, returnTo );
+
+	assert.strictEqual( context, expected );
+	assert.true( context.length <= 320, 'context fits in action_context' );
 } );
