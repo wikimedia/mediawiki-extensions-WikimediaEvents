@@ -1,6 +1,25 @@
 const instrument = require( './useInstrument.js' );
 
 /**
+ * Build the action_context for the impression event (T442454).
+ * Shorten the returnto value, so that the result stays valid JSON
+ * and fits in the action_context field.
+ *
+ * @param {boolean} isBlocked
+ * @param {string} returnTo
+ * @return {string}
+ */
+function getImpressionContext( isBlocked, returnTo ) {
+	// We can cut a character in half (e.g. %20 at the end can become %2), but that's only for
+	// analytics and we're okay with truncated URLs anyway
+	returnTo = encodeURI( returnTo ).slice( 0, 200 );
+	return JSON.stringify( {
+		is_blocked: isBlocked,
+		return_to: returnTo
+	} );
+}
+
+/**
  * Frontend instrumentation for the account creation funnel (T394744).
  * This function should be run after the DOM has become interactive.
  */
@@ -15,6 +34,17 @@ function setupInstrumentation() {
 		realname: 'real_name',
 		reason: 'reason'
 	};
+
+	if ( mw.config.get( 'wgWikimediaEventsCreateAccountIsNewRequest' ) ) {
+		const urlParams = new URLSearchParams( window.location.search );
+		submitInteraction( 'impression', {
+			source: 'page',
+			context: getImpressionContext(
+				!!mw.config.get( 'wgWikimediaEventsCreateAccountIsBlocked' ),
+				urlParams.get( 'returnto' ) || ''
+			)
+		} );
+	}
 
 	const errorPageMessageKey = mw.config.get( 'wgErrorPageMessageKey' );
 	if ( errorPageMessageKey ) {
@@ -177,3 +207,4 @@ function setupInstrumentation() {
 }
 
 module.exports = setupInstrumentation;
+module.exports.getImpressionContext = getImpressionContext;

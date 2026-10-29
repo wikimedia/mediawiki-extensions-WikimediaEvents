@@ -67,7 +67,7 @@ const useInstrument = () => {
 		}
 
 		if ( data.context ) {
-			interactionData.action_context = String( data.context ).slice( 0, 64 );
+			interactionData.action_context = String( data.context ).slice( 0, 320 );
 		}
 
 		interactionData.funnel_name = 'create_account';

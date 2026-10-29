@@ -2,8 +2,10 @@
 namespace WikimediaEvents\CreateAccount;
 
 use MediaWiki\Auth\AuthManager;
+use MediaWiki\Block\BlockManager;
 use MediaWiki\Config\Config;
 use MediaWiki\Output\Hook\BeforePageDisplayHook;
+use MediaWiki\Output\OutputPage;
 use MediaWiki\SpecialPage\Hook\AuthChangeFormFieldsHook;
 use MediaWiki\User\Registration\UserRegistrationLookup;
 use MediaWiki\Utils\UrlUtils;
@@ -23,7 +25,8 @@ class CreateAccountInstrumentationHandler implements
 		private readonly UserRegistrationLookup $userRegistrationLookup,
 		private readonly CreateAccountInstrumentationClient $client,
 		private readonly UrlUtils $urlUtils,
-		private readonly Config $config
+		private readonly Config $config,
+		private readonly BlockManager $blockManager
 	) {
 	}
 
@@ -43,12 +46,18 @@ class CreateAccountInstrumentationHandler implements
 	}
 
 	/**
-	 * Send an interaction event for pageviews by a newly registered user (T394744).
+	 * Send an interaction event for pageviews by a newly registered user (T394744) and
+	 * client-side instrumentation for Special:CreateAccount
+	 *
 	 * @inheritDoc
 	 */
 	public function onBeforePageDisplay( $out, $skin ): void {
 		if ( !$this->config->get( 'WikimediaEventsCreateAccountInstrumentation' ) ) {
 			return;
+		}
+
+		if ( $out->getTitle()?->isSpecial( 'CreateAccount' ) ) {
+			$this->addCreateAccountJsConfigVars( $out );
 		}
 
 		$user = $out->getUser();
@@ -76,5 +85,22 @@ class CreateAccountInstrumentationHandler implements
 		}
 
 		$this->client->submitInteraction( $out, 'pageview', [ 'action_context' => $user->getName() ] );
+	}
+
+	/**
+	 * Give the client-side instrumentation the data for the impression event (T442454).
+	 */
+	private function addCreateAccountJsConfigVars( OutputPage $out ): void {
+		$request = $out->getRequest();
+		// Pages shown again after a form submission or with the block details are not new entries to the funnel.
+		$isNewRequest = !$request->wasPosted() && !$request->getBool( 'blockdetails' );
+
+		$requestForBlockManager = $out->getAuthority()->isAllowed( 'ipblock-exempt' ) ? null : $request;
+		$block = $this->blockManager->getCreateAccountBlock( $out->getUser(), $requestForBlockManager, true );
+
+		$out->addJsConfigVars( [
+			'wgWikimediaEventsCreateAccountIsBlocked' => $block !== null,
+			'wgWikimediaEventsCreateAccountIsNewRequest' => $isNewRequest,
+		] );
 	}
 }
