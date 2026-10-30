@@ -4,7 +4,6 @@ namespace WikimediaEvents\CreateAccount;
 use MediaWiki\Auth\AuthManager;
 use MediaWiki\Config\Config;
 use MediaWiki\Output\Hook\BeforePageDisplayHook;
-use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\SpecialPage\Hook\AuthChangeFormFieldsHook;
 use MediaWiki\User\Registration\UserRegistrationLookup;
 use MediaWiki\Utils\UrlUtils;
@@ -21,7 +20,6 @@ class CreateAccountInstrumentationHandler implements
 	private const USER_AGE_INSTRUMENTATION_CUTOFF_SECONDS = 86400;
 
 	public function __construct(
-		private readonly ExtensionRegistry $extensionRegistry,
 		private readonly UserRegistrationLookup $userRegistrationLookup,
 		private readonly CreateAccountInstrumentationClient $client,
 		private readonly UrlUtils $urlUtils,

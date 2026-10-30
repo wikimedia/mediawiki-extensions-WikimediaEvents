@@ -62,7 +62,6 @@
 		"CreateAccountInstrumentationHandler": {
 			"class": "WikimediaEvents\\CreateAccount\\CreateAccountInstrumentationHandler",
 			"services": [
-				"ExtensionRegistry",
 				"UserRegistrationLookup",
 				"WikimediaEventsCreateAccountInstrumentationClient",
 				"UrlUtils",

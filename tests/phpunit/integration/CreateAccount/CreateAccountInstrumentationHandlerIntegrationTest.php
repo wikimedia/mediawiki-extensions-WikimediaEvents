@@ -44,7 +44,6 @@ class CreateAccountInstrumentationHandlerIntegrationTest extends MediaWikiIntegr
 
 		$services = $this->getServiceContainer();
 		$this->handler = new CreateAccountInstrumentationHandler(
-			$services->getExtensionRegistry(),
 			$this->userRegistrationLookup,
 			$this->client,
 			$services->getUrlUtils(),
