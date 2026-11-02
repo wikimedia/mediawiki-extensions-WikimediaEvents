@@ -17,7 +17,7 @@ const STICKY_LINK = `<li id="pt-readinglists-sticky-header" class="mw-list-item"
 </li>`;
 let sandbox;
 
-QUnit.module( 'ext.wikimediaEvents/readingListBaseline', ( hooks ) => {
+QUnit.module( 'ext.wikimediaEvents/readingListBaseline', QUnit.newMwEnvironment(), ( hooks ) => {
 	hooks.beforeEach( function () {
 		sandbox = this.sandbox;
 		mw.config.set( {
