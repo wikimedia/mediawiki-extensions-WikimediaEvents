@@ -105,14 +105,11 @@ class RevisionHtmlFeatureCountsChangeIngress
 
 		// NOTE: Reconciliation requests (e.g. null edits) will produce events,
 		// provenance.is_reconciliation_request tells consumers about these events.
+		// A null edit updates page table page_touched field before the prefetch job runs.
+		// If page_touched is newer than the ParserCache's cached HTML, it
+		// is re-rendered.  Reconcilation triggered prefetches should have used the re-rendered HTML.
 		//
-		// NOTE: After a null edit, html will eventually be re-rendered.
-		// But, nothing orders the re-rendering of a revision's HTML (e.g. in the parser cache)
-		// before the LAC prefetch. The lambda might compute the counts from the old cached HTML
-		// for the revision. Then the result might have recomputed the same counts as before, but
-		// with a newer compute_dt. render_id shows which rendering the counts came from.
-		// A fix would be to prefetch after the HTML re-render, e.g. on a 'ParserCache rendering updated'
-		// signal, instead of on the page change.
+		// render_id shows which HTML rendering the counts are derived from.
 
 		// A body that does not match the artifact contract is a bug in the lambda or in the
 		// LAC config, so throw. DeferredUpdates logs the exception.
