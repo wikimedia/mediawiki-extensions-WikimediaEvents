@@ -328,3 +328,9 @@ instrumentation.
   `mediawiki.log_tags_change.v1` streams from the `RevisionTagsUpdated` and `LogTagsUpdated` domain
   events. The events do not contain private (`mw-private-`) tags.
   See <https://phabricator.wikimedia.org/T434143>
+
+## Suggestion mode discoverability
+
+* Since: November 2026
+* Files: ext.wikimediaEvents/suggestionDiscoverability.js
+* Contact: Editing

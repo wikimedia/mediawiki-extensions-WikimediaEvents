@@ -346,6 +346,7 @@
 				},
 				"editAttemptStep.js",
 				"suggestionMode.js",
+				"suggestionDiscoverability.js",
 				"hCaptcha.js",
 				"editSaved.js",
 				"accountCreation/accountCreated.js",
