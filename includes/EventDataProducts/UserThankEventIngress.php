@@ -10,20 +10,23 @@ use MediaWiki\Extension\EventBus\Serializers\EventSerializer;
 use MediaWiki\Extension\EventBus\Serializers\MediaWiki\UserEntitySerializer;
 use MediaWiki\Extension\EventBus\StreamNameMapper;
 use MediaWiki\Extension\Thanks\UserThankedEvent;
-use MediaWiki\Extension\Thanks\UserThankedListener;
 use MediaWiki\Title\TitleFactory;
 
 /**
  * Produces mediawiki.user_thank events via EventBus, one per thank sent with the Thanks extension.
  *
- * Only instantiated when a UserThanked event is dispatched, i.e. when Thanks is loaded.
+ * Thanks is optional. Thus, this class does not implement the Thanks UserThankedListener
+ * interface. PHP loads an interface when it loads the class, so the interface makes the
+ * class fail to load when Thanks is not installed. Core can create this class without
+ * Thanks (e.g. EventSubscriptionTest). DomainEventIngress finds handleUserThankedEvent()
+ * by its name, so the interface is not necessary.
+ *
+ * TODO: Implement UserThankedListener after
+ * https://phabricator.wikimedia.org/T444383 is fixed
  *
  * @unstable
  */
-class UserThankEventIngress
-	extends DomainEventIngress
-	implements UserThankedListener
-{
+class UserThankEventIngress extends DomainEventIngress {
 	public const STREAM_NAME_DEFAULT = 'mediawiki.user_thank.v1';
 
 	private readonly string $streamName;
