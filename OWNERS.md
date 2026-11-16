@@ -269,6 +269,12 @@ More details at <https://phabricator.wikimedia.org/T414368>.
 * Files: ext.wikimediaEvents/suggestionMode.js
 * Contact: Editing
 
+## Edit suggestion count in read mode experiment
+
+* Since: November 2026
+* Files: includes/EditCheck/ReadSuggestionsCountExperimentHooks.php, ext.wikimediaEvents/readSuggestionsCount.js
+* Contact: Editing
+
 ## Email confirmation banner instrumentation
 
 * Since: June 2026
@@ -332,5 +338,6 @@ instrumentation.
 ## Suggestion mode discoverability
 
 * Since: November 2026
-* Files: ext.wikimediaEvents/suggestionDiscoverability.js, ext.wikimediaEvents/suggestionOnboarding.js
+* Files: ext.wikimediaEvents/suggestionDiscoverability.js, ext.wikimediaEvents/suggestionEligibility.js,
+  ext.wikimediaEvents/suggestionOnboarding.js
 * Contact: Editing

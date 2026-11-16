@@ -14,13 +14,27 @@ const EXPOSURE_TO_READY_DELAY_MS = 500;
  * Set up discoverability instrumentation for a suggestion mode experiment
  *
  * @param {string} experimentName
- * @param {string} treatmentGroupName
+ * @param {string[]} treatmentGroupNames
  * @param {Function} getExclusion Returns { isUserExcluded, exclusionReason }.
  *  for an experiment to define its own eligibility rules
+ * @param {Object} [options]
+ * @param {Function} [options.whenExposed] Use this if the treatment is outside the
+ *  editor. Returns a promise. When it resolves, send the exposure event and enable the
+ *  discoverability effects for the treatment groups. Do not send the exposure event
+ *  when a suggestion shows in the editor.
+ * @param {Function} [options.onSuggestionInTime] Called when a suggestion shows in the editor
+ *  before the deadline. At this time, the treatment groups see the welcome dialog. Gets the
+ *  experiment and the target.
+ * @param {Function} [options.onInitialSuggestionsLoaded] Called once per editing session,
+ *  when the first check run in the editor is complete. Gets the number of suggestions,
+ *  the send function of the session, and the target.
  */
 module.exports = function setUpSuggestionDiscoverabilityExperiment(
-	experimentName, treatmentGroupName, getExclusion
+	experimentName, treatmentGroupNames, getExclusion, options
 ) {
+	const whenExposed = options && options.whenExposed;
+	const onInitialSuggestionsLoaded = options && options.onInitialSuggestionsLoaded;
+	const onSuggestionInTime = options && options.onSuggestionInTime;
 	let session = null;
 
 	const experimentPromise = mw.testKitchen.getExperiment( experimentName )
@@ -30,7 +44,7 @@ module.exports = function setUpSuggestionDiscoverabilityExperiment(
 		} );
 
 	experimentPromise.then( ( { exp, isUserExcluded, exclusionReason } ) => {
-		if ( !exp.isAssignedGroup( 'control', treatmentGroupName ) ) {
+		if ( !exp.isAssignedGroup( 'control', ...treatmentGroupNames ) ) {
 			return;
 		}
 
@@ -46,20 +60,36 @@ module.exports = function setUpSuggestionDiscoverabilityExperiment(
 		}
 
 		// The user is definitely enrolled in an existing experiment by this point.
-		// Both groups get suggestion mode turned on and only the treatment group
-		// gets the discoverability effects.
+		// All groups get suggestion mode turned on and only the treatment groups
+		// get the discoverability effects.
 		mw.user.options.set( 'visualeditor-editcheck-suggestions', true );
 
-		if ( exp.isAssignedGroup( treatmentGroupName ) ) {
-			mw.user.options.set( 'visualeditor-editcheck-discoverability', true );
+		const isTreatment = exp.isAssignedGroup( ...treatmentGroupNames );
+		if ( !whenExposed ) {
+			if ( isTreatment ) {
+				mw.user.options.set( 'visualeditor-editcheck-discoverability', true );
+			}
+			return;
 		}
+		// Users who are not exposed must get the same experience as the control group
+		whenExposed().then( () => {
+			exp.sendExposure();
+			if ( isTreatment ) {
+				mw.user.options.set( 'visualeditor-editcheck-discoverability', true );
+				// Edit Check reads the option when it loads. It loads with the first editor,
+				// which can open before the exposure.
+				if ( mw.editcheck ) {
+					mw.editcheck.discoverabilityEnabled = true;
+				}
+			}
+		} );
 	} );
 
 	mw.hook( 've.newTarget' ).add( ( target ) => {
 		const initTimestamp = mw.now();
 
 		experimentPromise.then( ( { exp, isUserExcluded } ) => {
-			if ( !exp.isAssignedGroup( 'control', treatmentGroupName ) ) {
+			if ( !exp.isAssignedGroup( 'control', ...treatmentGroupNames ) ) {
 				return;
 			}
 
@@ -107,7 +137,12 @@ module.exports = function setUpSuggestionDiscoverabilityExperiment(
 				cancelPendingSuggestionCheck();
 				timings.ready = mw.now();
 
-				currentSession = { send, resolveSuggestionAvailability: null };
+				currentSession = {
+					send,
+					target,
+					resolveSuggestionAvailability: null,
+					initialSuggestionsLoaded: false
+				};
 				session = currentSession;
 
 				const controller = target.editcheckController;
@@ -128,8 +163,11 @@ module.exports = function setUpSuggestionDiscoverabilityExperiment(
 						'section' : 'page';
 
 					// for either group, only log exposure when the onboarding dialog is/would be shown
-					if ( hadSuggestionInTime ) {
+					if ( hadSuggestionInTime && !whenExposed ) {
 						exp.sendExposure();
+					}
+					if ( hadSuggestionInTime && onSuggestionInTime ) {
+						onSuggestionInTime( exp, target );
 					}
 
 					setTimeout( () => {
@@ -250,7 +288,19 @@ module.exports = function setUpSuggestionDiscoverabilityExperiment(
 			}
 		} else if ( data.feature === 'editCheck' ) {
 			// Welcome/onboarding dialog for suggestion mode discoverability
-			if ( data.action === 'discoverability-deadline-reached' ) {
+			if ( data.action.startsWith( 'initial-suggestions-loaded-' ) ) {
+				// A section session can become a full page session, which loads the
+				// suggestions again. Only the first load is the initial count.
+				const controller = session.target.editcheckController;
+				if ( onInitialSuggestionsLoaded && controller && !session.initialSuggestionsLoaded ) {
+					session.initialSuggestionsLoaded = true;
+					// Count the same way as the toolbar count: system checks are not suggestions
+					const suggestionCount = controller.getActions().filter(
+						( action ) => action.isSuggestion() && !action.check.isSystemCheck()
+					).length;
+					onInitialSuggestionsLoaded( suggestionCount, send, session.target );
+				}
+			} else if ( data.action === 'discoverability-deadline-reached' ) {
 				if ( session.resolveSuggestionAvailability ) {
 					session.resolveSuggestionAvailability( false );
 				}

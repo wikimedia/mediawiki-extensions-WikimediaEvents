@@ -142,6 +142,13 @@
 				"StatsFactory"
 			]
 		},
+		"ReadSuggestionsCountExperimentHooks": {
+			"class": "WikimediaEvents\\EditCheck\\ReadSuggestionsCountExperimentHooks",
+			"services": [
+				"TestKitchen.ExperimentManager",
+				"UserOptionsLookup"
+			]
+		},
 		"EmailConfirmationHooks": {
 			"class": "WikimediaEvents\\EmailConfirmation\\EmailConfirmationHooks",
 			"services": [
@@ -250,7 +257,8 @@
 		"ConfirmEmailComplete": "EmailConfirmationHooks",
 		"InvalidateEmailComplete": "EmailConfirmationHooks",
 		"SiteNoticeAfter": "main",
-		"getUserPermissionsErrorsExpensive": "EmailConfirmationHooks"
+		"getUserPermissionsErrorsExpensive": "EmailConfirmationHooks",
+		"VisualEditorEditCheckReadSuggestionsIndicator": "ReadSuggestionsCountExperimentHooks"
 	},
 	"APIModules": {
 		"wikimediaeventsblockededit": {
@@ -348,7 +356,9 @@
 				"editAttemptStep.js",
 				"suggestionMode.js",
 				"suggestionDiscoverability.js",
+				"suggestionEligibility.js",
 				"suggestionOnboarding.js",
+				"readSuggestionsCount.js",
 				"hCaptcha.js",
 				"editSaved.js",
 				"accountCreation/accountCreated.js",
