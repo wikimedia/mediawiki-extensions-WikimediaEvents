@@ -332,5 +332,5 @@ instrumentation.
 ## Suggestion mode discoverability
 
 * Since: November 2026
-* Files: ext.wikimediaEvents/suggestionDiscoverability.js
+* Files: ext.wikimediaEvents/suggestionDiscoverability.js, ext.wikimediaEvents/suggestionOnboarding.js
 * Contact: Editing

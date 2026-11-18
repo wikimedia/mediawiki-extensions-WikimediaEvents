@@ -25,7 +25,7 @@ require( './readerRetentionAA/loggedInReaderRetention.js' );
 require( './readerRetentionAA/loggedOutReaderRetention.js' );
 require( './testKitchen/editSavedAA.js' );
 require( './earlyOnboarding.js' );
-require( './suggestionDiscoverability.js' );
+require( './suggestionOnboarding.js' );
 
 /**
  * Other instrumentation
