@@ -54,6 +54,29 @@ function setupInstrumentation() {
 		} );
 	}
 
+	// Record clicks on the links of the page that is shown instead of the form
+	// when the user cannot create an account (T443743).
+	const blockPageContext = JSON.stringify(
+		// eslint-disable-next-line no-jquery/no-global-selector
+		$( '.mw-createaccount-ipblocked' ).length ?
+			{ page: 'ipblocked' } :
+			{ page: 'error', message_key: errorPageMessageKey }
+	);
+	const blockPageLinks = {
+		'#mw-createaccount-permerror-login': 'permerror-login',
+		'#mw-createaccount-permerror-return': 'permerror-continue',
+		'#mw-createaccount-ipblocked-details a': 'block-more'
+	};
+	for ( const selector in blockPageLinks ) {
+		$( selector ).on( 'mousedown', () => {
+			submitInteraction( 'click', {
+				source: 'page',
+				subType: blockPageLinks[ selector ],
+				context: blockPageContext
+			} );
+		} );
+	}
+
 	const formReady = Date.now();
 
 	let interactionStart = null;
