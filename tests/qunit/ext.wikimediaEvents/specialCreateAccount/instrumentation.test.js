@@ -263,3 +263,53 @@ QUnit.test.each( 'getImpressionContext', {
 	assert.strictEqual( context, expected );
 	assert.true( context.length <= 320, 'context fits in action_context' );
 } );
+
+QUnit.test.each( 'should submit interaction event when a link on the IP block page is clicked', {
+	'log in': [ '#mw-createaccount-permerror-login', 'permerror-login' ],
+	continue: [ '#mw-createaccount-permerror-return', 'permerror-continue' ],
+	'find out more': [ '#mw-createaccount-ipblocked-details a', 'block-more' ]
+}, function ( assert, [ selector, subType ] ) {
+	$( '#qunit-fixture' ).append(
+		$( '<div class="mw-createaccount-ipblocked">' ).append(
+			$( '<div class="mw-createaccount-permissionerror-actions">' ).append(
+				'<a id="mw-createaccount-permerror-login" href="#"></a>',
+				'<a id="mw-createaccount-permerror-return" href="#"></a>'
+			),
+			'<div id="mw-createaccount-ipblocked-details"><p><a href="#"></a></p></div>'
+		)
+	);
+	setupInstrumentation();
+	this.submitInteraction.resetHistory();
+
+	$( selector ).trigger( 'mousedown' );
+
+	assert.true( this.submitInteraction.calledOnce );
+	assert.deepEqual(
+		this.submitInteraction.firstCall.args,
+		[ 'click', { source: 'page', subType, context: '{"page":"ipblocked"}' } ]
+	);
+} );
+
+QUnit.test( 'should submit interaction event when a link on the error page is clicked', function ( assert ) {
+	mw.config.set( 'wgErrorPageMessageKey', 'blockedtext' );
+	$( '#qunit-fixture' ).append(
+		$( '<div class="mw-createaccount-permissionerror-actions">' ).append(
+			'<a id="mw-createaccount-permerror-login" href="#"></a>',
+			'<a id="mw-createaccount-permerror-return" href="#"></a>'
+		)
+	);
+	setupInstrumentation();
+	this.submitInteraction.resetHistory();
+
+	$( '#mw-createaccount-permerror-login' ).trigger( 'mousedown' );
+
+	assert.true( this.submitInteraction.calledOnce );
+	assert.deepEqual(
+		this.submitInteraction.firstCall.args,
+		[ 'click', {
+			source: 'page',
+			subType: 'permerror-login',
+			context: '{"page":"error","message_key":"blockedtext"}'
+		} ]
+	);
+} );
