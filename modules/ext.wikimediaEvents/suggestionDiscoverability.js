@@ -171,8 +171,8 @@ module.exports = function setUpSuggestionDiscoverabilityExperiment(
 					if ( !changed ) {
 						timings.firstChange = mw.now();
 						changed = true;
-						send( 'first_change', {
-							action_context: { timing_ms: timings.firstChange - timings.ready }
+						send( 'editor_first_change', {
+							action_context: { ready_delta_ms: timings.firstChange - timings.ready }
 						} );
 					}
 				} );
