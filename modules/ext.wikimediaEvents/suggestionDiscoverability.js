@@ -15,7 +15,7 @@ let session = null;
 
 const experimentPromise = mw.testKitchen.getExperiment( EXPERIMENT_NAME )
 	.then( ( exp ) => {
-		// Only include logged-in mobile users with <= 150 edits
+		// Only include logged-in users with <= 150 edits
 		// who do not already have suggestion mode enabled.
 		let exclusionReason = null;
 		if ( +mw.user.options.get( 'visualeditor-editcheck-suggestions' ) ) {
@@ -26,8 +26,7 @@ const experimentPromise = mw.testKitchen.getExperiment( EXPERIMENT_NAME )
 
 		const isUserExcluded = (
 			exclusionReason !== null ||
-			!mw.user.isNamed() ||
-			!mw.config.get( 'wgMFMode' )
+			!mw.user.isNamed()
 		);
 
 		return { exp, isUserExcluded, exclusionReason };
@@ -175,8 +174,8 @@ mw.hook( 've.newTarget' ).add( ( target ) => {
 				if ( !changed ) {
 					timings.firstChange = mw.now();
 					changed = true;
-					send( 'first_change', {
-						action_context: { timing_ms: timings.firstChange - timings.ready }
+					send( 'editor_first_change', {
+						action_context: { ready_delta_ms: timings.firstChange - timings.ready }
 					} );
 				}
 			} );
