@@ -1,7 +1,7 @@
 const setUpSuggestionDiscoverabilityExperiment = require( './suggestionDiscoverability.js' );
 
 setUpSuggestionDiscoverabilityExperiment( 'suggestion-mode-onboarding', 'suggestions-onboarding', () => {
-	// Only include logged-in mobile users with <= 150 edits
+	// Only include logged-in users with <= 150 edits
 	// who do not already have suggestion mode enabled.
 	let exclusionReason = null;
 	if ( +mw.user.options.get( 'visualeditor-editcheck-suggestions' ) ) {
@@ -12,8 +12,7 @@ setUpSuggestionDiscoverabilityExperiment( 'suggestion-mode-onboarding', 'suggest
 
 	const isUserExcluded = (
 		exclusionReason !== null ||
-		!mw.user.isNamed() ||
-		!mw.config.get( 'wgMFMode' )
+		!mw.user.isNamed()
 	);
 
 	return { isUserExcluded, exclusionReason };
