@@ -1,4 +1,5 @@
 const editingSessionService = require( './editingSessionService.js' );
+const { anyPageVisit } = require( 'ext.wikimediaEvents.testKitchen' );
 
 // Mapping of different check actions to their purpose (accepting or declining the check)
 // Updated to match all available actions as of Nov 2026
@@ -9,6 +10,8 @@ const DECLINE_ACTIONS = [ 'dismiss', 'keep', 'reject' ];
 // (T439895) Artificial gap between sending experiment_exposure and any events
 // that are at risk of arriving before it (like editor_ready)
 const EXPOSURE_TO_READY_DELAY_MS = 500;
+
+const pageTimestamp = mw.now();
 
 /**
  * Set up discoverability instrumentation for a suggestion mode experiment
@@ -36,6 +39,19 @@ module.exports = function setUpSuggestionDiscoverabilityExperiment(
 	const onInitialSuggestionsLoaded = options && options.onInitialSuggestionsLoaded;
 	const onSuggestionInTime = options && options.onSuggestionInTime;
 	let session = null;
+	let funnelEntryToken = null;
+
+	function sendEvent( exp, editorInterface, action, data ) {
+		data.funnel_entry_token = data.funnel_entry_token || funnelEntryToken ||
+			editingSessionService.getEditingSessionId( null, true );
+		data.mediawiki = { database: mw.config.get( 'wgDBname' ) };
+		data.action_context = data.action_context || {};
+		data.action_context.interface = editorInterface;
+		// This needs to be a string, but we've left it as an object until
+		// now so it can be easily modified:
+		data.action_context = JSON.stringify( data.action_context );
+		exp.send( action, data );
+	}
 
 	const experimentPromise = mw.testKitchen.getExperiment( experimentName )
 		.then( ( exp ) => {
@@ -58,6 +74,8 @@ module.exports = function setUpSuggestionDiscoverabilityExperiment(
 			}
 			return;
 		}
+
+		exp.use( anyPageVisit() );
 
 		// The user is definitely enrolled in an existing experiment by this point.
 		// All groups get suggestion mode turned on and only the treatment groups
@@ -98,16 +116,12 @@ module.exports = function setUpSuggestionDiscoverabilityExperiment(
 				return;
 			}
 
-			const send = ( action, data ) => {
-				data.funnel_entry_token = editingSessionService.getEditingSessionId( null, true );
-				data.mediawiki = { database: mw.config.get( 'wgDBname' ) };
-				data.action_context = data.action_context || {};
-				data.action_context.interface = target.getDefaultMode() === 'source' ? 'wikitext-2017' : 'visualeditor';
-				// This needs to be a string, but we've left it as an object until
-				// now so it can be easily modified:
-				data.action_context = JSON.stringify( data.action_context );
-				exp.send( action, data );
-			};
+			const send = ( action, data ) => sendEvent(
+				exp,
+				target.getDefaultMode() === 'source' ? 'wikitext-2017' : 'visualeditor',
+				action,
+				data
+			);
 			let saved = false;
 			let changed = false;
 			let pendingActionsUpdatedListener = null;
@@ -243,6 +257,48 @@ module.exports = function setUpSuggestionDiscoverabilityExperiment(
 					action_subtype: abortType,
 					action_context: { timing_ms: timings.abandon - timings.ready }
 				} );
+			} );
+		} );
+	} );
+
+	// The init event fires on each activation, before the target exists. On desktop the
+	// target is reused, so ve.newTarget does not fire again.
+	mw.trackSubscribe( 'editAttemptStep', ( _, data ) => {
+		if ( data.action !== 'init' || data.integration !== 'page' ) {
+			return;
+		}
+		// Desktop VE sends 'mode'. Mobile sends 'editor_interface'.
+		const editorInterface = data.editor_interface ||
+			( data.mode === 'source' ? 'wikitext-2017' : 'visualeditor' );
+		// Ignore the mobile wikitext editor. It is not a VE target, so the session
+		// gets no other events.
+		if ( editorInterface === 'wikitext' ) {
+			return;
+		}
+		const initTimestamp = mw.now();
+
+		// Each init starts a new funnel entry. Do the same as editAttemptStep.js: the
+		// first session uses the shared editing session ID, and later sessions get a new
+		// random ID.
+		const token = funnelEntryToken ?
+			mw.user.generateRandomSessionId() :
+			editingSessionService.getEditingSessionId( null, true );
+		funnelEntryToken = token;
+
+		experimentPromise.then( ( { exp, isUserExcluded } ) => {
+			if ( !exp.isAssignedGroup( 'control', ...treatmentGroupNames ) || isUserExcluded ) {
+				return;
+			}
+			sendEvent( exp, editorInterface, 'edit_attempt_init', {
+				funnel_entry_token: token,
+				// 'page' or 'section'
+				action_source: data.type,
+				page: {
+					namespace_id: mw.config.get( 'wgNamespaceNumber' )
+				},
+				action_context: {
+					timing_ms: initTimestamp - pageTimestamp
+				}
 			} );
 		} );
 	} );
